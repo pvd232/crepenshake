@@ -1,0 +1,25 @@
+/* h1 {
+    background-color: orange;color: white;
+  }
+h2 {
+    background-color: orange;color: white;
+  } */
+/*use this to customize the bootstrap navbar features
+https://mdbootstrap.com/snippets/jquery/ascensus/145665#css-tab-view
+https://stackoverflow.com/questions/33404154/bootstrap-change-the-navbar-font-size
+*/
+  .navbar {
+    min-height: 90px;
+    font-size: 2.0em;
+    font-weight: bold;
+    position: relative;
+    
+  }
+  .navbar-brand {
+    margin-bottom: 50px;
+    height: 100px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%)
+  }
+
