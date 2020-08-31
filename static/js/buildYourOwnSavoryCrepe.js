@@ -1,9 +1,13 @@
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
-$(document).on('load', function () {
-	$.getScript('/shoppingCart.js');
-});
+function stringify(dataObject) {
+	var stringifiedDataObject = JSON.stringify(dataObject);
+	console.log('stringy', stringifiedDataObject);
+	localStorage.setItem('order', stringifiedDataObject);
+	console.log('order', localStorage.getItem('order'));
+	return true;
+}
 
 function getCSSToppingName(element) {
 	var toppingCategory = $(element).closest('.card-deck').attr('id');
@@ -75,11 +79,11 @@ function validateToppingSelection(selectedElement, btn) {
 
 	$('#protein')
 		.find('.btn2')
-		.each(function (i) {
+		.each(function () {
 			meatSelections.push($(this));
 		});
 
-	function countToppings(element) {
+	function countToppings() {
 		countSum = 0;
 		halfMeatCounter = 0;
 		regularMeatCounter = 0;
@@ -87,10 +91,6 @@ function validateToppingSelection(selectedElement, btn) {
 		$('#protein')
 			.find('.btn2')
 			.each(function (i) {
-				console.log('--halfMeat', $(this).css('--half'));
-				console.log('--regMeat', $(this).css('--regular'));
-				console.log('--xtraMeat', $(this).css('--extra'));
-
 				if ($(this).css('--half') == 'true') {
 					countSum += 1;
 					halfMeatCounter += 1;
@@ -109,6 +109,8 @@ function validateToppingSelection(selectedElement, btn) {
 					console.log('extracounter', extraMeatCounter);
 				}
 			});
+		const meatIndexArray = [];
+		meatIndexArray.push(halfMeatIndex, regularMeatIndex, extraMeatIndex);
 	}
 
 	function displayErrorMsg(element) {
@@ -157,6 +159,11 @@ function validateToppingSelection(selectedElement, btn) {
 				$(`#${meatSelections[regularMeatIndex].attr('id')}`).html('½');
 				$(`#${meatSelections[regularMeatIndex].attr('id')}`).css('--regular', 'false');
 				$(`#${meatSelections[regularMeatIndex].attr('id')}`).css('--half', 'true');
+				console.log(
+					'css(`--${toppingCategory}`)',
+					$(selectedElement).closest('.card').find('.btn2').css(`--${toppingCategory}`)
+				);
+				console.log('meatselection', $(`#${meatSelections[regularMeatIndex].attr('id')}`).css('--half'));
 				$(selectedElement).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 				$(selectedElement).closest('.card').find('.btn2').html('½');
 				$(selectedElement).closest('.card').find('.btn2').css('--half', 'true');
@@ -181,7 +188,6 @@ function validateToppingSelection(selectedElement, btn) {
 	} //end of the if block "if btn == false"
 
 	// if the user selected a button
-	// TODO: create the --{cssToppingName} property and assign is to the veggieName dynamically
 	else if (btn != false) {
 		if (btn == 'btn') {
 			// if they select the customize button
@@ -329,7 +335,6 @@ function validateToppingSelection(selectedElement, btn) {
 				$(selectedElement).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 				$(selectedElement).closest('.card').find('.btn2').html('✓');
 				$(selectedElement).closest('.card').find('.btn2').css('--regular', 'true');
-				$(selectedElement).closest('.card').find('.btn2').show();
 				$(selectedElement).blur();
 				$(selectedElement).closest('.card').find('.btn2').show();
 			} else if (countSum >= 2) {
@@ -463,15 +468,15 @@ $(window).on('load', function () {
 			}
 		});
 
-	//functionality for all cards other than the protein cards
+	//veggie + all other topping functionality
 	$(document)
 		.on('mouseenter', '.card', function () {
-			//mouseover veggie functionality
 			if ($(this).closest('.card-deck').attr('id') != 'protein') {
 				console.log('hey');
 				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 				var toppingCategory = toppingCategoryAndToppingNameArray[0];
 				var toppingName = toppingCategoryAndToppingNameArray[1];
+				console.log('tc', toppingCategory, 'tn', toppingName);
 
 				if ($(this).find('.card-body').attr('id') != 'cardBody') {
 					$(this).find('.card-body').css('opacity', '.3'); //https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_image_overlay_opacity
@@ -480,7 +485,7 @@ $(window).on('load', function () {
 				$(this).find('.card-img-top').css('opacity', '.3');
 				$(this).find('.btn').show();
 
-				//click the veggie card somewhere
+				//click the card somewhere
 				$(this)
 					.find('.card-text, .card-title, .card-body, .card-img-top')
 					.unbind('click')
@@ -526,12 +531,13 @@ $(window).on('load', function () {
 		})
 		.on('mouseleave', '.card', function () {
 			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-			var toppingName = toppingCategoryAndToppingNameArray[0];
-			var toppingCategory = toppingCategoryAndToppingNameArray[1];
+			var toppingCategory = toppingCategoryAndToppingNameArray[0];
+			var toppingName = toppingCategoryAndToppingNameArray[1];
+			console.log('tc', toppingCategory, 'tn', toppingName);
 			// TODO: Replace this with the assignment from the gettoppingCategory function
 			if ($(this).closest('.card-deck').attr('id') != 'protein') {
 				if (
-					$(this).find('.btn2').css('extra') != 'true' &&
+					$(this).find('.btn2').css('--extra') != 'true' &&
 					$(this).find('.btn2').css('--half') != 'true' &&
 					$(this).find('.btn2').css('--regular') != 'true' &&
 					$(this).find('.btn2').css(`--${toppingCategory}`) != toppingName
@@ -550,15 +556,16 @@ $(window).on('load', function () {
 			}
 		});
 
-	// click the veggie card buttons
-	if ($(this).closest('.card-deck').attr('id') != 'protein') {
-		$('.btn')
-			.unbind('click')
-			.bind('click', function () {
-				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-				var toppingName = toppingCategoryAndToppingNameArray[0];
-				var toppingCategory = toppingCategoryAndToppingNameArray[1];
+	// click the card buttons
 
+	$('.btn')
+		.unbind('click')
+		.bind('click', function () {
+			if ($(this).closest('.card-deck').attr('id') != 'protein') {
+				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+				var toppingCategory = toppingCategoryAndToppingNameArray[0];
+				var toppingName = toppingCategoryAndToppingNameArray[1];
+				console.log('tc', toppingCategory, 'tn', toppingName);
 				if ($(this).html() == 'Customize') {
 					//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
 					$(this).blur();
@@ -566,32 +573,53 @@ $(window).on('load', function () {
 					$(this).closest('.card').find('.btn3').show();
 					$(this).closest('.card').find('.btn4').show();
 				} else {
+					$(this).closest('.card').find('.btn2').css('--half', 'false');
+					$(this).closest('.card').find('.btn2').css('--regular', 'false');
 					$(this).closest('.card').find('.btn2').css('--extra', 'true');
-					$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `--${toppingName}`);
+					$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 					$(this).html('Customize');
 					$(this).blur();
 					$(this).closest('.card').find('.btn2').html('2X');
 					$(this).closest('.card').find('.btn2').show();
+					$(this).closest('.card').find('.btn3').hide();
+					$(this).closest('.card').find('.btn4').hide();
+					console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 				}
-			});
+			}
+		});
 
-		$('.btn3')
-			.unbind('click')
-			.bind('click', function () {
+	$('.btn3')
+		.unbind('click')
+		.bind('click', function () {
+			if ($(this).closest('.card-deck').attr('id') != 'protein') {
+				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+				var toppingCategory = toppingCategoryAndToppingNameArray[0];
+				var toppingName = toppingCategoryAndToppingNameArray[1];
+				console.log('tc', toppingCategory, 'tn', toppingName);
 				$(this).closest('.card').find('.btn2').css('--half', 'true');
-				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `--${toppingName}`);
-				$(this).closest('.card').find('.btn2').css('--extra', 'false');
+				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 				$(this).closest('.card').find('.btn2').css('--regular', 'false');
+				$(this).closest('.card').find('.btn2').css('--extra', 'false');
 				$(this).closest('.card').find('.btn2').html('½');
 				$(this).closest('.card').find('.btn2').show();
 				$(this).hide();
-			});
+				$(this).closest('.card').find('.btn3').hide();
+				$(this).closest('.card').find('.btn4').hide();
+				$(this).closest('.card').find('.btn').html('Customize');
+				console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
+			}
+		});
 
-		$('.btn4')
-			.unbind('click')
-			.bind('click', function () {
+	$('.btn4')
+		.unbind('click')
+		.bind('click', function () {
+			if ($(this).closest('.card-deck').attr('id') != 'protein') {
+				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+				var toppingCategory = toppingCategoryAndToppingNameArray[0];
+				var toppingName = toppingCategoryAndToppingNameArray[1];
+				console.log('tc', toppingCategory, 'tn', toppingName);
 				$(this).closest('.card').find('.btn2').css('--regular', 'true');
-				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `--${toppingName}`);
+				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 				$(this).closest('.card').find('.btn2').css('--half', 'false');
 				$(this).closest('.card').find('.btn2').css('--extra', 'false');
 				$(this).closest('.card').find('.btn2').html('✓');
@@ -599,8 +627,9 @@ $(window).on('load', function () {
 				$(this).hide();
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn').html('Customize');
-			});
-	}
+				console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
+			}
+		});
 });
 // checkout function
 function checkOut() {
@@ -623,6 +652,7 @@ function checkOut() {
 
 	if (proteinToppings < 1) {
 		$('#error2').fadeIn('slow').delay(5000).fadeOut('slow');
+		return false;
 	} else {
 		console.log('checkout');
 		var orderToppingsDict = {};
@@ -642,8 +672,10 @@ function checkOut() {
 				$(this).css(`--${toppingCategory}`),
 				'tname in checkout',
 				toppingName,
-				'tc quant',
-				$(this).css('--regular')
+				'tc reg then half then extra',
+				$(this).css('--regular'),
+				$(this).css('--half'),
+				$(this).css('--extra')
 			);
 			if ($(this).css(`--${toppingCategory}`) == toppingName) {
 				var toppingDictionary = {};
@@ -658,9 +690,11 @@ function checkOut() {
 				console.log('orderToppingsDict', orderToppingsDict);
 			}
 		});
+
+		console.log('orderToppingsDict', orderToppingsDict);
+		//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
 	}
-	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
-	$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
 	// });
 }
 // all this code changes display for smaller screen sizes

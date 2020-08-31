@@ -1,141 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="manifest" href="./site.webmanifest" crossorigin="use-credentials" type="application/manifest+json">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-    
-    <link rel="stylesheet" href="../static/css/styles.css">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<meta name="msapplication-TileColor" content="#da532c" />
+		<meta name="theme-color" content="#ffffff" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="manifest" href="./site.webmanifest" crossorigin="use-credentials" type="application/manifest+json" />
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
 
-      <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-   
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="../static/css/styles.css" />
 
-    <script
-    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"
-  ></script>
-    <link
-    rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous"
-  />
+		<script
+			src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+			integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+			crossorigin="anonymous"
+		></script>
 
-    <title>Crepe N Shake</title>
-    <style>
-      .center {
-        display: block;
-        margin-top: 40px;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 200px;
-        width: 100%;
-        height: auto;
-      }
-      .container {
-        position: relative;
-        width: 50%;
-      }
-      
-      /* Make the image responsive */
-      .container img {
-        width: 60%;
-        height: auto;
-      }
-      
-      /* Style the button and place it in the middle of the container/image */
-      .container .btn {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        background-color: rgba(251, 35, 49, .3);
-        color: white;
-        font-size: 32px;
-        font-weight: 600;
-        padding: 12px 24px;
-        border: none;
-        cursor: grab;
-        border-radius: 5px;
-        width: 300px;
-        height: 100px;
-      }
-      
-      .container .btn:hover {
-        background-color: black;
-      }
-    </style>
-    <!-- Bootstrap -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="../static/css/styles.css">
-  </head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-  <body>
-    
-    <nav class="header-navbar navbar-dark navbar-expand-lg " style="background-color: black;" href="#">
-      <a class="navbar-brand" style="background-color: black;"  href={{url_for('home')}}>
-        <img class="img-responsive" src="../static/images/NewLogo.png" width="350" height="150" alt="" >
-      </a>
-    
-    <nav class="navbar navbar-dark navbar-expand-lg" style="background-color: black;" href="#">
-      
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <!-- https://www.geeksforgeeks.org/how-to-align-navbar-items-to-center-using-bootstrap-4/ -->
-      <div class="collapse navbar-collapse"></div>
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul class="navbar-nav mt-2 mt-lg-0">
-          <li class="nav-item px-3">
-            <a class="nav-link" style="color:#FB2331;" href={{url_for('home')}}>Home</a>
-          </li>
-          <li class="nav-item px-3">
-            <a class="nav-link" style="color:#FB2331;" href={{url_for('menu')}}>Menu</a>
-          </li>
-          <li class="nav-item px-3">
-            <a class="nav-link" style="color:#FB2331;" href={{url_for('contact')}}>Contact</a>
-          </li>
-          <li class="nav-item px-3">
-            <a class="nav-link" style="color:#FB2331;" href={{url_for('about')}}>About</a>
-          </li>
-          <li class="nav-item px-3">
-            <a class="nav-link" style="color:#FB2331;" href={{url_for('team')}}>Team</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </nav>
+		<script
+			src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+			integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+			crossorigin="anonymous"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+			crossorigin="anonymous"
+		/>
 
-  <div class="container">
-    <!-- https://www.w3schools.com/howto/howto_css_button_on_image.asp -->
-    <img src="../static/images/crepe.jpg" class="center">
-    <button class="btn" onclick="window.location.href='{{url_for('order')}}'">Place Your Order</button>
-  </div>
-  </body>
+		<title>Crepe N Shake</title>
+		<style>
+			.center {
+				display: block;
+				margin-top: 40px;
+				margin-left: auto;
+				margin-right: auto;
+				margin-bottom: 200px;
+				width: 100%;
+				height: auto;
+			}
+			.container {
+				position: relative;
+				width: 50%;
+			}
+
+			/* Make the image responsive */
+			.container img {
+				width: 60%;
+				height: auto;
+			}
+
+			/* Style the button and place it in the middle of the container/image */
+			.container .btn {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				-ms-transform: translate(-50%, -50%);
+				background-color: rgba(251, 35, 49, 0.3);
+				color: white;
+				font-size: 32px;
+				font-weight: 600;
+				padding: 12px 24px;
+				border: none;
+				cursor: grab;
+				border-radius: 5px;
+				width: 300px;
+				height: 100px;
+			}
+
+			.container .btn:hover {
+				background-color: black;
+			}
+		</style>
+		<!-- Bootstrap -->
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+			crossorigin="anonymous"
+		/>
+		<link rel="stylesheet" href="../static/css/styles.css" />
+	</head>
+
+	<body>
+		<nav
+			class="header-navbar navbar-dark navbar-expand-lg"
+			style="background-color: black; margin-bottom: 30px"
+			href="#"
+		>
+			<a class="navbar-brand" style="background-color: black" href='{{url_for("home")}}'>
+				<img class="img-responsive" src="../static/images/NewLogo.png" width="350" height="150" alt="" />
+			</a>
+			<nav class="navbar navbar-dark navbar-expand-lg" style="background-color: black" href="#">
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-toggle="collapse"
+					data-target="#navbarTogglerDemo02"
+					aria-controls="navbarTogglerDemo02"
+					aria-expanded="false"
+					aria-label="Toggle navigation"
+				>
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<!-- https://www.geeksforgeeks.org/how-to-align-navbar-items-to-center-using-bootstrap-4/ -->
+				<div class="collapse navbar-collapse"></div>
+				<div class="collapse navbar-collapse" id="navbarTogglerDemo02" style="margin-top: 0px">
+					<ul class="navbar-nav mt-2 mt-lg-0">
+						<li class="nav-item px-3">
+							<a class="nav-link" style="color: #fb2331" href='{{url_for("home")}}'>Home</a>
+						</li>
+						<li class="nav-item px-3">
+							<a class="nav-link" style="color: #fb2331" href='{{url_for("menu")}}'>Menu</a>
+						</li>
+						<li class="nav-item px-3">
+							<a class="nav-link" style="color: #fb2331" href='{{url_for("contact")}}'>Contact</a>
+						</li>
+						<li class="nav-item px-3">
+							<a class="nav-link" style="color: #fb2331" href='{{url_for("about")}}'>About</a>
+						</li>
+						<li class="nav-item px-3">
+							<a class="nav-link" style="color: #fb2331" href='{{url_for("team")}}'>Team</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</nav>
+
+		<div class="container">
+			<!-- https://www.w3schools.com/howto/howto_css_button_on_image.asp -->
+			<img src="../static/images/crepe.jpg" class="center" />
+			<button class="btn" onclick="location.assign('/order')">Place Your Order</button>
+		</div>
+	</body>
 </html>

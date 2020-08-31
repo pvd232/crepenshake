@@ -1,0 +1,463 @@
+[
+	{
+		"ingredient_id": "steak",
+		"serving_size": "regular",
+		"price": 9.5
+	},
+	{
+		"ingredient_id": "chicken_breast",
+		"serving_size": "regular",
+		"price": 8.5
+	},
+	{
+		"ingredient_id": "buffalo_chicken",
+		"serving_size": "regular",
+		"price": 7.95
+	},
+	{
+		"ingredient_id": "honey_turkey",
+		"serving_size": "regular",
+		"price": 7.95
+	},
+	{
+		"ingredient_id": "blackened_tofu",
+		"serving_size": "regular",
+		"price": 7.95
+	},
+	{
+		"ingredient_id": "virginia_ham",
+		"serving_size": "regular",
+		"price": 7.95
+	},
+	{
+		"ingredient_id": "artichoke_heart",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cheesy_grits",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cilantro",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "green_onion",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "mushrooms",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "roasted_red_peppers",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_minced_garlic",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_spinach",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "blue_cheese_crumbles",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "gourmet_cheese",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "brie",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cheddar",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cream_cheese",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "lemon_ricotta",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "mozzarella",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "swiss",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "bérnaise",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "balsamic_glaze",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "creamy_lemon",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "diane",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "mango_salsa",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "basil",
+		"serving_size": "regular",
+		"price": 0.5
+	},
+	{
+		"ingredient_id": "oregano",
+		"serving_size": "regular",
+		"price": 0.5
+	},
+	{
+		"ingredient_id": "fresh_chives",
+		"serving_size": "regular",
+		"price": 0.5
+	},
+	{
+		"ingredient_id": "fresh_parsley",
+		"serving_size": "regular",
+		"price": 0.5
+	},
+	{
+		"ingredient_id": "steak",
+		"serving_size": "light",
+		"price": 9.5
+	},
+	{
+		"ingredient_id": "chicken_breast",
+		"serving_size": "light",
+		"price": 8.5
+	},
+
+	{
+		"ingredient_id": "honey_turkey",
+		"serving_size": "light",
+		"price": 7.95
+	},
+	{
+		"ingredient_id": "blackened_tofu",
+		"serving_size": "light",
+		"price": 7.95
+	},
+	{
+		"ingredient_id": "virginia_ham",
+		"serving_size": "light",
+		"price": 7.95
+	},
+	{
+		"ingredient_id": "artichoke_heart",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cheesy_grits",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cilantro",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "green_onion",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "mushrooms",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "roasted_red_peppers",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_minced_garlic",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_spinach",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "blue_cheese_crumbles",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "gourmet_cheese",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "brie",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cheddar",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cream_cheese",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "lemon_ricotta",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "mozzarella",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "swiss",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "bérnaise",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "balsamic_glaze",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "creamy_lemon",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "diane",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "mango_salsa",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "basil",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "oregano",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "fresh_chives",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "fresh_parsley",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "steak",
+		"serving_size": "extra",
+		"price": 13.0
+	},
+	{
+		"ingredient_id": "chicken_breast",
+		"serving_size": "extra",
+		"price": 11.0
+	},
+	{
+		"ingredient_id": "buffalo_chicken",
+		"serving_size": "extra",
+		"price": 9.45
+	},
+	{
+		"ingredient_id": "honey_turkey",
+		"serving_size": "extra",
+		"price": 9.45
+	},
+	{
+		"ingredient_id": "blackened_tofu",
+		"serving_size": "extra",
+		"price": 9.45
+	},
+	{
+		"ingredient_id": "virginia_ham",
+		"serving_size": "extra",
+		"price": 9.45
+	},
+	{
+		"ingredient_id": "artichoke_heart",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cheesy_grits",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "cilantro",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "green_onion",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "mushrooms",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "roasted_red_peppers",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_minced_garlic",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_spinach",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "blue_cheese_crumbles",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "gourmet_cheese",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "brie",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "cheddar",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "cream_cheese",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "lemon_ricotta",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "mozzarella",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "swiss",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "bérnaise",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "balsamic_glaze",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "creamy_lemon",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "diane",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "mango_salsa",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "basil",
+		"serving_size": "extra",
+		"price": 0.5
+	},
+	{
+		"ingredient_id": "oregano",
+		"serving_size": "extra",
+		"price": 0.5
+	},
+	{
+		"ingredient_id": "fresh_chives",
+		"serving_size": "extra",
+		"price": 0.5
+	},
+	{
+		"ingredient_id": "fresh_parsley",
+		"serving_size": "extra",
+		"price": 0.5
+	}
+]

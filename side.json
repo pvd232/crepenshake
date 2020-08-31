@@ -1,0 +1,10 @@
+[
+	{
+		"id": "ice_cream_bowl",
+		"side_type_id": "ice_cream"
+	},
+	{
+		"id": "croissant",
+		"side_type_id": "pastry"
+	}
+]

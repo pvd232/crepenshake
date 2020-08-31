@@ -2,10 +2,31 @@ import os
 import json
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file
+from service import Ingredient_Service
+from models import Ingredient_Category
+from repository import Ingredient_Repository
 
 
 application = Flask(__name__)
 app = application
+
+
+def humanize(dict):
+    str = dict['id']
+    frags = str.split('_')
+    if len(frags) < 2:
+        str = str.capitalize()
+        dict['id'] = str
+        return dict
+    newFrags = []
+    for frag in frags:
+        frag = frag.capitalize()
+        newFrags.append(frag)
+
+    newFrags = " ".join(newFrags)
+    print('newFrags', newFrags)
+    dict['id'] = newFrags
+    return dict
 
 
 @app.route("/")
@@ -47,7 +68,18 @@ def order(userOrder=None):
 
 @app.route('/make-your-own-crepe')
 def make_your_own_crepe():
-    return render_template('make_your_own_crepe.html')
+
+    ingredient_service = Ingredient_Service()
+    ingredient_prices = ingredient_service.get_ingredient_prices()
+    ingredient_categories = list(
+        ingredient_service.get_ingredient_categories())
+    rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
+                               "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
+    # print(ingredient_prices[0].serialize)
+
+    ingredient_prices = [humanize(x)
+                         for x in ingredient_prices]
+    return render_template('make_your_own_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category)
 
 
 @app.route('/make-your-own-savory-crepe')
