@@ -1,8 +1,9 @@
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from models import Ingredient, Ingredient_Category
+from models import Ingredient, Ingredient_Category, Order, Order_Crepe, Order_Side, Order_Drink, Customer, Custom_Crepe, Crepe
 from create_db import db
+from datetime import date
 
 
 class Ingredient_Repository(object):
@@ -49,3 +50,80 @@ class Ingredient_Repository(object):
 
         self.Session.remove()
         return ingredient_categories
+
+
+class Order_Repository(object):
+    def __init__(self):
+        username = "postgres"
+        password = "Iqopaogh23!"
+        connection_string_beginning = "postgres://"
+        connection_string_end = "@localhost:5432/crepenshake"
+        connection_string = connection_string_beginning + \
+            username + ":" + password + connection_string_end
+
+        # an Engine, which the Session will use for connection
+        # resources
+        ingredient_engine = create_engine(connection_string)
+
+        # create a configured "Session" class
+        session_factory = sessionmaker(bind=ingredient_engine)
+
+        # create a Session
+        self.Session = scoped_session(session_factory)
+
+        # now all calls to Session() will create a thread-local session
+
+    def post_order(self, customer, order, order_drink_list=None, order_side_list=None,  order_crepe_list=None, custom_crepe_list=None, new_model_crepe_list=None):
+        post_order_session = self.Session()
+
+        user = post_order_session.query(Customer).filter(
+            Customer.id == customer.id).first()
+        if not user:
+            new_customer = Customer(id=customer.id, first_name=customer.first_name, last_name=customer.last_name,
+                                    street=customer.street, city=customer.city, state=customer.state, zipcode=customer.zipcode, country=customer.country)
+            post_order_session.add(new_customer)
+        new_order = Order(id=order.id, customer_id=order.customer_id,
+                          cost=order.cost, date=date.today())
+        post_order_session.add(new_order)
+        post_order_session.commit()
+
+        if order_crepe_list:
+            if custom_crepe_list:
+                for new_model_crepe in new_model_crepe_list:
+                    new_crepe = Crepe(id=new_model_crepe.id, origination_id=new_model_crepe.origination_id,
+                                      flavor_profile_id=new_model_crepe.flavor_profile_id)
+                    post_order_session.add(new_crepe)
+                for custom_crepe in custom_crepe_list:
+                    new_custom_crepe = Custom_Crepe(
+                        crepe_id=custom_crepe.crepe_id, ingredient_id=custom_crepe.ingredient_id, quantity=custom_crepe.quantity)
+                    post_order_session.add(new_custom_crepe)
+                post_order_session.commit()
+            for each_order_crepe in order_crepe_list:
+
+                new_order_crepe = Order_Crepe(
+                    order_id=new_order.id, crepe_id=each_order_crepe.crepe_id, quantity=each_order_crepe.quantity)
+                post_order_session.add(new_order_crepe)
+            post_order_session.commit()
+
+        if order_drink_list:
+
+            for each_order_drink in order_drink_list:
+                new_order_drink = Order_Drink(
+                    order_id=new_order.id, drink_id=each_order_drink.drink_id, quantity=each_order_drink.quantity)
+                post_order_session.add(new_order_drink)
+            post_order_session.commit()
+
+        if order_side_list:
+            for each_order_side in order_side_list:
+                new_order_side = Order_Side(
+                    order_id=new_order.id, side_id=each_order_side.side_id, quantity=each_order_side.quantity)
+                post_order_session.add(new_order_side)
+            post_order_session.commit()
+            self.Session.remove()
+        post_order_session.commit()
+
+    def get_orders(self):
+        get_order_session = self.Session()
+        orders = get_order_session.query(Order)
+        self.Session.remove()
+        return orders

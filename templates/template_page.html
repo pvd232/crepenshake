@@ -42,8 +42,9 @@
 				}
 			}
 		</script>
-
+		{% block style %}
 		<style></style>
+		{% endblock %}
 	</head>
 
 	<body>
@@ -90,5 +91,8 @@
 				</div>
 			</nav>
 		</nav>
+		{% block content %}
+		<div id="content"></div>
+		{% endblock %}
 	</body>
 </html>

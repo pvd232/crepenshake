@@ -52,11 +52,8 @@ class Crepe_Origination(db.Model):
         return {'id': self.id}
 
 
-@dataclass
 class Crepe_Flavor_Profile(db.Model):
     __tablename__ = 'crepe_flavor_profile'
-
-    id: str
 
     id = db.Column(db.String(80), primary_key=True,
                    unique=True, nullable=False)
@@ -88,10 +85,10 @@ class Crepe(db.Model):
 class Custom_Crepe(db.Model):
     __tablename__ = 'custom_crepe'
     crepe_id = db.Column(UUID(as_uuid=True), db.ForeignKey('crepe.id'), primary_key=True,
-                         unique=True, nullable=False)
+                         nullable=False)
 
     ingredient_id = db.Column(
-        db.String(80), db.ForeignKey('ingredient.id'), nullable=False)
+        db.String(80), db.ForeignKey('ingredient.id'), primary_key=True, nullable=False)
     quantity = db.Column(db.String(80), nullable=False)
 
     @property
@@ -250,7 +247,7 @@ class Drink(db.Model):
 class Coffee(db.Model):
     drink_id = db.Column(db.String(80), db.ForeignKey('drink.id'), primary_key=True,
                          unique=True, nullable=False)
-    name = db.Column(db.String(80), nullable=False)
+
     serving_size = db.Column(db.String(80), nullable=False)
     flavor = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Float(), nullable=False)
@@ -275,7 +272,6 @@ class Milk(db.Model):
 class Milkshake(db.Model):
     drink_id = db.Column(db.String(80), db.ForeignKey('drink.id'), primary_key=True,
                          unique=True, nullable=False)
-    name = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Float(), nullable=False)
 
     @property

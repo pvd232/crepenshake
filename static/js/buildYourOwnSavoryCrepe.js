@@ -4,8 +4,13 @@
 function stringify(dataObject) {
 	var stringifiedDataObject = JSON.stringify(dataObject);
 	console.log('stringy', stringifiedDataObject);
-	localStorage.setItem('order', stringifiedDataObject);
-	console.log('order', localStorage.getItem('order'));
+
+	if (localStorage.length > 0) {
+		localStorage.setItem(`order${localStorage.length}`, stringifiedDataObject);
+	} else {
+		localStorage.setItem('order0', stringifiedDataObject);
+	}
+
 	return true;
 }
 
@@ -631,7 +636,120 @@ $(window).on('load', function () {
 			}
 		});
 });
+
+function toppingPricing(toppingCategoryList, proteinCategoryList) {
+	var newToppingCategoryListWithPricesofToppingCategories = [];
+	for (var i = 0; i < toppingCategoryList.length; i++) {
+		const toppingDict = toppingCategoryList[i];
+		const toppingKey = Object.keys(toppingDict)[0];
+		console.log('tkey', toppingKey);
+		console.log('toppingDict', toppingDict);
+		if (toppingKey == 'veggie') {
+			const newToppingDict = {};
+			const toppingQuantity = toppingDict[toppingKey];
+			console.log('tquant', toppingQuantity);
+			const amountOverIncludedAmount = toppingQuantity - 4;
+			var priceForTopping;
+			if (amountOverIncludedAmount > 0) {
+				priceForTopping = amountOverIncludedAmount * 0.5;
+			} else {
+				priceForTopping = 0;
+			}
+			newToppingDict[`${toppingKey}`] = priceForTopping;
+			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
+		} else if (toppingKey == 'cheese') {
+			const newToppingDict = {};
+			const toppingQuantity = toppingDict[toppingKey];
+			const amountOverIncludedAmount = toppingQuantity - 1;
+			var priceForTopping;
+			if (amountOverIncludedAmount > 0) {
+				priceForTopping = amountOverIncludedAmount * 0.99;
+			} else {
+				priceForTopping = 0;
+			}
+			newToppingDict[`${toppingKey}`] = priceForTopping;
+			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
+		} else if (toppingKey == 'sauce') {
+			const newToppingDict = {};
+			const toppingQuantity = toppingDict[toppingKey];
+			const amountOverIncludedAmount = toppingQuantity;
+			var priceForTopping;
+			if (amountOverIncludedAmount > 0) {
+				priceForTopping = amountOverIncludedAmount * 0.99;
+			} else {
+				priceForTopping = 0;
+			}
+			newToppingDict[`${toppingKey}`] = priceForTopping;
+			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
+		} else if (toppingKey == 'herb') {
+			const newToppingDict = {};
+			const toppingQuantity = toppingDict[toppingKey];
+			const amountOverIncludedAmount = toppingQuantity;
+			var priceForTopping;
+			if (amountOverIncludedAmount > 0) {
+				priceForTopping = amountOverIncludedAmount * 0.5;
+			} else {
+				priceForTopping = 0;
+			}
+			newToppingDict[`${toppingKey}`] = priceForTopping;
+			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
+		}
+	}
+	//count up protein price
+	console.log('pcatList', proteinCategoryList);
+	var priceForProtein = 0;
+	var newProteinDict = {};
+	for (var i = 0; i < proteinCategoryList.length; i++) {
+		const proteinDict = proteinCategoryList[i];
+		const proteinKey = Object.keys(proteinDict)[0];
+		console.log('tkey', proteinKey);
+		console.log('proteinDict', proteinDict);
+
+		if (proteinKey == 'Steak') {
+			var priceForProtein = 9.5;
+			const toppingQuantity = proteinDict[proteinKey];
+			console.log('tquant', toppingQuantity);
+			const proteinAmountOverIncludedAmount = toppingQuantity;
+			var priceForProtein;
+			if (proteinAmountOverIncludedAmount > 0) {
+				priceForProtein += 3.5;
+			} else {
+				priceForProtein += 0;
+			}
+		} else if (proteinKey == 'Chicken Breast') {
+			priceForProtein = 8.5;
+			const toppingQuantity = proteinDict[proteinKey];
+			const proteinAmountOverIncludedAmount = toppingQuantity;
+			var priceForProtein;
+			if (proteinAmountOverIncludedAmount > 0) {
+				priceForProtein += 2.5;
+			} else {
+				priceForProtein += 0;
+			}
+		} else {
+			priceForProtein = 7.5;
+			const toppingQuantity = proteinDict[proteinKey];
+			const proteinAmountOverIncludedAmount = toppingQuantity;
+			var priceForProtein;
+			if (proteinAmountOverIncludedAmount > 0) {
+				priceForProtein += 2.5;
+			} else {
+				priceForProtein += 0;
+			}
+		}
+	}
+	newProteinDict['protein'] = priceForProtein;
+	newToppingCategoryListWithPricesofToppingCategories.unshift(newProteinDict);
+	console.log(
+		'newToppingCategoryListWithPricesofToppingCategories',
+		newToppingCategoryListWithPricesofToppingCategories
+	);
+	return newToppingCategoryListWithPricesofToppingCategories;
+}
 // checkout function
+var orderToppingsDict = {};
+var ingredientsDict = {};
+orderToppingsDict['ingredients'] = [];
 function checkOut() {
 	// $('#checkout')
 	// 	.unbind('click')
@@ -655,10 +773,10 @@ function checkOut() {
 		return false;
 	} else {
 		console.log('checkout');
-		var orderToppingsDict = {};
+
 		$('.card-deck').each(function () {
 			console.log('id', `${$(this).attr('id')}`);
-			orderToppingsDict[`${$(this).attr('id')}`] = [];
+			ingredientsDict[`${$(this).attr('id')}`] = [];
 		});
 
 		$('.btn2').each(function () {
@@ -686,12 +804,100 @@ function checkOut() {
 				} else if ($(this).css('--extra') == 'true') {
 					toppingDictionary[`${toppingName}`] = 'extra';
 				}
-				orderToppingsDict[`${toppingCategory}`].push(toppingDictionary);
-				console.log('orderToppingsDict', orderToppingsDict);
+				ingredientsDict[`${toppingCategory}`].push(toppingDictionary);
+				console.log('ingredientsDict', ingredientsDict);
 			}
 		});
 
-		console.log('orderToppingsDict', orderToppingsDict);
+		var orderItems = ingredientsDict;
+		console.log('unstringified', orderItems);
+		//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+		var toppingCategoryCount = [];
+		var proteinCategoryCount = [];
+
+		for (var key in orderItems) {
+			var topping = orderItems[key];
+			if (topping != '') {
+				console.log('topping', topping);
+				var toppingCategoryCountDict = {};
+				var toppingCount = 0;
+				if (key != 'protein') {
+					for (var i = 0; i < topping.length; i++) {
+						var toppingName = Object.keys(topping[i])[0];
+						var toppingQuantity = topping[i][toppingName];
+						console.log('toppingName', toppingName);
+						console.log('toppingQuant', toppingQuantity);
+						if (toppingQuantity == 'half') {
+							toppingCount += 0.5;
+						} else if (toppingQuantity == 'regular') {
+							toppingCount += 1;
+						} else if (toppingQuantity == 'extra') {
+							toppingCount += 2;
+						}
+					}
+					toppingCategoryCountDict[`${key}`] = toppingCount;
+					console.log('countDict', toppingCategoryCountDict);
+					toppingCategoryCount.push(toppingCategoryCountDict);
+				} else {
+					var protein = orderItems[key];
+					console.log('protein', protein);
+					//if (protein.length > 1) {
+
+					for (var i = 0; i < protein.length; i++) {
+						var proteinCount = 0;
+						var proteinCategoryCountDict = {};
+						var proteinName = Object.keys(protein[i])[0];
+						var proteinQuantity = protein[i][proteinName];
+						console.log('pname', proteinName, 'pquant', proteinQuantity);
+						if (proteinQuantity == 'half') {
+							proteinCount += 0.5;
+						} else if (proteinQuantity == 'regular') {
+							proteinCount += 1;
+						} else if (proteinQuantity == 'extra') {
+							proteinCount += 2;
+						}
+
+						proteinCategoryCountDict[`${proteinName}`] = proteinCount;
+
+						proteinCategoryCount.push(proteinCategoryCountDict);
+					}
+				}
+			}
+		}
+		var newToppingCategoryListWithPricesofToppingCategories = toppingPricing(
+			toppingCategoryCount,
+			proteinCategoryCount
+		);
+
+		console.log('TcatPrice', newToppingCategoryListWithPricesofToppingCategories);
+
+		console.log('ingredientsDict', ingredientsDict);
+		console.log('newCatCount', newToppingCategoryListWithPricesofToppingCategories);
+		console.log('ingredientsDict', ingredientsDict);
+		var orderTotal = 0;
+		for (var toppingCategoryKey in ingredientsDict) {
+			// toppingCategoryKey is a key in the orderToppings dictionary
+			for (var i = 0; i < newToppingCategoryListWithPricesofToppingCategories.length; i++) {
+				// newToppingCategoryListWithPricesofToppingCategories[i] is an individual dictionary
+				var dictKey = Object.keys(newToppingCategoryListWithPricesofToppingCategories[i])[0];
+
+				if (toppingCategoryKey == dictKey) {
+					const pricingDict = {};
+					console.log('toppingCategoryKey', toppingCategoryKey);
+					console.log('dictKey', dictKey);
+					pricingDict['price'] = newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
+					orderTotal += newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
+					console.log('pDict', pricingDict);
+					ingredientsDict[toppingCategoryKey].push(pricingDict);
+					break;
+				}
+			}
+		}
+		orderToppingsDict['crepeTotal'] = orderTotal;
+		orderToppingsDict['flavorProfile'] = 'savory';
+		orderToppingsDict['customCrepe'] = true;
+		orderToppingsDict['ingredients'] = ingredientsDict;
+		console.log('orderToppingsDictwithIngredient', orderToppingsDict);
 		//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
 		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
 	}
@@ -770,9 +976,10 @@ $(window).on('load resize', function () {
 		for (i = 0; i < constBLength; i++) {
 			var row = document.createElement('div');
 			row.setAttribute('class', 'row');
+			row.setAttribute('style', 'width: 100%');
 			var listGroupTitle = document.createElement('div');
 			//https://www.htmldog.com/guides/javascript/advanced/creatingelements/
-			listGroupTitle.setAttribute('class', 'col-12 col-sm-8 col-lg-5');
+			listGroupTitle.setAttribute('class', 'col-12 col-sm-12 col-lg-12 col-md-12');
 
 			//https://stackoverflow.com/questions/3304014/how-to-interpolate-variables-in-strings-in-javascript-without-concatenation
 			$(`#${constCardDeckNodes[i].id}`).removeClass('card-deck');
@@ -795,6 +1002,7 @@ $(window).on('load resize', function () {
 			for (k; k < stoppingPoint; k++) {
 				var listValue = document.createElement('li');
 				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
+				listValue.setAttribute('style', 'width:100%');
 
 				if (constCardTextValues[k]) {
 					string1 = String(constCardTitleValues[k]);

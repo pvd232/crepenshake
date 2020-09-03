@@ -1,8 +1,8 @@
 import os
 import json
 import time
-from flask import request, Response, Flask, render_template, jsonify, send_file
-from service import Ingredient_Service
+from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
+from service import Ingredient_Service, Order_Service
 from models import Ingredient_Category
 from repository import Ingredient_Repository
 
@@ -56,9 +56,8 @@ def menu():
 
 @app.route('/order')
 def order(userOrder=None):
-    print('hey')
     userOrder = request.args.get('userOrder')
-    print('userORder', userOrder)
+
     if userOrder == None:
         return render_template('order.html')
 
@@ -87,9 +86,21 @@ def make_your_own_savory_crepe():
     return render_template('make_your_own_savory_crepe.html')
 
 
-@app.route('/checkout')
+@app.route('/checkout', methods=['POST', 'GET'])
 def checkout():
-    return render_template('checkout.html')
+    if request.method == 'GET':
+        return render_template('checkout.html')
+    elif request.method == 'POST':
+        new_order = request.json
+
+        order_service = Order_Service()
+        order_service.create_order(new_order)
+        return jsonify(200)
+
+
+@app.route('/order-confirmation')
+def order_confirmation():
+    return render_template('order_confirmation.html')
 
 
 @app.route("/static/add_pool", methods=['POST'])
