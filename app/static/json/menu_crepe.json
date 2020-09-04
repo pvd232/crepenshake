@@ -1,0 +1,52 @@
+[
+	{
+		"crepe_id": "",
+		"name": "big_blue",
+		"price": 11.5
+	},
+	{
+		"crepe_id": "",
+		"name": "grannys_best",
+		"price": 8.95
+	},
+	{
+		"crepe_id": "",
+		"name": "dakotas_special",
+		"price": 8.95
+	},
+	{
+		"crepe_id": "",
+		"name": "happy_crepe",
+		"price": 7.25
+	},
+	{
+		"crepe_id": "",
+		"name": "peanut_butter_&_jelly",
+		"price": 6.95
+	},
+	{
+		"crepe_id": "",
+		"name": "cinnamon_sugar_butter",
+		"price": 5.25
+	},
+	{
+		"crepe_id": "",
+		"name": "cream_cheese_&_jelly",
+		"price": 6.95
+	},
+	{
+		"crepe_id": "",
+		"name": "lemon_pepper",
+		"price": 7.95
+	},
+	{
+		"crepe_id": "",
+		"name": "roasted",
+		"price": 8.95
+	},
+	{
+		"crepe_id": "",
+		"name": "ricotta",
+		"price": 8.95
+	}
+]

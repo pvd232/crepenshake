@@ -1,0 +1,77 @@
+[
+	{
+		"id": "",
+		"name": "cookie_monster",
+		"price": 9.95
+	},
+	{
+		"id": "",
+		"name": "cakeshake",
+		"price": 12.95
+	},
+	{
+		"id": "",
+		"name": "almond_joy",
+		"price": 9.95
+	},
+	{
+		"id": "",
+		"name": "death_by_chocolate",
+		"price": 9.95
+	},
+	{
+		"id": "",
+		"name": "mudslide",
+		"price": 10.95
+	},
+	{
+		"id": "",
+		"name": "the_milky_panda",
+		"price": 9.95
+	},
+	{
+		"id": "",
+		"name": "vanilla",
+		"price": 6.95
+	},
+	{
+		"id": "",
+		"name": "chocolate",
+		"price": 6.95
+	},
+	{
+		"id": "",
+		"name": "strawberry",
+		"price": 6.95
+	},
+	{
+		"id": "",
+		"name": "cookies_and_cream",
+		"price": 6.95
+	},
+	{
+		"id": "",
+		"name": "cake_batter",
+		"price": 6.95
+	},
+	{
+		"id": "",
+		"name": "salted_caramel",
+		"price": 6.95
+	},
+	{
+		"id": "",
+		"name": "nutella_pretzel",
+		"price": 6.95
+	},
+	{
+		"id": "",
+		"name": "rasberry_white_chocolate",
+		"price": 6.95
+	},
+	{
+		"id": "",
+		"name": "blueberry",
+		"price": 6.95
+	}
+]

@@ -1,0 +1,80 @@
+[
+	{
+		"id": "",
+		"name": "chocolate_chip_fudge_frappuccino",
+		"serving_size": "12oz",
+		"price": 4.0
+	},
+	{
+		"id": "",
+		"name": "vanilla_bean_frappuccino",
+		"serving_size": "12oz",
+		"price": 4.0
+	},
+	{
+		"id": "",
+		"name": "straberries_and_creme_frappucino",
+		"serving_size": "12oz",
+		"price": 4.0
+	},
+	{
+		"id": "",
+		"name": "hot_chocolate",
+		"serving_size": "12oz",
+		"price": 3.5
+	},
+	{
+		"id": "",
+		"name": "white_hot_chocolate",
+		"serving_size": "12oz",
+		"price": 3.5
+	},
+	{
+		"id": "",
+		"name": "vanilla_bean_tea",
+		"serving_size": "12oz",
+		"price": 3.5
+	},
+	{
+		"id": "",
+		"name": "passion_tea",
+		"serving_size": "12oz",
+		"price": 3.5
+	},
+	{
+		"id": "",
+		"name": "peach_tea",
+		"serving_size": "12oz",
+		"price": 3.5
+	},
+	{
+		"id": "",
+		"name": "chocolate_chip_fudge_frappuccino",
+		"serving_size": "16oz",
+		"price": 4.5
+	},
+	{
+		"id": "",
+		"name": "vanilla_bean_frappuccino",
+		"serving_size": "16oz",
+		"price": 4.5
+	},
+	{
+		"id": "",
+		"name": "straberries_and_creme_frappucino",
+		"serving_size": "16oz",
+		"price": 4.5
+	},
+	{
+		"id": "",
+		"name": "hot_chocolate",
+		"serving_size": "16oz",
+		"price": 4.5
+	},
+	{
+		"id": "",
+		"name": "white_hot_chocolate",
+		"serving_size": "16oz",
+		"price": 4.5
+	}
+]
