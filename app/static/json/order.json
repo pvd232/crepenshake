@@ -1,4 +1,4 @@
-{
+({
 	"order0": {
 		"customerData": {
 			"firstName": "Peter",
@@ -36,4 +36,35 @@
 			}
 		]
 	}
-}
+}),
+{
+	"order": {
+		"orderCrepe": [
+			{
+				"ingredients": {
+					"protein": [{ "Steak": "regular" }, { "price": 13 }],
+					"veggie": [{ "artichokeHeart": "regular" }, { "price": 0 }],
+					"cheese": [{ "blueCheeseCrumbles": "regular" }, { "price": 0 }],
+					"sauce": [],
+					"herb": []
+				},
+				"crepeTotal": 13,
+				"flavorProfile": "savory",
+				"customCrepe": true
+			}
+		],
+		"orderDrink": [
+			{
+				"drinks": {
+					"coffee": [],
+					"milk": [],
+					"coffee_syrup": [],
+					"milkshake": [{ "cookieMonster": "3" }],
+					"non-coffee": [],
+					"bottled": []
+				},
+				"price": 0
+			}
+		]
+	}
+})

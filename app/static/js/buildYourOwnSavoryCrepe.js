@@ -2,18 +2,35 @@
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
 function stringify(dataObject) {
-	var stringifiedDataObject = JSON.stringify(dataObject);
-	console.log('stringy', stringifiedDataObject);
-
+	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
+	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
+	// or an orderCrepe array, the order props, a drinks array, and a sides array
 	if (localStorage.length > 0) {
-		localStorage.setItem(`order${localStorage.length}`, stringifiedDataObject);
+		const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
+		if ('orderCrepe' in order) {
+			order['orderCrepe'].push(dataObject);
+			const stringifiedDataObject = JSON.stringify(order);
+			console.log('stringifiedDataObject', stringifiedDataObject);
+			localStorage.setItem('order', stringifiedDataObject);
+		} else {
+			order['orderCrepe'] = [];
+			order['orderCrepe'].push(dataObject);
+			const stringifiedDataObject = JSON.stringify(order);
+			console.log('order', order);
+			console.log('stringifiedDataObject', stringifiedDataObject);
+			localStorage.setItem('order', stringifiedDataObject);
+		}
 	} else {
-		localStorage.setItem('order0', stringifiedDataObject);
+		const order = {};
+		order['orderCrepe'] = [];
+		order['orderCrepe'].push(dataObject);
+		const stringifiedDataObject = JSON.stringify(order);
+		console.log('order', order);
+		console.log('stringifiedDataObject', stringifiedDataObject);
+		localStorage.setItem('order', stringifiedDataObject);
 	}
-
 	return true;
 }
-
 function getCSSToppingName(element) {
 	var toppingCategory = $(element).closest('.card-deck').attr('id');
 	var toppingName = $(element).closest('.card').find('.card-title').text().split(' ');
@@ -898,8 +915,12 @@ function checkOut() {
 		orderToppingsDict['customCrepe'] = true;
 		orderToppingsDict['ingredients'] = ingredientsDict;
 		console.log('orderToppingsDictwithIngredient', orderToppingsDict);
+
 		//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
-		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
+		console.log('odict', orderToppingsDict);
+		stringify(orderToppingsDict);
+		// $.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
+		// $.when(stringify(orderToppingsDict)).then(location.assign('/order-drink'));
 	}
 	// });
 }
@@ -953,7 +974,6 @@ $(window).on('load resize', function () {
 			cardDeckTitleValues.push(g[i].innerHTML);
 		}
 
-		const constCardDeckTitleValues = [...cardDeckTitleValues];
 		var cardDeckChildrenLength = [];
 		var constCardDeckNodes = [];
 		for (i = 0; i < constBLength; i++) {
@@ -1051,3 +1071,10 @@ $(window).on('resize', function () {
 		location.reload();
 	}
 });
+// .5 upcharge for almond milk
+//keep only vanilla, chocolate, strawb, and blueb & cookie milshakes 4 std milkshakes
+// add drip coffee
+//make coffee word in select milk title dynamic
+//no customization of milk for latte but you can customize for drip coffee
+//only select one coffee
+// add apple streudel croissant for 4.25

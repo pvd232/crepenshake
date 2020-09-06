@@ -24,11 +24,7 @@
 		"price": 4.75,
 		"serving_size": "12oz"
 	},
-	{
-		"coffee_name": "cappuccino",
-		"price": 4.75,
-		"serving_size": "6oz"
-	},
+
 	{
 		"coffee_name": "latte",
 		"price": 5.25,
@@ -53,5 +49,10 @@
 		"coffee_name": "white_chocolate_mocha",
 		"price": 5.5,
 		"serving_size": "16oz"
+	},
+	{
+		"coffee_name": "cappuccino",
+		"price": 4.75,
+		"serving_size": "6oz"
 	}
 ]

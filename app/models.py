@@ -109,7 +109,12 @@ class Menu_Crepe(db.Model):
 
     @property
     def serialize(self):
-        return {'crepe_id': self.crepe_id, 'name': self.name, 'price': self.price}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Customer(db.Model):
@@ -126,7 +131,12 @@ class Customer(db.Model):
 
     @property
     def serialize(self):
-        return {'id': self.id, 'first_name': self.first_name, 'last_name': self.last_name, 'street': self.street, 'city': self.city, 'state': self.state, 'zipcode': self.zipcode, 'country': self.country}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Order(db.Model):
@@ -139,9 +149,15 @@ class Order(db.Model):
     orderDrink = relationship('Order_Drink', lazy=True)
     orderCrepe = relationship('Order_Crepe', lazy=True)
     orderSide = relationship('Order_Side', lazy=True)
+
     @property
     def serialize(self):
-        return {'id': self.id, 'customer_id': self.customer_id, 'cost': self.cost, 'date': self.date}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Order_Drink(db.Model):
@@ -154,7 +170,12 @@ class Order_Drink(db.Model):
 
     @property
     def serialize(self):
-        return {'order_id': self.order_id, 'drink_id': self.drink_id, 'quantity': self.quantity}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Order_Crepe(db.Model):
@@ -167,7 +188,12 @@ class Order_Crepe(db.Model):
 
     @property
     def serialize(self):
-        return {'order_id': self.order_id, 'crepe_id': self.crepe_id, 'quantity': self.quantity}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Order_Side(db.Model):
@@ -180,7 +206,12 @@ class Order_Side(db.Model):
 
     @property
     def serialize(self):
-        return {'order_id': self.order_id, 'side_id': self.side_id, 'quantity': self.quantity}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Ingredient_Category(db.Model):
@@ -190,7 +221,12 @@ class Ingredient_Category(db.Model):
 
     @property
     def serialize(self):
-        return {'id': self.id}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Ingredient(db.Model):
@@ -201,7 +237,12 @@ class Ingredient(db.Model):
 
     @property
     def serialize(self):
-        return {'id': self.id, 'ingredient_category_id': self.ingredient_category_id}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Ingredient_Serving_Price(db.Model):
@@ -213,7 +254,12 @@ class Ingredient_Serving_Price(db.Model):
 
     @property
     def serialize(self):
-        return {'ingredient_id': self.ingredient_id, 'serving_size': self.serving_size, 'price': self.price}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 # https://stackoverflow.com/questions/4989202/is-it-bad-practice-to-implement-a-separate-table-consisting-of-only-two-rows-fem
 
@@ -227,7 +273,12 @@ class Drink_Category(db.Model):
 
     @property
     def serialize(self):
-        return {'id': self.id}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Drink(db.Model):
@@ -306,14 +357,17 @@ class Coffee_Syrup_Flavor(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
                    nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
-    quantity = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
-                         nullable=False)
     price = db.Column(db.Float(), nullable=False)
     coffee = relationship('Order_Coffee')
 
     @property
     def serialize(self):
-        return {'drink_id': self.drink_id, 'type': self.type, 'price': self.price, 'serving_size': self.serving_size}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Milk(db.Model):
@@ -420,7 +474,12 @@ class Side(db.Model):
 
     @property
     def serialize(self):
-        return {'id': self.id, 'side_type_id': self.side_type_id}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Side_Type(db.Model):
@@ -430,7 +489,12 @@ class Side_Type(db.Model):
 
     @property
     def serialize(self):
-        return {'id': self.id}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Croissant(db.Model):
@@ -441,7 +505,12 @@ class Croissant(db.Model):
 
     @property
     def serialize(self):
-        return {'side_id': self.side_id, 'flavor': self.flavor, 'price': self.price}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Ice_Cream(db.Model):
@@ -454,7 +523,12 @@ class Ice_Cream(db.Model):
 
     @property
     def serialize(self):
-        return {'side_id': self.side_id, 'flavor': self.flavor, 'serving_size': self.serving_size, 'topping': self.topping}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Ice_Cream_Price(db.Model):
@@ -465,10 +539,15 @@ class Ice_Cream_Price(db.Model):
 
     @property
     def serialize(self):
-        return {'serving_size': self.serving_size, 'topping': self.topping, 'price': self.price}
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 # 2000-12-31
-db.drop_all()
-db.create_all()
+# db.drop_all()
+# db.create_all()
 # End of Models.py

@@ -363,7 +363,6 @@ def create_all_drinks():
 
         # After I create the ingredient, I can then add it to my session.
         db.session.add(new_bottled_drink)
-    create_coffee_drinks()
     # commit the session to my DB.
     db.session.commit()
     db.session.remove()
@@ -484,6 +483,24 @@ def create_ice_cream_price():
     db.session.remove()
 
 
+def create_coffee_syrup_flavor():
+
+    json_items = load_json(
+        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\coffee_syrup_flavor.json")
+
+    for item in json_items:
+        id = item['id']
+        price = item['price']
+        new_coffee_syrup_flavor = Coffee_Syrup_Flavor(id=id, price=price)
+
+        # After I create the ingredient, I can then add it to my session.
+        db.session.add(new_coffee_syrup_flavor)
+
+    # commit the session to my DB.
+    db.session.commit()
+    db.session.remove()
+
+
 def create_everything():
     create_ingredient_category()
     create_ingredient()
@@ -491,6 +508,7 @@ def create_everything():
     create_crepe_flavor_profile()
     create_drink_category()
     create_all_drinks()
+    create_coffee_drinks()
     create_milk()
     create_crepe_origination()
     create_side_type()
@@ -499,6 +517,7 @@ def create_everything():
     create_ice_cream()
     create_ice_cream_price()
     create_menu_crepe()
+    create_coffee_syrup_flavor()
 
 
-create_everything()
+# create_everything()

@@ -142,6 +142,7 @@ class Custom_Crepe_Model(object):
 
 class Drink_Model(object):
     def __init__(self, id=None, drink_category_id=None,  name=None,  milk_type_id=None, flavor=None, price=None, espresso=None, coffee_syrup_flavor=None, serving_size=None):
+
         self.id = id
         self.name = name
         self.drink_category_id = drink_category_id

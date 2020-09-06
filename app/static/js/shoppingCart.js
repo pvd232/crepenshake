@@ -1,7 +1,16 @@
 //https://stackoverflow.com/questions/39627549/how-to-center-modal-to-the-center-of-screen/39636961
 $(window).on('load', function () {
 	const modal = $('#shoppingCart');
-	console.log('fdjaopisdfjaosij');
+	// console.log('fdjaopisdfjaosij');
+	// console.log(localStorage.length, 'localStorage.length');
+	// for (var i = 0; i < localStorage.length; i++) {
+	// 	const order = {};
+	// 	const key = localStorage.key(0);
+	// 	console.log('key', key);
+	// 	order[key] = JSON.parse(localStorage.getItem(key));
+	// 	console.log('order', order);
+	// }
+
 	const body = $(window);
 	// Get modal size
 	const w = modal.width();
@@ -16,6 +25,8 @@ $(window).on('load', function () {
 		top: (bh - h) / 2 + 'px',
 		left: (bw - w) / 2 + 'px',
 	});
+	doShowAll();
+	$('#shoppingCart').modal('show');
 });
 
 //https://www.smashingmagazine.com/2019/08/shopping-cart-html5-web-storage/
@@ -55,168 +66,140 @@ function capitalize(str) {
 function doShowAll() {
 	if (checkBrowser()) {
 		var orderPrice = 0;
-		var indexForHeaderColumn1 = 0;
-		var indexForHeaderColumn2 = 1;
+		key = localStorage.key(0);
+		const orderDict = JSON.parse(localStorage.getItem(key));
+		console.log('check orderDict', orderDict);
+		if ('orderCreep' in orderDict) {
+			const crepes = orderDict['orderCrepe'];
 
-		for (k = 0; k <= localStorage.length - 1; k++) {
-			key = localStorage.key(localStorage.length - k - 1); // had to do this to get this first crepe to show up as number 1 on the meal summary
-			const stringifiedDataObject = localStorage.getItem(key);
-			console.log('StringifiedDataObject', stringifiedDataObject);
-			const customCrepeProps = JSON.parse(stringifiedDataObject);
+			for (k = 0; k <= crepes.length - 1; k++) {
+				// had to do this to get this first crepe to show up as number 1 on the meal summary
+				// const stringifiedDataObject = localStorage.getItem(key);
+				// console.log('StringifiedDataObject', stringifiedDataObject);
 
-			//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-			var formattedOtherToppings = [];
-			const customCrepeIngredients = customCrepeProps['ingredients'];
-			console.log('customCrepeIngredients', customCrepeIngredients);
-			for (var key in customCrepeIngredients) {
-				if (key != 'crepeTotal' && key != 'flavorProfile') {
-					console.log('key', key);
-					const topping = customCrepeIngredients[key];
-					console.log('topping', topping);
-					if (topping != '') {
+				//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+				var formattedOtherToppings = [];
+				const customCrepeIngredients = crepes[k]['ingredients'];
+				console.log('customCrepeIngredients', customCrepeIngredients);
+				for (var key in customCrepeIngredients) {
+					if (key != 'crepeTotal' && key != 'flavorProfile') {
+						console.log('key', key);
+						const topping = customCrepeIngredients[key];
 						console.log('topping', topping);
-						const formatDict = {};
-						if (key != 'protein') {
-							var format = '';
-							for (var i = 0; i < topping.length; i++) {
-								var toppingName = Object.keys(topping[i])[0];
-								var toppingQuantity = topping[i][toppingName];
-								if (toppingName != 'price') {
-									toppingQuantity = capitalize(toppingQuantity);
-									toppingName = splitCamelCaseToString(toppingName);
-									format += toppingQuantity;
-									format += ' ';
-									format += toppingName;
-									if (i != topping.length - 2) {
-										format += ' and ';
+						if (topping != '') {
+							console.log('topping', topping);
+							const formatDict = {};
+							if (key != 'protein') {
+								var format = '';
+								for (var i = 0; i < topping.length; i++) {
+									var toppingName = Object.keys(topping[i])[0];
+									var toppingQuantity = topping[i][toppingName];
+									if (toppingName != 'price') {
+										toppingQuantity = capitalize(toppingQuantity);
+										toppingName = splitCamelCaseToString(toppingName);
+										format += toppingQuantity;
+										format += ' ';
+										format += toppingName;
+										if (i != topping.length - 2) {
+											format += ' and ';
+										}
+									} else {
+										formatDict['price'] = toppingQuantity;
 									}
-								} else {
-									formatDict['price'] = toppingQuantity;
 								}
-							}
 
-							formatDict['format'] = format;
-							formattedOtherToppings.push(formatDict);
-						} else {
-							const protein = customCrepeIngredients[key];
-							console.log('protein', protein);
-							//if (protein.length > 1) {
-							var formattedProtein = '';
-							for (var i = 0; i < protein.length; i++) {
-								var proteinName = Object.keys(protein[i])[0];
-								var proteinQuantity = protein[i][proteinName];
-								if (proteinName != 'price') {
-									console.log('pq', proteinQuantity);
-									console.log('pn', proteinName);
-									proteinName = splitCamelCaseToString(proteinName);
-									proteinQuantity = capitalize(proteinQuantity);
-									formattedProtein += proteinQuantity;
-									formattedProtein += ' ';
-									formattedProtein += proteinName;
-									if (i != protein.length - 2) {
-										formattedProtein += ' and ';
+								formatDict['format'] = format;
+								formattedOtherToppings.push(formatDict);
+							} else {
+								const protein = customCrepeIngredients[key];
+								console.log('protein', protein);
+								//if (protein.length > 1) {
+								var formattedProtein = '';
+								for (var i = 0; i < protein.length; i++) {
+									var proteinName = Object.keys(protein[i])[0];
+									var proteinQuantity = protein[i][proteinName];
+									if (proteinName != 'price') {
+										console.log('pq', proteinQuantity);
+										console.log('pn', proteinName);
+										proteinName = splitCamelCaseToString(proteinName);
+										proteinQuantity = capitalize(proteinQuantity);
+										formattedProtein += proteinQuantity;
+										formattedProtein += ' ';
+										formattedProtein += proteinName;
+										if (i != protein.length - 2) {
+											formattedProtein += ' and ';
+										}
+									} else {
+										formatDict['price'] = proteinQuantity;
 									}
-								} else {
-									formatDict['price'] = proteinQuantity;
 								}
-							}
 
-							formatDict['format'] = formattedProtein;
-							formattedOtherToppings.unshift(formatDict);
+								formatDict['format'] = formattedProtein;
+								formattedOtherToppings.unshift(formatDict);
+							}
 						}
 					}
 				}
-			}
-			var subtotal = 0;
-			for (var i = 0; i < formattedOtherToppings.length; i++) {
-				subtotal += formattedOtherToppings[i]['price'];
-			}
+				var subtotal = 0;
 
-			const proteinPrice = formattedOtherToppings[0]['price'];
+				// insert the row and child header with the crepe number
+				console.log('formattedOtherToppings', formattedOtherToppings);
+				$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
 
-			console.log('formattedOtherToppings', formattedOtherToppings);
-			$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
-
-			$(`#container${k}`).append(
-				`<div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="${indexForHeaderColumn1}row"><h5 style='font-weight: 700; '>Crepe #${
-					k + 1
-				}</h5></div>`
-			);
-			$(`<div class="row" style= "margin-bottom: 20px;" id="${indexForHeaderColumn2}row"></div>`).insertAfter(
-				$(`#${indexForHeaderColumn1}row`)
-			);
-			$(`#${indexForHeaderColumn2}row`)
-				.append(`<div class="col-9" style="margin-right: 0px; " id="${indexForHeaderColumn1}col"><h5 style=''>${formattedOtherToppings[0]['format']}</h5>
-		</div>`);
-
-			$(
-				`<div class="col-3" style=""id="${indexForHeaderColumn2}col"><h4 style='' >$${formattedOtherToppings[0][
-					'price'
-				].toFixed(2)}</h4></div>`
-			).insertAfter($(`#${indexForHeaderColumn1}col`));
-
-			indexForHeaderColumn1 += 2;
-			indexForHeaderColumn2 += 2;
-			var colIndex1 = 0;
-			var colIndex2 = 1;
-			orderPrice += proteinPrice;
-
-			for (var i = 1; i < formattedOtherToppings.length; i++) {
-				newRowIndex = i;
-				colIndex1 += 2;
-				colIndex2 += 2;
-				const toppingPrice = formattedOtherToppings[i]['price'];
-
-				orderPrice += toppingPrice;
-
-				if (i == 1) {
-					$(
-						`<div class="row" style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id="${k}row${newRowIndex}"></div>`
-					).insertAfter(`#${indexForHeaderColumn2 - 2}row`);
-					$(
-						`<div class="row" style="margin-top: 20px; margin-bottom: 20px" id="${k}row${
-							newRowIndex + 1
-						}"></div>`
-					).insertBefore(`#${k}row${newRowIndex}`);
-					$(`#${k}row${newRowIndex}`).append(
-						`<div class="col-9" id="${k}col${colIndex1}${colIndex2}" style="margin-left: 0px;"><h5 style="font-weight: 700";>Subtotal</h5></div>`
-					);
-
-					$(`#${k}row${newRowIndex}`).append(
-						`<div class="col-3" id="${k}col${colIndex1}${colIndex1}" style="margin-left: 0px;"><h4 style="font-weight: 700">$${subtotal.toFixed(
-							2
-						)}</h4></div>`
-					);
-					$(`#${k}row${newRowIndex}`).attr('id', '');
-					$(`#${k}row${newRowIndex + 1}`).attr('id', `${k}row${newRowIndex}`);
-				} else {
-					$(
-						`<div class="row" style="margin-top: 20px; margin-bottom: 40px" id="${k}row${newRowIndex}"></div>`
-					).insertAfter(`#${indexForHeaderColumn2 - 2}row`);
-				}
-
-				$(`#${k}row${newRowIndex}`).append(
-					`<div class="col-9" style="margin-right: 0px;" id="${k}col${colIndex1}"></div>`
+				$(`#container${k}`).append(
+					`<div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe #${
+						k + 1
+					}</h5></div>`
 				);
-				$(`#${k}col${colIndex1}`).append(`<h5>${formattedOtherToppings[i]['format']}</h5>`);
 
-				$(`#${k}row${newRowIndex}`).append(
-					`<div class="col-3" id="${k}col${colIndex2}" style="margin-left: 0px;"></div>`
-				);
-				$(`#${k}col${colIndex2}`).append(`<h4>$${formattedOtherToppings[i]['price'].toFixed(2)}</h4>`);
-			}
+				for (var i = 0; i < formattedOtherToppings.length; i++) {
+					const toppingPrice = formattedOtherToppings[i]['price'];
+					orderPrice += toppingPrice;
+					subtotal += toppingPrice;
 
-			$(`<div class="grid-container" id="buttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+					$(`<div class="row" style= "margin-bottom: 20px;" id="row${k}${
+						i + 1
+					}"><div class="col-9" style="margin-right: 0px; " id="col${k}${i}"><h5 style=''>
+				${formattedOtherToppings[i]['format']}</h5>
+					</div><div class="col-3" style=""id="col${k}${i + 2}"><h4 style=''>$${formattedOtherToppings[i]['price'].toFixed(
+						2
+					)}</h4></div></div>`).insertAfter(`#row${k}${i}`);
+				} // end of the loop iterating through the toppings in the crepe
+
+				// the i iterator ends with an id of k, i+1 so this must be formattedOtherToppings.length not formattedothertoppings.length -1
+				// insert the subtotal after completing the insertion of the toppings
+				$(
+					`<div class="row" id=row${k}${
+						formattedOtherToppings.length + 1
+					} style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${subtotal.toFixed(
+						2
+					)}</h4></div></div>`
+				).insertAfter($(`#row${k}${formattedOtherToppings.length}`));
+
+				// insert the modify, edit, delete buttons
+				$(`<div class="grid-container" id="buttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#container${k}`));
-			$(`#buttoncontainer${k}`).append(
-				`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
-			);
-			$(`#buttoncontainer${k}`).append(
-				`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
-			);
-			$(`#buttoncontainer${k}`).append(
-				`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
-			);
+				$(`#buttoncontainer${k}`).append(
+					`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
+				);
+				$(`#buttoncontainer${k}`).append(
+					`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
+				);
+				$(`#buttoncontainer${k}`).append(
+					`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
+				);
+			} // end of the loop iterating through crepes in the order
+		} // end of for loop confirming orderCrepe existence
+
+		if ('orderDrink' in orderDict) {
+			const drinks = orderDict['orderDrink'];
+			for (var i = 0; i < drinks.length; i++) {
+				$(`<div class="row" style= "margin-bottom: 20px;" id="${i}row"><div class="col-9" style="margin-right: 0px; " id="${i}col"><h5 style=''>
+				${Object.keys(drinks[i])[0]}</h5>
+					</div><div class="col-3" style=""id="${i}col"><h4 style=''>${
+					drinks[i][Object.keys(drinks[i])[0]]
+				}</h4></div></div>`).insertAfter(`#${i}row`);
+			}
 		}
 		$(`<div class="modal-footer" id="footer"></div>`).insertAfter(`#modalBody1`);
 
@@ -229,9 +212,3 @@ function doShowAll() {
 		</div>`);
 	}
 }
-
-$(window).on('load', function () {
-	console.log('order1', localStorage.getItem('order'));
-	doShowAll();
-	$('#shoppingCart').modal('show');
-});

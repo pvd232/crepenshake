@@ -11,12 +11,14 @@ application = Flask(__name__)
 app = application
 
 
-def humanize(dict):
-    str = dict['id']
+def humanize(dict, attr):
+    print('dict', dict)
+    str = dict.__getattribute__(attr)
+
     frags = str.split('_')
     if len(frags) < 2:
         str = str.capitalize()
-        dict['id'] = str
+        setattr(dict, attr, str)
         return dict
     newFrags = []
     for frag in frags:
@@ -25,7 +27,7 @@ def humanize(dict):
 
     newFrags = " ".join(newFrags)
     print('newFrags', newFrags)
-    dict['id'] = newFrags
+    setattr(dict, attr, newFrags)
     return dict
 
 
@@ -69,14 +71,14 @@ def order(userOrder=None):
 def make_your_own_crepe():
 
     ingredient_service = Ingredient_Service()
-    ingredient_prices = ingredient_service.get_ingredient_prices()
-    ingredient_categories = list(
-        ingredient_service.get_ingredient_categories())
+    ingredient_prices = [humanize(x, 'id')
+                         for x in ingredient_service.get_ingredient_prices()]
+    ingredient_categories = ingredient_service.get_ingredient_categories()
+    ingredient_categories = [x.serialize() for x in ingredient_categories]
+    print('iCat', ingredient_categories)
     rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
                                "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
     # print(ingredient_prices[0].serialize)
-    ingredient_prices = [humanize(x)
-                         for x in ingredient_prices]
 
     return render_template('make_your_own_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category)
 
@@ -85,14 +87,22 @@ def make_your_own_crepe():
 def order_drink():
     drink_service = Drink_Service()
 
-    drink_list = drink_service.get_drinks()
-    milkshakes = drink_service.get_milkshakes()
-    bottled_drinks = drink_service.get_bottled_drinks()
-    drink_categories = drink_service.get_drink_categories()
-    coffee_drinks = drink_service.get_coffee_drinks()
-    non_coffee_drinks = drink_service.get_non_coffee_drinks()
+    milkshakes = [humanize(x, "name") for x in drink_service.get_milkshakes()]
+    bottled_drinks = [humanize(x, "name")
+                      for x in drink_service.get_bottled_drinks()]
 
-    return render_template('order_drink.html', drink_list=drink_list, drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks)
+    drink_categories = drink_service.get_drink_categories()
+    print("drink_categories", drink_categories)
+    coffee_syrups = [humanize(x, "coffee_syrup_flavor")
+                     for x in drink_service.get_coffee_syrups()]
+
+    coffee_drinks = [humanize(x, "name")
+                     for x in drink_service.get_coffee_drinks()]
+    non_coffee_drinks = [humanize(x, "name")
+                         for x in drink_service.get_non_coffee_drinks()]
+    milk_drinks = [humanize(x, "id") for x in drink_service.get_milk_drinks()]
+
+    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups)
 
 
 @app.route('/make-your-own-savory-crepe')
@@ -117,28 +127,28 @@ def order_confirmation():
     return render_template('order_confirmation.html')
 
 
-@app.route("/static/add_pool", methods=['POST'])
-def add_pool():
+# @app.route("/static/add_pool", methods=['POST'])
+# def add_pool():
 
-    pool = {}
-    pool['pool_name'] = request.form['poolName']
-    pool['status'] = request.form['status']
-    pool['phone'] = request.form['phone']
-    pool['pool_type'] = request.form['poolType']
+#     pool = {}
+#     pool['pool_name'] = request.form['poolName']
+#     pool['status'] = request.form['status']
+#     pool['phone'] = request.form['phone']
+#     pool['pool_type'] = request.form['poolType']
 
-    # Insert into database.
+#     # Insert into database.
 
-    modify_db(pool, post=True)
+#     modify_db(pool, post=True)
 
-    return render_template('pool_added.html')
+#     return render_template('pool_added.html')
 
 
-@app.route("/pools")
-def get_pools():
-    response = {}
-    pools = query_data()
+# @app.route("/pools")
+# def get_pools():
+#     response = {}
+#     pools = query_data()
 
-    return jsonify(pools)
+#     return jsonify(pools)
 
 
 @app.route("/favicon.ico")

@@ -60,7 +60,7 @@ function handleFormSubmit() {
 		const order = {};
 		const key = localStorage.key(i);
 		order[key] = JSON.parse(localStorage.getItem(key));
-
+		console.log('order', order);
 		orderCrepeArray.push(order);
 	}
 
