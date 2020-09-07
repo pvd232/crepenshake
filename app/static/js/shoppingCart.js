@@ -69,7 +69,7 @@ function doShowAll() {
 		key = localStorage.key(0);
 		const orderDict = JSON.parse(localStorage.getItem(key));
 		console.log('check orderDict', orderDict);
-		if ('orderCreep' in orderDict) {
+		if ('orderCrepe' in orderDict) {
 			const crepes = orderDict['orderCrepe'];
 
 			for (k = 0; k <= crepes.length - 1; k++) {
@@ -192,8 +192,11 @@ function doShowAll() {
 		} // end of for loop confirming orderCrepe existence
 
 		if ('orderDrink' in orderDict) {
+			// https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
 			const drinks = orderDict['orderDrink'];
+			console.log('drank', drinks);
 			for (var i = 0; i < drinks.length; i++) {
+				console.log('aDrink', drinks[i]);
 				$(`<div class="row" style= "margin-bottom: 20px;" id="${i}row"><div class="col-9" style="margin-right: 0px; " id="${i}col"><h5 style=''>
 				${Object.keys(drinks[i])[0]}</h5>
 					</div><div class="col-3" style=""id="${i}col"><h4 style=''>${

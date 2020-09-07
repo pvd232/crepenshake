@@ -1,6 +1,10 @@
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
+
+var coffeeBool = false;
+// var dripBool = false;
+// var latteBool = false;
 function stringify(dataObject) {
 	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
@@ -33,23 +37,31 @@ function stringify(dataObject) {
 	return true;
 }
 
-// function checkIfMilkSelected(element) {
-// 	var myBool = false;
-// 	$(`#${element}`)
-// 		.find('.btn2')
-// 		.each(function () {
-// 			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-// 			var toppingCategory = toppingCategoryAndToppingNameArray[0];
-// 			var toppingName = toppingCategoryAndToppingNameArray[1];
-// 			if ($(this).css(`--${toppingCategory}`) == toppingName) {
-// 				return true;
-// 			}
-// 		})
-// 		.promse()
-// 		.then(function () {
-// 			return false;
-// 		});
-// }
+function checkIfCoffeeSelected() {
+	coffeeBool = false;
+	// dripBool = false;
+	// latteBool = false;
+	$(`#coffee`)
+		.find('.btn2')
+		.each(function () {
+			// console.log('.btn2 classname', $(this).attr('class'));
+			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+			var toppingCategory = toppingCategoryAndToppingNameArray[0];
+			var toppingName = toppingCategoryAndToppingNameArray[1];
+			// console.log('tcat && tname', toppingCategory, toppingName);
+			if ($(this).css(`--${toppingCategory}`) == toppingName) {
+				coffeeBool = true;
+				// if ($(this).css('--drip') === 'true') {
+				// 	dripBool = true;
+				// 	console.log('dripBool true');
+				// }
+				// if ($(this).css('--latte') === 'true') {
+				// 	console.log('latte');
+				// 	latteBool = true;
+				// }
+			}
+		});
+}
 
 function getCSSToppingName(element) {
 	var toppingCategory = $(element).closest('.card-deck').attr('id');
@@ -147,34 +159,48 @@ $(window).on('load', function () {
 	$('.btn2').each(function (i) {
 		this.id = 'btn' + i;
 		$(this).css('--quantity', 0);
+		var drinkName = $(this).closest('.card').find('.card-title').text().split(' ').pop().toLowerCase();
+		// console.log('drinkName1', drinkName);
+
+		// if (drinkName === 'latte') {
+		// 	// console.log('latte');
+		// 	$(this).css('--latte', 'true');
+		// }
+
+		// drip coffee is the only coffee with "coffee" in the name so it will be the only element to return coffee as the last element
+		// if (drinkName == 'coffee') {
+		// 	// console.log('drip');
+		// 	$(this).css('--drip', 'true');
+		// }
+		// }
+		var price = $(this).closest('.card').find('.card-text').text();
+		if (price.trim() != '') {
+			console.log('price', price);
+			price = price.replace('$', '');
+			if (price.split(' ').length > 1) {
+				console.log('price', price);
+				$(this).css('--price', price.split(' ').shift());
+				console.log('price', price.split(' ').shift());
+			} else {
+				$(this).css('--price', price);
+			}
+			// console.log('--price', $(this).css('--price'));
+		}
+
+		// if ($(this).css('--price')) {
+		// 	console.log('--price', $(this).css('--price'));
+		// }
+		// console.log($(this).css('--price'));
 	});
 
-	var coffeeBool;
-	$('#coffee')
-		.find('.btn2')
-		.each(function () {
-			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-			var toppingCategory = toppingCategoryAndToppingNameArray[0];
-			var toppingName = toppingCategoryAndToppingNameArray[1];
-			if ($(this).css(`--${toppingCategory}`) == toppingName) {
-				coffeeBool = true;
-				console.log('coffeeBool true');
-			}
-		})
-		.promise()
-		.done(function () {
-			if (coffeeBool != true) {
-				coffeeBool = false;
-				$('#milk, #coffee_syrup').each(function () {
-					console.log('coffee_syrup & milk $(this)', $(this));
-					$(this)
-						.find('.card')
-						.each(function () {
-							$(this).css('opacity', '.3');
-						});
-				});
-			}
-		});
+	$('#milk, #coffee_syrup').each(function () {
+		// console.log('coffee_syrup & milk $(this)', $(this));
+		$(this)
+			.find('.card')
+			.each(function () {
+				$(this).css('opacity', '.3');
+			});
+	});
 
 	var x = document.getElementsByClassName('card-title');
 	var y = [];
@@ -194,20 +220,42 @@ $(window).on('load', function () {
 			var toppingCategory = toppingCategoryAndToppingNameArray[0];
 			var toppingName = toppingCategoryAndToppingNameArray[1];
 			console.log('tc', toppingCategory, 'tn', toppingName);
-
-			if (
-				$(this).find('.card-body').attr('id') != 'cardBody' &&
-				$(this).closest('.card-deck').attr('id') != 'milk' &&
-				$(this).closest('.card-deck').attr('id') != 'coffee_syrup'
-			) {
-				$(this).find('.card-body').css('opacity', '.3'); //https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_image_overlay_opacity
-				$(this).find('.card-img-top').css('opacity', '.3');
-				$(this).find('.btn').show();
-			} else if (coffeeBool) {
-				// milk card logic
-				$(this).find('.card-body').css('opacity', '.3');
-				$(this).find('.card-img-top').css('opacity', '.3');
-				$(this).find('.btn').show();
+			checkIfCoffeeSelected();
+			if ($(this).find('.card-body').attr('id') != 'cardBody') {
+				if (
+					$(this).closest('.card-deck').attr('id') != 'milk' &&
+					$(this).closest('.card-deck').attr('id') != 'coffee_syrup'
+				) {
+					if ($(this).closest('.card-deck').attr('id') != 'coffee') {
+						$(this).find('.card-body').css('opacity', '.3');
+						$(this).find('.card-img-top').css('opacity', '.3');
+						$(this).find('.btn').show();
+					} else if (!coffeeBool) {
+						console.log('see if the card-deck id is coffee', $(this).closest('.card-deck').attr('id'));
+						$(this).find('.card-body').css('opacity', '.3');
+						$(this).find('.card-img-top').css('opacity', '.3');
+						$(this).find('.btn').show();
+					}
+				} else if (coffeeBool && $(this).closest('.card-deck').attr('id') === 'coffee_syrup') {
+					$(this).find('.card-body').css('opacity', '.3');
+					$(this).find('.card-img-top').css('opacity', '.3');
+					$(this).find('.btn').show();
+				} else if (coffeeBool && $(this).closest('.card-deck').attr('id') === 'milk') {
+					$(this).find('.card-body').css('opacity', '.3');
+					$(this).find('.card-img-top').css('opacity', '.3');
+				}
+				// if a coffee is selected but not a latte or drip coffee then fade the card out and show the customize button
+				// else if (coffeeBool && !dripBool && !latteBool) {
+				// 		// milk card logic
+				// 		$(this).find('.card-body').css('opacity', '.3');
+				// 		$(this).find('.card-img-top').css('opacity', '.3');
+				// 		$(this).find('.btn').show();
+				// 	}
+				// 	// if a coffee is selected and it is a latte or drip coffee then fade the card out and do not show the customize button
+				// 	else if ((coffeeBool && latteBool) || (coffeeBool && dripBool)) {
+				// 		$(this).find('.card-body').css('opacity', '.3');
+				// 		$(this).find('.card-img-top').css('opacity', '.3');
+				// 	}
 			}
 
 			//click the card somewhere
@@ -215,6 +263,10 @@ $(window).on('load', function () {
 				.find('.card-text, .card-title, .card-body, .card-img-top')
 				.unbind('click')
 				.bind('click', function () {
+					var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+					var toppingCategory = toppingCategoryAndToppingNameArray[0];
+					var toppingName = toppingCategoryAndToppingNameArray[1];
+					checkIfCoffeeSelected();
 					if (
 						$(this).closest('.card-deck').attr('id') === 'bottled' ||
 						$(this).closest('.card-deck').attr('id') === 'non-coffee' ||
@@ -223,45 +275,66 @@ $(window).on('load', function () {
 						if (parseInt($(this).closest('.card').find('.btn2').css('--quantity')) === 0) {
 							$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 							$(this).closest('.card').find('.btn2').css('--quantity', 1);
+							console.log('price', $(this).closest('.card-text').val());
+
 							$(this).closest('.card').find('.btn2').html(1);
 							$(this).closest('.card').find('.btn2').show();
+
+							//after clicking the card show the + and - buttons
 							$(this).closest('.card').find('.btn6').show();
 							$(this).closest('.card').find('.btn7').show();
 						}
 					}
-					// TODO: dynamically set css values
-					if (
+					// if you click the card and it hasn't been selected
+					else if (
 						$(this).closest('.card').find('.btn2').css('--extra') != 'true' &&
 						$(this).closest('.card').find('.btn2').css('--half') != 'true' &&
-						$(this).closest('.card-deck').attr('id') != 'bottled' &&
-						$(this).closest('.card-deck').attr('id') != 'non-coffee' &&
-						$(this).closest('.card-deck').attr('id') != 'milkshake' &&
 						$(this).closest('.card').find('.btn2').css('--regular') != 'true' &&
 						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`) != toppingName
 					) {
-						console.log(
-							'`--${toppingCategory}`, `${toppingName}`',
-							`--${toppingCategory}`,
-							`${toppingName}`
-						);
-						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
-						$(this).closest('.card').find('.btn2').css('--regular', 'true');
-						console.log('veggieCraze', $(this).closest('.card').find('.btn2').css('--regular'));
-						$(this).closest('.card').find('.btn2').html('✓');
-						$(this).closest('.card').find('.btn2').toggle();
-					} else if ($(this).closest('.card').find('.btn2').css('--half') == 'true') {
+						// 'console.log(checkIfCoffeeSelected(coffee)', console.log(checkIfCoffeeSelected('coffee'));
+						// if a coffee has been selected already then milk or coffee_syrup can be selected
+						if (coffeeBool) {
+							// if coffee has been selected alredy then we don't want to select another coffee!
+							if ($(this).closest('.card-deck').attr('id') != 'coffee') {
+								// console.log(
+								// 	'`--${toppingCategory}`, `${toppingName}`',
+								// 	`--${toppingCategory}`,
+								// 	`${toppingName}`
+								// );
+								$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
+								$(this).closest('.card').find('.btn2').css('--regular', 'true');
+								console.log('veggieCraze', $(this).closest('.card').find('.btn2').css('--regular'));
+								$(this).closest('.card').find('.btn2').html('✓');
+								$(this).closest('.card').find('.btn2').toggle();
+							}
+						} else if (
+							// otherwise make sure the card being clicked isn't milk or coffee syrup
+							$(this).closest('.card-deck').attr('id') != 'milk' &&
+							$(this).closest('.card-deck').attr('id') != 'coffee_syrup'
+						) {
+							$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
+							$(this).closest('.card').find('.btn2').css('--regular', 'true');
+							// console.log(
+							// 	'anything but coffee syrup and milk',
+							// 	$(this).closest('.card').find('.btn2').css('--regular')
+							// );
+							$(this).closest('.card').find('.btn2').html('✓');
+							$(this).closest('.card').find('.btn2').toggle();
+						}
+					} else if ($(this).closest('.card').find('.btn2').css('--half') === 'true') {
 						$(this).closest('.card').find('.btn2').css('--half', 'false');
 						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, 'false');
 						$(this).closest('.card').find('.btn2').toggle();
 						//https://stackoverflow.com/questions/21286887/adding-check-marks-to-bootstrap-button-drop-down-items/46890814
 						$(this).closest('.card').find('.btn2').html('✓');
-					} else if ($(this).closest('.card').find('.btn2').css('--extra') == 'true') {
+					} else if ($(this).closest('.card').find('.btn2').css('--extra') === 'true') {
 						console.log('dVeggies toggle');
 						$(this).closest('.card').find('.btn2').css('--extra', 'false');
 						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, 'false');
 						$(this).closest('.card').find('.btn2').toggle();
 						$(this).closest('.card').find('.btn2').html('✓');
-					} else if ($(this).closest('.card').find('.btn2').css('--regular') == 'true') {
+					} else if ($(this).closest('.card').find('.btn2').css('--regular') === 'true') {
 						console.log('fag');
 						$(this).closest('.card').find('.btn2').css('--regular', 'false');
 						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, 'false');
@@ -270,72 +343,80 @@ $(window).on('load', function () {
 					}
 
 					// milk card logic
-					coffeeBool = false;
-					$('#coffee')
-						.find('.btn2')
-						.each(function () {
+					// after clicking a card, if you the card you selected was a coffee then unhide the milk and syrup
+					checkIfCoffeeSelected();
+					if (coffeeBool) {
+						$('#milk, #coffee_syrup').each(function () {
+							console.log('coffee_syrup & milk $(this) PT2', $(this));
+							$(this)
+								.find('.card')
+								.each(function () {
+									$(this).css('opacity', '1');
+								});
+							$('#errorMilk').hide();
+							$('#errorSyrup').hide();
+						});
+
+						// after selecting one coffee the rest become unavailable
+
+						$('#coffee')
+							.find('.card')
+							.each(function () {
+								var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+								var toppingCategory = toppingCategoryAndToppingNameArray[0];
+								var toppingName = toppingCategoryAndToppingNameArray[1];
+								// make sure that you don't hide the already selected coffee
+								if ($(this).find('.btn2').css(`--${toppingCategory}`) != toppingName) {
+									$(this).css('opacity', '.3');
+								}
+							});
+					} else {
+						// if no coffee is selected then we need to make sure they're all available
+						$('#coffee')
+							.find('.card')
+							.each(function () {
+								$(this).css('opacity', '1');
+							});
+						// if you unselected coffee then we need to reset the milk and syrup values
+						$('#milk, #coffee_syrup').each(function () {
 							var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 							var toppingCategory = toppingCategoryAndToppingNameArray[0];
 							var toppingName = toppingCategoryAndToppingNameArray[1];
-							if ($(this).css(`--${toppingCategory}`) == toppingName) {
-								// if a coffee is selected then unhide the coffee syrup and milk
-								coffeeBool = true;
-								console.log('coffeeBool true');
-								$('#milk, #coffee_syrup').each(function () {
-									console.log('coffee_syrup & milk $(this) PT2', $(this));
-									$(this)
-										.find('.card')
-										.each(function () {
-											$(this).css('opacity', '1');
-										});
-									$('#errorMilk').hide();
-									$('#errorSyrup').hide();
+							console.log($(this), '$(this)');
+							$(this)
+								.find('.card')
+								.each(function () {
+									console.log($(this), '$(this2)');
+									$(this).css('opacity', '.3');
+									$(this).find('.btn2').hide();
+									console.log('toppingName', toppingName);
+									console.log('toppingCat', toppingCategory);
+									console.log(
+										'css val for topping cat b4 false',
+										$(this).find('.btn2').css(`--${toppingCategory}`)
+									);
+									$(this).find('.btn2').css(`--${toppingCategory}`, 'false');
+									console.log(
+										'css val for topping cat after false',
+										$(this).find('.btn2').css(`--${toppingCategory}`)
+									);
+									$(this).find('.btn').hide();
+									$(this).find('.btn2').css('--regular', 'false');
+									$(this).find('.btn2').css('--half', 'false');
+									$(this).find('.btn2').css('--extra', 'false');
 								});
-							}
-						})
-						.promise()
-						.done(function () {
-							if (!coffeeBool) {
-								$('#milk, #coffee_syrup').each(function () {
-									var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-									var toppingCategory = toppingCategoryAndToppingNameArray[0];
-									var toppingName = toppingCategoryAndToppingNameArray[1];
-									console.log($(this), '$(this)');
-									$(this)
-										.find('.card')
-										.each(function () {
-											console.log($(this), '$(this2)');
-											$(this).css('opacity', '.3');
-											$(this).find('.btn2').hide();
-											console.log('toppingName', toppingName);
-											console.log('toppingCat', toppingCategory);
-											console.log(
-												'css val for topping cat b4 false',
-												$(this).find('.btn2').css(`--${toppingCategory}`)
-											);
-											$(this).find('.btn2').css(`--${toppingCategory}`, 'false');
-											console.log(
-												'css val for topping cat after false',
-												$(this).find('.btn2').css(`--${toppingCategory}`)
-											);
-											$(this).find('.btn').hide();
-											$(this).find('.btn2').css('--regular', 'false');
-											$(this).find('.btn2').css('--half', 'false');
-											$(this).find('.btn2').css('--extra', 'false');
-										});
-									console.log('coffeeBool false');
-									$('#errorMilk').show();
-									$('#errorSyrup').show();
-								});
-							}
+							// console.log('coffeeBool false');
+							$('#errorMilk').show();
+							$('#errorSyrup').show();
 						});
+					}
 				});
 		})
 		.on('mouseleave', '.card', function () {
 			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 			var toppingCategory = toppingCategoryAndToppingNameArray[0];
 			var toppingName = toppingCategoryAndToppingNameArray[1];
-			console.log('tc', toppingCategory, 'tn', toppingName);
+			// console.log('tc', toppingCategory, 'tn', toppingName);
 			// TODO: Replace this with the assignment from the gettoppingCategory function
 			if ($(this).closest('.card-deck').attr('id') != 'protein') {
 				if (
@@ -366,7 +447,7 @@ $(window).on('load', function () {
 			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 			var toppingCategory = toppingCategoryAndToppingNameArray[0];
 			var toppingName = toppingCategoryAndToppingNameArray[1];
-			console.log('tc', toppingCategory, 'tn', toppingName);
+			// console.log('tc', toppingCategory, 'tn', toppingName);
 			if ($(this).html() == 'Customize') {
 				if ($(this).closest('.card-deck').attr('id') === 'coffee_syrup') {
 					//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
@@ -382,7 +463,7 @@ $(window).on('load', function () {
 					$(this).closest('.card').find('.btn4').show();
 					coffeeBool = true;
 					$('#milk, #coffee_syrup').each(function () {
-						console.log('coffee_syrup & milk $(this) PT2', $(this));
+						// console.log('coffee_syrup & milk $(this) PT2', $(this));
 						$(this)
 							.find('.card')
 							.each(function () {
@@ -409,7 +490,7 @@ $(window).on('load', function () {
 				$(this).closest('.card').find('.btn2').show();
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn4').hide();
-				console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
+				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 			}
 		});
 
@@ -420,7 +501,7 @@ $(window).on('load', function () {
 				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 				var toppingCategory = toppingCategoryAndToppingNameArray[0];
 				var toppingName = toppingCategoryAndToppingNameArray[1];
-				console.log('tc', toppingCategory, 'tn', toppingName);
+				// console.log('tc', toppingCategory, 'tn', toppingName);
 				$(this).closest('.card').find('.btn2').css('--half', 'true');
 				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 				$(this).closest('.card').find('.btn2').css('--regular', 'false');
@@ -431,7 +512,7 @@ $(window).on('load', function () {
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn4').hide();
 				$(this).closest('.card').find('.btn').html('Customize');
-				console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
+				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 			}
 		});
 
@@ -442,7 +523,7 @@ $(window).on('load', function () {
 				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 				var toppingCategory = toppingCategoryAndToppingNameArray[0];
 				var toppingName = toppingCategoryAndToppingNameArray[1];
-				console.log('tc', toppingCategory, 'tn', toppingName);
+				// console.log('tc', toppingCategory, 'tn', toppingName);
 				$(this).closest('.card').find('.btn2').css('--regular', 'true');
 				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 				$(this).closest('.card').find('.btn2').css('--half', 'false');
@@ -452,7 +533,7 @@ $(window).on('load', function () {
 				$(this).hide();
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn').html('Customize');
-				console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
+				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 			}
 		});
 
@@ -462,9 +543,9 @@ $(window).on('load', function () {
 			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 			var toppingCategory = toppingCategoryAndToppingNameArray[0];
 			var toppingName = toppingCategoryAndToppingNameArray[1];
-			console.log('tc', toppingCategory, 'tn', toppingName);
+			// console.log('tc', toppingCategory, 'tn', toppingName);
 			var currentQuant = parseInt($(this).closest('.card').find('.btn2').css('--quantity'));
-			console.log('cuuremtQuant', currentQuant);
+			// console.log('cuuremtQuant', currentQuant);
 			currentQuant -= 1;
 			if (currentQuant === 0) {
 				$(this).closest('.card').find('.btn2').hide();
@@ -479,7 +560,7 @@ $(window).on('load', function () {
 				$(this).closest('.card').find('.btn2').css('--quantity', currentQuant);
 			}
 			console.log('.btn quant value', $(this).closest('.card').find('.btn2').css('--quantity'));
-			console.log('.btn name value', $(this).closest('.card').find('.btn2').css('--drinName'));
+			console.log('.btn name value', $(this).closest('.card').find('.btn2').css('--drinkName'));
 		});
 
 	$('.btn7')
@@ -488,9 +569,9 @@ $(window).on('load', function () {
 			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 			var toppingCategory = toppingCategoryAndToppingNameArray[0];
 			var toppingName = toppingCategoryAndToppingNameArray[1];
-			console.log('tc', toppingCategory, 'tn', toppingName);
+			// console.log('tc', toppingCategory, 'tn', toppingName);
 			var currentQuant = parseInt($(this).closest('.card').find('.btn2').css('--quantity'));
-			console.log('currentQuant', currentQuant);
+			// console.log('--price', $(this).css('--price'));
 			currentQuant += 1;
 			$(this).closest('.card').find('.btn2').html(`${currentQuant}`);
 			$(this).closest('.card').find('.btn2').show();
@@ -501,115 +582,36 @@ $(window).on('load', function () {
 		});
 });
 
-function toppingPricing(toppingCategoryList, proteinCategoryList) {
-	var newToppingCategoryListWithPricesofToppingCategories = [];
-	for (var i = 0; i < toppingCategoryList.length; i++) {
-		const toppingDict = toppingCategoryList[i];
-		const toppingKey = Object.keys(toppingDict)[0];
-		console.log('tkey', toppingKey);
-		console.log('toppingDict', toppingDict);
-		if (toppingKey == 'veggie') {
-			const newToppingDict = {};
-			const toppingQuantity = toppingDict[toppingKey];
-			console.log('tquant', toppingQuantity);
-			const amountOverIncludedAmount = toppingQuantity - 4;
-			var priceForTopping;
-			if (amountOverIncludedAmount > 0) {
-				priceForTopping = amountOverIncludedAmount * 0.5;
-			} else {
-				priceForTopping = 0;
-			}
-			newToppingDict[`${toppingKey}`] = priceForTopping;
-			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-		} else if (toppingKey == 'cheese') {
-			const newToppingDict = {};
-			const toppingQuantity = toppingDict[toppingKey];
-			const amountOverIncludedAmount = toppingQuantity - 1;
-			var priceForTopping;
-			if (amountOverIncludedAmount > 0) {
-				priceForTopping = amountOverIncludedAmount * 0.99;
-			} else {
-				priceForTopping = 0;
-			}
-			newToppingDict[`${toppingKey}`] = priceForTopping;
-			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-		} else if (toppingKey == 'sauce') {
-			const newToppingDict = {};
-			const toppingQuantity = toppingDict[toppingKey];
-			const amountOverIncludedAmount = toppingQuantity;
-			var priceForTopping;
-			if (amountOverIncludedAmount > 0) {
-				priceForTopping = amountOverIncludedAmount * 0.99;
-			} else {
-				priceForTopping = 0;
-			}
-			newToppingDict[`${toppingKey}`] = priceForTopping;
-			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-		} else if (toppingKey == 'herb') {
-			const newToppingDict = {};
-			const toppingQuantity = toppingDict[toppingKey];
-			const amountOverIncludedAmount = toppingQuantity;
-			var priceForTopping;
-			if (amountOverIncludedAmount > 0) {
-				priceForTopping = amountOverIncludedAmount * 0.5;
-			} else {
-				priceForTopping = 0;
-			}
-			newToppingDict[`${toppingKey}`] = priceForTopping;
-			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-		}
-	}
-	//count up protein price
-	console.log('pcatList', proteinCategoryList);
-	var priceForProtein = 0;
-	var newProteinDict = {};
-	for (var i = 0; i < proteinCategoryList.length; i++) {
-		const proteinDict = proteinCategoryList[i];
-		const proteinKey = Object.keys(proteinDict)[0];
-		console.log('tkey', proteinKey);
-		console.log('proteinDict', proteinDict);
+// function toppingPricing(toppingCategoryList) {
+// 	var newToppingCategoryListWithPricesofToppingCategories = [];
+// 	for (var i = 0; i < toppingCategoryList.length; i++) {
+// 		const toppingDict = toppingCategoryList[i];
+// 		const toppingKey = Object.keys(toppingDict)[0];
+// 		// console.log('tkey', toppingKey);
+// 		// console.log('toppingDict', toppingDict);
+// 		if (toppingKey == 'coffee') {
+// 			const newToppingDict = {};
+// 			const toppingQuantity = toppingDict[toppingKey];
+// 			// console.log('tquant', toppingQuantity);
+// 			const amountOverIncludedAmount = toppingQuantity - 4;
+// 			var priceForTopping;
+// 			if (amountOverIncludedAmount > 0) {
+// 				priceForTopping = amountOverIncludedAmount * 0.5;
+// 			} else {
+// 				priceForTopping = 0;
+// 			}
+// 			newToppingDict[`${toppingKey}`] = priceForTopping;
+// 			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
+// 		}
+// 	}
+// 	//count up protein price
 
-		if (proteinKey == 'Steak') {
-			var priceForProtein = 9.5;
-			const toppingQuantity = proteinDict[proteinKey];
-			console.log('tquant', toppingQuantity);
-			const proteinAmountOverIncludedAmount = toppingQuantity;
-			var priceForProtein;
-			if (proteinAmountOverIncludedAmount > 0) {
-				priceForProtein += 3.5;
-			} else {
-				priceForProtein += 0;
-			}
-		} else if (proteinKey == 'Chicken Breast') {
-			priceForProtein = 8.5;
-			const toppingQuantity = proteinDict[proteinKey];
-			const proteinAmountOverIncludedAmount = toppingQuantity;
-			var priceForProtein;
-			if (proteinAmountOverIncludedAmount > 0) {
-				priceForProtein += 2.5;
-			} else {
-				priceForProtein += 0;
-			}
-		} else {
-			priceForProtein = 7.5;
-			const toppingQuantity = proteinDict[proteinKey];
-			const proteinAmountOverIncludedAmount = toppingQuantity;
-			var priceForProtein;
-			if (proteinAmountOverIncludedAmount > 0) {
-				priceForProtein += 2.5;
-			} else {
-				priceForProtein += 0;
-			}
-		}
-	}
-	newProteinDict['protein'] = priceForProtein;
-	newToppingCategoryListWithPricesofToppingCategories.unshift(newProteinDict);
-	console.log(
-		'newToppingCategoryListWithPricesofToppingCategories',
-		newToppingCategoryListWithPricesofToppingCategories
-	);
-	return newToppingCategoryListWithPricesofToppingCategories;
-}
+// 	// console.log(
+// 	// 	'newToppingCategoryListWithPricesofToppingCategories',
+// 	// 	newToppingCategoryListWithPricesofToppingCategories
+// 	// );
+// 	return newToppingCategoryListWithPricesofToppingCategories;
+// }
 // checkout function
 var orderToppingsDict = {};
 var ingredientsDict = {};
@@ -652,82 +654,137 @@ function checkOut() {
 			console.log($(this).css('--half'), $(this).css('--regular'), $(this).css('--extra'));
 			var toppingDictionary = {};
 			if ($(this).css('--half') == 'true') {
-				toppingDictionary[`${toppingName}`] = 'half';
+				// $(this).css('--quantity', 1);
+				toppingDictionary['servingSize'] = 'half';
 			} else if ($(this).css('--regular') == 'true') {
-				toppingDictionary[`${toppingName}`] = 'regular';
+				// $(this).css('--quantity', 1);
+				toppingDictionary['servingSize'] = 'regular';
 			} else if ($(this).css('--extra') == 'true') {
-				toppingDictionary[`${toppingName}`] = 'extra';
-			} else {
-				toppingDictionary[`${toppingName}`] = $(this).css('--quantity');
-
-				console.log('ingredientsDict', ingredientsDict);
+				// $(this).css('--quantity', 1);
+				toppingDictionary['servingSize'] = 'extra';
 			}
+			// if the drink is a drink with a quantity then it won't have half or regular or extra and the previous if blocks won't grab the topping name
+			else {
+				toppingDictionary['servingSize'] = 'regular';
+			}
+
+			toppingDictionary['name'] = `${toppingName}`;
+			if ($(this).css('--price')) {
+				console.log('price', $(this).css('--price'));
+				toppingDictionary['price'] = $(this).css('--price');
+			} else {
+				toppingDictionary['price'] = 0;
+			}
+			toppingDictionary['quantity'] = $(this).css('--quantity');
+
+			console.log('ingredientsDict', ingredientsDict);
+
 			ingredientsDict[`${toppingCategory}`].push(toppingDictionary);
 		}
 	});
 
 	var orderItems = ingredientsDict;
-	console.log('unstringified', orderItems);
+	console.log('oldOrderItems', orderItems);
 	//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-	var toppingCategoryCount = [];
-	var proteinCategoryCount = [];
+	// var proteinCategoryCount = [];
+	const coffeeArray = orderItems['coffee'];
 
 	for (var key in orderItems) {
-		var topping = orderItems[key];
-		if (topping != '') {
-			console.log('topping', topping);
-			var toppingCategoryCountDict = {};
-			var toppingCount = 0;
-			if (key != 'protein') {
-				for (var i = 0; i < topping.length; i++) {
-					var toppingName = Object.keys(topping[i])[0];
-					var toppingQuantity = topping[i][toppingName];
-					console.log('toppingName', toppingName);
-					console.log('toppingQuant', toppingQuantity);
-					if (toppingQuantity == 'half') {
-						toppingCount += 0.5;
-					} else if (toppingQuantity == 'regular') {
-						toppingCount += 1;
-					} else if (toppingQuantity == 'extra') {
-						toppingCount += 2;
+		const drinksForItemCategory = orderItems[key];
+		console.log('drinksForItemCategory', drinksForItemCategory);
+		if (drinksForItemCategory != []) {
+			console.log('drinksForItemCategory', drinksForItemCategory);
+			// if (key != 'protein') {
+			for (var i = 0; i < drinksForItemCategory.length; i++) {
+				var drink = drinksForItemCategory[i];
+				const itemQuantity = drink['quantity'];
+				const itemServingSize = drink['servingSize'];
+				console.log('preParse', drink['price']);
+				var itemPrice = drink['price'];
+				if (key === 'coffee') {
+					var espressoPrice = 0;
+					const espressoDict = {};
+					if (itemServingSize === 'extra') {
+						espressoPrice = 2;
+						espressoDict['quantity'] = 2;
+					} else {
+						espressoPrice = 1;
+						espressoDict['quantity'] = 1;
 					}
+					console.log('itemPricetoFixed', espressoPrice.toFixed(2));
+					espressoDict['price'] = espressoPrice.toFixed(2);
+					espressoDict['name'] = 'espresso';
+					drink['espresso'] = espressoDict;
+				} else if (key === 'milk') {
+					// recompartmentalize the milk dictionary into the coffee dictionary in the coffee array then delete the milk category from orderItems
+					coffeeArray[0]['milk'] = drink;
+					delete orderItems[key];
+				} else if (key === 'coffee_syrup') {
+					var syrupPrice = 0;
+					const dictSource = {};
+					if (itemServingSize === 'extra') {
+						syrupPrice = 2;
+						dictSource['quantity'] = 2;
+					} else {
+						syrupPrice = 1;
+						dictSource['quantity'] = 1;
+					}
+					dictSource['price'] = syrupPrice.toFixed(2);
+					dictSource['name'] = key;
+					// recompartmentalize the coffee_syrup dictionary into the coffee dictionary in the coffee array then delete the coffee_syrup category from orderItems
+					coffeeArray[0]['syrup'] = dictSource;
+					delete orderItems[key]; // https://www.tutorialspoint.com/Remove-elements-from-a-Dictionary-using-Javascript
+				} else if ('milkshake') {
+					console.log('itemQuantity', itemQuantity);
+					console.log('itemPrice', itemPrice);
+					const milkShakePrice = itemQuantity * itemPrice;
+					const dictSource = {};
+					dictSource['price'] = milkShakePrice.toFixed(2);
+					Object.assign(drink, dictSource);
+				} else if ('bottled') {
+					const bottledPrice = itemQuantity * itemPrice;
+					const dictSource = {};
+					dictSource['price'] = bottledPrice.toFixed(2);
+					Object.assign(drink, dictSource);
+				} else if ('non-coffee') {
+					const nonCoffeePrice = itemQuantity * itemPrice;
+					const dictSource = {};
+					dictSource['price'] = nonCoffeePrice.toFixed(2);
+					Object.assign(drink, dictSource);
 				}
-				toppingCategoryCountDict[`${key}`] = toppingCount;
-				console.log('countDict', toppingCategoryCountDict);
-				toppingCategoryCount.push(toppingCategoryCountDict);
 			}
 		}
 	}
-	console.log('toppingCatCount', toppingCategoryCount);
-	var newToppingCategoryListWithPricesofToppingCategories = toppingPricing(
-		toppingCategoryCount,
-		proteinCategoryCount
-	);
+	console.log('newOrderItems', orderItems);
+	// var newToppingCategoryListWithPricesofToppingCategories = toppingPricing(
+	// 	toppingCategoryCount,
+	// 	proteinCategoryCount
+	// );
 
-	console.log('TcatPrice', newToppingCategoryListWithPricesofToppingCategories);
+	// console.log('TcatPrice', newToppingCategoryListWithPricesofToppingCategories);
 
-	console.log('ingredientsDict', ingredientsDict);
-	console.log('newCatCount', newToppingCategoryListWithPricesofToppingCategories);
-	console.log('ingredientsDict', ingredientsDict);
+	// console.log('ingredientsDict', ingredientsDict);
+	// console.log('newCatCount', newToppingCategoryListWithPricesofToppingCategories);
+	// console.log('ingredientsDict', ingredientsDict);
 	var orderTotal = 0;
-	for (var toppingCategoryKey in ingredientsDict) {
-		// toppingCategoryKey is a key in the orderToppings dictionary
-		for (var i = 0; i < newToppingCategoryListWithPricesofToppingCategories.length; i++) {
-			// newToppingCategoryListWithPricesofToppingCategories[i] is an individual dictionary
-			var dictKey = Object.keys(newToppingCategoryListWithPricesofToppingCategories[i])[0];
+	// for (var toppingCategoryKey in ingredientsDict) {
+	// 	// toppingCategoryKey is a key in the orderToppings dictionary
+	// 	for (var i = 0; i < newToppingCategoryListWithPricesofToppingCategories.length; i++) {
+	// 		// newToppingCategoryListWithPricesofToppingCategories[i] is an individual dictionary
+	// 		var dictKey = Object.keys(newToppingCategoryListWithPricesofToppingCategories[i])[0];
 
-			if (toppingCategoryKey == dictKey) {
-				const pricingDict = {};
-				console.log('toppingCategoryKey', toppingCategoryKey);
-				console.log('dictKey', dictKey);
-				pricingDict['price'] = newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
-				orderTotal += newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
-				console.log('pDict', pricingDict);
-				ingredientsDict[toppingCategoryKey].push(pricingDict);
-				break;
-			}
-		}
-	}
+	// 		if (toppingCategoryKey == dictKey) {
+	// 			const pricingDict = {};
+	// 			console.log('toppingCategoryKey', toppingCategoryKey);
+	// 			console.log('dictKey', dictKey);
+	// 			pricingDict['price'] = newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
+	// 			orderTotal += newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
+	// 			console.log('pDict', pricingDict);
+	// 			ingredientsDict[toppingCategoryKey].push(pricingDict);
+	// 			break;
+	// 		}
+	// 	}
+	// }
 	// orderToppingsDict['price'] = orderTotal;
 
 	orderToppingsDict['drinks'] = ingredientsDict;
@@ -789,7 +846,6 @@ $(window).on('load resize', function () {
 			cardDeckTitleValues.push(g[i].innerHTML);
 		}
 
-		const constCardDeckTitleValues = [...cardDeckTitleValues];
 		var cardDeckChildrenLength = [];
 		var constCardDeckNodes = [];
 		for (i = 0; i < constBLength; i++) {

@@ -520,4 +520,4 @@ def create_everything():
     create_coffee_syrup_flavor()
 
 
-# create_everything()
+create_everything()

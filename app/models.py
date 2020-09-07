@@ -548,6 +548,6 @@ class Ice_Cream_Price(db.Model):
 
 
 # 2000-12-31
-# db.drop_all()
-# db.create_all()
+db.drop_all()
+db.create_all()
 # End of Models.py
