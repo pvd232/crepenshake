@@ -9,15 +9,15 @@
 		"id": "almond_milk"
 	},
 	{
-		"id": "full_moon_milk"
-	},
-	{
-		"id": "three_quarter_moon_milk"
+		"id": "quarter_moon_milk"
 	},
 	{
 		"id": "half_moon_milk"
 	},
 	{
-		"id": "quarter_moon_milk"
+		"id": "three_quarter_moon_milk"
+	},
+	{
+		"id": "full_moon_milk"
 	}
 ]

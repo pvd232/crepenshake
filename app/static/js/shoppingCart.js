@@ -73,10 +73,6 @@ function doShowAll() {
 			const crepes = orderDict['orderCrepe'];
 
 			for (k = 0; k <= crepes.length - 1; k++) {
-				// had to do this to get this first crepe to show up as number 1 on the meal summary
-				// const stringifiedDataObject = localStorage.getItem(key);
-				// console.log('StringifiedDataObject', stringifiedDataObject);
-
 				//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
 				var formattedOtherToppings = [];
 				const customCrepeIngredients = crepes[k]['ingredients'];
@@ -154,6 +150,7 @@ function doShowAll() {
 
 				for (var i = 0; i < formattedOtherToppings.length; i++) {
 					const toppingPrice = formattedOtherToppings[i]['price'];
+
 					orderPrice += toppingPrice;
 					subtotal += toppingPrice;
 
@@ -190,20 +187,120 @@ function doShowAll() {
 				);
 			} // end of the loop iterating through crepes in the order
 		} // end of for loop confirming orderCrepe existence
-
+		// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
 		if ('orderDrink' in orderDict) {
-			// https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
-			const drinks = orderDict['orderDrink'];
-			console.log('drank', drinks);
-			for (var i = 0; i < drinks.length; i++) {
-				console.log('aDrink', drinks[i]);
-				$(`<div class="row" style= "margin-bottom: 20px;" id="${i}row"><div class="col-9" style="margin-right: 0px; " id="${i}col"><h5 style=''>
-				${Object.keys(drinks[i])[0]}</h5>
-					</div><div class="col-3" style=""id="${i}col"><h4 style=''>${
-					drinks[i][Object.keys(drinks[i])[0]]
-				}</h4></div></div>`).insertAfter(`#${i}row`);
+			if ($('#modalBody1').children.length > 0) {
+				// format the drink list
+				$('#modalBody1').append(
+					`<div class="container" id="0container"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="00row"><h5 style='font-weight: 700; '>Drinks</h5></div></div>`
+				);
+				orderDrinks = orderDict['orderDrink'];
+
+				for (k = 0; k <= orderDrinks.length - 1; k++) {
+					// const lastElementId = $('#modalBody1').children().last().attr('id');
+					//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+					var formattedDrinks = [];
+					const drinks = orderDrinks[k]['drinks'];
+					for (var key in drinks) {
+						if (key != 'drinkTotal') {
+							console.log('key', key);
+							const drinksInDrinkCategory = drinks[key];
+							console.log('drinksInDrinkCategory', drinksInDrinkCategory);
+							const formatDict = {};
+							var format = '';
+							for (var i = 0; i < drinksInDrinkCategory.length; i++) {
+								var drink = drinksInDrinkCategory[i];
+								var drinkName = splitCamelCaseToString(drink['name']);
+								// var drinkQuantity = drink['servingSize'];
+								console.log('drinkName', drinkName);
+								console.log('drinkQuantity');
+								// drinkQuantity = capitalize(drinkQuantity);
+								// format += drinkQuantity;
+								format += drinkName;
+								if (i != drinksInDrinkCategory.length - 1) {
+									format += ' and ';
+								}
+								formatDict['price'] = drink['price'];
+							}
+							if (key === 'coffee') {
+								const milk = drink['milk'];
+								var milkFormat = '';
+								var milkName = splitCamelCaseToString(milk['name']);
+								var milkPrice = milk['price'];
+								milkFormat += milkName;
+								formatDict['milkFormat'] = milkFormat;
+								formatDict['milkPrice'] = milkPrice;
+
+								const espresso = drink['espresso'];
+								var espressoFormat = '';
+
+								var espressoName = capitalize(espresso['name']);
+								var espressoQuantity = espresso['quantity'];
+								var espressoPrice = espresso['price'];
+								console.log('espressoPrice: %s', espressoPrice);
+
+								espressoFormat += espressoQuantity;
+								espressoFormat += ' ';
+								espressoFormat += espressoName;
+								espressoFormat += ' Shots';
+								formatDict['espressoFormat'] = espressoFormat;
+								formatDict['espressoPrice'] = espressoPrice;
+							}
+							formatDict['format'] = format;
+							formattedDrinks.push(formatDict);
+						}
+					}
+
+					console.log('formattedDrinks', formattedDrinks);
+					// https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
+					console.log('drank', drinks);
+					for (var i = 0; i < formattedDrinks.length; i++) {
+						drink = formattedDrinks[i];
+						const drinkPrice = drink['price'];
+
+						console.log('aDrink', drink);
+
+						if ('milkFormat' in drink) {
+							const milkPrice = drink['milkPrice'];
+							const espressoPrice = drink['espressoPrice'];
+							$(`<div class="row" style= "margin-bottom: 20px;">
+							<div class="col-9" style="margin-right: 0px; " >
+								<h5 style=''>${drink['format']}</h5>
+							</div>
+							<div class="col-3">
+								<h4 style=''>$${drinkPrice}</h4>
+							</div>
+							</div>
+							<div class="row" style= "margin-bottom: 20px;">
+							<div class="col-9" style="margin-right: 0px; " >
+								<h5 style=''>${drink['espressoFormat']}</h5>
+							</div>
+							<div class="col-3" style="">
+								<h4 style=''>$${espressoPrice}</h4>
+							</div></div>
+							<div class="row" style= "margin-bottom: 20px;" id="${k}${i + 1}row">
+							<div class="col-9" style="margin-right: 0px; " id="${k}${i}col">
+								<h5 style=''>${drink['milkFormat']}</h5>
+							</div>
+							<div class="col-3" style=""id="${k}${i + 2}col">
+								<h4 style=''>$${milkPrice}</h4>
+							</div>
+							</div>`).insertAfter(`#${k}${i}row`);
+						} else {
+							$(`<div class="row" style= "margin-bottom: 20px;" id="${k}${i + 1}row">
+							<div class="col-9" style="margin-right: 0px; " id="${k}${i}col">
+								<h5 style=''>${drink['format']}</h5>
+							</div>
+							<div class="col-3" style=""id="${k}${i + 2}col">
+								<h4 style=''>$${drinkPrice}</h4>
+							</div>
+							</div>`).insertAfter(`#${k}${i}row`);
+						}
+					}
+				}
 			}
 		}
+
 		$(`<div class="modal-footer" id="footer"></div>`).insertAfter(`#modalBody1`);
 
 		$(`#footer`).append(`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3>

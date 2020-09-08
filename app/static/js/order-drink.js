@@ -688,7 +688,7 @@ function checkOut() {
 	//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
 	// var proteinCategoryCount = [];
 	const coffeeArray = orderItems['coffee'];
-
+	var orderTotal = 0;
 	for (var key in orderItems) {
 		const drinksForItemCategory = orderItems[key];
 		console.log('drinksForItemCategory', drinksForItemCategory);
@@ -715,9 +715,11 @@ function checkOut() {
 					espressoDict['price'] = espressoPrice.toFixed(2);
 					espressoDict['name'] = 'espresso';
 					drink['espresso'] = espressoDict;
+					orderTotal += espressoPrice;
 				} else if (key === 'milk') {
 					// recompartmentalize the milk dictionary into the coffee dictionary in the coffee array then delete the milk category from orderItems
 					coffeeArray[0]['milk'] = drink;
+					orderTotal += drink['price'];
 					delete orderItems[key];
 				} else if (key === 'coffee_syrup') {
 					var syrupPrice = 0;
@@ -730,23 +732,29 @@ function checkOut() {
 						dictSource['quantity'] = 1;
 					}
 					dictSource['price'] = syrupPrice.toFixed(2);
+					orderTotal += syrupPrice;
 					dictSource['name'] = key;
 					// recompartmentalize the coffee_syrup dictionary into the coffee dictionary in the coffee array then delete the coffee_syrup category from orderItems
 					coffeeArray[0]['syrup'] = dictSource;
 					delete orderItems[key]; // https://www.tutorialspoint.com/Remove-elements-from-a-Dictionary-using-Javascript
-				} else if ('milkshake') {
+				} else if (key === 'milkshake') {
 					console.log('itemQuantity', itemQuantity);
 					console.log('itemPrice', itemPrice);
 					const milkShakePrice = itemQuantity * itemPrice;
 					const dictSource = {};
 					dictSource['price'] = milkShakePrice.toFixed(2);
+					var milkshakeName = drink['name'];
+					milkshakeName += 'Milkshake';
+					dictSource['name'] = milkshakeName;
+					orderTotal += milkShakePrice;
 					Object.assign(drink, dictSource);
-				} else if ('bottled') {
+				} else if (key === 'bottled') {
 					const bottledPrice = itemQuantity * itemPrice;
 					const dictSource = {};
 					dictSource['price'] = bottledPrice.toFixed(2);
+					orderTotal += bottledPrice;
 					Object.assign(drink, dictSource);
-				} else if ('non-coffee') {
+				} else if (key === 'non-coffee') {
 					const nonCoffeePrice = itemQuantity * itemPrice;
 					const dictSource = {};
 					dictSource['price'] = nonCoffeePrice.toFixed(2);
@@ -756,43 +764,13 @@ function checkOut() {
 		}
 	}
 	console.log('newOrderItems', orderItems);
-	// var newToppingCategoryListWithPricesofToppingCategories = toppingPricing(
-	// 	toppingCategoryCount,
-	// 	proteinCategoryCount
-	// );
-
-	// console.log('TcatPrice', newToppingCategoryListWithPricesofToppingCategories);
-
-	// console.log('ingredientsDict', ingredientsDict);
-	// console.log('newCatCount', newToppingCategoryListWithPricesofToppingCategories);
-	// console.log('ingredientsDict', ingredientsDict);
-	var orderTotal = 0;
-	// for (var toppingCategoryKey in ingredientsDict) {
-	// 	// toppingCategoryKey is a key in the orderToppings dictionary
-	// 	for (var i = 0; i < newToppingCategoryListWithPricesofToppingCategories.length; i++) {
-	// 		// newToppingCategoryListWithPricesofToppingCategories[i] is an individual dictionary
-	// 		var dictKey = Object.keys(newToppingCategoryListWithPricesofToppingCategories[i])[0];
-
-	// 		if (toppingCategoryKey == dictKey) {
-	// 			const pricingDict = {};
-	// 			console.log('toppingCategoryKey', toppingCategoryKey);
-	// 			console.log('dictKey', dictKey);
-	// 			pricingDict['price'] = newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
-	// 			orderTotal += newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
-	// 			console.log('pDict', pricingDict);
-	// 			ingredientsDict[toppingCategoryKey].push(pricingDict);
-	// 			break;
-	// 		}
-	// 	}
-	// }
-	// orderToppingsDict['price'] = orderTotal;
 
 	orderToppingsDict['drinks'] = ingredientsDict;
 	console.log('drinks dict', orderToppingsDict);
 	console.log('orderToppingsDictwithIngredient', orderToppingsDict);
 	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
 	stringify(orderToppingsDict);
-	// $.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
+	$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
 
 	// });
 }

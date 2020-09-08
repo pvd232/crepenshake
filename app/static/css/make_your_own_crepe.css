@@ -20,7 +20,7 @@ h2 {
 
 .card-img-top {
 	width: 100% !important;
-	height: 200px !important;
+	height: 250px !important;
 	object-fit: cover;
 }
 
@@ -114,8 +114,8 @@ h2 {
 .card-deck .card {
 	max-width: 220px !important;
 	min-width: 190px !important;
+	min-height: 360px !important;
 	margin-bottom: 40px !important;
-	max-height: 330px !important;
 }
 
 .card .card-title {

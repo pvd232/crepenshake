@@ -44,11 +44,7 @@
 		"serving_size": "regular",
 		"price": 0.0
 	},
-	{
-		"ingredient_id": "green_onion",
-		"serving_size": "regular",
-		"price": 0.0
-	},
+
 	{
 		"ingredient_id": "mushrooms",
 		"serving_size": "regular",
@@ -66,6 +62,11 @@
 	},
 	{
 		"ingredient_id": "sauteed_spinach",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_onions",
 		"serving_size": "regular",
 		"price": 0.0
 	},
@@ -100,11 +101,6 @@
 		"price": 0.0
 	},
 	{
-		"ingredient_id": "mozzarella",
-		"serving_size": "regular",
-		"price": 0.0
-	},
-	{
 		"ingredient_id": "swiss",
 		"serving_size": "regular",
 		"price": 0.0
@@ -131,6 +127,16 @@
 	},
 	{
 		"ingredient_id": "mango_salsa",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "peanut",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "chimichurri",
 		"serving_size": "regular",
 		"price": 0.99
 	},
@@ -196,11 +202,6 @@
 		"price": 0.0
 	},
 	{
-		"ingredient_id": "green_onion",
-		"serving_size": "light",
-		"price": 0.0
-	},
-	{
 		"ingredient_id": "mushrooms",
 		"serving_size": "light",
 		"price": 0.0
@@ -217,6 +218,11 @@
 	},
 	{
 		"ingredient_id": "sauteed_spinach",
+		"serving_size": "light",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_onions",
 		"serving_size": "light",
 		"price": 0.0
 	},
@@ -250,11 +256,7 @@
 		"serving_size": "light",
 		"price": 0.0
 	},
-	{
-		"ingredient_id": "mozzarella",
-		"serving_size": "light",
-		"price": 0.0
-	},
+
 	{
 		"ingredient_id": "swiss",
 		"serving_size": "light",
@@ -282,6 +284,16 @@
 	},
 	{
 		"ingredient_id": "mango_salsa",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "peanut",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "chimichurri",
 		"serving_size": "light",
 		"price": 0.99
 	},
@@ -350,11 +362,7 @@
 		"serving_size": "extra",
 		"price": 0.0
 	},
-	{
-		"ingredient_id": "green_onion",
-		"serving_size": "extra",
-		"price": 0.0
-	},
+
 	{
 		"ingredient_id": "mushrooms",
 		"serving_size": "extra",
@@ -372,6 +380,11 @@
 	},
 	{
 		"ingredient_id": "sauteed_spinach",
+		"serving_size": "extra",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "sauteed_onions",
 		"serving_size": "extra",
 		"price": 0.0
 	},
@@ -406,11 +419,6 @@
 		"price": 0.99
 	},
 	{
-		"ingredient_id": "mozzarella",
-		"serving_size": "extra",
-		"price": 0.99
-	},
-	{
 		"ingredient_id": "swiss",
 		"serving_size": "extra",
 		"price": 0.99
@@ -437,6 +445,16 @@
 	},
 	{
 		"ingredient_id": "mango_salsa",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "peanut",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "chimichurri",
 		"serving_size": "extra",
 		"price": 0.99
 	},

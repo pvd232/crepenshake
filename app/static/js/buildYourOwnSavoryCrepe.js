@@ -920,7 +920,7 @@ function checkOut() {
 		console.log('odict', orderToppingsDict);
 		stringify(orderToppingsDict);
 		// $.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
-		// $.when(stringify(orderToppingsDict)).then(location.assign('/order-drink'));
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order-drink'));
 	}
 	// });
 }

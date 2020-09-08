@@ -51,26 +51,6 @@
 	},
 	{
 		"id": "",
-		"name": "cake_batter",
-		"price": 6.95
-	},
-	{
-		"id": "",
-		"name": "salted_caramel",
-		"price": 6.95
-	},
-	{
-		"id": "",
-		"name": "nutella_pretzel",
-		"price": 6.95
-	},
-	{
-		"id": "",
-		"name": "rasberry_white_chocolate",
-		"price": 6.95
-	},
-	{
-		"id": "",
 		"name": "blueberry",
 		"price": 6.95
 	}

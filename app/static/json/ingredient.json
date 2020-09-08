@@ -35,10 +35,7 @@
 		"id": "cilantro",
 		"ingredient_category_id": "veggie"
 	},
-	{
-		"id": "green_onion",
-		"ingredient_category_id": "veggie"
-	},
+
 	{
 		"id": "mushrooms",
 		"ingredient_category_id": "veggie"
@@ -49,6 +46,10 @@
 	},
 	{
 		"id": "sauteed_minced_garlic",
+		"ingredient_category_id": "veggie"
+	},
+	{
+		"id": "sauteed_onions",
 		"ingredient_category_id": "veggie"
 	},
 	{
@@ -80,10 +81,6 @@
 		"ingredient_category_id": "cheese"
 	},
 	{
-		"id": "mozzarella",
-		"ingredient_category_id": "cheese"
-	},
-	{
 		"id": "swiss",
 		"ingredient_category_id": "cheese"
 	},
@@ -105,6 +102,14 @@
 	},
 	{
 		"id": "mango_salsa",
+		"ingredient_category_id": "sauce"
+	},
+	{
+		"id": "peanut",
+		"ingredient_category_id": "sauce"
+	},
+	{
+		"id": "chimichurri",
 		"ingredient_category_id": "sauce"
 	},
 	{
