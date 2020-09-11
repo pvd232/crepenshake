@@ -1,5 +1,5 @@
 from model import *
-from repository import Ingredient_Repository,  Order_Repository, Drink_Repository
+from repository import Ingredient_Repository,  Order_Repository, Drink_Repository, Side_Repository
 
 from datetime import date
 import uuid
@@ -76,11 +76,10 @@ class Ingredient_Service(object):
         response = []
         with self.session_scope() as session:
             for ingredient_category in self.ingredient_repository.get_ingredient_categories(session):
-                print('ingredient_category.serialize',
-                      ingredient_category.serialize)
-                ingredient_model = Ingredient_Model(
-                    ingredient_category_id=ingredient_category.id)
-                response.append(ingredient_model)
+
+                ingredient_category_model = Ingredient_Category(
+                    id=ingredient_category.id)
+                response.append(ingredient_category)
                 # response.append(ingredient_model.serialize())
 
             return response
@@ -335,12 +334,81 @@ class Drink_Service(object):
         with self.session_scope() as session:
             for coffee_syrup in self.drink_repository.get_coffee_syrups(session):
                 drink_model = Drink_Model(
-                    coffee_syrup_flavor=coffee_syrup.id, price=coffee_syrup.price)
+                    coffee_syrup_flavor=coffee_syrup.id)
                 response.append(drink_model)
 
             return response
 
-        # pass in the order side list as a list to the order_side repository because I think making a new DB connection for every order side would be too expensive and lead to poor performance
+
+class Side_Service(object):
+    def __init__(self):
+        self.username = "postgres"
+        self.password = "Iqopaogh23!"
+        self.connection_string_beginning = "postgres://"
+        self.connection_string_end = "@localhost:5432/crepenshake"
+        self.connection_string = self.connection_string_beginning + \
+            self.username + ":" + self.password + self.connection_string_end
+        self.side_repository = Side_Repository()
+
+    @contextmanager
+    def session_scope(self):
+        # an Engine, which the Session will use for connection
+        # resources
+        self.side_engine = create_engine(self.connection_string)
+
+        # create a configured "Session" class
+        self.session_factory = sessionmaker(bind=self.side_engine)
+
+        # create a Session
+        self.session = scoped_session(self.session_factory)
+        try:
+            yield self.session
+            self.session.commit()
+        except:
+            self.session.rollback()
+            raise
+        finally:
+            self.session.close()
+        # now all calls to Session() will create a thread-local session
+
+    def get_croissants(self):
+        response = []
+
+        with self.session_scope() as session:
+            for croissant in self.side_repository.get_croissants(session):
+                croissant_model = Side_Model(
+                    side_name_id=croissant.side_name_id, flavor=croissant.flavor, price=croissant.price)
+                response.append(croissant_model)
+            return response
+
+    def get_side_names(self):
+        response = []
+
+        with self.session_scope() as session:
+            for side_name in self.side_repository.get_side_names(session):
+                side_name_model = Side_Model(side_name_id=side_name.id)
+                response.append(side_name_model)
+
+            return response
+
+    def get_ice_cream_prices(self):
+        response = []
+        with self.session_scope() as session:
+            for ice_cream in self.side_repository.get_ice_cream_prices(session):
+                ice_cream = Side_Model(
+                    flavor=ice_cream.flavor_id, serving_size=ice_cream.serving_size_id, price=ice_cream.price)
+                response.append(ice_cream)
+            return response
+
+    def get_toppings(self):
+        response = []
+        with self.session_scope() as session:
+            for topping in self.side_repository.get_toppings(session):
+                print(topping.serialize)
+                topping = Ingredient_Model(
+                    id=topping.ingredient_id, price=topping.price)
+                response.append(topping)
+            return response
 
         # def get_cheap_ingredients(self):
         #     response = []

@@ -69,16 +69,17 @@ function doShowAll() {
 		key = localStorage.key(0);
 		const orderDict = JSON.parse(localStorage.getItem(key));
 		console.log('check orderDict', orderDict);
-		if ('orderCrepe' in orderDict) {
-			const crepes = orderDict['orderCrepe'];
+		if (orderDict) {
+			if ('orderCrepe' in orderDict) {
+				const crepes = orderDict['orderCrepe'];
 
-			for (k = 0; k <= crepes.length - 1; k++) {
-				//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-				var formattedOtherToppings = [];
-				const customCrepeIngredients = crepes[k]['ingredients'];
-				console.log('customCrepeIngredients', customCrepeIngredients);
-				for (var key in customCrepeIngredients) {
-					if (key != 'crepeTotal' && key != 'flavorProfile') {
+				for (k = 0; k <= crepes.length - 1; k++) {
+					//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+					var formattedOtherToppings = [];
+					const customCrepeIngredients = crepes[k]['ingredients'];
+					console.log('customCrepeIngredients', customCrepeIngredients);
+					for (var key in customCrepeIngredients) {
+						// if (key != 'crepeTotal' && key != 'flavorProfile') {
 						console.log('key', key);
 						const topping = customCrepeIngredients[key];
 						console.log('topping', topping);
@@ -92,9 +93,11 @@ function doShowAll() {
 									var toppingQuantity = topping[i][toppingName];
 									if (toppingName != 'price') {
 										toppingQuantity = capitalize(toppingQuantity);
+										if (toppingQuantity != 'Regular') {
+											format += toppingQuantity;
+											format += ' ';
+										}
 										toppingName = splitCamelCaseToString(toppingName);
-										format += toppingQuantity;
-										format += ' ';
 										format += toppingName;
 										if (i != topping.length - 2) {
 											format += ' and ';
@@ -119,8 +122,11 @@ function doShowAll() {
 										console.log('pn', proteinName);
 										proteinName = splitCamelCaseToString(proteinName);
 										proteinQuantity = capitalize(proteinQuantity);
-										formattedProtein += proteinQuantity;
-										formattedProtein += ' ';
+										if (proteinQuantity != 'Regular') {
+											formattedProtein += proteinQuantity;
+											formattedProtein += ' ';
+										}
+
 										formattedProtein += proteinName;
 										if (i != protein.length - 2) {
 											formattedProtein += ' and ';
@@ -129,146 +135,180 @@ function doShowAll() {
 										formatDict['price'] = proteinQuantity;
 									}
 								}
-
 								formatDict['format'] = formattedProtein;
 								formattedOtherToppings.unshift(formatDict);
 							}
 						}
+						// }
 					}
-				}
-				var subtotal = 0;
+					var subtotal = 0;
 
-				// insert the row and child header with the crepe number
-				console.log('formattedOtherToppings', formattedOtherToppings);
-				$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
+					// insert the row and child header with the crepe number
+					console.log('formattedOtherToppings', formattedOtherToppings);
+					$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
 
-				$(`#container${k}`).append(
-					`<div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe #${
-						k + 1
-					}</h5></div>`
-				);
+					$(`#container${k}`).append(
+						`<div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe #${
+							k + 1
+						}</h5></div>`
+					);
 
-				for (var i = 0; i < formattedOtherToppings.length; i++) {
-					const toppingPrice = formattedOtherToppings[i]['price'];
+					for (var i = 0; i < formattedOtherToppings.length; i++) {
+						const toppingPrice = parseFloat(formattedOtherToppings[i]['price']);
 
-					orderPrice += toppingPrice;
-					subtotal += toppingPrice;
+						subtotal += toppingPrice;
 
-					$(`<div class="row" style= "margin-bottom: 20px;" id="row${k}${
-						i + 1
-					}"><div class="col-9" style="margin-right: 0px; " id="col${k}${i}"><h5 style=''>
+						$(`<div class="row" style= "margin-bottom: 20px;" id="row${k}${
+							i + 1
+						}"><div class="col-9" style="margin-right: 0px; " id="col${k}${i}"><h5 style=''>
 				${formattedOtherToppings[i]['format']}</h5>
 					</div><div class="col-3" style=""id="col${k}${i + 2}"><h4 style=''>$${formattedOtherToppings[i]['price'].toFixed(
-						2
-					)}</h4></div></div>`).insertAfter(`#row${k}${i}`);
-				} // end of the loop iterating through the toppings in the crepe
+							2
+						)}</h4></div></div>`).insertAfter(`#row${k}${i}`);
+					} // end of the loop iterating through the toppings in the crepe
 
-				// the i iterator ends with an id of k, i+1 so this must be formattedOtherToppings.length not formattedothertoppings.length -1
-				// insert the subtotal after completing the insertion of the toppings
-				$(
-					`<div class="row" id=row${k}${
-						formattedOtherToppings.length + 1
-					} style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${subtotal.toFixed(
-						2
-					)}</h4></div></div>`
-				).insertAfter($(`#row${k}${formattedOtherToppings.length}`));
+					// the i iterator ends with an id of k, i+1 so this must be formattedOtherToppings.length not formattedothertoppings.length -1
+					// insert the subtotal after completing the insertion of the toppings
+					$(
+						`<div class="row" id=row${k}${
+							formattedOtherToppings.length + 1
+						} style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${subtotal.toFixed(
+							2
+						)}</h4></div></div>`
+					).insertAfter($(`#row${k}${formattedOtherToppings.length}`));
+					orderPrice += subtotal;
+					console.log('orderPrice: %s', orderPrice);
 
-				// insert the modify, edit, delete buttons
-				$(`<div class="grid-container" id="buttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+					// insert the modify, edit, delete buttons
+					$(`<div class="grid-container" id="buttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#container${k}`));
-				$(`#buttoncontainer${k}`).append(
-					`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
-				);
-				$(`#buttoncontainer${k}`).append(
-					`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
-				);
-				$(`#buttoncontainer${k}`).append(
-					`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
-				);
-			} // end of the loop iterating through crepes in the order
-		} // end of for loop confirming orderCrepe existence
-		// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
-		if ('orderDrink' in orderDict) {
-			if ($('#modalBody1').children.length > 0) {
-				// format the drink list
-				$('#modalBody1').append(
-					`<div class="container" id="0container"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="00row"><h5 style='font-weight: 700; '>Drinks</h5></div></div>`
-				);
-				orderDrinks = orderDict['orderDrink'];
+					$(`#buttoncontainer${k}`).append(
+						`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
+					);
+					$(`#buttoncontainer${k}`).append(
+						`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
+					);
+					$(`#buttoncontainer${k}`).append(
+						`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
+					);
+				} // end of the loop iterating through crepes in the order
+			} // end of for loop confirming orderCrepe existence
+			// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
+			if ('orderDrink' in orderDict) {
+				if ($('#modalBody1').children.length > 0) {
+					// format the drink list
+					$('#modalBody1').append(
+						`<div class="container" id="0container"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="00row"><h5 style='font-weight: 700; '>Drinks</h5></div></div>`
+					);
+					orderDrinks = orderDict['orderDrink'];
 
-				for (k = 0; k <= orderDrinks.length - 1; k++) {
-					// const lastElementId = $('#modalBody1').children().last().attr('id');
-					//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-					var formattedDrinks = [];
-					const drinks = orderDrinks[k]['drinks'];
-					for (var key in drinks) {
-						if (key != 'drinkTotal') {
-							console.log('key', key);
-							const drinksInDrinkCategory = drinks[key];
-							console.log('drinksInDrinkCategory', drinksInDrinkCategory);
-							const formatDict = {};
-							var format = '';
-							for (var i = 0; i < drinksInDrinkCategory.length; i++) {
-								var drink = drinksInDrinkCategory[i];
-								var drinkName = splitCamelCaseToString(drink['name']);
-								// var drinkQuantity = drink['servingSize'];
-								console.log('drinkName', drinkName);
-								console.log('drinkQuantity');
-								// drinkQuantity = capitalize(drinkQuantity);
-								// format += drinkQuantity;
-								format += drinkName;
-								if (i != drinksInDrinkCategory.length - 1) {
-									format += ' and ';
+					for (k = 0; k <= orderDrinks.length - 1; k++) {
+						// const lastElementId = $('#modalBody1').children().last().attr('id');
+						//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+						var formattedDrinks = [];
+						const drinks = orderDrinks[k]['drinks'];
+						var drinkSubTotal = 0;
+						for (var key in drinks) {
+							if (key != 'drinkTotal') {
+								console.log('key', key);
+								const drinksInDrinkCategory = drinks[key];
+								console.log('drinksInDrinkCategory: %s', drinksInDrinkCategory);
+
+								if (drinksInDrinkCategory != '') {
+									console.log('drinksInDrinkCategory', drinksInDrinkCategory);
+									const formatDict = {};
+									var format = '';
+									for (var i = 0; i < drinksInDrinkCategory.length; i++) {
+										var drink = drinksInDrinkCategory[i];
+
+										console.log('drink: %s', drink);
+
+										var drinkName = splitCamelCaseToString(drink['name']);
+										// var drinkQuantity = drink['servingSize'];
+										console.log('drinkName', drinkName);
+										drinkQuantity = drink['quantity'];
+										console.log('drinkQuantity: %s', drinkQuantity);
+										var drinkPrice = parseFloat(drink['price']);
+										console.log('drinkPrice: %s', drinkPrice);
+
+										if (drinkQuantity > 1) {
+											format += drinkQuantity;
+											format += ' ';
+											format += drinkName;
+											format += 's';
+										} else if (drinkQuantity == 1) {
+											format += drinkQuantity;
+											format += ' ';
+											format += drinkName;
+										} else {
+											format += drinkName;
+										}
+										if (i != drinksInDrinkCategory.length - 1) {
+											format += ' and ';
+										}
+										formatDict['price'] = drinkPrice;
+									}
+									if (key === 'coffee') {
+										if ('milk' in drink) {
+											const milk = drink['milk'];
+											var milkFormat = '';
+											var milkName = splitCamelCaseToString(milk['name']);
+											var milkPrice = milk['price'];
+											milkFormat += milkName;
+											formatDict['milkFormat'] = milkFormat;
+											formatDict['milkPrice'] = milkPrice;
+										} else {
+											const milkFormat = '2% Milk';
+											const milkPrice = 0.0;
+											formatDict['milkFormat'] = milkFormat;
+											formatDict['milkPrice'] = milkPrice;
+										}
+										if ('espresso' in drink) {
+											const espresso = drink['espresso'];
+											var espressoFormat = '';
+											var espressoName = capitalize(espresso['name']);
+											var espressoQuantity = espresso['quantity'];
+											var espressoPrice = espresso['price'];
+											espressoFormat += espressoQuantity;
+											espressoFormat += ' ';
+											espressoFormat += espressoName;
+											espressoFormat += ' Shots';
+											formatDict['espressoFormat'] = espressoFormat;
+											formatDict['espressoPrice'] = espressoPrice;
+										} else {
+											if (drinkName.split(' ')[0] == '12oz') {
+												espressoFormat += '1 Espresso Shot';
+											} else if (drinkName.split(' ')[0] == '16oz')
+												espressoFormat += '2 Espresso Shots';
+										}
+
+										formatDict['espressoFormat'] = espressoFormat;
+										formatDict['espressoPrice'] = 0.0;
+									}
+									formatDict['format'] = format;
+									formattedDrinks.push(formatDict);
 								}
-								formatDict['price'] = drink['price'];
 							}
-							if (key === 'coffee') {
-								const milk = drink['milk'];
-								var milkFormat = '';
-								var milkName = splitCamelCaseToString(milk['name']);
-								var milkPrice = milk['price'];
-								milkFormat += milkName;
-								formatDict['milkFormat'] = milkFormat;
-								formatDict['milkPrice'] = milkPrice;
-
-								const espresso = drink['espresso'];
-								var espressoFormat = '';
-
-								var espressoName = capitalize(espresso['name']);
-								var espressoQuantity = espresso['quantity'];
-								var espressoPrice = espresso['price'];
-								console.log('espressoPrice: %s', espressoPrice);
-
-								espressoFormat += espressoQuantity;
-								espressoFormat += ' ';
-								espressoFormat += espressoName;
-								espressoFormat += ' Shots';
-								formatDict['espressoFormat'] = espressoFormat;
-								formatDict['espressoPrice'] = espressoPrice;
-							}
-							formatDict['format'] = format;
-							formattedDrinks.push(formatDict);
 						}
-					}
 
-					console.log('formattedDrinks', formattedDrinks);
-					// https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
-					console.log('drank', drinks);
-					for (var i = 0; i < formattedDrinks.length; i++) {
-						drink = formattedDrinks[i];
-						const drinkPrice = drink['price'];
+						console.log('formattedDrinks', formattedDrinks);
+						// https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
+						console.log('drank', drinks);
+						for (var i = 0; i < formattedDrinks.length; i++) {
+							drink = formattedDrinks[i];
+							const drinkPrice = drink['price'];
+							drinkSubTotal += drinkPrice;
+							console.log('drinkPrice: %s', drinkPrice);
 
-						console.log('aDrink', drink);
-
-						if ('milkFormat' in drink) {
-							const milkPrice = drink['milkPrice'];
-							const espressoPrice = drink['espressoPrice'];
-							$(`<div class="row" style= "margin-bottom: 20px;">
+							if ('milkFormat' in drink) {
+								const milkPrice = drink['milkPrice'];
+								const espressoPrice = drink['espressoPrice'];
+								$(`<div class="row" style= "margin-bottom: 20px;">
 							<div class="col-9" style="margin-right: 0px; " >
 								<h5 style=''>${drink['format']}</h5>
 							</div>
 							<div class="col-3">
-								<h4 style=''>$${drinkPrice}</h4>
+								<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
 							</div>
 							</div>
 							<div class="row" style= "margin-bottom: 20px;">
@@ -286,8 +326,11 @@ function doShowAll() {
 								<h4 style=''>$${milkPrice}</h4>
 							</div>
 							</div>`).insertAfter(`#${k}${i}row`);
-						} else {
-							$(`<div class="row" style= "margin-bottom: 20px;" id="${k}${i + 1}row">
+								drinkSubTotal += parseFloat(milkPrice);
+								drinkSubTotal += parseFloat(espressoPrice);
+							} // coffee block
+							else {
+								$(`<div class="row" style= "margin-bottom: 20px;" id="${k}${i + 1}row">
 							<div class="col-9" style="margin-right: 0px; " id="${k}${i}col">
 								<h5 style=''>${drink['format']}</h5>
 							</div>
@@ -295,20 +338,194 @@ function doShowAll() {
 								<h4 style=''>$${drinkPrice}</h4>
 							</div>
 							</div>`).insertAfter(`#${k}${i}row`);
-						}
+							} // all other drinks
+						} // end of for loop iterating through drink list
+						console.log('drinkSubTotal', drinkSubTotal);
+						$(
+							`<div class="row" id="${k}${
+								formattedDrinks.length + 1
+							}row" style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${drinkSubTotal.toFixed(
+								2
+							)}</h4></div></div>`
+						).insertAfter($(`#${k}${formattedDrinks.length}row`));
 					}
+					console.log('orderPriceDrink: %s', orderPrice);
+
+					orderPrice += drinkSubTotal;
+					console.log('orderPriceDrink: %s', orderPrice);
 				}
 			}
+			if ('orderSide' in orderDict) {
+				if ($('#modalBody1').children.length > 0) {
+					// format the drink list
+					$('#modalBody1').append(
+						`<div class="container" id="0container"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="00row"><h5 style='font-weight: 700; '>Sides</h5></div></div>`
+					);
+					const orderSide = orderDict['orderSide'];
+
+					for (var k = 0; k <= orderSide.length - 1; k++) {
+						// const lastElementId = $('#modalBody1').children().last().attr('id');
+						//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+						var formattedSides = [];
+						const sides = orderSide[k]['sides'];
+						var sideSubTotal = 0;
+						for (var key in sides) {
+							// if (key != 'sideTotal') {
+							console.log('key', key);
+							const sidesInSideCategory = sides[key];
+							console.log('sidesInSideCategory: %s', sidesInSideCategory);
+
+							if (sidesInSideCategory != '') {
+								console.log('sidesInSideCategory', sidesInSideCategory);
+								const formatDict = {};
+								var format = '';
+								for (var i = 0; i < sidesInSideCategory.length; i++) {
+									var side = sidesInSideCategory[i];
+
+									console.log('side: %s', side);
+
+									var sideName = splitCamelCaseToString(side['name']);
+									// var sideQuantity = side['servingSize'];
+									console.log('sideName', sideName);
+									sideQuantity = side['quantity'];
+									console.log('sideQuantity: %s', sideQuantity);
+									var sidePrice = parseFloat(side['price']);
+									console.log('sidePrice: %s', sidePrice);
+
+									if (sideQuantity > 1) {
+										format += sideQuantity;
+										format += ' ';
+										format += sideName;
+										format += 's';
+									} else if (sideQuantity == 1) {
+										format += sideQuantity;
+										format += ' ';
+										format += sideName;
+									} else {
+										format += sideName;
+									}
+									if (i != sidesInSideCategory.length - 1) {
+										format += ' and ';
+									}
+									formatDict['price'] = sidePrice;
+								}
+								// if (key === 'coffee') {
+								// 	if ('milk' in side) {
+								// 		const milk = side['milk'];
+								// 		var milkFormat = '';
+								// 		var milkName = splitCamelCaseToString(milk['name']);
+								// 		var milkPrice = milk['price'];
+								// 		milkFormat += milkName;
+								// 		formatDict['milkFormat'] = milkFormat;
+								// 		formatDict['milkPrice'] = milkPrice;
+								// 	} else {
+								// 		const milkFormat = '2% Milk';
+								// 		const milkPrice = 0.0;
+								// 		formatDict['milkFormat'] = milkFormat;
+								// 		formatDict['milkPrice'] = milkPrice;
+								// 	}
+								// 	if ('espresso' in side) {
+								// 		const espresso = side['espresso'];
+								// 		var espressoFormat = '';
+								// 		var espressoName = capitalize(espresso['name']);
+								// 		var espressoQuantity = espresso['quantity'];
+								// 		var espressoPrice = espresso['price'];
+								// 		espressoFormat += espressoQuantity;
+								// 		espressoFormat += ' ';
+								// 		espressoFormat += espressoName;
+								// 		espressoFormat += ' Shots';
+								// 		formatDict['espressoFormat'] = espressoFormat;
+								// 		formatDict['espressoPrice'] = espressoPrice;
+								// 	} else {
+								// 		if (sideName.split(' ')[0] == '12oz') {
+								// 			espressoFormat += '1 Espresso Shot';
+								// 		} else if (sideName.split(' ')[0] == '16oz') espressoFormat += '2 Espresso Shots';
+								// 	}
+
+								// 	formatDict['espressoFormat'] = espressoFormat;
+								// 	formatDict['espressoPrice'] = 0.0;
+								// }
+								formatDict['format'] = format;
+								formattedSides.push(formatDict);
+							}
+							// }
+						}
+
+						console.log('formattedSides', formattedSides);
+						// https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
+						console.log('drank', sides);
+						for (var i = 0; i < formattedSides.length; i++) {
+							side = formattedSides[i];
+							const sidePrice = side['price'];
+							sideSubTotal += sidePrice;
+							console.log('sidePrice: %s', sidePrice);
+
+							$(`<div class="row" style= "margin-bottom: 20px;" id="${k}${i + 1}row">
+							<div class="col-9" style="margin-right: 0px; " id="${k}${i}col">
+								<h5 style=''>${side['format']}</h5>
+							</div>
+							<div class="col-3" style=""id="${k}${i + 2}col">
+								<h4 style=''>$${sidePrice}</h4>
+							</div>
+							</div>`).insertAfter(`#${k}${i}row`);
+							// all other sides
+						} // end of for loop iterating through side list
+						console.log('sideSubTotal', sideSubTotal);
+						$(
+							`<div class="row" id="${k}${
+								formattedSides.length + 1
+							}row" style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${sideSubTotal.toFixed(
+								2
+							)}</h4></div></div>`
+						).insertAfter($(`#${k}${formattedSides.length}row`));
+					}
+					console.log('orderPriceSide: %s', orderPrice);
+
+					orderPrice += sideSubTotal;
+					console.log('orderPriceSide: %s', orderPrice);
+
+					// after adding ice cream and croissants add the toppings
+
+					// const iceCreamDict = sides['ice_cream_bowl '];
+					// if ('toppings' in toppingDict) {
+					// 	arrayOfToppingDictionaries = iceCreamDict['toppings'];
+
+					// 	for (var j = 0; j < arrayOfToppingDictionaries.length; j++) {
+					// 		const topping = arrayOfToppingDictionaries[i];
+					// 		const toppingName = splitCamelCaseToString(topping['name']);
+					// 		// var drinkQuantity = drink['servingSize'];
+					// 		console.log('drinkName', toppingName);
+					// 		toppingQuantity = topping['quantity'];
+					// 		console.log('toppingQuantity: %s', toppingQuantity);
+					// 		var toppingPrice = parseFloat(topping['price']);
+
+					// 		const formattedTopping = toppingQuantity + ' ' + toppingName;
+					// 		$(`<div class="row" style= "margin-bottom: 20px;" id="${j}${i + 1}siderow">
+					// 	<div class="col-9" style="margin-right: 0px; " id="${j}${i}col">
+					// 		<h5 style=''>${formattedTopping}</h5>
+					// 	</div>
+					// 	<div class="col-3" style=""id="${j}${i + 2}col">
+					// 		<h4 style=''>$${toppingPrice}</h4>
+					// 	</div>
+					// 	</div>`).insertAfter(`#${j}${i}siderow`);
+					// 		// all other sides
+					// 	}
+					// }
+				}
+			}
+
+			$(`<div class="modal-footer" id="footer"></div>`).insertAfter(`#modalBody1`);
+
+			$(`#footer`).append(`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3>
+		</div>`);
+			$(`#footer`)
+				.append(`<div class="col-3" style="margin-left: 21px; " id="footerCol1"><h3 style="float:right; font-weight: bold; ">$${orderPrice.toFixed(
+				2
+			)}</h3>
+		</div>`);
 		}
-
-		$(`<div class="modal-footer" id="footer"></div>`).insertAfter(`#modalBody1`);
-
-		$(`#footer`).append(`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3>
-		</div>`);
-		$(`#footer`)
-			.append(`<div class="col-3" style="margin-left: 21px; " id="footerCol1"><h3 style="float:right; font-weight: bold; ">$${orderPrice.toFixed(
-			2
-		)}</h3>
-		</div>`);
 	}
 }
+// send mitra an updated resume
+// send mitra an unofficial transcript
+// prepare a statement of purpose that explains what in my background makes me a good candidate for the masters program

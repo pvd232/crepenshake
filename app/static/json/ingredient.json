@@ -1,131 +1,218 @@
 [
 	{
 		"id": "steak",
-		"ingredient_category_id": "protein"
+		"ingredient_category_id": "protein",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "chicken_breast",
-		"ingredient_category_id": "protein"
+		"ingredient_category_id": "protein",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "buffalo_chicken",
-		"ingredient_category_id": "protein"
+		"ingredient_category_id": "protein",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "honey_turkey",
-		"ingredient_category_id": "protein"
+		"ingredient_category_id": "protein",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "virginia_ham",
-		"ingredient_category_id": "protein"
+		"ingredient_category_id": "protein",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "blackened_tofu",
-		"ingredient_category_id": "protein"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "artichoke_heart",
-		"ingredient_category_id": "veggie"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "cheesy_grits",
-		"ingredient_category_id": "veggie"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "cilantro",
-		"ingredient_category_id": "veggie"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 
 	{
 		"id": "mushrooms",
-		"ingredient_category_id": "veggie"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "roasted_red_peppers",
-		"ingredient_category_id": "veggie"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "sauteed_minced_garlic",
-		"ingredient_category_id": "veggie"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "sauteed_onions",
-		"ingredient_category_id": "veggie"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "sauteed_spinach",
-		"ingredient_category_id": "veggie"
+		"ingredient_category_id": "veggie",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "blue_cheese_crumbles",
-		"ingredient_category_id": "cheese"
+		"ingredient_category_id": "cheese",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "gourmet_cheese",
-		"ingredient_category_id": "cheese"
+		"ingredient_category_id": "cheese",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "brie",
-		"ingredient_category_id": "cheese"
+		"ingredient_category_id": "cheese",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "cheddar",
-		"ingredient_category_id": "cheese"
+		"ingredient_category_id": "cheese",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "cream_cheese",
-		"ingredient_category_id": "cheese"
+		"ingredient_category_id": "cheese",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "lemon_ricotta",
-		"ingredient_category_id": "cheese"
+		"ingredient_category_id": "cheese",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "swiss",
-		"ingredient_category_id": "cheese"
+		"ingredient_category_id": "cheese",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "bérnaise",
-		"ingredient_category_id": "sauce"
+		"ingredient_category_id": "sauce",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "balsamic_glaze",
-		"ingredient_category_id": "sauce"
+		"ingredient_category_id": "sauce",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "creamy_lemon",
-		"ingredient_category_id": "sauce"
+		"ingredient_category_id": "sauce",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "diane",
-		"ingredient_category_id": "sauce"
+		"ingredient_category_id": "sauce",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "mango_salsa",
-		"ingredient_category_id": "sauce"
+		"ingredient_category_id": "sauce",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "peanut",
-		"ingredient_category_id": "sauce"
+		"ingredient_category_id": "sauce",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "chimichurri",
-		"ingredient_category_id": "sauce"
+		"ingredient_category_id": "sauce",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "basil",
-		"ingredient_category_id": "herb"
+		"ingredient_category_id": "herb",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "oregano",
-		"ingredient_category_id": "herb"
+		"ingredient_category_id": "herb",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "fresh_chives",
-		"ingredient_category_id": "herb"
+		"ingredient_category_id": "herb",
+		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "fresh_parsley",
-		"ingredient_category_id": "herb"
+		"ingredient_category_id": "herb",
+		"ingredient_flavor_profile_id": "savory"
+	},
+	{
+		"id": "rasberries",
+		"ingredient_category_id": "fruit",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "blueberries",
+		"ingredient_category_id": "fruit",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "bananas",
+		"ingredient_category_id": "fruit",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "strawberry_slices",
+		"ingredient_category_id": "fruit",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "apple_slices",
+		"ingredient_category_id": "fruit",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "toasted_coconut",
+		"ingredient_category_id": "sweetness",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "milk_chocolate",
+		"ingredient_category_id": "sweetness",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "dark_chocolate",
+		"ingredient_category_id": "sweetness",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "white_chocolate",
+		"ingredient_category_id": "sweetness",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "nutella",
+		"ingredient_category_id": "sweetness",
+		"ingredient_flavor_profile_id": "sweet"
+	},
+	{
+		"id": "caramel",
+		"ingredient_category_id": "sweetness",
+		"ingredient_flavor_profile_id": "sweet"
 	}
 ]

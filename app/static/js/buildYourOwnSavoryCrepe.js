@@ -7,6 +7,8 @@ function stringify(dataObject) {
 	// or an orderCrepe array, the order props, a drinks array, and a sides array
 	if (localStorage.length > 0) {
 		const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
+		console.log('order: %s', order);
+
 		if ('orderCrepe' in order) {
 			order['orderCrepe'].push(dataObject);
 			const stringifiedDataObject = JSON.stringify(order);
@@ -26,8 +28,15 @@ function stringify(dataObject) {
 		order['orderCrepe'].push(dataObject);
 		const stringifiedDataObject = JSON.stringify(order);
 		console.log('order', order);
-		console.log('stringifiedDataObject', stringifiedDataObject);
+		console.log('stringifiedDataObjectOrder', stringifiedDataObject);
 		localStorage.setItem('order', stringifiedDataObject);
+	}
+	for (i = 0; i < localStorage.length; i++) {
+		var key = localStorage.key(i);
+		console.log('key: %s', key);
+
+		var value = localStorage[key];
+		console.log('value: %s', value);
 	}
 	return true;
 }
@@ -918,7 +927,6 @@ function checkOut() {
 
 		//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
 		console.log('odict', orderToppingsDict);
-		stringify(orderToppingsDict);
 		// $.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
 		$.when(stringify(orderToppingsDict)).then(location.assign('/order-drink'));
 	}

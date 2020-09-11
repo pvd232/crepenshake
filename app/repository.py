@@ -1,7 +1,8 @@
 
-from models import Ingredient, Ingredient_Category, Order, Order_Crepe, Order_Side, Order_Drink, Customer, Custom_Crepe, Crepe, Drink, Drink_Category, Bottled_Drink, Non_Coffee_Drink, Milkshake, Milk, Coffee_Espresso, Coffee_Name_Serving_Size, Coffee_Syrup_Flavor, Coffee_Temperature
+from models import *
 from create_db import db
 from datetime import date
+from sqlalchemy import or_
 
 
 class Ingredient_Repository(object):
@@ -12,13 +13,14 @@ class Ingredient_Repository(object):
 
     def get_ingredient_prices(self, session):
 
-        ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price FROM ingredient i JOIN ingredient_serving_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
+        ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price FROM ingredient i JOIN ingredient_serving_size_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
                                             {"param": "regular"})
         return ingredient_prices
 
     def get_ingredient_categories(self, session):
         ingredient_categories = session.query(
-            Ingredient_Category).all()
+            Ingredient_Category.id).filter(Ingredient_Category.id != 'fruit').filter(Ingredient_Category.id != 'sweetness')
+        print("ingredient_categories: %s", ingredient_categories)
         return ingredient_categories
 
 
@@ -85,7 +87,7 @@ class Drink_Repository(object):
 
     def get_coffee_drinks(self, session):
         coffee = session.execute(
-            "SELECT * FROM coffee_name_serving_size JOIN drink_category d ON d.id = 'coffee'")
+            "SELECT * FROM coffee_name_serving_size_price JOIN drink_category d ON d.id = 'coffee'")
         return coffee
 
     def get_non_coffee_drinks(self, session):
@@ -99,10 +101,29 @@ class Drink_Repository(object):
 
     def get_coffee_syrups(self, session):
         coffee_syrups = session.query(
-            Coffee_Syrup_Flavor)
+            Coffee_Flavor_Syrup)
         return coffee_syrups
 
     def get_drink_categories(self, session):
         drink_categories = session.query(
             Drink_Category)
         return drink_categories
+
+
+class Side_Repository(object):
+    def get_croissants(self, session):
+        croissants = session.query(Croissant)
+        return croissants
+
+    def get_side_names(self, session):
+        side_names = session.query(Side_Name)
+        return side_names
+
+    def get_ice_cream_prices(self, session):
+        ice_cream_prices = session.query(Ice_Cream_Serving_Size_Price)
+        return ice_cream_prices
+
+    def get_toppings(self, session):
+        toppings = session.query(Ingredient_Serving_Size_Price).join(Ingredient).filter(or_(
+            Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'))
+        return toppings

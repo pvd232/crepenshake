@@ -1,22 +1,27 @@
 [
 	{
-		"side_id": "croissant",
+		"side_name_id": "croissant",
 		"flavor": "plain",
 		"price": 2.5
 	},
 	{
-		"side_id": "croissant",
+		"side_name_id": "croissant",
 		"flavor": "chocolate",
 		"price": 3.0
 	},
 	{
-		"side_id": "croissant",
+		"side_name_id": "croissant",
 		"flavor": "almond",
 		"price": 3.0
 	},
 	{
-		"side_id": "croissant",
+		"side_name_id": "croissant",
 		"flavor": "almond_chocolate",
 		"price": 3.5
+	},
+	{
+		"side_name_id": "croissant",
+		"flavor": "apple_strudel",
+		"price": 4.25
 	}
 ]

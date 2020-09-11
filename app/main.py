@@ -2,7 +2,7 @@ import os
 import json
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
-from service import Ingredient_Service, Order_Service, Drink_Service
+from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service
 from models import Ingredient_Category
 from repository import Ingredient_Repository
 
@@ -12,7 +12,7 @@ app = application
 
 
 def humanize(dict, attr):
-    print('dict', dict)
+    print('dict', dict.serialize())
     str = dict.__getattribute__(attr)
 
     frags = str.split('_')
@@ -73,8 +73,10 @@ def make_your_own_crepe():
     ingredient_service = Ingredient_Service()
     ingredient_prices = [humanize(x, 'id')
                          for x in ingredient_service.get_ingredient_prices()]
+
+    for price in ingredient_prices:
+        print('price', price.serialize())
     ingredient_categories = ingredient_service.get_ingredient_categories()
-    ingredient_categories = [x.serialize() for x in ingredient_categories]
     print('iCat', ingredient_categories)
     rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
                                "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
@@ -105,6 +107,24 @@ def order_drink():
     return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups)
 
 
+@app.route('/order-side')
+def order_side():
+    side_service = Side_Service()
+    croissants = [humanize(x, 'flavor') for x in side_service.get_croissants()]
+    # formatted_side_names = [humanize(x, 'side_name_id')
+    #                         for x in side_service.get_side_names()]
+
+    side_names = side_service.get_side_names()
+    ice_cream_prices = [humanize(x, 'flavor')
+                        for x in side_service.get_ice_cream_prices()]
+    toppings = [humanize(x, 'id')
+                for x in side_service.get_toppings()]
+    for x in toppings:
+        print(x.serialize())
+
+    return render_template('order_side.html', side_names=side_names, croissants=croissants, ice_cream_prices=ice_cream_prices, toppings=toppings)
+
+
 @app.route('/make-your-own-savory-crepe')
 def make_your_own_savory_crepe():
     return render_template('make_your_own_savory_crepe.html')
@@ -125,30 +145,6 @@ def checkout():
 @app.route('/order-confirmation')
 def order_confirmation():
     return render_template('order_confirmation.html')
-
-
-# @app.route("/static/add_pool", methods=['POST'])
-# def add_pool():
-
-#     pool = {}
-#     pool['pool_name'] = request.form['poolName']
-#     pool['status'] = request.form['status']
-#     pool['phone'] = request.form['phone']
-#     pool['pool_type'] = request.form['poolType']
-
-#     # Insert into database.
-
-#     modify_db(pool, post=True)
-
-#     return render_template('pool_added.html')
-
-
-# @app.route("/pools")
-# def get_pools():
-#     response = {}
-#     pools = query_data()
-
-#     return jsonify(pools)
 
 
 @app.route("/favicon.ico")

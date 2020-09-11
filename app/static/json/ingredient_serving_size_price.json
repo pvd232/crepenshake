@@ -156,6 +156,61 @@
 		"price": 0.5
 	},
 	{
+		"ingredient_id": "rasberries",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "blueberries",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "bananas",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "strawberry_slices",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "apple_slices",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "toasted_coconut",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "milk_chocolate",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "dark_chocolate",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "white_chocolate",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "nutella",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "caramel",
+		"serving_size": "regular",
+		"price": 0.99
+	},
+	{
 		"ingredient_id": "fresh_parsley",
 		"serving_size": "regular",
 		"price": 0.5
@@ -169,6 +224,11 @@
 		"ingredient_id": "chicken_breast",
 		"serving_size": "light",
 		"price": 8.5
+	},
+	{
+		"ingredient_id": "buffalo_chicken",
+		"serving_size": "light",
+		"price": 7.95
 	},
 
 	{
@@ -316,6 +376,57 @@
 		"ingredient_id": "fresh_parsley",
 		"serving_size": "light",
 		"price": 0.0
+	},
+
+	{
+		"ingredient_id": "blueberries",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "bananas",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "strawberry_slices",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "apple_slices",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "toasted_coconut",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "milk_chocolate",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "dark_chocolate",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "white_chocolate",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "nutella",
+		"serving_size": "light",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "caramel",
+		"serving_size": "light",
+		"price": 0.99
 	},
 	{
 		"ingredient_id": "steak",
@@ -477,5 +588,55 @@
 		"ingredient_id": "fresh_parsley",
 		"serving_size": "extra",
 		"price": 0.5
+	},
+	{
+		"ingredient_id": "blueberries",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "bananas",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "strawberry_slices",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "apple_slices",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "toasted_coconut",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "milk_chocolate",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "dark_chocolate",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "white_chocolate",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "nutella",
+		"serving_size": "extra",
+		"price": 0.99
+	},
+	{
+		"ingredient_id": "caramel",
+		"serving_size": "extra",
+		"price": 0.99
 	}
 ]

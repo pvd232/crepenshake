@@ -1,0 +1,24 @@
+[
+	{
+		"id": "latte"
+	},
+	{
+		"id": "vanilla_latte"
+	},
+	{
+		"id": "chocolate_mocha"
+	},
+	{
+		"id": "white_chocolate_mocha"
+	},
+
+	{
+		"id": "caramel_macchiato"
+	},
+	{
+		"id": "drip_coffee"
+	},
+	{
+		"id": "cappuccino"
+	}
+]

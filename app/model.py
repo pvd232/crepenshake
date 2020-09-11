@@ -13,6 +13,11 @@ class Crepe_Model(object):
         return serialized_attributes
 
 
+class Ingredient_Category(object):
+    def __init__(self, id=None):
+        self.id = id
+
+
 class Ingredient_Model(object):
     def __init__(self, id=None, ingredient_category_id=None, serving_size=None, price=None):
         self.id = id
@@ -163,9 +168,10 @@ class Drink_Model(object):
 
 
 class Side_Model(object):
-    def __init__(self, id=None, side_type_id=None, flavor=None, price=None, serving_size=None, topping=None):
+    def __init__(self, id=None, side_type_id=None, side_name_id=None, flavor=None, price=None, serving_size=None, topping=None):
         self.id = id
         self.side_type_id = side_type_id
+        self.side_name_id = side_name_id
         self.flavor = flavor
         self.price = price
         self.serving_size = serving_size

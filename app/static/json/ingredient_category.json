@@ -13,5 +13,11 @@
 	},
 	{
 		"id": "herb"
+	},
+	{
+		"id": "fruit"
+	},
+	{
+		"id": "sweetness"
 	}
 ]

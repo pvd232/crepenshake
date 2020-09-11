@@ -2,9 +2,38 @@
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
 
-var coffeeBool = false;
 // var dripBool = false;
 // var latteBool = false;
+var iceCreamBool = false;
+
+// class side {
+// 	constructor(name = undefined, price = undefined, quantity = undefined) {
+// 		this.name = name;
+// 		this.price = price;
+// 		this.quantity = quantity;
+// 		this.makeSound = () => console.log(`The ${this.name} named ${this.price} goes ${this.quantity}!`);
+// 	}
+// }
+
+// class thisOrder {
+// 	constructor(orderSide = new Array()) {
+// 		this.orderSide = orderSide;
+// 		this.display = () => alert(this.orderSide);
+// 	}
+
+// 	addSide = (side) => {
+// 		this.orderSide.push(side);
+// 	};
+
+// 	alertSides = () => {
+// 		for (var i = 0; i < this.orderSide.length; i++) {
+// 			this.orderSide[i].makeSound();
+// 		}
+// 		{
+// 		}
+// 	};
+// }
+
 function stringify(dataObject) {
 	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
@@ -12,14 +41,14 @@ function stringify(dataObject) {
 	if (localStorage.length > 0) {
 		const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
 		console.log('order local stor > 0', order);
-		if ('orderDrink' in order) {
-			order['orderDrink'].push(dataObject);
+		if ('orderSide' in order) {
+			order['orderSide'].push(dataObject);
 			const stringifiedDataObject = JSON.stringify(order);
 			console.log('stringifiedDataObject', stringifiedDataObject);
 			localStorage.setItem('order', stringifiedDataObject);
 		} else {
-			order['orderDrink'] = [];
-			order['orderDrink'].push(dataObject);
+			order['orderSide'] = [];
+			order['orderSide'].push(dataObject);
 			const stringifiedDataObject = JSON.stringify(order);
 			console.log('order', order);
 			console.log('stringifiedDataObject', stringifiedDataObject);
@@ -27,8 +56,8 @@ function stringify(dataObject) {
 		}
 	} else {
 		const order = {};
-		order['orderDrink'] = [];
-		order['orderDrink'].push(dataObject);
+		order['orderSide'] = [];
+		order['orderSide'].push(dataObject);
 		const stringifiedDataObject = JSON.stringify(order);
 		console.log('order', order);
 		console.log('stringifiedDataObject', stringifiedDataObject);
@@ -44,36 +73,11 @@ function stringify(dataObject) {
 	return true;
 }
 
-function checkIfCoffeeSelected() {
-	coffeeBool = false;
-	// dripBool = false;
-	// latteBool = false;
-	$(`#coffee`)
-		.find('.btn2')
-		.each(function () {
-			// console.log('.btn2 classname', $(this).attr('class'));
-			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-			var toppingCategory = toppingCategoryAndToppingNameArray[0];
-			var toppingName = toppingCategoryAndToppingNameArray[1];
-			// console.log('tcat && tname', toppingCategory, toppingName);
-			if ($(this).css(`--${toppingCategory}`) == toppingName) {
-				coffeeBool = true;
-				// if ($(this).css('--drip') === 'true') {
-				// 	dripBool = true;
-				// 	console.log('dripBool true');
-				// }
-				// if ($(this).css('--latte') === 'true') {
-				// 	console.log('latte');
-				// 	latteBool = true;
-				// }
-			}
-		});
-}
-
 function getCSSToppingName(element) {
 	var toppingCategory = $(element).closest('.card-deck').attr('id');
 	var toppingName = $(element).closest('.card').find('.card-title').text().split(' ');
 	var formattedtoppingName = '';
+
 	if (toppingName.length > 1) {
 		const firstName = toppingName[0].toLowerCase();
 		formattedtoppingName += firstName;
@@ -83,7 +87,7 @@ function getCSSToppingName(element) {
 		}
 		toppingName = formattedtoppingName;
 	} else {
-		toppingName = toppingName[0];
+		toppingName = toppingName[0].toLowerCase();
 	}
 	var resultArray = [];
 	resultArray.push(toppingCategory);
@@ -96,12 +100,115 @@ function removeAllChildNodes(parent) {
 		parent.removeChild(parent.firstChild);
 	}
 }
+function checkIfIceCreamSelected() {
+	iceCreamBool = false;
+	console.log('iceCreamBool check if ice cream: %s', iceCreamBool);
 
+	$(`#ice_cream_bowl`)
+		.find('.btn2')
+		.each(function () {
+			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+			var toppingCategory = toppingCategoryAndToppingNameArray[0];
+			var toppingName = toppingCategoryAndToppingNameArray[1];
+			if ($(this).css(`--${toppingCategory}`) == toppingName) {
+				iceCreamBool = true;
+			}
+		});
+
+	if (iceCreamBool) {
+		$('#toppings').each(function () {
+			console.log('coffee_syrup & milk $(this) PT2', $(this));
+			$(this)
+				.find('.card')
+				.each(function () {
+					$(this).css('opacity', '1');
+				});
+			$('#errorTopping').hide();
+		});
+	} else {
+		// if you unselected ice crean then we need to reset the topping values
+		var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+		var toppingCategory = toppingCategoryAndToppingNameArray[0];
+		$('#toppings')
+			.find('.card')
+			.each(function () {
+				// console.log($(this), '$(this2)');
+				$(this).css('opacity', '.3');
+				$(this).find('.btn2').hide();
+				// console.log('toppingName', toppingName);
+				// console.log('toppingCat', toppingCategory);
+				// console.log(
+				// 	'css val for topping cat b4 false',
+				// 	$(this).find('.btn2').css(`--${toppingCategory}`)
+				// );
+				$(this).find('.btn2').css(`--${toppingCategory}`, 'false');
+				// console.log(
+				// 	'css val for topping cat after false',
+				// 	$(this).find('.btn2').css(`--${toppingCategory}`)
+				// );
+				$(this).find('.btn').hide();
+				$(this).find('.btn2').css('--regular', 'false');
+				$(this).find('.btn2').css('--half', 'false');
+				$(this).find('.btn2').css('--extra', 'false');
+			});
+		// console.log('coffeeBool false');
+		$('#errorTopping').show();
+	}
+	console.log('iceCreamBool check if ice cream: %s', iceCreamBool);
+}
 //format the document
 $(window).on('load', function () {
 	$('.card').each(function (i) {
 		this.id = 'card' + i;
 	});
+
+	// need to distinguish between the flavor and the name of the side for the backend
+	// the logic for the croissant if different from the ice cream
+	$('#croissant')
+		.find('.card')
+		.each(function () {
+			const toppingArray = $(this).closest('.card').find('.card-title').text().split(' ');
+
+			var flavor = '';
+			if (toppingArray.length > 1) {
+				// the flavor of the croissant will always be all the words in card title besides the last word which will be the topping category
+				// im storing the flavor using camelcase to keep with previous convention
+				for (var i = 0; i < toppingArray.length - 1; i++) {
+					if (i == 0) {
+						const firstWordInFlavor = toppingArray[i].toLowerCase();
+						flavor += firstWordInFlavor;
+					} else {
+						const flavorWord = toppingArray[i];
+						flavor += flavorWord;
+					}
+				}
+				$(this).css('--flavor', `${flavor}`);
+			} else {
+				$(this).css('--flavor', `${toppingArray[0]}`);
+			}
+			console.log('flavor town: %s', $(this).css('--flavor'));
+		});
+
+	$('#ice_cream_bowl')
+		.find('.card')
+		.each(function () {
+			const toppingArray = $(this).closest('.card').find('.card-title').text().split(' ');
+
+			if (toppingArray.length > 1) {
+				// the flavor of the ice cream will always be the first word in the card title
+				const flavor = toppingArray[0].toLowerCase();
+				$(this).css('--flavor', flavor);
+				console.log('flavor town: %s', $(this).css('--flavor'));
+			}
+		});
+
+	// const side1 = new side((name = 'ice_cream'), (price = 0.99), (quantity = 2));
+	// const side2 = new side((name = 'croissant'), (price = 0.99), (quantity = 3));
+	// const myOrder = new thisOrder();
+	// myOrder.addSide(side1);
+	// myOrder.addSide(side2);
+	// myOrder.alertSides();
+	// myOrder.display();
 
 	//https://api.jquery.com/wrap/
 	$('.card-img-top').wrap('<div class="container2"></div>');
@@ -114,41 +221,29 @@ $(window).on('load', function () {
 	// 	$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 	// });
 
+	$('#toppings')
+		.find('.card')
+		.each(function () {
+			$(this).css('opacity', '.3');
+		});
+
 	$('.card-img-top').each(function (i) {
-		if ($(this).closest('.card-deck').attr('id') == 'coffee_syrup') {
-			$('<button class="btn" type="button">Customize</button>').insertAfter($(this));
-			$('<button class="btn4" type="button">1 Pump</button>').insertAfter($(this));
-			$('<button class="btn3" type="button">½ Pump</button>').insertAfter($(this));
+		if ($(this).closest('.card-deck').attr('id') == 'ice_cream_bowl') {
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-		} else if ($(this).closest('.card-deck').attr('id') == 'coffee') {
-			$('<button class="btn" type="button">Customize</button>').insertAfter($(this));
-			$('<button class="btn4" type="button">2 Espresso Shots</button>').insertAfter($(this));
-			$('<button class="btn3" type="button">Decaf</button>').insertAfter($(this));
-			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-		} else if (
-			$(this).closest('.card-deck').attr('id') == 'bottled' ||
-			$(this).closest('.card-deck').attr('id') == 'milkshake' ||
-			$(this).closest('.card-deck').attr('id') == 'non-coffee'
-		) {
 			$(`<div class="grid-container" id="bottled_drink${i}" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 				$(this)
 			);
+		} else if ($(this).closest('.card-deck').attr('id') == 'croissant') {
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-		} else if (
-			$(this).closest('.card-deck').attr('id') != 'milkshake' &&
-			$(this).closest('.card-deck').attr('id') != 'non-coffee' &&
-			$(this).closest('.card-deck').attr('id') != 'bottled'
-		) {
+			$(`<div class="grid-container" id="bottled_drink${i}" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
+            grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
+				$(this)
+			);
+		} else if ($(this).closest('.card-deck').attr('id') == 'toppings') {
 			$('<button class="btn" type="button">Customize</button>').insertAfter($(this));
 			$('<button class="btn4" type="button">Regular</button>').insertAfter($(this));
 			$('<button class="btn3" type="button">Light</button>').insertAfter($(this));
-			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-		} else if (
-			$(this).closest('.card-deck').attr('id') == 'milkshake' ||
-			$(this).closest('.card-deck').attr('id') == 'non-coffee' ||
-			$(this).closest('.card-deck').attr('id') == 'bottled'
-		) {
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 		}
 	});
@@ -156,20 +251,8 @@ $(window).on('load', function () {
 	$('.btn2').each(function (i) {
 		this.id = 'btn' + i;
 		$(this).css('--quantity', 0);
-		var drinkName = $(this).closest('.card').find('.card-title').text().split(' ').pop().toLowerCase();
-		// console.log('drinkName1', drinkName);
+		// var drinkName = $(this).closest('.card').find('.card-title').text().split(' ').pop().toLowerCase();
 
-		// if (drinkName === 'latte') {
-		// 	// console.log('latte');
-		// 	$(this).css('--latte', 'true');
-		// }
-
-		// drip coffee is the only coffee with "coffee" in the name so it will be the only element to return coffee as the last element
-		// if (drinkName == 'coffee') {
-		// 	// console.log('drip');
-		// 	$(this).css('--drip', 'true');
-		// }
-		// }
 		var price = $(this).closest('.card').find('.card-text').text();
 		if (price.trim() != '') {
 			console.log('price', price);
@@ -184,32 +267,18 @@ $(window).on('load', function () {
 			}
 			// console.log('--price', $(this).css('--price'));
 		}
-
-		// if ($(this).css('--price')) {
-		// 	console.log('--price', $(this).css('--price'));
-		// }
-		// console.log($(this).css('--price'));
 	});
 
-	$('#milk, #coffee_syrup').each(function () {
-		// console.log('coffee_syrup & milk $(this)', $(this));
-		$(this)
-			.find('.card')
-			.each(function () {
-				$(this).css('opacity', '.3');
-			});
-	});
-
-	var x = document.getElementsByClassName('card-title');
-	var y = [];
+	const x = document.getElementsByClassName('card-title');
+	const y = [];
 
 	for (i = 2; i < x.length; i++) {
 		y.push(x[i].innerHTML);
 	}
 
 	$('.card-img-top').each(function () {
-		// this.src = '/static/images/' + y[j] + '.jpg';
-		this.src = '/static/images/steak.jpg';
+		this.src = '../static/images/vanilla_ice_cream.jpg';
+		console.log('this.src: %s', this.src);
 	});
 	//veggie + all other topping functionality
 	$(document)
@@ -217,43 +286,17 @@ $(window).on('load', function () {
 			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 			var toppingCategory = toppingCategoryAndToppingNameArray[0];
 			var toppingName = toppingCategoryAndToppingNameArray[1];
-			console.log('tc', toppingCategory, 'tn', toppingName);
-			checkIfCoffeeSelected();
-			if ($(this).find('.card-body').attr('id') != 'cardBody') {
-				if (
-					$(this).closest('.card-deck').attr('id') != 'milk' &&
-					$(this).closest('.card-deck').attr('id') != 'coffee_syrup'
-				) {
-					if ($(this).closest('.card-deck').attr('id') != 'coffee') {
-						$(this).find('.card-body').css('opacity', '.3');
-						$(this).find('.card-img-top').css('opacity', '.3');
-						$(this).find('.btn').show();
-					} else if (!coffeeBool) {
-						console.log('see if the card-deck id is coffee', $(this).closest('.card-deck').attr('id'));
-						$(this).find('.card-body').css('opacity', '.3');
-						$(this).find('.card-img-top').css('opacity', '.3');
-						$(this).find('.btn').show();
-					}
-				} else if (coffeeBool && $(this).closest('.card-deck').attr('id') === 'coffee_syrup') {
-					$(this).find('.card-body').css('opacity', '.3');
-					$(this).find('.card-img-top').css('opacity', '.3');
-					$(this).find('.btn').show();
-				} else if (coffeeBool && $(this).closest('.card-deck').attr('id') === 'milk') {
-					$(this).find('.card-body').css('opacity', '.3');
-					$(this).find('.card-img-top').css('opacity', '.3');
-				}
-				// if a coffee is selected but not a latte or drip coffee then fade the card out and show the customize button
-				// else if (coffeeBool && !dripBool && !latteBool) {
-				// 		// milk card logic
-				// 		$(this).find('.card-body').css('opacity', '.3');
-				// 		$(this).find('.card-img-top').css('opacity', '.3');
-				// 		$(this).find('.btn').show();
-				// 	}
-				// 	// if a coffee is selected and it is a latte or drip coffee then fade the card out and do not show the customize button
-				// 	else if ((coffeeBool && latteBool) || (coffeeBool && dripBool)) {
-				// 		$(this).find('.card-body').css('opacity', '.3');
-				// 		$(this).find('.card-img-top').css('opacity', '.3');
-				// 	}
+			// console.log('tc', toppingCategory, 'tn', toppingName);
+
+			if (
+				$(this).find('.card-body').attr('id') != 'cardBody' &&
+				$(this).closest('.card-deck').attr('id') != 'toppings'
+			) {
+				$(this).find('.card-body').css('opacity', '.3');
+				$(this).find('.card-img-top').css('opacity', '.3');
+				$(this).find('.btn').show();
+			} else if ($(this).closest('.card-deck').attr('id') == 'toppings' && iceCreamBool) {
+				$(this).find('.btn').show();
 			}
 
 			//click the card somewhere
@@ -262,14 +305,15 @@ $(window).on('load', function () {
 				.unbind('click')
 				.bind('click', function () {
 					var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+					console.log('toppingCategoryAndToppingNameArray: %s', toppingCategoryAndToppingNameArray);
+
 					var toppingCategory = toppingCategoryAndToppingNameArray[0];
+					console.log('toppingCategory: %s', toppingCategory);
+
 					var toppingName = toppingCategoryAndToppingNameArray[1];
-					checkIfCoffeeSelected();
-					if (
-						$(this).closest('.card-deck').attr('id') === 'bottled' ||
-						$(this).closest('.card-deck').attr('id') === 'non-coffee' ||
-						$(this).closest('.card-deck').attr('id') === 'milkshake'
-					) {
+					console.log('toppingName: %s', toppingName);
+
+					if ($(this).closest('.card-deck').attr('id') != 'toppings') {
 						if (parseFloat($(this).closest('.card').find('.btn2').css('--quantity')) === 0) {
 							$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 							$(this).closest('.card').find('.btn2').css('--quantity', 1);
@@ -283,6 +327,7 @@ $(window).on('load', function () {
 							$(this).closest('.card').find('.btn7').show();
 						}
 					}
+
 					// if you click the card and it hasn't been selected
 					else if (
 						$(this).closest('.card').find('.btn2').css('--extra') != 'true' &&
@@ -290,36 +335,32 @@ $(window).on('load', function () {
 						$(this).closest('.card').find('.btn2').css('--regular') != 'true' &&
 						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`) != toppingName
 					) {
-						// 'console.log(checkIfCoffeeSelected(coffee)', console.log(checkIfCoffeeSelected('coffee'));
-						// if a coffee has been selected already then milk or coffee_syrup can be selected
-						if (coffeeBool) {
-							// if coffee has been selected alredy then we don't want to select another coffee!
-							if ($(this).closest('.card-deck').attr('id') != 'coffee') {
-								// console.log(
-								// 	'`--${toppingCategory}`, `${toppingName}`',
-								// 	`--${toppingCategory}`,
-								// 	`${toppingName}`
-								// );
-								$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
-								$(this).closest('.card').find('.btn2').css('--regular', 'true');
-								console.log('veggieCraze', $(this).closest('.card').find('.btn2').css('--regular'));
-								$(this).closest('.card').find('.btn2').html('✓');
-								$(this).closest('.card').find('.btn2').toggle();
-							}
-						} else if (
-							// otherwise make sure the card being clicked isn't milk or coffee syrup
-							$(this).closest('.card-deck').attr('id') != 'milk' &&
-							$(this).closest('.card-deck').attr('id') != 'coffee_syrup'
-						) {
+						if (iceCreamBool) {
 							$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 							$(this).closest('.card').find('.btn2').css('--regular', 'true');
-							// console.log(
-							// 	'anything but coffee syrup and milk',
-							// 	$(this).closest('.card').find('.btn2').css('--regular')
-							// );
+							console.log('veggieCraze', $(this).closest('.card').find('.btn2').css('--regular'));
 							$(this).closest('.card').find('.btn2').html('✓');
 							$(this).closest('.card').find('.btn2').toggle();
 						}
+						// } else if (
+						// 	// otherwise make sure the card being clicked isn't milk or coffee syrup
+						// 	$(this).closest('.card-deck').attr('id') != 'milk' &&
+						// 	$(this).closest('.card-deck').attr('id') != 'coffee_syrup'
+						// ) {
+						// 	$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
+						// 	$(this).closest('.card').find('.btn2').css('--regular', 'true');
+						// 	// console.log(
+						// 	// 	'anything but coffee syrup and milk',
+						// 	// 	$(this).closest('.card').find('.btn2').css('--regular')
+						// 	// );
+						// 	$(this).closest('.card').find('.btn2').html('✓');
+						// 	$(this).closest('.card').find('.btn2').toggle();
+						// }
+						// $(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
+						// $(this).closest('.card').find('.btn2').css('--regular', 'true');
+						// console.log('veggieCraze', $(this).closest('.card').find('.btn2').css('--regular'));
+						// $(this).closest('.card').find('.btn2').html('✓');
+						// $(this).closest('.card').find('.btn2').toggle();
 					} else if ($(this).closest('.card').find('.btn2').css('--half') === 'true') {
 						$(this).closest('.card').find('.btn2').css('--half', 'false');
 						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, 'false');
@@ -333,81 +374,12 @@ $(window).on('load', function () {
 						$(this).closest('.card').find('.btn2').toggle();
 						$(this).closest('.card').find('.btn2').html('✓');
 					} else if ($(this).closest('.card').find('.btn2').css('--regular') === 'true') {
-						console.log('fag');
 						$(this).closest('.card').find('.btn2').css('--regular', 'false');
 						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, 'false');
 						$(this).closest('.card').find('.btn2').toggle();
 						$(this).closest('.card').find('.btn2').html('✓');
 					}
-
-					// milk card logic
-					// after clicking a card, if you the card you selected was a coffee then unhide the milk and syrup
-					checkIfCoffeeSelected();
-					if (coffeeBool) {
-						$('#milk, #coffee_syrup').each(function () {
-							console.log('coffee_syrup & milk $(this) PT2', $(this));
-							$(this)
-								.find('.card')
-								.each(function () {
-									$(this).css('opacity', '1');
-								});
-							$('#errorMilk').hide();
-							$('#errorSyrup').hide();
-						});
-
-						// after selecting one coffee the rest become unavailable
-
-						$('#coffee')
-							.find('.card')
-							.each(function () {
-								var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-								var toppingCategory = toppingCategoryAndToppingNameArray[0];
-								var toppingName = toppingCategoryAndToppingNameArray[1];
-								// make sure that you don't hide the already selected coffee
-								if ($(this).find('.btn2').css(`--${toppingCategory}`) != toppingName) {
-									$(this).css('opacity', '.3');
-								}
-							});
-					} else {
-						// if no coffee is selected then we need to make sure they're all available
-						$('#coffee')
-							.find('.card')
-							.each(function () {
-								$(this).css('opacity', '1');
-							});
-						// if you unselected coffee then we need to reset the milk and syrup values
-						$('#milk, #coffee_syrup').each(function () {
-							var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-							var toppingCategory = toppingCategoryAndToppingNameArray[0];
-							var toppingName = toppingCategoryAndToppingNameArray[1];
-							console.log($(this), '$(this)');
-							$(this)
-								.find('.card')
-								.each(function () {
-									console.log($(this), '$(this2)');
-									$(this).css('opacity', '.3');
-									$(this).find('.btn2').hide();
-									console.log('toppingName', toppingName);
-									console.log('toppingCat', toppingCategory);
-									console.log(
-										'css val for topping cat b4 false',
-										$(this).find('.btn2').css(`--${toppingCategory}`)
-									);
-									$(this).find('.btn2').css(`--${toppingCategory}`, 'false');
-									console.log(
-										'css val for topping cat after false',
-										$(this).find('.btn2').css(`--${toppingCategory}`)
-									);
-									$(this).find('.btn').hide();
-									$(this).find('.btn2').css('--regular', 'false');
-									$(this).find('.btn2').css('--half', 'false');
-									$(this).find('.btn2').css('--extra', 'false');
-								});
-							// console.log('coffeeBool false');
-							$('#errorMilk').show();
-							$('#errorSyrup').show();
-						});
-					}
+					checkIfIceCreamSelected();
 				});
 		})
 		.on('mouseleave', '.card', function () {
@@ -415,87 +387,59 @@ $(window).on('load', function () {
 			var toppingCategory = toppingCategoryAndToppingNameArray[0];
 			var toppingName = toppingCategoryAndToppingNameArray[1];
 			// console.log('tc', toppingCategory, 'tn', toppingName);
-			// TODO: Replace this with the assignment from the gettoppingCategory function
-			if ($(this).closest('.card-deck').attr('id') != 'protein') {
-				if (
-					$(this).find('.btn2').css('--extra') != 'true' &&
-					$(this).find('.btn2').css('--half') != 'true' &&
-					$(this).find('.btn2').css('--regular') != 'true' &&
-					$(this).find('.btn2').css(`--${toppingCategory}`) != toppingName
-				) {
-					$(this).find('.btn').hide();
-					$(this).find('.btn3').hide();
-					$(this).find('.btn4').hide();
-				} else {
-					$(this).find('.btn3').hide();
-					$(this).find('.btn4').hide();
-				}
 
-				$(this).find('.btn').html('Customize');
-				$(this).find('img').css('opacity', '1');
-				$(this).find('.card-body').css('opacity', '1');
+			if (
+				$(this).find('.btn2').css('--extra') != 'true' &&
+				$(this).find('.btn2').css('--half') != 'true' &&
+				$(this).find('.btn2').css('--regular') != 'true' &&
+				$(this).find('.btn2').css(`--${toppingCategory}`) != toppingName
+			) {
+				$(this).find('.btn').hide();
+				$(this).find('.btn3').hide();
+				$(this).find('.btn4').hide();
+			} else {
+				$(this).find('.btn3').hide();
+				$(this).find('.btn4').hide();
 			}
-		});
 
-	// click the card buttons
+			$(this).find('img').css('opacity', '1');
+			$(this).find('.card-body').css('opacity', '1');
+		});
 
 	$('.btn')
 		.unbind('click')
 		.bind('click', function () {
-			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-			var toppingCategory = toppingCategoryAndToppingNameArray[0];
-			var toppingName = toppingCategoryAndToppingNameArray[1];
-			// console.log('tc', toppingCategory, 'tn', toppingName);
-			if ($(this).html() == 'Customize') {
-				if ($(this).closest('.card-deck').attr('id') === 'coffee_syrup') {
-					//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
-					$(this).blur();
-					$(this).html('2 Pumps');
-					$(this).closest('.card').find('.btn3').show();
-					$(this).closest('.card').find('.btn4').show();
-				} else if ($(this).closest('.card-deck').attr('id') === 'coffee') {
-					//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
-					$(this).blur();
-					$(this).html('3 Espresso Shots');
-					$(this).closest('.card').find('.btn3').show();
-					$(this).closest('.card').find('.btn4').show();
-					coffeeBool = true;
-					$('#milk, #coffee_syrup').each(function () {
-						// console.log('coffee_syrup & milk $(this) PT2', $(this));
-						$(this)
-							.find('.card')
-							.each(function () {
-								$(this).css('opacity', '1');
-							});
-						$('#errorMilk').hide();
-						$('#errorSyrup').hide();
-					});
-				} else {
+			if ($(this).closest('.card-deck').attr('id') == 'toppings') {
+				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+				var toppingCategory = toppingCategoryAndToppingNameArray[0];
+				var toppingName = toppingCategoryAndToppingNameArray[1];
+				// console.log('tc', toppingCategory, 'tn', toppingName);
+				if ($(this).html() == 'Customize') {
 					//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
 					$(this).blur();
 					$(this).html('Extra');
 					$(this).closest('.card').find('.btn3').show();
 					$(this).closest('.card').find('.btn4').show();
+				} else {
+					$(this).closest('.card').find('.btn2').css('--half', 'false');
+					$(this).closest('.card').find('.btn2').css('--regular', 'false');
+					$(this).closest('.card').find('.btn2').css('--extra', 'true');
+					$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
+					$(this).html('Customize');
+					$(this).blur();
+					$(this).closest('.card').find('.btn2').html('2X');
+					$(this).closest('.card').find('.btn2').show();
+					$(this).closest('.card').find('.btn3').hide();
+					$(this).closest('.card').find('.btn4').hide();
+					// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 				}
-			} else {
-				$(this).closest('.card').find('.btn2').css('--half', 'false');
-				$(this).closest('.card').find('.btn2').css('--regular', 'false');
-				$(this).closest('.card').find('.btn2').css('--extra', 'true');
-				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
-				$(this).html('Customize');
-				$(this).blur();
-				$(this).closest('.card').find('.btn2').html('2X');
-				$(this).closest('.card').find('.btn2').show();
-				$(this).closest('.card').find('.btn3').hide();
-				$(this).closest('.card').find('.btn4').hide();
-				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 			}
 		});
 
 	$('.btn3')
 		.unbind('click')
 		.bind('click', function () {
-			if ($(this).closest('.card-deck').attr('id') != 'protein') {
+			if ($(this).closest('.card-deck').attr('id') == 'toppings') {
 				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 				var toppingCategory = toppingCategoryAndToppingNameArray[0];
 				var toppingName = toppingCategoryAndToppingNameArray[1];
@@ -517,7 +461,7 @@ $(window).on('load', function () {
 	$('.btn4')
 		.unbind('click')
 		.bind('click', function () {
-			if ($(this).closest('.card-deck').attr('id') != 'protein') {
+			if ($(this).closest('.card-deck').attr('id') == 'toppings') {
 				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 				var toppingCategory = toppingCategoryAndToppingNameArray[0];
 				var toppingName = toppingCategoryAndToppingNameArray[1];
@@ -531,7 +475,7 @@ $(window).on('load', function () {
 				$(this).hide();
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn').html('Customize');
-				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
+				console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 			}
 		});
 
@@ -543,8 +487,12 @@ $(window).on('load', function () {
 			var toppingName = toppingCategoryAndToppingNameArray[1];
 			// console.log('tc', toppingCategory, 'tn', toppingName);
 			var currentQuant = parseFloat($(this).closest('.card').find('.btn2').css('--quantity'));
+			console.log('currentQuant: %s', currentQuant);
+
 			// console.log('cuuremtQuant', currentQuant);
 			currentQuant -= 1;
+			console.log('currentQuant: %s', currentQuant);
+
 			if (currentQuant === 0) {
 				$(this).closest('.card').find('.btn2').hide();
 				$(this).closest('.card').find('.btn2').html(`${currentQuant}`);
@@ -557,6 +505,7 @@ $(window).on('load', function () {
 				$(this).closest('.card').find('.btn2').show();
 				$(this).closest('.card').find('.btn2').css('--quantity', currentQuant);
 			}
+			checkIfIceCreamSelected();
 			console.log('.btn quant value', $(this).closest('.card').find('.btn2').css('--quantity'));
 			console.log('.btn name value', $(this).closest('.card').find('.btn2').css('--drinkName'));
 		});
@@ -579,50 +528,13 @@ $(window).on('load', function () {
 			console.log('.btn quant value', $(this).closest('.card').find('.btn2').css('--quantity'));
 		});
 });
-
-// function toppingPricing(toppingCategoryList) {
-// 	var newToppingCategoryListWithPricesofToppingCategories = [];
-// 	for (var i = 0; i < toppingCategoryList.length; i++) {
-// 		const toppingDict = toppingCategoryList[i];
-// 		const toppingKey = Object.keys(toppingDict)[0];
-// 		// console.log('tkey', toppingKey);
-// 		// console.log('toppingDict', toppingDict);
-// 		if (toppingKey == 'coffee') {
-// 			const newToppingDict = {};
-// 			const toppingQuantity = toppingDict[toppingKey];
-// 			// console.log('tquant', toppingQuantity);
-// 			const amountOverIncludedAmount = toppingQuantity - 4;
-// 			var priceForTopping;
-// 			if (amountOverIncludedAmount > 0) {
-// 				priceForTopping = amountOverIncludedAmount * 0.5;
-// 			} else {
-// 				priceForTopping = 0;
-// 			}
-// 			newToppingDict[`${toppingKey}`] = priceForTopping;
-// 			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-// 		}
-// 	}
-// 	//count up protein price
-
-// 	// console.log(
-// 	// 	'newToppingCategoryListWithPricesofToppingCategories',
-// 	// 	newToppingCategoryListWithPricesofToppingCategories
-// 	// );
-// 	return newToppingCategoryListWithPricesofToppingCategories;
-// }
 // checkout function
 var orderToppingsDict = {};
 var ingredientsDict = {};
-var drinkDict = {};
-orderToppingsDict['drinks'] = [];
+orderToppingsDict['sides'] = [];
 function checkOut() {
-	// $('#checkout')
-	// 	.unbind('click')
-	// 	.bind('click', function () {
-	console.log('checkout');
-
 	$('.card-deck').each(function () {
-		// create a drink category (ex. coffee) for each key in the drink dict
+		// create a side category (ex. coffee) for each key in the side dict
 
 		ingredientsDict[`${$(this).attr('id')}`] = [];
 	});
@@ -631,26 +543,26 @@ function checkOut() {
 		var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 		var toppingCategory = toppingCategoryAndToppingNameArray[0];
 		var toppingName = toppingCategoryAndToppingNameArray[1];
-		console.log(
-			'topping category and name before being true',
-			$(this).css(`--${toppingCategory}`),
-			'toppingCategory',
-			toppingCategory,
-			' toppingName',
-			toppingName
-		);
+		// console.log(
+		// 	'topping category and name before being true',
+		// 	$(this).css(`--${toppingCategory}`),
+		// 	'toppingCategory',
+		// 	toppingCategory,
+		// 	' toppingName',
+		// 	toppingName
+		// );
 		if ($(this).css(`--${toppingCategory}`) == toppingName) {
-			console.log(
-				'topping category and name after being true',
-				$(this).css(`--${toppingCategory}`),
-				'toppingCategory',
-				toppingCategory,
-				' toppingName',
-				toppingName
-			);
+			// console.log(
+			// 	'topping category and name after being true',
+			// 	$(this).css(`--${toppingCategory}`),
+			// 	'toppingCategory',
+			// 	toppingCategory,
+			// 	' toppingName',
+			// 	toppingName
+			// );
 
-			console.log($(this).css('--half'), $(this).css('--regular'), $(this).css('--extra'));
-			var toppingDictionary = {};
+			const toppingDictionary = {};
+			// record the serving size of the topping
 			if ($(this).css('--half') == 'true') {
 				// $(this).css('--quantity', 1);
 				toppingDictionary['servingSize'] = 'half';
@@ -660,115 +572,97 @@ function checkOut() {
 			} else if ($(this).css('--extra') == 'true') {
 				// $(this).css('--quantity', 1);
 				toppingDictionary['servingSize'] = 'extra';
-			}
-			// if the drink is a drink with a quantity then it won't have half or regular or extra and the previous if blocks won't grab the topping name
-			else {
+			} else {
 				toppingDictionary['servingSize'] = 'regular';
 			}
-
+			// record the topping name and price
 			toppingDictionary['name'] = `${toppingName}`;
 			if ($(this).css('--price')) {
-				console.log('price', $(this).css('--price'));
 				toppingDictionary['price'] = parseFloat($(this).css('--price'));
 			} else {
 				toppingDictionary['price'] = 0;
 			}
 			toppingDictionary['quantity'] = $(this).css('--quantity');
 
-			console.log('ingredientsDict', ingredientsDict);
+			if ($(this).css('--flavor')) {
+				toppingDictionary['flavor'] = $(this).css('--flavor');
+			}
+			// console.log('ingredientsDict', ingredientsDict);
 
 			ingredientsDict[`${toppingCategory}`].push(toppingDictionary);
 		}
 	});
 
-	var orderItems = ingredientsDict;
+	const orderItems = ingredientsDict;
 	console.log('oldOrderItems', orderItems);
 	//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
 	// var proteinCategoryCount = [];
-	const coffeeArray = orderItems['coffee'];
 	var orderTotal = 0;
 	for (var key in orderItems) {
-		const drinksForItemCategory = orderItems[key];
-		console.log('drinksForItemCategory', drinksForItemCategory);
-		if (drinksForItemCategory != []) {
-			console.log('drinksForItemCategory', drinksForItemCategory);
+		const sidesForItemCategory = orderItems[key];
+		console.log('sidesForItemCategory', sidesForItemCategory);
+		if (sidesForItemCategory != []) {
+			console.log('sidesForItemCategory', sidesForItemCategory);
 			// if (key != 'protein') {
-			for (var i = 0; i < drinksForItemCategory.length; i++) {
-				var drink = drinksForItemCategory[i];
-				const itemQuantity = drink['quantity'];
-				const itemServingSize = drink['servingSize'];
-				console.log('preParse', drink['price']);
-				var itemPrice = drink['price'];
-				if (key === 'coffee') {
-					var espressoPrice = 0;
-					const espressoDict = {};
-					if (itemServingSize === 'extra') {
-						espressoPrice = 2;
-						espressoDict['quantity'] = 2;
-					} else {
-						espressoPrice = 1;
-						espressoDict['quantity'] = 1;
-					}
-					console.log('itemPricetoFixed', espressoPrice);
-					espressoDict['price'] = espressoPrice;
-					espressoDict['name'] = 'espresso';
-					drink['espresso'] = espressoDict;
-					orderTotal += espressoPrice;
-				} else if (key === 'milk') {
-					// recompartmentalize the milk dictionary into the coffee dictionary in the coffee array then delete the milk category from orderItems
-					coffeeArray[0]['milk'] = drink;
-					orderTotal += drink['price'];
-					delete orderItems[key];
-				} else if (key === 'coffee_syrup') {
-					var syrupPrice = 0;
-					const dictSource = {};
-					if (itemServingSize === 'extra') {
-						syrupPrice = 2;
-						dictSource['quantity'] = 2;
-					} else {
-						syrupPrice = 1;
-						dictSource['quantity'] = 1;
-					}
-					dictSource['price'] = syrupPrice;
-					orderTotal += syrupPrice;
-					dictSource['name'] = key;
-					// recompartmentalize the coffee_syrup dictionary into the coffee dictionary in the coffee array then delete the coffee_syrup category from orderItems
-					coffeeArray[0]['syrup'] = dictSource;
-					delete orderItems[key]; // https://www.tutorialspoint.com/Remove-elements-from-a-Dictionary-using-Javascript
-				} else if (key === 'milkshake') {
+			for (var i = 0; i < sidesForItemCategory.length; i++) {
+				console.log('key', key);
+				var side = sidesForItemCategory[i];
+				const itemQuantity = side['quantity'];
+				const itemServingSize = side['servingSize'];
+				console.log('preParse', side['price']);
+				var itemPrice = side['price'];
+				if (key === 'ice_cream_bowl') {
 					console.log('itemQuantity', itemQuantity);
 					console.log('itemPrice', itemPrice);
-					const milkShakePrice = itemQuantity * itemPrice;
+					const ice_cream_price = itemQuantity * itemPrice;
 					const dictSource = {};
-					dictSource['price'] = milkShakePrice;
-					var milkshakeName = drink['name'];
-					milkshakeName += 'Milkshake';
-					dictSource['name'] = milkshakeName;
-					orderTotal += milkShakePrice;
-					Object.assign(drink, dictSource);
-				} else if (key === 'bottled') {
-					const bottledPrice = itemQuantity * itemPrice;
+					dictSource['price'] = ice_cream_price;
+					var ice_cream_name = side['name'];
+					dictSource['name'] = ice_cream_name;
+					orderTotal += ice_cream_price;
+					Object.assign(side, dictSource);
+				} else if (key === 'croissant') {
+					console.log('itemQuantity', itemQuantity);
+					console.log('itemPrice', itemPrice);
+					const croissantPrice = itemQuantity * itemPrice;
 					const dictSource = {};
-					dictSource['price'] = bottledPrice;
-					orderTotal += bottledPrice;
-					Object.assign(drink, dictSource);
-				} else if (key === 'non-coffee') {
-					const nonCoffeePrice = itemQuantity * itemPrice;
+					dictSource['price'] = croissantPrice;
+					orderTotal += croissantPrice;
+					Object.assign(side, dictSource);
+				} else if (key === 'toppings') {
+					var toppingPrice = 0;
+					console.log('itemPrice: %s', itemPrice);
+					console.log('itemServingSize: %s', itemServingSize);
+
+					if (itemServingSize == 'half') {
+						toppingPrice = itemPrice * 0.5;
+					} else if (itemServingSize == 'regular') {
+						toppingPrice = itemPrice;
+					} else if (itemServingSize == 'extra') {
+						toppingPrice = itemPrice * 2;
+					}
 					const dictSource = {};
-					dictSource['price'] = nonCoffeePrice;
-					Object.assign(drink, dictSource);
+					dictSource['price'] = toppingPrice;
+					Object.assign(side, dictSource);
 				}
 			}
 		}
 	}
+	// order items is a dictionary. i am getting the ice cream key of this dictionary, which has an array as its value. because the user can only choose one ice cream per visit to this page i can get the first element of the ice cream array and know that it will map to the ice cream whose toppings the user's toppings choices map to.
+	// the data structure of the element in the ice cream value of the orderItems dictionary is another dictionary. it is within this dictionary that I now create a toppings key which will store the toppings dictionary.
+	const toppingsDict = orderItems['toppings'];
+	console.log('toppingsDict: %s', toppingsDict);
+
+	orderItems['ice_cream_bowl'][0]['toppings'] = toppingsDict;
+	// then i want to delete the toppings dictionary from the order items array so as not to have duplicative information
+	delete orderItems['toppings'];
 	console.log('newOrderItems', orderItems);
 
-	orderToppingsDict['drinks'] = ingredientsDict;
-	console.log('drinks dict', orderToppingsDict);
+	orderToppingsDict['sides'] = ingredientsDict;
+	console.log('sides dict', orderToppingsDict);
 	console.log('orderToppingsDictwithIngredient', orderToppingsDict);
 	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
-	$.when(stringify(orderToppingsDict)).then(location.assign('/order-side'));
-
+	$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=True'));
 	// });
 }
 // all this code changes display for smaller screen sizes
