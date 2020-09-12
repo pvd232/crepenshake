@@ -131,16 +131,14 @@
 				</div>
 			</div>
 		</div>
+		{% if editOrder %}
+		<div id="{{editOrder}}" class="edit"></div>
+		{% endif %} {% for j in range(ingredient_categories|length) %}
 
-		{% for j in range(ingredient_categories|length) %} {% if editOrder == True %}
-
-		<div class="container" name="editOrder" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-			{% else %}
-			<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3"></div>
-
-			{% endif %}
-			<div class="row"></div>
-			<h3>{{ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
+		<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+			<div class="row">
+				<h3>{{ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
+			</div>
 			<div class="card-deck" id="{{ingredient_categories[j].id}}">
 				{% for i in ingredient_prices %} {% if i.ingredient_category_id == ingredient_categories[j].id %} {% if
 				i.price > 0.0 %}

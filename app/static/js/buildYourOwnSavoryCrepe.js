@@ -415,6 +415,24 @@ $(window).on('load', function () {
 		this.src = '/static/images/' + y[j] + '.jpg';
 	});
 
+	// edit crepe functionality
+
+	if ($('.edit').length) {
+		const editCrepeParam = $('.edit').first().attr('id');
+		const editCrepeArray = editCrepeParam.split('-');
+		const editCrepeIndex = parseInt(editCrepeArray[editCrepeArray.length - 1]);
+		const editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex];
+		for (var key in editCrepe) {
+			console.log(key);
+			console.log(editCrepe[key]);
+		}
+		console.log('editCrepe: %s', editCrepe);
+
+		console.log('editCrepeIndex: %s', editCrepeIndex);
+
+		console.log('editCrepe: %s', editCrepe);
+	}
+
 	$('.card')
 		.unbind('mouseenter')
 		.bind('mouseenter', function () {

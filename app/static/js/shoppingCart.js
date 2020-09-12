@@ -152,7 +152,7 @@ function doShowAll() {
 							k + 1
 						}</h5></div>`
 					);
-
+					// const currentRowHeaderIndex = `${k}0`
 					for (var i = 0; i < formattedOtherToppings.length; i++) {
 						const toppingPrice = parseFloat(formattedOtherToppings[i]['price']);
 
@@ -182,13 +182,28 @@ function doShowAll() {
 					console.log('orderPrice: %s', orderPrice);
 
 					// insert the modify, edit, delete buttons
+					// const itemIndex = $(this).closest('.container').first();
+					const itemIndex = $(`#container${k}`)
+						.find('.row')
+						.first()
+						.text()
+						.replace(' ', '-')
+						.replace('#', '')
+						.toLowerCase();
+					console.log('itemIndex: %s', itemIndex);
+
 					$(`<div class="grid-container" id="buttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#container${k}`));
 					$(`#buttoncontainer${k}`).append(
 						`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
 					);
+					// $(`#buttoncontainer${k}`).append(
+					// 	`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a onclick="console.log('${itemIndex}')">edit</a></h6></div>`
+					// );
+
+					// pass in the item that is being modified to the make your own crepe page
 					$(`#buttoncontainer${k}`).append(
-						`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="/make-your-own-crepe?editOrder=true">edit</a></h6></div>`
+						`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="/make-your-own-crepe?editOrder=${itemIndex}">edit</a></h6></div>`
 					);
 					$(`#buttoncontainer${k}`).append(
 						`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
@@ -283,13 +298,20 @@ function doShowAll() {
 						} // end of loop itering through drink category key values
 
 						// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
+						const itemIndex = $(`#container${k}`)
+							.find('.row')
+							.first()
+							.text()
+							.replace(' ', '-')
+							.replace('#', '')
+							.toLowerCase();
 						$(`<div class="grid-container" id="drinkButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${k}`));
 						$(`#drinkButtonContainer${k}`).append(
 							`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
 						);
 						$(`#drinkButtonContainer${k}`).append(
-							`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
+							`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="/">edit</a></h6></div>`
 						);
 						$(`#drinkButtonContainer${k}`).append(
 							`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
