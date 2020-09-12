@@ -2,43 +2,41 @@
 	{
 		"id": "",
 		"name": "water",
-		"price": 0.99
+		"price": 2.0
 	},
 	{
 		"id": "",
 		"name": "rasberry_lime_spindrift",
-		"price": 0.99
+		"price": 3
 	},
 	{
 		"id": "",
 		"name": "lemon_lime_spindrift",
-		"price": 0.99
+		"price": 3
 	},
 	{
 		"id": "",
 		"name": "grapefruit_spindrift",
-		"price": 0.99
+		"price": 3
 	},
 	{
 		"id": "",
 		"name": "coke",
-		"price": 0.99
+		"price": 2.0
 	},
 	{
 		"id": "",
 		"name": "milk",
-		"price": 0.99
+		"price": 3
 	},
 	{
 		"id": "",
 		"name": "sprite",
-		"price": 0.99
-    },
-    	{
-			"id": "",
-			"name": "moon_milk",
-			"price": 6.25
-		}
-
-
+		"price": 2.0
+	},
+	{
+		"id": "",
+		"name": "moon_milk",
+		"price": 6.25
+	}
 ]

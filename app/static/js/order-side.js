@@ -635,7 +635,7 @@ function checkOut() {
 					console.log('itemServingSize: %s', itemServingSize);
 
 					if (itemServingSize == 'half') {
-						toppingPrice = itemPrice * 0.5;
+						toppingPrice = itemPrice;
 					} else if (itemServingSize == 'regular') {
 						toppingPrice = itemPrice;
 					} else if (itemServingSize == 'extra') {

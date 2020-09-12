@@ -68,21 +68,28 @@ def order(userOrder=None):
 
 
 @app.route('/make-your-own-crepe')
-def make_your_own_crepe():
-
+def make_your_own_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
     ingredient_prices = [humanize(x, 'id')
                          for x in ingredient_service.get_ingredient_prices()]
 
-    for price in ingredient_prices:
-        print('price', price.serialize())
+    # for price in ingredient_prices:
+    # print('price', price.serialize())
     ingredient_categories = ingredient_service.get_ingredient_categories()
-    print('iCat', ingredient_categories)
+
+    # print('iCat', ingredient_categories)
+
     rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
                                "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
-    # print(ingredient_prices[0].serialize)
+    editOrder = request.args.get('editOrder')
 
-    return render_template('make_your_own_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category)
+    if editOrder == None:
+        return render_template('make_your_own_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
+
+    else:
+        return render_template('make_your_own_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=True)
+
+    # print(ingredient_prices[0].serialize)
 
 
 @app.route('/order-drink')

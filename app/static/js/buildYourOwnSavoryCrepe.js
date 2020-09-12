@@ -396,7 +396,7 @@ $(window).on('load', function () {
 		//https://stackoverflow.com/questions/21556874/display-an-alert-in-jquery-for-a-few-seconds-then-fade-it-out
 		$('<button class="btn" type="button">Customize</button>').insertAfter($(this));
 		$('<button class="btn4" type="button">Regular</button>').insertAfter($(this));
-		$('<button class="btn3" type="button">Light</button>').insertAfter($(this));
+		$('<button class="btn3" type="button">Split</button>').insertAfter($(this));
 		$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 	});
 

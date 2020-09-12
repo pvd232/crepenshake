@@ -313,6 +313,7 @@ $(window).on('load', function () {
 						) {
 							$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 							$(this).closest('.card').find('.btn2').css('--regular', 'true');
+							$(this).closest('.card').find('.btn2').css('--quantity', 1);
 							// console.log(
 							// 	'anything but coffee syrup and milk',
 							// 	$(this).closest('.card').find('.btn2').css('--regular')
@@ -336,6 +337,7 @@ $(window).on('load', function () {
 						console.log('fag');
 						$(this).closest('.card').find('.btn2').css('--regular', 'false');
 						$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, 'false');
+						$(this).closest('.card').find('.btn2').css(`--quantity`, 0);
 						$(this).closest('.card').find('.btn2').toggle();
 						$(this).closest('.card').find('.btn2').html('✓');
 					}
@@ -402,6 +404,7 @@ $(window).on('load', function () {
 									$(this).find('.btn2').css('--regular', 'false');
 									$(this).find('.btn2').css('--half', 'false');
 									$(this).find('.btn2').css('--extra', 'false');
+									$(this).closest('.card').find('.btn2').css(`--quantity`, 0);
 								});
 							// console.log('coffeeBool false');
 							$('#errorMilk').show();
@@ -482,6 +485,8 @@ $(window).on('load', function () {
 				$(this).closest('.card').find('.btn2').css('--regular', 'false');
 				$(this).closest('.card').find('.btn2').css('--extra', 'true');
 				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
+				$(this).closest('.card').find('.btn2').css(`--quantity`, 1);
+
 				$(this).html('Customize');
 				$(this).blur();
 				$(this).closest('.card').find('.btn2').html('2X');
@@ -502,6 +507,8 @@ $(window).on('load', function () {
 				// console.log('tc', toppingCategory, 'tn', toppingName);
 				$(this).closest('.card').find('.btn2').css('--half', 'true');
 				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
+				$(this).closest('.card').find('.btn2').css(`--quantity`, 1);
+
 				$(this).closest('.card').find('.btn2').css('--regular', 'false');
 				$(this).closest('.card').find('.btn2').css('--extra', 'false');
 				$(this).closest('.card').find('.btn2').html('½');
@@ -523,6 +530,8 @@ $(window).on('load', function () {
 				var toppingName = toppingCategoryAndToppingNameArray[1];
 				// console.log('tc', toppingCategory, 'tn', toppingName);
 				$(this).closest('.card').find('.btn2').css('--regular', 'true');
+				$(this).closest('.card').find('.btn2').css(`--quantity`, 1);
+
 				$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
 				$(this).closest('.card').find('.btn2').css('--half', 'false');
 				$(this).closest('.card').find('.btn2').css('--extra', 'false');
@@ -621,11 +630,11 @@ function checkOut() {
 	// 	.bind('click', function () {
 	console.log('checkout');
 
-	$('.card-deck').each(function () {
-		// create a drink category (ex. coffee) for each key in the drink dict
+	// $('.card-deck').each(function () {
+	// 	// create a drink category (ex. coffee) for each key in the drink dict
 
-		ingredientsDict[`${$(this).attr('id')}`] = [];
-	});
+	// 	ingredientsDict[`${$(this).attr('id')}`] = [];
+	// });
 
 	$('.btn2').each(function () {
 		var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
@@ -676,6 +685,7 @@ function checkOut() {
 			toppingDictionary['quantity'] = $(this).css('--quantity');
 
 			console.log('ingredientsDict', ingredientsDict);
+			ingredientsDict[`${toppingCategory}`] = [];
 
 			ingredientsDict[`${toppingCategory}`].push(toppingDictionary);
 		}
@@ -715,7 +725,8 @@ function checkOut() {
 					drink['espresso'] = espressoDict;
 					orderTotal += espressoPrice;
 				} else if (key === 'milk') {
-					// recompartmentalize the milk dictionary into the coffee dictionary in the coffee array then delete the milk category from orderItems
+					// create a new key in the coffee dictionary whose value is the milk dictionary. remmeber that the coffee dictionary is the first element of the coffee array (selecting the first element of the coffee array works because the user can only order one coffee per visit to this page)
+					// after cloning the dictionary, delete the milk category from orderItems
 					coffeeArray[0]['milk'] = drink;
 					orderTotal += drink['price'];
 					delete orderItems[key];
@@ -767,6 +778,7 @@ function checkOut() {
 	console.log('drinks dict', orderToppingsDict);
 	console.log('orderToppingsDictwithIngredient', orderToppingsDict);
 	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
+	// stringify(orderToppingsDict);
 	$.when(stringify(orderToppingsDict)).then(location.assign('/order-side'));
 
 	// });

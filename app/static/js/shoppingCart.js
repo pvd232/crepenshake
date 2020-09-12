@@ -172,7 +172,9 @@ function doShowAll() {
 					$(
 						`<div class="row" id=row${k}${
 							formattedOtherToppings.length + 1
-						} style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${subtotal.toFixed(
+						} style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Crepe #${
+							k + 1
+						} Total</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${subtotal.toFixed(
 							2
 						)}</h4></div></div>`
 					).insertAfter($(`#row${k}${formattedOtherToppings.length}`));
@@ -186,7 +188,7 @@ function doShowAll() {
 						`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
 					);
 					$(`#buttoncontainer${k}`).append(
-						`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
+						`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="/make-your-own-crepe?editOrder=true">edit</a></h6></div>`
 					);
 					$(`#buttoncontainer${k}`).append(
 						`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
@@ -197,115 +199,41 @@ function doShowAll() {
 			if ('orderDrink' in orderDict) {
 				if ($('#modalBody1').children.length > 0) {
 					// format the drink list
-					$('#modalBody1').append(
-						`<div class="container" id="0container"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="00row"><h5 style='font-weight: 700; '>Drinks</h5></div></div>`
-					);
+
 					orderDrinks = orderDict['orderDrink'];
 
 					for (k = 0; k <= orderDrinks.length - 1; k++) {
-						// const lastElementId = $('#modalBody1').children().last().attr('id');
-						//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-						var formattedDrinks = [];
-						const drinks = orderDrinks[k]['drinks'];
+						// for each drink order, tracked by the index number k, i will add a new container with a row appended to it that lists the drink order # k
+
 						var drinkSubTotal = 0;
+
+						$('#modalBody1').append(
+							`<div class="container" id="drinkContainer${k}"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="drinkRow${k}0"><h5 style='font-weight: 700; '>Drink Order #${
+								k + 1
+							}</h5></div></div>`
+						);
+						const drinks = orderDrinks[k]['drinks'];
 						for (var key in drinks) {
-							if (key != 'drinkTotal') {
-								console.log('key', key);
-								const drinksInDrinkCategory = drinks[key];
-								console.log('drinksInDrinkCategory: %s', drinksInDrinkCategory);
+							const drinksInDrinkCategory = drinks[key];
+							for (var i = 0; i < drinksInDrinkCategory.length; i++) {
+								const drink = drinksInDrinkCategory[i];
+								const drinkName = splitCamelCaseToString(drink['name']);
 
-								if (drinksInDrinkCategory != '') {
-									console.log('drinksInDrinkCategory', drinksInDrinkCategory);
-									const formatDict = {};
-									var format = '';
-									for (var i = 0; i < drinksInDrinkCategory.length; i++) {
-										var drink = drinksInDrinkCategory[i];
+								console.log('drink: %s', drink);
 
-										console.log('drink: %s', drink);
+								const drinkQuantity = drink['quantity'];
+								console.log('drinkName', drinkName);
+								const drinkPrice = drink['price'];
+								drinkSubTotal += drinkPrice;
 
-										var drinkName = splitCamelCaseToString(drink['name']);
-										// var drinkQuantity = drink['servingSize'];
-										console.log('drinkName', drinkName);
-										drinkQuantity = drink['quantity'];
-										console.log('drinkQuantity: %s', drinkQuantity);
-										var drinkPrice = parseFloat(drink['price']);
-										console.log('drinkPrice: %s', drinkPrice);
+								console.log('drinkPrice: %s', drinkPrice);
 
-										if (drinkQuantity > 1) {
-											format += drinkQuantity;
-											format += ' ';
-											format += drinkName;
-											format += 's';
-										} else if (drinkQuantity == 1) {
-											format += drinkQuantity;
-											format += ' ';
-											format += drinkName;
-										} else {
-											format += drinkName;
-										}
-										if (i != drinksInDrinkCategory.length - 1) {
-											format += ' and ';
-										}
-										formatDict['price'] = drinkPrice;
-									}
-									if (key === 'coffee') {
-										if ('milk' in drink) {
-											const milk = drink['milk'];
-											var milkFormat = '';
-											var milkName = splitCamelCaseToString(milk['name']);
-											var milkPrice = milk['price'];
-											milkFormat += milkName;
-											formatDict['milkFormat'] = milkFormat;
-											formatDict['milkPrice'] = milkPrice;
-										} else {
-											const milkFormat = '2% Milk';
-											const milkPrice = 0.0;
-											formatDict['milkFormat'] = milkFormat;
-											formatDict['milkPrice'] = milkPrice;
-										}
-										if ('espresso' in drink) {
-											const espresso = drink['espresso'];
-											var espressoFormat = '';
-											var espressoName = capitalize(espresso['name']);
-											var espressoQuantity = espresso['quantity'];
-											var espressoPrice = espresso['price'];
-											espressoFormat += espressoQuantity;
-											espressoFormat += ' ';
-											espressoFormat += espressoName;
-											espressoFormat += ' Shots';
-											formatDict['espressoFormat'] = espressoFormat;
-											formatDict['espressoPrice'] = espressoPrice;
-										} else {
-											if (drinkName.split(' ')[0] == '12oz') {
-												espressoFormat += '1 Espresso Shot';
-											} else if (drinkName.split(' ')[0] == '16oz')
-												espressoFormat += '2 Espresso Shots';
-										}
-
-										formatDict['espressoFormat'] = espressoFormat;
-										formatDict['espressoPrice'] = 0.0;
-									}
-									formatDict['format'] = format;
-									formattedDrinks.push(formatDict);
-								}
-							}
-						}
-
-						console.log('formattedDrinks', formattedDrinks);
-						// https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
-						console.log('drank', drinks);
-						for (var i = 0; i < formattedDrinks.length; i++) {
-							drink = formattedDrinks[i];
-							const drinkPrice = drink['price'];
-							drinkSubTotal += drinkPrice;
-							console.log('drinkPrice: %s', drinkPrice);
-
-							if ('milkFormat' in drink) {
-								const milkPrice = drink['milkPrice'];
-								const espressoPrice = drink['espressoPrice'];
-								$(`<div class="row" style= "margin-bottom: 20px;">
+								if ('milkFormat' in drink) {
+									const milkPrice = drink['milkPrice'];
+									const espressoPrice = drink['espressoPrice'];
+									$(`<div class="row" style= "margin-bottom: 20px;">
 							<div class="col-9" style="margin-right: 0px; " >
-								<h5 style=''>${drink['format']}</h5>
+								<h5 style=''>${drinkQuantity + ' ' + drinkName}</h5>
 							</div>
 							<div class="col-3">
 								<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
@@ -318,52 +246,76 @@ function doShowAll() {
 							<div class="col-3" style="">
 								<h4 style=''>$${espressoPrice}</h4>
 							</div></div>
-							<div class="row" style= "margin-bottom: 20px;" id="${k}${i + 1}row">
-							<div class="col-9" style="margin-right: 0px; " id="${k}${i}col">
+							<div class="row" style= "margin-bottom: 20px;" id="drinkRow${k}${i + 1}">
+							<div class="col-9" style="margin-right: 0px; " id="drinkCol${k}${i}">
 								<h5 style=''>${drink['milkFormat']}</h5>
 							</div>
-							<div class="col-3" style=""id="${k}${i + 2}col">
+							<div class="col-3" style=""id="drinkCol${k}${i + 2}">
 								<h4 style=''>$${milkPrice}</h4>
 							</div>
-							</div>`).insertAfter(`#${k}${i}row`);
-								drinkSubTotal += parseFloat(milkPrice);
-								drinkSubTotal += parseFloat(espressoPrice);
-							} // coffee block
-							else {
-								$(`<div class="row" style= "margin-bottom: 20px;" id="${k}${i + 1}row">
-							<div class="col-9" style="margin-right: 0px; " id="${k}${i}col">
-								<h5 style=''>${drink['format']}</h5>
+							</div>`).insertAfter(`#drinkRow${k}${i}`);
+									drinkSubTotal += parseFloat(milkPrice);
+									drinkSubTotal += parseFloat(espressoPrice);
+								} // coffee block
+								else {
+									if (drinkQuantity > 1) {
+										// add an "s" to the title
+										$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${k}${i + 1}">
+							<div class="col-9" style="margin-right: 0px; " id="drinkCol${k}${i}">
+								<h5 style=''>${drinkQuantity + ' ' + drinkName + 's'}</h5>
 							</div>
-							<div class="col-3" style=""id="${k}${i + 2}col">
-								<h4 style=''>$${drinkPrice}</h4>
+							<div class="col-3" style=""id="drinkCol${k}${i + 2}">
+								<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
 							</div>
-							</div>`).insertAfter(`#${k}${i}row`);
-							} // all other drinks
-						} // end of for loop iterating through drink list
-						console.log('drinkSubTotal', drinkSubTotal);
-						$(
-							`<div class="row" id="${k}${
-								formattedDrinks.length + 1
-							}row" style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${drinkSubTotal.toFixed(
-								2
-							)}</h4></div></div>`
-						).insertAfter($(`#${k}${formattedDrinks.length}row`));
-					}
-					console.log('orderPriceDrink: %s', orderPrice);
+							</div>`).insertAfter(`#drinkRow${k}${i}`);
+									} else {
+										$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${k}${i + 1}">
+							<div class="col-9" style="margin-right: 0px; " id="drinkCol${k}${i}">
+								<h5 style=''>${drinkQuantity + ' ' + drinkName}</h5>
+							</div>
+							<div class="col-3" style=""id="drinkCol${k}${i + 2}">
+								<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
+							</div>
+							</div>`).insertAfter(`#drinkRow${k}${i}`);
+									}
+								} // end of non-coffee drinks else block
+							} // end of for loop iterating through list of drink dictionaries in drink category
+						} // end of loop itering through drink category key values
 
-					orderPrice += drinkSubTotal;
-					console.log('orderPriceDrink: %s', orderPrice);
+						// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
+						$(`<div class="grid-container" id="drinkButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+            grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${k}`));
+						$(`#drinkButtonContainer${k}`).append(
+							`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
+						);
+						$(`#drinkButtonContainer${k}`).append(
+							`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
+						);
+						$(`#drinkButtonContainer${k}`).append(
+							`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
+						);
+						// $(
+						// 	`<div class="row"
+						// }" style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${drinkSubTotal.toFixed(
+						// 	2
+						// )}</h4></div></div>`
+						// ).insertAfter($(`#${lastElementId}`));
+						orderPrice += drinkSubTotal;
+					} // end of for loop iterating through drink list
+					console.log('drinkSubTotal', drinkSubTotal);
 				}
+				console.log('orderPriceDrink: %s', orderPrice);
+
+				console.log('orderPriceDrink: %s', orderPrice);
 			}
+
 			if ('orderSide' in orderDict) {
 				if ($('#modalBody1').children.length > 0) {
 					// format the drink list
-					$('#modalBody1').append(
-						`<div class="container" id="0container"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="00row"><h5 style='font-weight: 700; '>Sides</h5></div></div>`
-					);
+
 					const orderSide = orderDict['orderSide'];
 
-					for (var k = 0; k <= orderSide.length - 1; k++) {
+					for (var k = 0; k < orderSide.length; k++) {
 						// const lastElementId = $('#modalBody1').children().last().attr('id');
 						//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
 						var formattedSides = [];
@@ -381,9 +333,7 @@ function doShowAll() {
 								var format = '';
 								for (var i = 0; i < sidesInSideCategory.length; i++) {
 									var side = sidesInSideCategory[i];
-
 									console.log('side: %s', side);
-
 									var sideName = splitCamelCaseToString(side['name']);
 									// var sideQuantity = side['servingSize'];
 									console.log('sideName', sideName);
@@ -409,42 +359,24 @@ function doShowAll() {
 									}
 									formatDict['price'] = sidePrice;
 								}
-								// if (key === 'coffee') {
-								// 	if ('milk' in side) {
-								// 		const milk = side['milk'];
-								// 		var milkFormat = '';
-								// 		var milkName = splitCamelCaseToString(milk['name']);
-								// 		var milkPrice = milk['price'];
-								// 		milkFormat += milkName;
-								// 		formatDict['milkFormat'] = milkFormat;
-								// 		formatDict['milkPrice'] = milkPrice;
-								// 	} else {
-								// 		const milkFormat = '2% Milk';
-								// 		const milkPrice = 0.0;
-								// 		formatDict['milkFormat'] = milkFormat;
-								// 		formatDict['milkPrice'] = milkPrice;
-								// 	}
-								// 	if ('espresso' in side) {
-								// 		const espresso = side['espresso'];
-								// 		var espressoFormat = '';
-								// 		var espressoName = capitalize(espresso['name']);
-								// 		var espressoQuantity = espresso['quantity'];
-								// 		var espressoPrice = espresso['price'];
-								// 		espressoFormat += espressoQuantity;
-								// 		espressoFormat += ' ';
-								// 		espressoFormat += espressoName;
-								// 		espressoFormat += ' Shots';
-								// 		formatDict['espressoFormat'] = espressoFormat;
-								// 		formatDict['espressoPrice'] = espressoPrice;
-								// 	} else {
-								// 		if (sideName.split(' ')[0] == '12oz') {
-								// 			espressoFormat += '1 Espresso Shot';
-								// 		} else if (sideName.split(' ')[0] == '16oz') espressoFormat += '2 Espresso Shots';
-								// 	}
-
-								// 	formatDict['espressoFormat'] = espressoFormat;
-								// 	formatDict['espressoPrice'] = 0.0;
-								// }
+								if (key === 'ice_cream_bowl') {
+									if ('toppings' in side) {
+										// const toppingList = [];
+										const arrayOfToppingDictionaries = side['toppings'];
+										formatDict['arrayOfToppingDictionaries'] = arrayOfToppingDictionaries;
+										// for (var i = 0; i < arrayOfToppingDictionaries.length; i++) {
+										// const toppingServingSize = splitCamelCaseToString(topping['servingSize']);
+										// const toppingName = splitCamelCaseToString(topping['name']);
+										// const toppingPrice = topping['price'];
+										// var toppingFormat = '';
+										// toppingFormat += toppingServingSize;
+										// toppingFormat += ' ';
+										// toppingFormat += toppingName;
+										// 	formatDict['milkFormat'] = milkFormat;
+										// 	formatDict['milkPrice'] = milkPrice;
+										// }
+									}
+								}
 								formatDict['format'] = format;
 								formattedSides.push(formatDict);
 							}
@@ -453,32 +385,85 @@ function doShowAll() {
 
 						console.log('formattedSides', formattedSides);
 						// https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
-						console.log('drank', sides);
+						console.log('sides in side order', sides);
+
+						$('#modalBody1').append(
+							`<div class="container" id="sideContainer${k}"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="sideRow${k}0"><h5 style='font-weight: 700; '>Side Order #${
+								k + 1
+							}</h5></div></div>`
+						);
 						for (var i = 0; i < formattedSides.length; i++) {
-							side = formattedSides[i];
+							const side = formattedSides[i];
 							const sidePrice = side['price'];
 							sideSubTotal += sidePrice;
-							console.log('sidePrice: %s', sidePrice);
 
-							$(`<div class="row" style= "margin-bottom: 20px;" id="${k}${i + 1}row">
-							<div class="col-9" style="margin-right: 0px; " id="${k}${i}col">
+							console.log('sidePrice: %s', sidePrice);
+							console.log('side Format', side['format']);
+							$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${k}${i + 1}">
+							<div class="col-9" style="margin-right: 0px; " id="sideCol${k}${i}">
 								<h5 style=''>${side['format']}</h5>
 							</div>
-							<div class="col-3" style=""id="${k}${i + 2}col">
+							<div class="col-3" style=""id="sideCol${k}${i + 2}">
 								<h4 style=''>$${sidePrice}</h4>
 							</div>
-							</div>`).insertAfter(`#${k}${i}row`);
-							// all other sides
+							</div>`).insertAfter(`#sideRow${k}${i}`);
+
+							// i will add the side with the side price regardless of whether there are toppings that go after it, thus i check for the existence of the toppings array afer
+							if ('arrayOfToppingDictionaries' in side) {
+								const arrayOfToppingDictionaries = side['arrayOfToppingDictionaries'];
+								console.log('arrayOfToppingDictionaries: %s', arrayOfToppingDictionaries);
+
+								for (var j = 0; j < arrayOfToppingDictionaries.length; j++) {
+									const toppingDictionary = arrayOfToppingDictionaries[j];
+									console.log('toppingDictionary: %s', toppingDictionary);
+
+									const toppingServingSize = splitCamelCaseToString(toppingDictionary['servingSize']);
+
+									const toppingName = splitCamelCaseToString(toppingDictionary['name']);
+									const toppingPrice = toppingDictionary['price'];
+									var toppingFormat = '';
+									if (toppingServingSize === 'Extra') {
+										const newToppingServingSize = 'Double';
+										toppingFormat += newToppingServingSize;
+									} else {
+										toppingFormat += toppingServingSize;
+									}
+									toppingFormat += ' ';
+									toppingFormat += toppingName;
+
+									$(`<div class="row" style= "margin-bottom: 20px;">
+							<div class="col-9" style="margin-right: 0px; " id="toppingCol${k}${j}">
+								<h5 style=''>${toppingFormat}</h5>
+							</div>
+							<div class="col-3" style=""id="toppingCol${k}${j + 2}">
+								<h4 style=''>$${toppingPrice.toFixed()}</h4>
+							</div>
+							</div>`).insertAfter($(`#sideRow${k}${i + 1}`));
+								}
+							}
 						} // end of for loop iterating through side list
+						const lastElementId = $('#modalBody1').find('.container').last().attr('id');
 						console.log('sideSubTotal', sideSubTotal);
-						$(
-							`<div class="row" id="${k}${
-								formattedSides.length + 1
-							}row" style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${sideSubTotal.toFixed(
-								2
-							)}</h4></div></div>`
-						).insertAfter($(`#${k}${formattedSides.length}row`));
-					}
+						$(`<div class="grid-container" id="sideButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+            grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${k}`));
+						$(`#sideButtonContainer${k}`).append(
+							`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
+						);
+						$(`#sideButtonContainer${k}`).append(
+							`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
+						);
+						$(`#sideButtonContainer${k}`).append(
+							`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
+						);
+						// $(
+						// 	`<div class="row" id="sideRow${k}${
+						// 		formattedSides.length + 1
+						// 	}" style="margin-top: 20px; margin-bottom: 20px; border-bottom: 1px solid black"><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700;">Subtotal</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700">$${sideSubTotal.toFixed(
+						// 		2
+						// 	)}</h4></div></div>`
+						// ).insertAfter($(`#${lastElementId}`));
+					} // end of for loop iterating through sides in side order
+
 					console.log('orderPriceSide: %s', orderPrice);
 
 					orderPrice += sideSubTotal;
@@ -513,19 +498,20 @@ function doShowAll() {
 					// }
 				}
 			}
-
-			$(`<div class="modal-footer" id="footer"></div>`).insertAfter(`#modalBody1`);
-
-			$(`#footer`).append(`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3>
-		</div>`);
-			$(`#footer`)
-				.append(`<div class="col-3" style="margin-left: 21px; " id="footerCol1"><h3 style="float:right; font-weight: bold; ">$${orderPrice.toFixed(
-				2
-			)}</h3>
-		</div>`);
 		}
+
+		$(`<div class="modal-footer" id="footer"></div>`).insertAfter(`#modalBody1`);
+
+		$(`#footer`).append(`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3>
+		</div>`);
+		$(`#footer`)
+			.append(`<div class="col-3" style="margin-left: 21px; " id="footerCol1"><h3 style="float:right; font-weight: bold; ">$${orderPrice.toFixed(
+			2
+		)}</h3>
+		</div>`);
 	}
 }
+
 // send mitra an updated resume
 // send mitra an unofficial transcript
 // prepare a statement of purpose that explains what in my background makes me a good candidate for the masters program
