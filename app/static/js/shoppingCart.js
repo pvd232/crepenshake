@@ -29,6 +29,12 @@ $(window).on('load', function () {
 	$('#shoppingCart').modal('show');
 });
 
+function removeItem() {
+	var name = document.forms.ShoppingList.name.value;
+	document.forms.ShoppingList.data.value = localStorage.removeItem(name);
+	doShowAll();
+}
+
 //https://www.smashingmagazine.com/2019/08/shopping-cart-html5-web-storage/
 function checkBrowser() {
 	if ('localStorage' in window && window['localStorage'] !== null) {
@@ -42,7 +48,7 @@ function checkBrowser() {
 
 // Dynamically populate the table with shopping list items.
 //Step below can be done via PHP and AJAX, too.
-function splitCamelCaseToString(str) {
+export function splitCamelCaseToString(str) {
 	return (
 		str
 			// insert a space between lower & upper
@@ -83,15 +89,19 @@ function doShowAll() {
 						console.log('key', key);
 						const topping = customCrepeIngredients[key];
 						console.log('topping', topping);
-						if (topping != '') {
+						if (topping != '' && topping != []) {
 							console.log('topping', topping);
 							const formatDict = {};
 							if (key != 'protein') {
 								var format = '';
 								for (var i = 0; i < topping.length; i++) {
-									var toppingName = Object.keys(topping[i])[0];
-									var toppingQuantity = topping[i][toppingName];
-									if (toppingName != 'price') {
+									var toppingName = topping[i]['name'];
+									console.log('toppingName: %s', toppingName);
+
+									var toppingQuantity = topping[i]['servingSize'];
+									console.log('toppingQuantity: %s', toppingQuantity);
+
+									if (toppingName) {
 										toppingQuantity = capitalize(toppingQuantity);
 										if (toppingQuantity != 'Regular') {
 											format += toppingQuantity;
@@ -103,7 +113,7 @@ function doShowAll() {
 											format += ' and ';
 										}
 									} else {
-										formatDict['price'] = toppingQuantity;
+										formatDict['price'] = topping[i]['price'];
 									}
 								}
 
@@ -115,9 +125,9 @@ function doShowAll() {
 								//if (protein.length > 1) {
 								var formattedProtein = '';
 								for (var i = 0; i < protein.length; i++) {
-									var proteinName = Object.keys(protein[i])[0];
-									var proteinQuantity = protein[i][proteinName];
-									if (proteinName != 'price') {
+									var proteinName = protein[i]['name'];
+									var proteinQuantity = protein[i]['servingSize'];
+									if (proteinName) {
 										console.log('pq', proteinQuantity);
 										console.log('pn', proteinName);
 										proteinName = splitCamelCaseToString(proteinName);
@@ -128,13 +138,18 @@ function doShowAll() {
 										}
 
 										formattedProtein += proteinName;
-										if (i != protein.length - 2) {
-											formattedProtein += ' and ';
-										}
+										console.log('protein', protein);
+										formattedProtein += ' and ';
 									} else {
-										formatDict['price'] = proteinQuantity;
+										formatDict['price'] = protein[i]['price'];
 									}
 								}
+								console.log('formattedProtein1: %s', formattedProtein);
+
+								formattedProtein = Array.from(formattedProtein).splice(0, formattedProtein.length - 5);
+								formattedProtein = formattedProtein.join('');
+								console.log('formattedProtein2: %s', formattedProtein);
+
 								formatDict['format'] = formattedProtein;
 								formattedOtherToppings.unshift(formatDict);
 							}
@@ -215,7 +230,7 @@ function doShowAll() {
 				if ($('#modalBody1').children.length > 0) {
 					// format the drink list
 
-					orderDrinks = orderDict['orderDrink'];
+					const orderDrinks = orderDict['orderDrink'];
 
 					for (k = 0; k <= orderDrinks.length - 1; k++) {
 						// for each drink order, tracked by the index number k, i will add a new container with a row appended to it that lists the drink order # k
@@ -298,20 +313,23 @@ function doShowAll() {
 						} // end of loop itering through drink category key values
 
 						// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
-						const itemIndex = $(`#container${k}`)
+						const drinkItemIndex = $(`#drinkContainer${k}`)
 							.find('.row')
 							.first()
 							.text()
+							.replace('Order ', '')
 							.replace(' ', '-')
 							.replace('#', '')
 							.toLowerCase();
+						console.log('drinkItemIndex: %s', drinkItemIndex);
+
 						$(`<div class="grid-container" id="drinkButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${k}`));
 						$(`#drinkButtonContainer${k}`).append(
 							`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
 						);
 						$(`#drinkButtonContainer${k}`).append(
-							`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="/">edit</a></h6></div>`
+							`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="/order-drink?editOrder=${drinkItemIndex}">edit</a></h6></div>`
 						);
 						$(`#drinkButtonContainer${k}`).append(
 							`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`
@@ -359,7 +377,7 @@ function doShowAll() {
 									var sideName = splitCamelCaseToString(side['name']);
 									// var sideQuantity = side['servingSize'];
 									console.log('sideName', sideName);
-									sideQuantity = side['quantity'];
+									const sideQuantity = side['quantity'];
 									console.log('sideQuantity: %s', sideQuantity);
 									var sidePrice = parseFloat(side['price']);
 									console.log('sidePrice: %s', sidePrice);
@@ -464,7 +482,17 @@ function doShowAll() {
 								}
 							}
 						} // end of for loop iterating through side list
-						const lastElementId = $('#modalBody1').find('.container').last().attr('id');
+						// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
+						const sideItemIndex = $(`#sideContainer${k}`)
+							.find('.row')
+							.first()
+							.text()
+							.replace('Order ', '')
+							.replace(' ', '-')
+							.replace('#', '')
+							.toLowerCase();
+						console.log('sideItemIndex: %s', sideItemIndex);
+
 						console.log('sideSubTotal', sideSubTotal);
 						$(`<div class="grid-container" id="sideButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${k}`));
@@ -472,7 +500,7 @@ function doShowAll() {
 							`<div id="col5"><h6 style=" margin-left:75px;text-decoration:underline"><a href="copyItem()">duplicate</a></h6></div>`
 						);
 						$(`#sideButtonContainer${k}`).append(
-							`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="{{url_for('make_your_own_crepe', edit=true)}}">edit</a></h6></div>`
+							`<div  id="col6" ><h6 style=" margin-left: 0px; text-decoration:underline;"><a href="/order-side?editOrder=${sideItemIndex}">edit</a></h6></div>`
 						);
 						$(`#sideButtonContainer${k}`).append(
 							`<div  id="col7"><h6 style=" text-decoration:underline; margin-right: 35px"><a href="removeItem()">remove</a></h6></div>`

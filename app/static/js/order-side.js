@@ -652,18 +652,21 @@ function checkOut() {
 	// the data structure of the element in the ice cream value of the orderItems dictionary is another dictionary. it is within this dictionary that I now create a toppings key which will store the toppings dictionary.
 	const toppingsDict = orderItems['toppings'];
 	console.log('toppingsDict: %s', toppingsDict);
+	if (toppingsDict.length) {
+		orderItems['ice_cream_bowl'][0]['toppings'] = toppingsDict;
+		// then i want to delete the toppings dictionary from the order items array so as not to have duplicative information
+		delete orderItems['toppings'];
+		console.log('newOrderItems', orderItems);
 
-	orderItems['ice_cream_bowl'][0]['toppings'] = toppingsDict;
-	// then i want to delete the toppings dictionary from the order items array so as not to have duplicative information
-	delete orderItems['toppings'];
-	console.log('newOrderItems', orderItems);
-
-	orderToppingsDict['sides'] = ingredientsDict;
-	console.log('sides dict', orderToppingsDict);
-	console.log('orderToppingsDictwithIngredient', orderToppingsDict);
-	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
-	$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=True'));
-	// });
+		orderToppingsDict['sides'] = ingredientsDict;
+		console.log('sides dict', orderToppingsDict);
+		console.log('orderToppingsDictwithIngredient', orderToppingsDict);
+		//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=True'));
+		// });
+	} else {
+		location.assign('/order?userOrder=True');
+	}
 }
 // all this code changes display for smaller screen sizes
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null

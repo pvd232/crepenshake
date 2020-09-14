@@ -94,7 +94,7 @@ def make_your_own_crepe(editOrder=None):
 
 
 @app.route('/order-drink')
-def order_drink():
+def order_drink(editOrder=None):
     drink_service = Drink_Service()
 
     milkshakes = [humanize(x, "name") for x in drink_service.get_milkshakes()]
@@ -111,12 +111,12 @@ def order_drink():
     non_coffee_drinks = [humanize(x, "name")
                          for x in drink_service.get_non_coffee_drinks()]
     milk_drinks = [humanize(x, "id") for x in drink_service.get_milk_drinks()]
-
-    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups)
+    editOrder = request.args.get('editOrder')
+    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups, editOrder=editOrder)
 
 
 @app.route('/order-side')
-def order_side():
+def order_side(editOrder=None):
     side_service = Side_Service()
     croissants = [humanize(x, 'flavor') for x in side_service.get_croissants()]
     # formatted_side_names = [humanize(x, 'side_name_id')
@@ -129,8 +129,8 @@ def order_side():
                 for x in side_service.get_toppings()]
     for x in toppings:
         print(x.serialize())
-
-    return render_template('order_side.html', side_names=side_names, croissants=croissants, ice_cream_prices=ice_cream_prices, toppings=toppings)
+    editOrder = request.args.get('editOrder')
+    return render_template('order_side.html', side_names=side_names, croissants=croissants, ice_cream_prices=ice_cream_prices, toppings=toppings, editOrder=editOrder)
 
 
 @app.route('/make-your-own-savory-crepe')

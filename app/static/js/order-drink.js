@@ -3,37 +3,63 @@
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
 
 var coffeeBool = false;
+var milkBool = false;
+var editDrinkIndex = undefined;
+var editDrink = undefined;
 // var dripBool = false;
 // var latteBool = false;
+
+function jq(myid) {
+	return myid.replace(/(:|\.|\[|\]|%|,|=|@)/g, '\\$1');
+}
 function stringify(dataObject) {
+	console.log('dataObject: %s', dataObject);
+
 	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
-	// or an orderCrepe array, the order props, a drinks array, and a sides array
-	if (localStorage.length > 0) {
-		const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
-		console.log('order local stor > 0', order);
-		if ('orderDrink' in order) {
-			order['orderDrink'].push(dataObject);
-			const stringifiedDataObject = JSON.stringify(order);
-			console.log('stringifiedDataObject', stringifiedDataObject);
-			localStorage.setItem('order', stringifiedDataObject);
+	if (dataObject['drinks'] != []) {
+		if (editDrinkIndex == undefined) {
+			if (localStorage.length > 0) {
+				const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
+				console.log('order local stor > 0', order);
+				if ('orderDrink' in order) {
+					order['orderDrink'].push(dataObject);
+					const stringifiedDataObject = JSON.stringify(order);
+					console.log('stringifiedDataObject', stringifiedDataObject);
+					localStorage.setItem('order', stringifiedDataObject);
+				} else {
+					order['orderDrink'] = [];
+					order['orderDrink'].push(dataObject);
+					const stringifiedDataObject = JSON.stringify(order);
+					console.log('order', order);
+					console.log('stringifiedDataObject', stringifiedDataObject);
+					localStorage.setItem('order', stringifiedDataObject);
+				}
+			} else {
+				const order = {};
+				order['orderDrink'] = [];
+				order['orderDrink'].push(dataObject);
+				const stringifiedDataObject = JSON.stringify(order);
+				console.log('order', order);
+				console.log('stringifiedDataObject', stringifiedDataObject);
+				localStorage.setItem('order', stringifiedDataObject);
+			}
 		} else {
-			order['orderDrink'] = [];
-			order['orderDrink'].push(dataObject);
-			const stringifiedDataObject = JSON.stringify(order);
-			console.log('order', order);
-			console.log('stringifiedDataObject', stringifiedDataObject);
-			localStorage.setItem('order', stringifiedDataObject);
+			console.log('weee');
+			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
+			var currentOrderDrinkList = currentOrder['orderDrink'];
+			var currentOrderDrink = currentOrderDrinkList[editDrinkIndex];
+			Object.assign(currentOrderDrink, dataObject);
+			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
+			for (var i = 0; i < currentOrderDrinkList.length; i++) {
+				if (currentOrderDrinkList[i] === {}) {
+					currentOrderDrinkList.splice(i);
+				}
+			}
+			localStorage.setItem('order', JSON.stringify(currentOrder));
 		}
-	} else {
-		const order = {};
-		order['orderDrink'] = [];
-		order['orderDrink'].push(dataObject);
-		const stringifiedDataObject = JSON.stringify(order);
-		console.log('order', order);
-		console.log('stringifiedDataObject', stringifiedDataObject);
-		localStorage.setItem('order', stringifiedDataObject);
 	}
+
 	for (i = 0; i < localStorage.length; i++) {
 		var key = localStorage.key(i);
 		console.log('key: %s', key);
@@ -70,6 +96,24 @@ function checkIfCoffeeSelected() {
 		});
 }
 
+function checkIfMilkSelected() {
+	milkBool = false;
+	// dripBool = false;
+	// latteBool = false;
+	$(`#milk`)
+		.find('.btn2')
+		.each(function () {
+			var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+			var toppingCategory = toppingCategoryAndToppingNameArray[0];
+			var toppingName = toppingCategoryAndToppingNameArray[1];
+			if ($(this).css(`--${toppingCategory}`) == toppingName) {
+				milkBool = true;
+			}
+		});
+	milkBool;
+	console.log('milkBoolPost: %s', milkBool);
+}
+
 function getCSSToppingName(element) {
 	var toppingCategory = $(element).closest('.card-deck').attr('id');
 	var toppingName = $(element).closest('.card').find('.card-title').text().split(' ');
@@ -99,8 +143,10 @@ function removeAllChildNodes(parent) {
 
 //format the document
 $(window).on('load', function () {
-	$('.card').each(function (i) {
-		this.id = 'card' + i;
+	$('.card').each(function () {
+		var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+		var toppingName = toppingCategoryAndToppingNameArray[1];
+		this.id = toppingName;
 	});
 
 	//https://api.jquery.com/wrap/
@@ -156,7 +202,7 @@ $(window).on('load', function () {
 	$('.btn2').each(function (i) {
 		this.id = 'btn' + i;
 		$(this).css('--quantity', 0);
-		var drinkName = $(this).closest('.card').find('.card-title').text().split(' ').pop().toLowerCase();
+		// var drinkName = $(this).closest('.card').find('.card-title').text().split(' ').pop().toLowerCase();
 		// console.log('drinkName1', drinkName);
 
 		// if (drinkName === 'latte') {
@@ -200,6 +246,159 @@ $(window).on('load', function () {
 			});
 	});
 
+	if ($('.edit').length) {
+		const editDrinkParam = $('.edit').first().attr('id');
+		const editDrinkArray = editDrinkParam.split('-');
+		//have to subtract one because the drink index on the shopping cart is 1 higher than the array index
+		editDrinkIndex = parseInt(editDrinkArray[editDrinkArray.length - 1]) - 1;
+		editDrink = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderDrink'][editDrinkIndex];
+		console.log('editDrink: %s', editDrink);
+
+		const drinkDict = editDrink['drinks'];
+		for (var drinkCategoryKey in drinkDict) {
+			console.log('drinkCategoryKey: %s', drinkCategoryKey);
+
+			const drinkArray = drinkDict[drinkCategoryKey];
+			console.log('drinkArray: %s', drinkArray);
+			if (drinkCategoryKey === 'coffee') {
+				for (var i = 0; i < drinkArray.length; i++) {
+					const drink = drinkArray[i];
+					if ('name' in drink) {
+						console.log('drink name: %s', drink['name']);
+						const drinkName = drink['name'];
+						const drinkServingSize = drink['servingSize'];
+						const drinkQuantity = drink['quantity'];
+						console.log('drinkQuantity: %s', drinkQuantity);
+
+						const milk = drink['milk'];
+						console.log('milk: %s', milk);
+
+						const milkName = milk['name'];
+						const milkServingSize = milk['servingSize'];
+
+						const espresso = drink['espresso'];
+						const espressoQuantity = espresso['quantity'];
+
+						$(`#${drinkName}`).find('.btn2').css(`--${drinkCategoryKey}`, `${drinkName}`);
+						$(`#${drinkName}`).find('.btn2').css(`--quantity`, `${drinkQuantity}`);
+
+						if (espressoQuantity === 3) {
+							$(`#${drinkName}`).find('.btn2').html('2x');
+							$(`#${drinkName}`).find('.btn2').show();
+							$(`#${drinkName}`).find('.btn').show();
+							$(`#${drinkName}`).find('.btn2').css('--extra', 'true');
+						} else if (espressoQuantity === 2) {
+							$(`#${drinkName}`).find('.btn2').html('✓');
+							$(`#${drinkName}`).find('.btn2').show();
+							$(`#${drinkName}`).find('.btn').show();
+
+							$(`#${drinkName}`).find('.btn2').css('--regular', 'true');
+						} else if (espressoQuantity === 1) {
+							$(`#${drinkName}`).find('.btn2').html('½');
+							$(`#${drinkName}`).find('.btn2').show();
+							$(`#${drinkName}`).find('.btn').show();
+
+							$(`#${drinkName}`).find('.btn2').css('--half', 'true');
+						}
+						// set all the milk props
+						$(`#${jq(milkName)}`)
+							.find('.btn2')
+							.css(`--${drinkCategoryKey}`, `${milkName}`);
+						$(`#${jq(milkName)}`)
+							.find('.btn2')
+							.css(`--${milkServingSize}`, 'true');
+						$(`#${jq(milkName)}`)
+							.closest('.card')
+							.css('opacity', '1');
+						$('#errorMilk').hide();
+
+						if (milkServingSize === 'extra') {
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.html('2x');
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.show();
+							$(`#${jq(milkName)}`)
+								.find('.btn')
+								.show();
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.css('--extra', 'true');
+						} else if (milkServingSize === 'regular') {
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.html('✓');
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.show();
+							$(`#${jq(milkName)}`)
+								.find('.btn')
+								.show();
+
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.css('--regular', 'true');
+						} else if (milkServingSize === 'half') {
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.html('½');
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.show();
+							$(`#${jq(milkName)}`)
+								.find('.btn')
+								.show();
+
+							$(`#${jq(milkName)}`)
+								.find('.btn2')
+								.css('--half', 'true');
+						}
+
+						console.log('drinkServingSize: %s', drinkServingSize);
+					}
+				}
+				checkIfCoffeeSelected();
+				if (coffeeBool) {
+					$('#coffee_syrup')
+						.find('.card')
+						.each(function () {
+							$(this).css('opacity', '1');
+						});
+					$('#errorSyrup').hide();
+				}
+			} else {
+				for (var i = 0; i < drinkArray.length; i++) {
+					const drink = drinkArray[i];
+					if ('name' in drink) {
+						// i add the word milkshake to each name for formatting so i have to remove it for the html element id to be recognized
+						const nonCoffeeDrinkName = drink['name'].replace('Milkshake', '');
+						console.log('nonCoffeeDrinkName: %s', nonCoffeeDrinkName);
+
+						const nonCoffeeDrinkQuantity = drink['quantity'];
+						const nonCoffeeDrinkServingSize = drink['servingSize'];
+						$(`#${nonCoffeeDrinkName}`).find('.btn2').css(`--${drinkCategoryKey}`, `${nonCoffeeDrinkName}`);
+						$(`#${nonCoffeeDrinkName}`).find('.btn2').css(`--${nonCoffeeDrinkServingSize}`, 'true');
+						$(`#${nonCoffeeDrinkName}`).find('.btn2').css(`--quantity`, `${nonCoffeeDrinkQuantity}`);
+						$(`#${nonCoffeeDrinkName}`).find('.btn2').html(nonCoffeeDrinkQuantity);
+						$(`#${nonCoffeeDrinkName}`).find('.btn2').show();
+						$(`#${nonCoffeeDrinkName}`).find('.btn6').show();
+						$(`#${nonCoffeeDrinkName}`).find('.btn7').show();
+					}
+				}
+			}
+		}
+
+		for (var key in editDrink) {
+			console.log(key);
+			console.log(editDrink[key]);
+		}
+		console.log('editDrink: %s', editDrink);
+
+		console.log('editDrinkIndex: %s', editDrinkIndex);
+
+		console.log('editDrink: %s', editDrink);
+	}
 	var x = document.getElementsByClassName('card-title');
 	var y = [];
 
@@ -228,6 +427,7 @@ $(window).on('load', function () {
 						$(this).find('.card-body').css('opacity', '.3');
 						$(this).find('.card-img-top').css('opacity', '.3');
 						$(this).find('.btn').show();
+						// if the selected card is coffee but a coffee has not been previously selected
 					} else if (!coffeeBool) {
 						console.log('see if the card-deck id is coffee', $(this).closest('.card-deck').attr('id'));
 						$(this).find('.card-body').css('opacity', '.3');
@@ -239,8 +439,13 @@ $(window).on('load', function () {
 					$(this).find('.card-img-top').css('opacity', '.3');
 					$(this).find('.btn').show();
 				} else if (coffeeBool && $(this).closest('.card-deck').attr('id') === 'milk') {
-					$(this).find('.card-body').css('opacity', '.3');
-					$(this).find('.card-img-top').css('opacity', '.3');
+					checkIfMilkSelected();
+					console.log('milkBool in click: %s', milkBool);
+
+					if (!milkBool) {
+						$(this).find('.card-body').css('opacity', '.3');
+						$(this).find('.card-img-top').css('opacity', '.3');
+					}
 				}
 				// if a coffee is selected but not a latte or drip coffee then fade the card out and show the customize button
 				// else if (coffeeBool && !dripBool && !latteBool) {
@@ -295,16 +500,52 @@ $(window).on('load', function () {
 						if (coffeeBool) {
 							// if coffee has been selected alredy then we don't want to select another coffee!
 							if ($(this).closest('.card-deck').attr('id') != 'coffee') {
-								// console.log(
-								// 	'`--${toppingCategory}`, `${toppingName}`',
-								// 	`--${toppingCategory}`,
-								// 	`${toppingName}`
-								// );
-								$(this).closest('.card').find('.btn2').css(`--${toppingCategory}`, `${toppingName}`);
-								$(this).closest('.card').find('.btn2').css('--regular', 'true');
-								console.log('veggieCraze', $(this).closest('.card').find('.btn2').css('--regular'));
-								$(this).closest('.card').find('.btn2').html('✓');
-								$(this).closest('.card').find('.btn2').toggle();
+								//make sure the selected card isn't milk because we want extra logic in there to make sure a milk hasn't already been selected
+								if ($(this).closest('.card-deck').attr('id') != 'milk') {
+									$(this)
+										.closest('.card')
+										.find('.btn2')
+										.css(`--${toppingCategory}`, `${toppingName}`);
+									$(this).closest('.card').find('.btn2').css('--regular', 'true');
+									console.log('veggieCraze', $(this).closest('.card').find('.btn2').css('--regular'));
+									$(this).closest('.card').find('.btn2').html('✓');
+									$(this).closest('.card').find('.btn2').toggle();
+								}
+								// if the selected card is milk
+								else {
+									console.log('milkBooooool: %s', milkBool);
+									checkIfMilkSelected();
+									// make sure a milk hasn't already been selected
+									if (!milkBool) {
+										console.log(';weeewew');
+										$(this)
+											.closest('.card')
+											.find('.btn2')
+											.css(`--${toppingCategory}`, `${toppingName}`);
+										$(this).closest('.card').find('.btn2').css('--regular', 'true');
+										console.log(
+											'veggieCraze',
+											$(this).closest('.card').find('.btn2').css('--regular')
+										);
+										$(this).closest('.card').find('.btn2').html('✓');
+										$(this).closest('.card').find('.btn2').toggle();
+										// if a milk has been selected then we want to make sure all the other milk cards are knocked out
+										//and we want to change the milk error message to say that only one milk may be selected
+										$('#milk')
+											.find('.card')
+											.each(function () {
+												var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+												var toppingCategory = toppingCategoryAndToppingNameArray[0];
+												var toppingName = toppingCategoryAndToppingNameArray[1];
+												// make sure that you don't hide the already selected coffee
+												if ($(this).find('.btn2').css(`--${toppingCategory}`) != toppingName) {
+													$(this).css('opacity', '.3');
+												}
+											});
+										$('#errorMilk').html('You may only select one milk for your coffee');
+										$('#errorMilk').show();
+									}
+								}
 							}
 						} else if (
 							// otherwise make sure the card being clicked isn't milk or coffee syrup
@@ -345,17 +586,21 @@ $(window).on('load', function () {
 					// milk card logic
 					// after clicking a card, if you the card you selected was a coffee then unhide the milk and syrup
 					checkIfCoffeeSelected();
+					checkIfMilkSelected();
 					if (coffeeBool) {
-						$('#milk, #coffee_syrup').each(function () {
-							console.log('coffee_syrup & milk $(this) PT2', $(this));
-							$(this)
-								.find('.card')
-								.each(function () {
-									$(this).css('opacity', '1');
-								});
-							$('#errorMilk').hide();
-							$('#errorSyrup').hide();
-						});
+						// make sure a milk hasn't been selected before we activate all the milk cards
+						if (!milkBool) {
+							$('#milk, #coffee_syrup').each(function () {
+								console.log('coffee_syrup & milk $(this) PT2', $(this));
+								$(this)
+									.find('.card')
+									.each(function () {
+										$(this).css('opacity', '1');
+									});
+								$('#errorMilk').hide();
+								$('#errorSyrup').hide();
+							});
+						}
 
 						// after selecting one coffee the rest become unavailable
 
@@ -407,6 +652,7 @@ $(window).on('load', function () {
 									$(this).closest('.card').find('.btn2').css(`--quantity`, 0);
 								});
 							// console.log('coffeeBool false');
+							$('#errorMilk').html('*Please select a coffee first');
 							$('#errorMilk').show();
 							$('#errorSyrup').show();
 						});
@@ -462,7 +708,6 @@ $(window).on('load', function () {
 					$(this).html('3 Espresso Shots');
 					$(this).closest('.card').find('.btn3').show();
 					$(this).closest('.card').find('.btn4').show();
-					coffeeBool = true;
 					$('#milk, #coffee_syrup').each(function () {
 						// console.log('coffee_syrup & milk $(this) PT2', $(this));
 						$(this)
@@ -493,6 +738,21 @@ $(window).on('load', function () {
 				$(this).closest('.card').find('.btn2').show();
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn4').hide();
+				checkIfCoffeeSelected();
+				if (coffeeBool) {
+					// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
+					$('#coffee')
+						.find('.card')
+						.each(function () {
+							var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+							var toppingCategory = toppingCategoryAndToppingNameArray[0];
+							var toppingName = toppingCategoryAndToppingNameArray[1];
+							// make sure that you don't hide the already selected coffee
+							if ($(this).find('.btn2').css(`--${toppingCategory}`) != toppingName) {
+								$(this).css('opacity', '.3');
+							}
+						});
+				}
 				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 			}
 		});
@@ -620,9 +880,8 @@ $(window).on('load', function () {
 // 	return newToppingCategoryListWithPricesofToppingCategories;
 // }
 // checkout function
-var orderToppingsDict = {};
-var ingredientsDict = {};
-var drinkDict = {};
+const orderToppingsDict = {};
+const drinkDict = {};
 orderToppingsDict['drinks'] = [];
 function checkOut() {
 	// $('#checkout')
@@ -630,11 +889,11 @@ function checkOut() {
 	// 	.bind('click', function () {
 	console.log('checkout');
 
-	// $('.card-deck').each(function () {
-	// 	// create a drink category (ex. coffee) for each key in the drink dict
+	$('.card-deck').each(function () {
+		// create a drink category (ex. coffee) for each key in the drink dict
 
-	// 	ingredientsDict[`${$(this).attr('id')}`] = [];
-	// });
+		drinkDict[`${$(this).attr('id')}`] = [];
+	});
 
 	$('.btn2').each(function () {
 		var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
@@ -676,6 +935,8 @@ function checkOut() {
 			}
 
 			toppingDictionary['name'] = `${toppingName}`;
+			// console.log("toppingDictionary['name']: %s", toppingDictionary['name']);
+
 			if ($(this).css('--price')) {
 				console.log('price', $(this).css('--price'));
 				toppingDictionary['price'] = parseFloat($(this).css('--price'));
@@ -684,23 +945,29 @@ function checkOut() {
 			}
 			toppingDictionary['quantity'] = $(this).css('--quantity');
 
-			console.log('ingredientsDict', ingredientsDict);
-			ingredientsDict[`${toppingCategory}`] = [];
-
-			ingredientsDict[`${toppingCategory}`].push(toppingDictionary);
+			// console.log('drinkDict', drinkDict);
+			// for (var i = 0; i < drinkDict[`${toppingCategory}`].length; i++) {
+			// 	console.log('wee', drinkDict[`${toppingCategory}`][i]);
+			// }
+			drinkDict[`${toppingCategory}`].push(toppingDictionary);
+			// for (var i = 0; i < drinkDict[`${toppingCategory}`].length; i++) {
+			// 	console.log('peee', drinkDict[`${toppingCategory}`][i]);
+			// }
 		}
 	});
 
-	var orderItems = ingredientsDict;
+	var orderItems = drinkDict;
 	console.log('oldOrderItems', orderItems);
 	//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
 	// var proteinCategoryCount = [];
 	const coffeeArray = orderItems['coffee'];
 	var orderTotal = 0;
 	for (var key in orderItems) {
+		console.log('key: %s', key);
+
 		const drinksForItemCategory = orderItems[key];
 		console.log('drinksForItemCategory', drinksForItemCategory);
-		if (drinksForItemCategory != []) {
+		if (drinksForItemCategory.length) {
 			console.log('drinksForItemCategory', drinksForItemCategory);
 			// if (key != 'protein') {
 			for (var i = 0; i < drinksForItemCategory.length; i++) {
@@ -725,9 +992,10 @@ function checkOut() {
 					drink['espresso'] = espressoDict;
 					orderTotal += espressoPrice;
 				} else if (key === 'milk') {
+					coffeeArray[0]['milk'] = drink;
+
 					// create a new key in the coffee dictionary whose value is the milk dictionary. remmeber that the coffee dictionary is the first element of the coffee array (selecting the first element of the coffee array works because the user can only order one coffee per visit to this page)
 					// after cloning the dictionary, delete the milk category from orderItems
-					coffeeArray[0]['milk'] = drink;
 					orderTotal += drink['price'];
 					delete orderItems[key];
 				} else if (key === 'coffee_syrup') {
@@ -770,17 +1038,28 @@ function checkOut() {
 					Object.assign(drink, dictSource);
 				}
 			}
+			// need to populate the milk values
+		} else if (key === 'milk') {
+			console.log('fuck');
+			const milkDict = {};
+			milkDict['name'] = '2%Milk';
+			milkDict['servingSize'] = 'regular';
+			coffeeArray[0]['milk'] = milkDict;
 		}
 	}
 	console.log('newOrderItems', orderItems);
 
-	orderToppingsDict['drinks'] = ingredientsDict;
+	orderToppingsDict['drinks'] = drinkDict;
 	console.log('drinks dict', orderToppingsDict);
 	console.log('orderToppingsDictwithIngredient', orderToppingsDict);
 	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
 	// stringify(orderToppingsDict);
-	$.when(stringify(orderToppingsDict)).then(location.assign('/order-side'));
-
+	if (editDrinkIndex != undefined) {
+		// stringify(orderToppingsDict);
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
+	} else {
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order-side'));
+	}
 	// });
 }
 // all this code changes display for smaller screen sizes

@@ -1,41 +1,67 @@
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
+import { splitCamelCaseToString } from './shoppingCart.js';
+var editCrepeIndex = undefined;
+var editCrepe = undefined;
 function stringify(dataObject) {
 	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
 	// or an orderCrepe array, the order props, a drinks array, and a sides array
-	if (localStorage.length > 0) {
-		const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
-		console.log('order: %s', order);
+	console.log('dataObject', dataObject);
+	if (dataObject['crepeTotal'] > 0) {
+		if (editCrepeIndex == undefined) {
+			console.log('editCrepeIndexNot: %s', editCrepeIndex);
 
-		if ('orderCrepe' in order) {
-			order['orderCrepe'].push(dataObject);
-			const stringifiedDataObject = JSON.stringify(order);
-			console.log('stringifiedDataObject', stringifiedDataObject);
-			localStorage.setItem('order', stringifiedDataObject);
+			if (localStorage.length > 0) {
+				const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
+				console.log('order: %s', order);
+
+				if ('orderCrepe' in order) {
+					order['orderCrepe'].push(dataObject);
+					const stringifiedDataObject = JSON.stringify(order);
+					console.log('stringifiedDataObject', stringifiedDataObject);
+					localStorage.setItem('order', stringifiedDataObject);
+				} else {
+					order['orderCrepe'] = [];
+					order['orderCrepe'].push(dataObject);
+					const stringifiedDataObject = JSON.stringify(order);
+					console.log('order', order);
+					console.log('stringifiedDataObject', stringifiedDataObject);
+					localStorage.setItem('order', stringifiedDataObject);
+				}
+			} else {
+				const order = {};
+				order['orderCrepe'] = [];
+				order['orderCrepe'].push(dataObject);
+				const stringifiedDataObject = JSON.stringify(order);
+				console.log('order', order);
+				console.log('stringifiedDataObjectOrder', stringifiedDataObject);
+				localStorage.setItem('order', stringifiedDataObject);
+			}
 		} else {
-			order['orderCrepe'] = [];
-			order['orderCrepe'].push(dataObject);
-			const stringifiedDataObject = JSON.stringify(order);
-			console.log('order', order);
-			console.log('stringifiedDataObject', stringifiedDataObject);
-			localStorage.setItem('order', stringifiedDataObject);
+			console.log('editCrepe', editCrepe);
+			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
+			var currentOrderCrepeList = currentOrder['orderCrepe'];
+			var currentOrderCrepe = currentOrderCrepeList[editCrepeIndex];
+			Object.assign(currentOrderCrepe, dataObject);
+			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
+			for (var i = 0; i < currentOrderCrepeList.length; i++) {
+				if (currentOrderCrepeList[i] === {}) {
+					const index = i;
+					currentOrderCrepeList.splice(i);
+				}
+			}
+			localStorage.setItem('order', JSON.stringify(currentOrder));
+
+			console.log('editCrepe2', editCrepe);
 		}
-	} else {
-		const order = {};
-		order['orderCrepe'] = [];
-		order['orderCrepe'].push(dataObject);
-		const stringifiedDataObject = JSON.stringify(order);
-		console.log('order', order);
-		console.log('stringifiedDataObjectOrder', stringifiedDataObject);
-		localStorage.setItem('order', stringifiedDataObject);
 	}
-	for (i = 0; i < localStorage.length; i++) {
-		var key = localStorage.key(i);
+	for (var i = 0; i < localStorage.length; i++) {
+		const key = localStorage.key(i);
 		console.log('key: %s', key);
 
-		var value = localStorage[key];
+		const value = localStorage[key];
 		console.log('value: %s', value);
 	}
 	return true;
@@ -101,7 +127,7 @@ function validateToppingSelection(selectedElement, btn) {
 	var extraMeatIndex = 0;
 	var extraMeatCounter = 0;
 	var countSum = 0;
-	meatSelections = [];
+	const meatSelections = [];
 
 	var toppingCategoryAndToppingNameArray = getCSSToppingName(selectedElement);
 	var toppingCategory = toppingCategoryAndToppingNameArray[0];
@@ -145,8 +171,12 @@ function validateToppingSelection(selectedElement, btn) {
 	}
 
 	function displayErrorMsg(element) {
-		selector = `#${element.closest('.card').attr('id') + 'error'}`;
-		id = `${element.closest('.card').attr('id') + 'error'}`;
+		console.log('element: %s', element);
+		console.log(`element.closest('.card').attr('id')`, element.closest('.card').attr('id'));
+
+		const selector = `#${element.closest('.card').attr('id') + 'error'}`;
+
+		const id = `${element.closest('.card').attr('id') + 'error'}`;
 
 		if ($(selector).length) {
 			$(selector).fadeIn('slow').delay(4000).fadeOut('slow'); //https://stackoverflow.com/questions/15686598/jquery-delay-before-fadeout
@@ -386,8 +416,10 @@ function validateToppingSelection(selectedElement, btn) {
 
 //mouse over functionality
 $(window).on('load', function () {
-	$('.card').each(function (i) {
-		this.id = 'card' + i;
+	$('.card').each(function () {
+		var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+		var toppingName = toppingCategoryAndToppingNameArray[1];
+		this.id = toppingName;
 	});
 
 	//https://api.jquery.com/wrap/
@@ -404,10 +436,15 @@ $(window).on('load', function () {
 		this.id = 'btn' + i;
 	});
 
+	var myButton = document.getElementById('checkOut');
+	myButton.onclick = function () {
+		checkOut();
+	};
+
 	var x = document.getElementsByClassName('card-title');
 	var y = [];
 
-	for (i = 2; i < x.length; i++) {
+	for (var i = 2; i < x.length; i++) {
 		y.push(x[i].innerHTML);
 	}
 
@@ -420,8 +457,48 @@ $(window).on('load', function () {
 	if ($('.edit').length) {
 		const editCrepeParam = $('.edit').first().attr('id');
 		const editCrepeArray = editCrepeParam.split('-');
-		const editCrepeIndex = parseInt(editCrepeArray[editCrepeArray.length - 1]);
-		const editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex];
+		//have to subtract one because the crepe index on the shopping cart is 1 higher than the array index
+		editCrepeIndex = parseInt(editCrepeArray[editCrepeArray.length - 1]) - 1;
+		editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex];
+		console.log('editCrepe: %s', editCrepe);
+
+		const crepeIngredients = editCrepe['ingredients'];
+		for (var ingredientCategoryKey in crepeIngredients) {
+			console.log('ingredientCategoryKey: %s', ingredientCategoryKey);
+
+			const ingredientArray = crepeIngredients[ingredientCategoryKey];
+			console.log('ingredientArray: %s', ingredientArray);
+
+			for (var i = 0; i < ingredientArray.length; i++) {
+				const ingredient = ingredientArray[i];
+				if ('name' in ingredient) {
+					console.log('ingredient name: %s', ingredient['name']);
+					const ingredientName = ingredient['name'];
+					$(`#${ingredientName}`).find('.btn2').css(`--${ingredientCategoryKey}`, `${ingredientName}`);
+					const ingredientServingSize = ingredient['servingSize'];
+					if (ingredientServingSize === 'extra') {
+						$(`#${ingredientName}`).find('.btn2').html('2x');
+						$(`#${ingredientName}`).find('.btn2').show();
+						$(`#${ingredientName}`).find('.btn').show();
+						$(`#${ingredientName}`).find('.btn2').css('--extra', 'true');
+					} else if (ingredientServingSize === 'regular') {
+						$(`#${ingredientName}`).find('.btn2').html('✓');
+						$(`#${ingredientName}`).find('.btn2').show();
+						$(`#${ingredientName}`).find('.btn').show();
+
+						$(`#${ingredientName}`).find('.btn2').css('--regular', 'true');
+					} else if (ingredientServingSize === 'half') {
+						$(`#${ingredientName}`).find('.btn2').html('½');
+						$(`#${ingredientName}`).find('.btn2').show();
+						$(`#${ingredientName}`).find('.btn').show();
+
+						$(`#${ingredientName}`).find('.btn2').css('--half', 'true');
+					}
+					console.log('ingredientServingSize: %s', ingredientServingSize);
+				}
+			}
+		}
+
 		for (var key in editCrepe) {
 			console.log(key);
 			console.log(editCrepe[key]);
@@ -492,10 +569,6 @@ $(window).on('load', function () {
 		.unbind('mouseleave')
 		.bind('mouseleave', function () {
 			if ($(this).closest('.card-deck').attr('id') == 'protein') {
-				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-				var toppingCategory = toppingCategoryAndToppingNameArray[0];
-				var toppingName = toppingCategoryAndToppingNameArray[1];
-
 				$(this).find('.btn').html('Customize');
 
 				if (
@@ -685,59 +758,57 @@ function toppingPricing(toppingCategoryList, proteinCategoryList) {
 	var newToppingCategoryListWithPricesofToppingCategories = [];
 	for (var i = 0; i < toppingCategoryList.length; i++) {
 		const toppingDict = toppingCategoryList[i];
-		const toppingKey = Object.keys(toppingDict)[0];
-		console.log('tkey', toppingKey);
+		const toppingName = toppingDict['name'].toLowerCase();
+		console.log('tkey', toppingName);
 		console.log('toppingDict', toppingDict);
-		if (toppingKey == 'veggie') {
-			const newToppingDict = {};
-			const toppingQuantity = toppingDict[toppingKey];
-			console.log('tquant', toppingQuantity);
-			const amountOverIncludedAmount = toppingQuantity - 4;
-			var priceForTopping;
+		const newToppingDict = {};
+		const toppingCount = toppingDict['count'];
+		console.log('toppingCount: %s', toppingCount);
+
+		var priceForTopping;
+
+		if (toppingName == 'veggie') {
+			console.log('tquant', toppingCount);
+			const amountOverIncludedAmount = toppingCount - 4;
 			if (amountOverIncludedAmount > 0) {
 				priceForTopping = amountOverIncludedAmount * 0.5;
 			} else {
 				priceForTopping = 0;
 			}
-			newToppingDict[`${toppingKey}`] = priceForTopping;
-			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-		} else if (toppingKey == 'cheese') {
-			const newToppingDict = {};
-			const toppingQuantity = toppingDict[toppingKey];
-			const amountOverIncludedAmount = toppingQuantity - 1;
+			newToppingDict['price'] = priceForTopping;
+			newToppingDict['name'] = toppingName;
+		} else if (toppingName == 'cheese') {
+			const amountOverIncludedAmount = toppingCount - 1;
 			var priceForTopping;
 			if (amountOverIncludedAmount > 0) {
 				priceForTopping = amountOverIncludedAmount * 0.99;
 			} else {
 				priceForTopping = 0;
 			}
-			newToppingDict[`${toppingKey}`] = priceForTopping;
-			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-		} else if (toppingKey == 'sauce') {
-			const newToppingDict = {};
-			const toppingQuantity = toppingDict[toppingKey];
-			const amountOverIncludedAmount = toppingQuantity;
-			var priceForTopping;
+			newToppingDict['price'] = priceForTopping;
+			newToppingDict['name'] = toppingName;
+		} else if (toppingName == 'sauce') {
+			const amountOverIncludedAmount = toppingCount;
 			if (amountOverIncludedAmount > 0) {
 				priceForTopping = amountOverIncludedAmount * 0.99;
 			} else {
 				priceForTopping = 0;
 			}
-			newToppingDict[`${toppingKey}`] = priceForTopping;
-			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-		} else if (toppingKey == 'herb') {
-			const newToppingDict = {};
-			const toppingQuantity = toppingDict[toppingKey];
-			const amountOverIncludedAmount = toppingQuantity;
-			var priceForTopping;
+			newToppingDict['price'] = priceForTopping;
+			newToppingDict['name'] = toppingName;
+		} else if (toppingName == 'herb') {
+			const amountOverIncludedAmount = toppingCount;
 			if (amountOverIncludedAmount > 0) {
 				priceForTopping = amountOverIncludedAmount * 0.5;
 			} else {
 				priceForTopping = 0;
 			}
-			newToppingDict[`${toppingKey}`] = priceForTopping;
-			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
+			newToppingDict['price'] = priceForTopping;
+			newToppingDict['name'] = toppingName;
 		}
+		console.log('newToppingDict: %s', newToppingDict);
+
+		newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
 	}
 	//count up protein price
 	console.log('pcatList', proteinCategoryList);
@@ -745,25 +816,27 @@ function toppingPricing(toppingCategoryList, proteinCategoryList) {
 	var newProteinDict = {};
 	for (var i = 0; i < proteinCategoryList.length; i++) {
 		const proteinDict = proteinCategoryList[i];
-		const proteinKey = Object.keys(proteinDict)[0];
-		console.log('tkey', proteinKey);
+		console.log('proteinDict: %s', proteinDict);
+
+		const proteinName = proteinDict['name'];
+		console.log('tkey', proteinName);
 		console.log('proteinDict', proteinDict);
 
-		if (proteinKey == 'Steak') {
+		if (proteinName == 'Steak') {
 			var priceForProtein = 9.5;
-			const toppingQuantity = proteinDict[proteinKey];
-			console.log('tquant', toppingQuantity);
-			const proteinAmountOverIncludedAmount = toppingQuantity;
+			const toppingCount = proteinDict[proteinName];
+			console.log('tquant', toppingCount);
+			const proteinAmountOverIncludedAmount = toppingCount;
 			var priceForProtein;
 			if (proteinAmountOverIncludedAmount > 0) {
 				priceForProtein += 3.5;
 			} else {
 				priceForProtein += 0;
 			}
-		} else if (proteinKey == 'Chicken Breast') {
+		} else if (proteinName == 'Chicken Breast') {
 			priceForProtein = 8.5;
-			const toppingQuantity = proteinDict[proteinKey];
-			const proteinAmountOverIncludedAmount = toppingQuantity;
+			const toppingCount = proteinDict[proteinName];
+			const proteinAmountOverIncludedAmount = toppingCount;
 			var priceForProtein;
 			if (proteinAmountOverIncludedAmount > 0) {
 				priceForProtein += 2.5;
@@ -772,8 +845,8 @@ function toppingPricing(toppingCategoryList, proteinCategoryList) {
 			}
 		} else {
 			priceForProtein = 7.5;
-			const toppingQuantity = proteinDict[proteinKey];
-			const proteinAmountOverIncludedAmount = toppingQuantity;
+			const toppingCount = proteinDict[proteinName];
+			const proteinAmountOverIncludedAmount = toppingCount;
 			var priceForProtein;
 			if (proteinAmountOverIncludedAmount > 0) {
 				priceForProtein += 2.5;
@@ -782,7 +855,8 @@ function toppingPricing(toppingCategoryList, proteinCategoryList) {
 			}
 		}
 	}
-	newProteinDict['protein'] = priceForProtein;
+	newProteinDict['price'] = priceForProtein;
+	newProteinDict['name'] = 'protein';
 	newToppingCategoryListWithPricesofToppingCategories.unshift(newProteinDict);
 	console.log(
 		'newToppingCategoryListWithPricesofToppingCategories',
@@ -795,9 +869,6 @@ var orderToppingsDict = {};
 var ingredientsDict = {};
 orderToppingsDict['ingredients'] = [];
 function checkOut() {
-	// $('#checkout')
-	// 	.unbind('click')
-	// 	.bind('click', function () {
 	console.log('checkout');
 	var proteinToppings = 0;
 	$('#protein')
@@ -842,11 +913,14 @@ function checkOut() {
 			if ($(this).css(`--${toppingCategory}`) == toppingName) {
 				var toppingDictionary = {};
 				if ($(this).css('--half') == 'true') {
-					toppingDictionary[`${toppingName}`] = 'half';
+					toppingDictionary['name'] = `${toppingName}`;
+					toppingDictionary['servingSize'] = 'half';
 				} else if ($(this).css('--regular') == 'true') {
-					toppingDictionary[`${toppingName}`] = 'regular';
+					toppingDictionary['name'] = `${toppingName}`;
+					toppingDictionary['servingSize'] = 'regular';
 				} else if ($(this).css('--extra') == 'true') {
-					toppingDictionary[`${toppingName}`] = 'extra';
+					toppingDictionary['servingSize'] = 'extra';
+					toppingDictionary['name'] = `${toppingName}`;
 				}
 				ingredientsDict[`${toppingCategory}`].push(toppingDictionary);
 				console.log('ingredientsDict', ingredientsDict);
@@ -860,55 +934,63 @@ function checkOut() {
 		var proteinCategoryCount = [];
 
 		for (var key in orderItems) {
-			var topping = orderItems[key];
-			if (topping != '') {
-				console.log('topping', topping);
-				var toppingCategoryCountDict = {};
+			const toppingArray = orderItems[key];
+			if (toppingArray != '') {
+				console.log('toppingArray', toppingArray);
+				const toppingCategoryCountDict = {};
 				var toppingCount = 0;
 				if (key != 'protein') {
-					for (var i = 0; i < topping.length; i++) {
-						var toppingName = Object.keys(topping[i])[0];
-						var toppingQuantity = topping[i][toppingName];
+					for (var i = 0; i < toppingArray.length; i++) {
+						const topping = toppingArray[i];
+						const toppingName = topping['name'];
+						const toppingServingSize = topping['servingSize'];
 						console.log('toppingName', toppingName);
-						console.log('toppingQuant', toppingQuantity);
-						if (toppingQuantity == 'half') {
+						console.log('toppingQuant', toppingServingSize);
+						if (toppingServingSize == 'half') {
 							toppingCount += 0.5;
-						} else if (toppingQuantity == 'regular') {
+						} else if (toppingServingSize == 'regular') {
 							toppingCount += 1;
-						} else if (toppingQuantity == 'extra') {
+						} else if (toppingServingSize == 'extra') {
 							toppingCount += 2;
 						}
 					}
-					toppingCategoryCountDict[`${key}`] = toppingCount;
+					toppingCategoryCountDict['count'] = toppingCount;
+					toppingCategoryCountDict['name'] = key;
 					console.log('countDict', toppingCategoryCountDict);
 					toppingCategoryCount.push(toppingCategoryCountDict);
 				} else {
 					var protein = orderItems[key];
+					const proteinCategoryCountDict = {};
+
 					console.log('protein', protein);
 					//if (protein.length > 1) {
 
 					for (var i = 0; i < protein.length; i++) {
 						var proteinCount = 0;
-						var proteinCategoryCountDict = {};
-						var proteinName = Object.keys(protein[i])[0];
-						var proteinQuantity = protein[i][proteinName];
-						console.log('pname', proteinName, 'pquant', proteinQuantity);
-						if (proteinQuantity == 'half') {
+						var protein = protein[i];
+						for (var key in protein) {
+							console.log('key: %s', key);
+							console.log('t key: %s', protein[key]);
+						}
+						console.log('protein: %s', protein);
+						const proteinName = protein['name'];
+						const proteinServingSize = protein['servingSize'];
+						console.log('pname', proteinName, 'pquant', proteinServingSize);
+						if (proteinServingSize == 'half') {
 							proteinCount += 0.5;
-						} else if (proteinQuantity == 'regular') {
+						} else if (proteinServingSize == 'regular') {
 							proteinCount += 1;
-						} else if (proteinQuantity == 'extra') {
+						} else if (proteinServingSize == 'extra') {
 							proteinCount += 2;
 						}
-
-						proteinCategoryCountDict[`${proteinName}`] = proteinCount;
-
+						proteinCategoryCountDict['count'] = proteinCount;
+						proteinCategoryCountDict['name'] = proteinName;
 						proteinCategoryCount.push(proteinCategoryCountDict);
 					}
 				}
 			}
 		}
-		var newToppingCategoryListWithPricesofToppingCategories = toppingPricing(
+		const newToppingCategoryListWithPricesofToppingCategories = toppingPricing(
 			toppingCategoryCount,
 			proteinCategoryCount
 		);
@@ -923,14 +1005,14 @@ function checkOut() {
 			// toppingCategoryKey is a key in the orderToppings dictionary
 			for (var i = 0; i < newToppingCategoryListWithPricesofToppingCategories.length; i++) {
 				// newToppingCategoryListWithPricesofToppingCategories[i] is an individual dictionary
-				var dictKey = Object.keys(newToppingCategoryListWithPricesofToppingCategories[i])[0];
+				const dictKey = newToppingCategoryListWithPricesofToppingCategories[i]['name'];
 
 				if (toppingCategoryKey == dictKey) {
 					const pricingDict = {};
 					console.log('toppingCategoryKey', toppingCategoryKey);
 					console.log('dictKey', dictKey);
-					pricingDict['price'] = newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
-					orderTotal += newToppingCategoryListWithPricesofToppingCategories[i][dictKey];
+					pricingDict['price'] = newToppingCategoryListWithPricesofToppingCategories[i]['price'];
+					orderTotal += pricingDict['price'];
 					console.log('pDict', pricingDict);
 					ingredientsDict[toppingCategoryKey].push(pricingDict);
 					break;
@@ -945,8 +1027,12 @@ function checkOut() {
 
 		//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
 		console.log('odict', orderToppingsDict);
-		// $.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
-		$.when(stringify(orderToppingsDict)).then(location.assign('/order-drink'));
+		// stringify(orderToppingsDict);
+		if (editCrepeIndex != undefined) {
+			$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
+		} else {
+			$.when(stringify(orderToppingsDict)).then(location.assign('/order-drink'));
+		}
 	}
 	// });
 }
@@ -955,7 +1041,7 @@ function checkOut() {
 var cWidth = $(window).width();
 //https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
 $(window).on('load resize', function () {
-	newWidth = $(window).width();
+	var newWidth = $(window).width();
 
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
@@ -1089,7 +1175,7 @@ $(window).on('load resize', function () {
 //var cWidth = doc.body.clientWidth;
 var cWidth = $(window).width();
 $(window).on('resize', function () {
-	newWidth = $(window).width();
+	const newWidth = $(window).width();
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
