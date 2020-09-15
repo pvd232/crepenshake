@@ -4,7 +4,6 @@
 
 // var dripBool = false;
 // var latteBool = false;
-var iceCreamBool = false;
 
 // class side {
 // 	constructor(name = undefined, price = undefined, quantity = undefined) {
@@ -33,35 +32,62 @@ var iceCreamBool = false;
 // 		}
 // 	};
 // }
-
+var iceCreamBool = false;
+var editSideIndex = undefined;
+var editSide = undefined;
 function stringify(dataObject) {
 	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
-	// or an orderCrepe array, the order props, a drinks array, and a sides array
-	if (localStorage.length > 0) {
-		const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
-		console.log('order local stor > 0', order);
-		if ('orderSide' in order) {
-			order['orderSide'].push(dataObject);
-			const stringifiedDataObject = JSON.stringify(order);
-			console.log('stringifiedDataObject', stringifiedDataObject);
-			localStorage.setItem('order', stringifiedDataObject);
-		} else {
-			order['orderSide'] = [];
-			order['orderSide'].push(dataObject);
-			const stringifiedDataObject = JSON.stringify(order);
-			console.log('order', order);
-			console.log('stringifiedDataObject', stringifiedDataObject);
-			localStorage.setItem('order', stringifiedDataObject);
+	// or an orderCrepe array, the order props, a sides array, and a sides array
+
+	//don't want to store an empty order
+	var triggerBool = false;
+	for (var key in dataObject['sides']) {
+		if (dataObject['sides'][key].length) {
+			triggerBool = true;
 		}
-	} else {
-		const order = {};
-		order['orderSide'] = [];
-		order['orderSide'].push(dataObject);
-		const stringifiedDataObject = JSON.stringify(order);
-		console.log('order', order);
-		console.log('stringifiedDataObject', stringifiedDataObject);
-		localStorage.setItem('order', stringifiedDataObject);
+	}
+	if (triggerBool) {
+		if (editSideIndex === undefined) {
+			if (localStorage.length > 0) {
+				const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
+				console.log('order local stor > 0', order);
+				if ('orderSide' in order) {
+					order['orderSide'].push(dataObject);
+					const stringifiedDataObject = JSON.stringify(order);
+					console.log('stringifiedDataObject', stringifiedDataObject);
+					localStorage.setItem('order', stringifiedDataObject);
+				} else {
+					order['orderSide'] = [];
+					order['orderSide'].push(dataObject);
+					const stringifiedDataObject = JSON.stringify(order);
+					console.log('order', order);
+					console.log('stringifiedDataObject', stringifiedDataObject);
+					localStorage.setItem('order', stringifiedDataObject);
+				}
+			} else {
+				const order = {};
+				order['orderSide'] = [];
+				order['orderSide'].push(dataObject);
+				const stringifiedDataObject = JSON.stringify(order);
+				console.log('order', order);
+				console.log('stringifiedDataObject', stringifiedDataObject);
+				localStorage.setItem('order', stringifiedDataObject);
+			}
+		} else {
+			console.log('weee');
+			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
+			var currentOrderSideList = currentOrder['orderSide'];
+			var currentOrderSide = currentOrderSideList[editSideIndex];
+			Object.assign(currentOrderSide, dataObject);
+			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
+			for (var i = 0; i < currentOrderSideList.length; i++) {
+				if (currentOrderSideList[i] === {}) {
+					currentOrderSideList.splice(i);
+				}
+			}
+			localStorage.setItem('order', JSON.stringify(currentOrder));
+		}
 	}
 	for (i = 0; i < localStorage.length; i++) {
 		var key = localStorage.key(i);
@@ -158,8 +184,10 @@ function checkIfIceCreamSelected() {
 }
 //format the document
 $(window).on('load', function () {
-	$('.card').each(function (i) {
-		this.id = 'card' + i;
+	$('.card').each(function () {
+		var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+		var toppingName = toppingCategoryAndToppingNameArray[1];
+		this.id = toppingName;
 	});
 
 	// need to distinguish between the flavor and the name of the side for the backend
@@ -230,13 +258,13 @@ $(window).on('load', function () {
 	$('.card-img-top').each(function (i) {
 		if ($(this).closest('.card-deck').attr('id') == 'ice_cream_bowl') {
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-			$(`<div class="grid-container" id="bottled_drink${i}" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
+			$(`<div class="grid-container"  style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 				$(this)
 			);
 		} else if ($(this).closest('.card-deck').attr('id') == 'croissant') {
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-			$(`<div class="grid-container" id="bottled_drink${i}" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
+			$(`<div class="grid-container" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 				$(this)
 			);
@@ -251,7 +279,7 @@ $(window).on('load', function () {
 	$('.btn2').each(function (i) {
 		this.id = 'btn' + i;
 		$(this).css('--quantity', 0);
-		// var drinkName = $(this).closest('.card').find('.card-title').text().split(' ').pop().toLowerCase();
+		// var sideName = $(this).closest('.card').find('.card-title').text().split(' ').pop().toLowerCase();
 
 		var price = $(this).closest('.card').find('.card-text').text();
 		if (price.trim() != '') {
@@ -269,6 +297,104 @@ $(window).on('load', function () {
 		}
 	});
 
+	if ($('.edit').length) {
+		const editSideParam = $('.edit').first().attr('id');
+		const editSideArray = editSideParam.split('-');
+		//have to subtract one because the side index on the shopping cart is 1 higher than the array index
+		editSideIndex = parseInt(editSideArray[editSideArray.length - 1]) - 1;
+		console.log('editSideIndex: %s', editSideIndex);
+
+		editSide = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderSide'][editSideIndex];
+		console.log('editSide: %s', editSide);
+
+		const sideDict = editSide['sides'];
+		for (var sideCategoryKey in sideDict) {
+			console.log('sideCategoryKey: %s', sideCategoryKey);
+
+			const sideArray = sideDict[sideCategoryKey];
+			console.log('sideArray: %s', sideArray);
+			if (sideCategoryKey === 'ice_cream_bowl') {
+				for (var i = 0; i < sideArray.length; i++) {
+					const side = sideArray[i];
+					if ('name' in side) {
+						const sideName = side['name'];
+						console.log('side name: %s', sideName);
+						const sideServingSize = side['servingSize'];
+						const sideQuantity = side['quantity'];
+						console.log('sideQuantity: %s', sideQuantity);
+						$(`#${sideName}`).find('.btn2').css(`--${sideCategoryKey}`, `${sideName}`);
+						$(`#${sideName}`).find('.btn2').css(`--quantity`, `${sideQuantity}`);
+						$(`#${sideName}`).find('.btn2').css(`--${sideServingSize}`, 'true');
+						$(`#${sideName}`).find('.btn2').html(`${sideQuantity}`);
+						$(`#${sideName}`).find('.btn2').show();
+						$(`#${sideName}`).find('.btn6').show();
+						$(`#${sideName}`).find('.btn7').show();
+
+						if ('toppings' in side) {
+							const toppingsArray = side['toppings'];
+							for (var i = 0; i < toppingsArray.length; i++) {
+								const topping = toppingsArray[i];
+								const toppingName = topping['name'];
+								console.log('toppingName: %s', toppingName);
+								const toppingServingSize = topping['servingSize'];
+								console.log('toppingServingSize: %s', toppingServingSize);
+								$(`#${toppingName}`).find('.btn2').css(`--${sideCategoryKey}`, `${sideName}`);
+								$(`#${toppingName}`).find('.btn2').css(`--${sideServingSize}`, 'true');
+								$(`#${toppingName}`).find('.btn2').show();
+								$(`#${toppingName}`).find('.btn').show();
+
+								$(`#${sideName}`).closest('.card').css('opacity', '1');
+								$('#errorTopping').hide();
+
+								if (toppingServingSize === 'extra') {
+									$(`#${toppingName}`).find('.btn2').html('2x');
+									$(`#${toppingName}`).find('.btn2').show();
+									$(`#${toppingName}`).find('.btn').show();
+									$(`#${toppingName}`).find('.btn2').css('--extra', 'true');
+								} else if (toppingServingSize === 'regular') {
+									$(`#${toppingName}`).find('.btn2').html('✓');
+									$(`#${toppingName}`).find('.btn2').show();
+									$(`#${toppingName}`).find('.btn').show();
+
+									$(`#${toppingName}`).find('.btn2').css('--regular', 'true');
+								} else if (toppingServingSize === 'half') {
+									$(`#${toppingName}`).find('.btn2').html('½');
+									$(`#${toppingName}`).find('.btn2').show();
+									$(`#${toppingName}`).find('.btn').show();
+									$(`#${toppingName}`).find('.btn2').css('--half', 'true');
+								}
+
+								console.log('sideServingSize: %s', sideServingSize);
+							}
+							$('#toppings')
+								.find('.card')
+								.each(function () {
+									$(this).css('opacity', '1');
+								});
+						}
+					}
+				}
+			} else {
+				for (var i = 0; i < sideArray.length; i++) {
+					const side = sideArray[i];
+					if ('name' in side) {
+						// i add the word milkshake to each name for formatting so i have to remove it for the html element id to be recognized
+						const sideName = side['name'];
+						console.log('nonCoffeeSideName: %s', sideName);
+						const sideQuantity = side['quantity'];
+						const sideServingSize = side['servingSize'];
+						$(`#${sideName}`).find('.btn2').css(`--${sideCategoryKey}`, `${sideName}`);
+						$(`#${sideName}`).find('.btn2').css(`--${sideServingSize}`, 'true');
+						$(`#${sideName}`).find('.btn2').css(`--quantity`, `${sideQuantity}`);
+						$(`#${sideName}`).find('.btn2').html(sideQuantity);
+						$(`#${sideName}`).find('.btn2').show();
+						$(`#${sideName}`).find('.btn6').show();
+						$(`#${sideName}`).find('.btn7').show();
+					}
+				}
+			}
+		}
+	}
 	const x = document.getElementsByClassName('card-title');
 	const y = [];
 
@@ -507,7 +633,6 @@ $(window).on('load', function () {
 			}
 			checkIfIceCreamSelected();
 			console.log('.btn quant value', $(this).closest('.card').find('.btn2').css('--quantity'));
-			console.log('.btn name value', $(this).closest('.card').find('.btn2').css('--drinkName'));
 		});
 
 	$('.btn7')
@@ -601,7 +726,7 @@ function checkOut() {
 	for (var key in orderItems) {
 		const sidesForItemCategory = orderItems[key];
 		console.log('sidesForItemCategory', sidesForItemCategory);
-		if (sidesForItemCategory != []) {
+		if (sidesForItemCategory.length) {
 			console.log('sidesForItemCategory', sidesForItemCategory);
 			// if (key != 'protein') {
 			for (var i = 0; i < sidesForItemCategory.length; i++) {
@@ -661,11 +786,19 @@ function checkOut() {
 		orderToppingsDict['sides'] = ingredientsDict;
 		console.log('sides dict', orderToppingsDict);
 		console.log('orderToppingsDictwithIngredient', orderToppingsDict);
+		// stringify(orderToppingsDict);
 		//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
 		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=True'));
 		// });
 	} else {
-		location.assign('/order?userOrder=True');
+		orderToppingsDict['sides'] = ingredientsDict;
+		console.log("orderToppingsDict['sides']: %s", orderToppingsDict['sides']);
+		for (var key in orderToppingsDict['sides']) {
+			console.log('keysss: %s', key);
+			console.log(orderToppingsDict['sides'][key]);
+		}
+		// stringify(orderToppingsDict);
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=True'));
 	}
 }
 // all this code changes display for smaller screen sizes

@@ -17,8 +17,8 @@ function stringify(dataObject) {
 
 	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
-	if (dataObject['drinks'] != []) {
-		if (editDrinkIndex == undefined) {
+	if (dataObject['drinks'].length) {
+		if (editDrinkIndex === undefined) {
 			if (localStorage.length > 0) {
 				const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
 				console.log('order local stor > 0', order);
@@ -45,7 +45,6 @@ function stringify(dataObject) {
 				localStorage.setItem('order', stringifiedDataObject);
 			}
 		} else {
-			console.log('weee');
 			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
 			var currentOrderDrinkList = currentOrder['orderDrink'];
 			var currentOrderDrink = currentOrderDrinkList[editDrinkIndex];
@@ -366,6 +365,17 @@ $(window).on('load', function () {
 							$(this).css('opacity', '1');
 						});
 					$('#errorSyrup').hide();
+					$('#coffee')
+						.find('.card')
+						.each(function () {
+							var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+							var toppingCategory = toppingCategoryAndToppingNameArray[0];
+							var toppingName = toppingCategoryAndToppingNameArray[1];
+							// make sure that you don't hide the already selected coffee
+							if ($(this).find('.btn2').css(`--${toppingCategory}`) != toppingName) {
+								$(this).css('opacity', '.3');
+							}
+						});
 				}
 			} else {
 				for (var i = 0; i < drinkArray.length; i++) {
@@ -1039,11 +1049,12 @@ function checkOut() {
 				}
 			}
 			// need to populate the milk values
-		} else if (key === 'milk') {
+		} else if (key === 'milk' && coffeeArray[0]) {
 			console.log('fuck');
 			const milkDict = {};
 			milkDict['name'] = '2%Milk';
 			milkDict['servingSize'] = 'regular';
+			milkDict['price'] = 0;
 			coffeeArray[0]['milk'] = milkDict;
 		}
 	}

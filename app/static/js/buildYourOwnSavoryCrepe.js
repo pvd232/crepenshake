@@ -1,7 +1,6 @@
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
-import { splitCamelCaseToString } from './shoppingCart.js';
 var editCrepeIndex = undefined;
 var editCrepe = undefined;
 function stringify(dataObject) {
