@@ -13,11 +13,18 @@ function jq(myid) {
 	return myid.replace(/(:|\.|\[|\]|%|,|=|@)/g, '\\$1');
 }
 function stringify(dataObject) {
-	console.log('dataObject: %s', dataObject);
-
+	console.log('dataObject drank: %s', dataObject['drinks']);
+	var orderBool = false;
+	for (key in dataObject['drinks']) {
+		console.log(key);
+		console.log(dataObject['drinks'][key]);
+		if (dataObject['drinks'][key].length) {
+			orderBool = true;
+		}
+	}
 	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
-	if (dataObject['drinks'].length) {
+	if (orderBool) {
 		if (editDrinkIndex === undefined) {
 			if (localStorage.length > 0) {
 				const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
@@ -246,10 +253,12 @@ $(window).on('load', function () {
 	});
 
 	if ($('.edit').length) {
-		const editDrinkParam = $('.edit').first().attr('id');
-		const editDrinkArray = editDrinkParam.split('-');
+		editDrinkIndex = $('.edit').first().attr('id');
+		console.log('editDrinkIndex: %s', editDrinkIndex);
+
+		// const editDrinkArray = editDrinkParam.split('-');
 		//have to subtract one because the drink index on the shopping cart is 1 higher than the array index
-		editDrinkIndex = parseInt(editDrinkArray[editDrinkArray.length - 1]) - 1;
+		// editDrinkIndex = parseInt(editDrinkArray[editDrinkArray.length - 1]) - 1;
 		editDrink = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderDrink'][editDrinkIndex];
 		console.log('editDrink: %s', editDrink);
 
@@ -276,13 +285,16 @@ $(window).on('load', function () {
 						const milkServingSize = milk['servingSize'];
 
 						const espresso = drink['espresso'];
+						console.log('espresso: %s', espresso);
+
 						const espressoQuantity = espresso['quantity'];
+						console.log('espressoQuantity: %s', espressoQuantity);
 
 						$(`#${drinkName}`).find('.btn2').css(`--${drinkCategoryKey}`, `${drinkName}`);
 						$(`#${drinkName}`).find('.btn2').css(`--quantity`, `${drinkQuantity}`);
 
 						if (espressoQuantity === 3) {
-							$(`#${drinkName}`).find('.btn2').html('2x');
+							$(`#${drinkName}`).find('.btn2').html('3x');
 							$(`#${drinkName}`).find('.btn2').show();
 							$(`#${drinkName}`).find('.btn').show();
 							$(`#${drinkName}`).find('.btn2').css('--extra', 'true');
@@ -498,7 +510,7 @@ $(window).on('load', function () {
 							$(this).closest('.card').find('.btn7').show();
 						}
 					}
-					// if you click the card and it hasn't been selected
+					// if you click the card and it hasn't been selected and isnt bottled or non-coffee or milkshake
 					else if (
 						$(this).closest('.card').find('.btn2').css('--extra') != 'true' &&
 						$(this).closest('.card').find('.btn2').css('--half') != 'true' &&
@@ -718,16 +730,6 @@ $(window).on('load', function () {
 					$(this).html('3 Espresso Shots');
 					$(this).closest('.card').find('.btn3').show();
 					$(this).closest('.card').find('.btn4').show();
-					$('#milk, #coffee_syrup').each(function () {
-						// console.log('coffee_syrup & milk $(this) PT2', $(this));
-						$(this)
-							.find('.card')
-							.each(function () {
-								$(this).css('opacity', '1');
-							});
-						$('#errorMilk').hide();
-						$('#errorSyrup').hide();
-					});
 				} else {
 					//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
 					$(this).blur();
@@ -744,7 +746,7 @@ $(window).on('load', function () {
 
 				$(this).html('Customize');
 				$(this).blur();
-				$(this).closest('.card').find('.btn2').html('2X');
+				$(this).closest('.card').find('.btn2').html('3X');
 				$(this).closest('.card').find('.btn2').show();
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn4').hide();
@@ -762,6 +764,16 @@ $(window).on('load', function () {
 								$(this).css('opacity', '.3');
 							}
 						});
+					$('#milk, #coffee_syrup').each(function () {
+						// console.log('coffee_syrup & milk $(this) PT2', $(this));
+						$(this)
+							.find('.card')
+							.each(function () {
+								$(this).css('opacity', '1');
+							});
+						$('#errorMilk').hide();
+						$('#errorSyrup').hide();
+					});
 				}
 				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
 			}
@@ -787,7 +799,32 @@ $(window).on('load', function () {
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn4').hide();
 				$(this).closest('.card').find('.btn').html('Customize');
-				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
+				checkIfCoffeeSelected();
+
+				if (coffeeBool) {
+					// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
+					$('#coffee')
+						.find('.card')
+						.each(function () {
+							var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+							var toppingCategory = toppingCategoryAndToppingNameArray[0];
+							var toppingName = toppingCategoryAndToppingNameArray[1];
+							// make sure that you don't hide the already selected coffee
+							if ($(this).find('.btn2').css(`--${toppingCategory}`) != toppingName) {
+								$(this).css('opacity', '.3');
+							}
+						});
+					$('#milk, #coffee_syrup').each(function () {
+						// console.log('coffee_syrup & milk $(this) PT2', $(this));
+						$(this)
+							.find('.card')
+							.each(function () {
+								$(this).css('opacity', '1');
+							});
+						$('#errorMilk').hide();
+						$('#errorSyrup').hide();
+					});
+				}
 			}
 		});
 
@@ -798,7 +835,6 @@ $(window).on('load', function () {
 				var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 				var toppingCategory = toppingCategoryAndToppingNameArray[0];
 				var toppingName = toppingCategoryAndToppingNameArray[1];
-				// console.log('tc', toppingCategory, 'tn', toppingName);
 				$(this).closest('.card').find('.btn2').css('--regular', 'true');
 				$(this).closest('.card').find('.btn2').css(`--quantity`, 1);
 
@@ -810,7 +846,31 @@ $(window).on('load', function () {
 				$(this).hide();
 				$(this).closest('.card').find('.btn3').hide();
 				$(this).closest('.card').find('.btn').html('Customize');
-				// console.log('`--${toppingCategory}`, `${toppingName}`', `--${toppingCategory}`, `${toppingName}`);
+				checkIfCoffeeSelected();
+				if (coffeeBool) {
+					// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
+					$('#coffee')
+						.find('.card')
+						.each(function () {
+							var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
+							var toppingCategory = toppingCategoryAndToppingNameArray[0];
+							var toppingName = toppingCategoryAndToppingNameArray[1];
+							// make sure that you don't hide the already selected coffee
+							if ($(this).find('.btn2').css(`--${toppingCategory}`) != toppingName) {
+								$(this).css('opacity', '.3');
+							}
+						});
+					$('#milk, #coffee_syrup').each(function () {
+						// console.log('coffee_syrup & milk $(this) PT2', $(this));
+						$(this)
+							.find('.card')
+							.each(function () {
+								$(this).css('opacity', '1');
+							});
+						$('#errorMilk').hide();
+						$('#errorSyrup').hide();
+					});
+				}
 			}
 		});
 
@@ -859,49 +919,12 @@ $(window).on('load', function () {
 		});
 });
 
-// function toppingPricing(toppingCategoryList) {
-// 	var newToppingCategoryListWithPricesofToppingCategories = [];
-// 	for (var i = 0; i < toppingCategoryList.length; i++) {
-// 		const toppingDict = toppingCategoryList[i];
-// 		const toppingKey = Object.keys(toppingDict)[0];
-// 		// console.log('tkey', toppingKey);
-// 		// console.log('toppingDict', toppingDict);
-// 		if (toppingKey == 'coffee') {
-// 			const newToppingDict = {};
-// 			const toppingQuantity = toppingDict[toppingKey];
-// 			// console.log('tquant', toppingQuantity);
-// 			const amountOverIncludedAmount = toppingQuantity - 4;
-// 			var priceForTopping;
-// 			if (amountOverIncludedAmount > 0) {
-// 				priceForTopping = amountOverIncludedAmount * 0.5;
-// 			} else {
-// 				priceForTopping = 0;
-// 			}
-// 			newToppingDict[`${toppingKey}`] = priceForTopping;
-// 			newToppingCategoryListWithPricesofToppingCategories.push(newToppingDict);
-// 		}
-// 	}
-// 	//count up protein price
-
-// 	// console.log(
-// 	// 	'newToppingCategoryListWithPricesofToppingCategories',
-// 	// 	newToppingCategoryListWithPricesofToppingCategories
-// 	// );
-// 	return newToppingCategoryListWithPricesofToppingCategories;
-// }
-// checkout function
 const orderToppingsDict = {};
 const drinkDict = {};
 orderToppingsDict['drinks'] = [];
 function checkOut() {
-	// $('#checkout')
-	// 	.unbind('click')
-	// 	.bind('click', function () {
-	console.log('checkout');
-
 	$('.card-deck').each(function () {
 		// create a drink category (ex. coffee) for each key in the drink dict
-
 		drinkDict[`${$(this).attr('id')}`] = [];
 	});
 
@@ -930,13 +953,10 @@ function checkOut() {
 			console.log($(this).css('--half'), $(this).css('--regular'), $(this).css('--extra'));
 			var toppingDictionary = {};
 			if ($(this).css('--half') == 'true') {
-				// $(this).css('--quantity', 1);
 				toppingDictionary['servingSize'] = 'half';
 			} else if ($(this).css('--regular') == 'true') {
-				// $(this).css('--quantity', 1);
 				toppingDictionary['servingSize'] = 'regular';
 			} else if ($(this).css('--extra') == 'true') {
-				// $(this).css('--quantity', 1);
 				toppingDictionary['servingSize'] = 'extra';
 			}
 			// if the drink is a drink with a quantity then it won't have half or regular or extra and the previous if blocks won't grab the topping name
@@ -945,7 +965,6 @@ function checkOut() {
 			}
 
 			toppingDictionary['name'] = `${toppingName}`;
-			// console.log("toppingDictionary['name']: %s", toppingDictionary['name']);
 
 			if ($(this).css('--price')) {
 				console.log('price', $(this).css('--price'));
@@ -955,14 +974,7 @@ function checkOut() {
 			}
 			toppingDictionary['quantity'] = $(this).css('--quantity');
 
-			// console.log('drinkDict', drinkDict);
-			// for (var i = 0; i < drinkDict[`${toppingCategory}`].length; i++) {
-			// 	console.log('wee', drinkDict[`${toppingCategory}`][i]);
-			// }
 			drinkDict[`${toppingCategory}`].push(toppingDictionary);
-			// for (var i = 0; i < drinkDict[`${toppingCategory}`].length; i++) {
-			// 	console.log('peee', drinkDict[`${toppingCategory}`][i]);
-			// }
 		}
 	});
 
@@ -979,7 +991,6 @@ function checkOut() {
 		console.log('drinksForItemCategory', drinksForItemCategory);
 		if (drinksForItemCategory.length) {
 			console.log('drinksForItemCategory', drinksForItemCategory);
-			// if (key != 'protein') {
 			for (var i = 0; i < drinksForItemCategory.length; i++) {
 				var drink = drinksForItemCategory[i];
 				const itemQuantity = drink['quantity'];
@@ -990,10 +1001,13 @@ function checkOut() {
 					var espressoPrice = 0;
 					const espressoDict = {};
 					if (itemServingSize === 'extra') {
+						espressoPrice = 3;
+						espressoDict['quantity'] = 3;
+					} else if (itemServingSize === 'regular') {
 						espressoPrice = 2;
 						espressoDict['quantity'] = 2;
-					} else {
-						espressoPrice = 1;
+					} else if (itemServingSize === 'half') {
+						espressoPrice = 2;
 						espressoDict['quantity'] = 1;
 					}
 					console.log('itemPricetoFixed', espressoPrice);
@@ -1064,14 +1078,12 @@ function checkOut() {
 	console.log('drinks dict', orderToppingsDict);
 	console.log('orderToppingsDictwithIngredient', orderToppingsDict);
 	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
-	// stringify(orderToppingsDict);
 	if (editDrinkIndex != undefined) {
 		// stringify(orderToppingsDict);
 		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
 	} else {
-		$.when(stringify(orderToppingsDict)).then(location.assign('/order-side'));
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order/side'));
 	}
-	// });
 }
 // all this code changes display for smaller screen sizes
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null

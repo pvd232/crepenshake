@@ -2,11 +2,9 @@
 
 <link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
 <script src="../static/js/order-side.js"></script>
-{% endblock %} {% block content %}
-{% if editOrder %}
-		<div id="{{editOrder}}" class="edit"></div>
-		{% endif %}
-{% for j in range(side_names|length) %} {% if side_names[j].side_name_id =='croissant' %}
+{% endblock %} {% block content %} {% if editOrder %}
+<div id="{{editOrder}}" class="edit"></div>
+{% endif %} {% for j in range(side_names|length) %} {% if side_names[j].side_name_id =='croissant' %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3>{{side_names[j].side_name_id }}</h3>
 	<div class="card-deck" id="{{side_names[j].side_name_id}}">
@@ -21,48 +19,42 @@
 		{% endfor %}
 	</div>
 </div>
-	{% endif %} {% if side_names[j].side_name_id == 'ice_cream_bowl' %}
-	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-		<h3>{{side_names[j].side_name_id }}</h3>
-		<div class="card-deck" id="{{side_names[j].side_name_id}}">
-			<div class="card" id="card1">
-				<img src="" class="card-img-top" alt="..." />
-				<div class="card-body">
-					<h5 class="card-title">{{ice_cream_prices[0].flavor + " " + "Ice Cream Bowl"}}</h5>
-						<p class="card-text">${{ice_cream_prices[0].price}}</p>
-				</div>
+{% endif %} {% if side_names[j].side_name_id == 'ice_cream_bowl' %}
+<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+	<h3>{{side_names[j].side_name_id }}</h3>
+	<div class="card-deck" id="{{side_names[j].side_name_id}}">
+		<div class="card" id="card1">
+			<img src="" class="card-img-top" alt="..." />
+			<div class="card-body">
+				<h5 class="card-title">{{ice_cream_prices[0].flavor + " " + "Ice Cream Bowl"}}</h5>
+				<p class="card-text">${{ice_cream_prices[0].price}}</p>
 			</div>
 		</div>
-	</div>
-		<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-			<div
-				class="container"
-				style="display: inline-block; display: flex; align-items: center; justify-content: left"
-			>
-				<h3 style="float: left">Ice Cream Toppings</h3>
-				<h5 id="errorTopping" style="color: #f20000; margin-left: 20px">*Please select an ice cream first</h5>
-			</div>
-			<div class="card-deck" id="toppings">
-				{% for i in toppings %}
-				<div class="card" id="card1">
-					<img src="" class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">{{i.id}}</h5>
-						<p class="card-text">${{i.price}}</p>
-					</div>
-				</div>
-				{% endfor %}
-			</div>
-		</div>
-
-		{% endif %} {% endfor %}
-		<div class="row" style="margin-bottom: 140px"></div>
-
-		<!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
-		<div class="footer d-flex align-items-center">
-			<button class="btn5" id="checkout" onclick="checkOut()">Add to Cart</button>
-			<!-- <button class="btn5" id="checkout" onclick="location.assign('/order-drink')">Add to Cart</button> -->
-		</div>
-		{% endblock %}
 	</div>
 </div>
+<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+	<div class="container" style="display: inline-block; display: flex; align-items: center; justify-content: left">
+		<h3 style="float: left">Ice Cream Toppings</h3>
+		<h5 id="errorTopping" style="color: #f20000; margin-left: 20px">*Please select an ice cream first</h5>
+	</div>
+	<div class="card-deck" id="toppings">
+		{% for i in toppings %}
+		<div class="card" id="card1">
+			<img src="" class="card-img-top" alt="..." />
+			<div class="card-body">
+				<h5 class="card-title">{{i.id}}</h5>
+				<p class="card-text">${{i.price}}</p>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endif %} {% endfor %}
+<div class="row" style="margin-bottom: 140px"></div>
+
+<!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
+<div class="footer d-flex align-items-center">
+	<button class="btn5" id="checkout" onclick="checkOut()">Add to Cart</button>
+	<!-- <button class="btn5" id="checkout" onclick="location.assign('/order-drink')">Add to Cart</button> -->
+</div>
+{% endblock %}

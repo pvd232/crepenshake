@@ -8,7 +8,7 @@ function stringify(dataObject) {
 	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
 	// or an orderCrepe array, the order props, a drinks array, and a sides array
 	console.log('dataObject', dataObject);
-	if (dataObject['crepeTotal'] > 0) {
+	if (dataObject['crepes'][0]['crepeTotal'] > 0) {
 		if (editCrepeIndex == undefined) {
 			console.log('editCrepeIndexNot: %s', editCrepeIndex);
 
@@ -42,12 +42,11 @@ function stringify(dataObject) {
 			console.log('editCrepe', editCrepe);
 			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
 			var currentOrderCrepeList = currentOrder['orderCrepe'];
-			var currentOrderCrepe = currentOrderCrepeList[editCrepeIndex];
-			Object.assign(currentOrderCrepe, dataObject);
+			var currentOrderCrepe = currentOrderCrepeList[editCrepeIndex]['crepes'][0];
+			Object.assign(currentOrderCrepe, dataObject['crepes'][0]);
 			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
 			for (var i = 0; i < currentOrderCrepeList.length; i++) {
 				if (currentOrderCrepeList[i] === {}) {
-					const index = i;
 					currentOrderCrepeList.splice(i);
 				}
 			}
@@ -454,14 +453,23 @@ $(window).on('load', function () {
 	// edit crepe functionality
 
 	if ($('.edit').length) {
-		const editCrepeParam = $('.edit').first().attr('id');
-		const editCrepeArray = editCrepeParam.split('-');
+		editCrepeIndex = $('.edit').first().attr('id');
+		// const editCrepeArray = editCrepeParam.split('-');
 		//have to subtract one because the crepe index on the shopping cart is 1 higher than the array index
-		editCrepeIndex = parseInt(editCrepeArray[editCrepeArray.length - 1]) - 1;
-		editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex];
+		// editCrepeIndex = parseInt(editCrepeArray[editCrepeArray.length - 1]);
+		editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex]['crepes'][0];
 		console.log('editCrepe: %s', editCrepe);
-
+		for (var key in editCrepe) {
+			console.log('key: %s', key);
+			console.log('editCrepe[key]', editCrepe[key]);
+		}
 		const crepeIngredients = editCrepe['ingredients'];
+		console.log('crepeIngredients: %s', crepeIngredients);
+
+		for (var key in crepeIngredients) {
+			console.log('key: %s', key);
+			console.log('crepeIngredients[key]', crepeIngredients[key]);
+		}
 		for (var ingredientCategoryKey in crepeIngredients) {
 			console.log('ingredientCategoryKey: %s', ingredientCategoryKey);
 
@@ -1022,15 +1030,19 @@ function checkOut() {
 		orderToppingsDict['flavorProfile'] = 'savory';
 		orderToppingsDict['customCrepe'] = true;
 		orderToppingsDict['ingredients'] = ingredientsDict;
+
+		const crepeDict = {};
+		crepeDict['crepes'] = [];
+		crepeDict['crepes'].push(orderToppingsDict);
 		console.log('orderToppingsDictwithIngredient', orderToppingsDict);
 
 		//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
 		console.log('odict', orderToppingsDict);
-		// stringify(orderToppingsDict);
+		// stringify(crepeDict);
 		if (editCrepeIndex != undefined) {
-			$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
+			$.when(stringify(crepeDict)).then(location.assign('/order?userOrder=true'));
 		} else {
-			$.when(stringify(orderToppingsDict)).then(location.assign('/order-drink'));
+			$.when(stringify(crepeDict)).then(location.assign('/order/drink'));
 		}
 	}
 	// });

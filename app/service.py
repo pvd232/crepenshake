@@ -1,5 +1,5 @@
 from model import *
-from repository import Ingredient_Repository,  Order_Repository, Drink_Repository, Side_Repository
+from repository import Ingredient_Repository,  Order_Repository, Drink_Repository, Side_Repository, Menu_Crepe_Repository
 
 from datetime import date
 import uuid
@@ -72,6 +72,15 @@ class Ingredient_Service(object):
                 response.append(ingredient_model)
             return response
 
+    def get_sweet_ingredient_prices(self):
+        response = []
+        with self.session_scope() as session:
+            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
+                ingredient_model = Ingredient_Model(
+                    id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                response.append(ingredient_model)
+            return response
+
     def get_ingredient_categories(self):
         response = []
         with self.session_scope() as session:
@@ -80,8 +89,16 @@ class Ingredient_Service(object):
                 ingredient_category_model = Ingredient_Category(
                     id=ingredient_category.id)
                 response.append(ingredient_category)
-                # response.append(ingredient_model.serialize())
+            return response
 
+    def get_sweet_ingredient_categories(self):
+        response = []
+        with self.session_scope() as session:
+            for ingredient_category in self.ingredient_repository.get_sweet_ingredient_categories(session):
+
+                ingredient_category_model = Ingredient_Category(
+                    id=ingredient_category.id)
+                response.append(ingredient_category)
             return response
 
 
@@ -410,9 +427,52 @@ class Side_Service(object):
                 response.append(topping)
             return response
 
-        # def get_cheap_ingredients(self):
-        #     response = []
-        #     for ingredient in self.ingredient:
-        #         if ingredient.price < 30:
-        #             response.append(ingredient)
-        #     return response
+
+class Menu_Crepe_Service(object):
+    def __init__(self):
+        self.username = "postgres"
+        self.password = "Iqopaogh23!"
+        self.connection_string_beginning = "postgres://"
+        self.connection_string_end = "@localhost:5432/crepenshake"
+        self.connection_string = self.connection_string_beginning + \
+            self.username + ":" + self.password + self.connection_string_end
+        self.menu_crepe_repository = Menu_Crepe_Repository()
+
+    @contextmanager
+    def session_scope(self):
+        # an Engine, which the Session will use for connection
+        # resources
+        self.menu_crepe_engine = create_engine(self.connection_string)
+
+        # create a configured "Session" class
+        self.session_factory = sessionmaker(bind=self.menu_crepe_engine)
+
+        # create a Session
+        self.session = scoped_session(self.session_factory)
+        try:
+            yield self.session
+            self.session.commit()
+        except:
+            self.session.rollback()
+            raise
+        finally:
+            self.session.close()
+        # now all calls to Session() will create a thread-local session
+
+    def get_sweet_menu_crepes(self):
+        response = []
+        with self.session_scope() as session:
+            for menu_crepe in self.menu_crepe_repository.get_sweet_menu_crepes(session):
+                crepe_model = Menu_Crepe_Model(
+                    crepe_id=menu_crepe.crepe_id, name=menu_crepe.name, price=menu_crepe.price, flavor_profile_id=menu_crepe.flavor_profile_id)
+                response.append(crepe_model)
+            return response
+
+    def get_savory_menu_crepes(self):
+        response = []
+        with self.session_scope() as session:
+            for menu_crepe in self.menu_crepe_repository.get_savory_menu_crepes(session):
+                crepe_model = Menu_Crepe_Model(
+                    crepe_id=menu_crepe.crepe_id, name=menu_crepe.name, price=menu_crepe.price, flavor_profile_id=menu_crepe.flavor_profile_id)
+                response.append(crepe_model)
+            return response

@@ -116,10 +116,11 @@ class Customer_Model(object):
 
 
 class Menu_Crepe_Model():
-    def __init__(self, crepe_id=None, name=None, price=None):
+    def __init__(self, crepe_id=None, name=None, price=None, flavor_profile_id=None):
         self.crepe_id = crepe_id
         self.name = name
         self.price = price
+        self.flavor_profile_id = flavor_profile_id
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())

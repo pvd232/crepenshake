@@ -3,6 +3,7 @@ from models import *
 from create_db import db
 from datetime import date
 from sqlalchemy import or_
+from sqlalchemy.orm import load_only
 
 
 class Ingredient_Repository(object):
@@ -20,6 +21,17 @@ class Ingredient_Repository(object):
     def get_ingredient_categories(self, session):
         ingredient_categories = session.query(
             Ingredient_Category.id).filter(Ingredient_Category.id != 'fruit').filter(Ingredient_Category.id != 'sweetness')
+        print("ingredient_categories: %s", ingredient_categories)
+        return ingredient_categories
+
+    def get_sweet_ingredient_prices(self, session):
+        sweet_ingredients = session.query(Ingredient_Serving_Size_Price.ingredient_id, Ingredient_Serving_Size_Price.price, Ingredient.ingredient_category_id).join(Ingredient).filter(or_(
+            Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'))
+        return sweet_ingredients
+
+    def get_sweet_ingredient_categories(self, session):
+        ingredient_categories = session.query(
+            Ingredient_Category.id).filter(or_(Ingredient_Category.id == 'fruit', Ingredient_Category.id == 'sweetness'))
         print("ingredient_categories: %s", ingredient_categories)
         return ingredient_categories
 
@@ -127,3 +139,15 @@ class Side_Repository(object):
         toppings = session.query(Ingredient_Serving_Size_Price).join(Ingredient).filter(or_(
             Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'))
         return toppings
+
+
+class Menu_Crepe_Repository(object):
+    def get_sweet_menu_crepes(self, session):
+        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id).join(Crepe).filter(
+            Crepe.flavor_profile_id == 'sweet')
+        return menu_crepes
+
+    def get_savory_menu_crepes(self, session):
+        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id).join(Crepe).filter(
+            Crepe.flavor_profile_id == 'savory')
+        return menu_crepes

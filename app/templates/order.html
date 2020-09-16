@@ -128,8 +128,19 @@
 		{% else %}
 
 		<div class="container-fluid">
-			<button onclick="location.assign('/make-your-own-crepe')">Build Your Own Crepe</button>
-			<button>Order a Crepe From the Menu</button>
+			<div class="col 6">
+				<button onclick="location.assign('/order/make-your-own-savory-crepe')">
+					Build Your Own Savory Crepe
+				</button>
+				<button onclick="location.assign('/order/make-your-own-sweet-crepe')">
+					Build Your Own Sweet Crepe
+				</button>
+			</div>
+			<div class="col 6">
+				<button onclick="location.assign('/order/menu-crepe')">Order a Crepe From the Menu</button>
+				<button onclick="location.assign('/order/drink')">Order a Drink</button>
+				<button onclick="location.assign('/order/side')">Order a Side</button>
+			</div>
 		</div>
 		{% endif %}
 	</body>

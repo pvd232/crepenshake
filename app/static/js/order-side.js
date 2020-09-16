@@ -668,24 +668,7 @@ function checkOut() {
 		var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 		var toppingCategory = toppingCategoryAndToppingNameArray[0];
 		var toppingName = toppingCategoryAndToppingNameArray[1];
-		// console.log(
-		// 	'topping category and name before being true',
-		// 	$(this).css(`--${toppingCategory}`),
-		// 	'toppingCategory',
-		// 	toppingCategory,
-		// 	' toppingName',
-		// 	toppingName
-		// );
 		if ($(this).css(`--${toppingCategory}`) == toppingName) {
-			// console.log(
-			// 	'topping category and name after being true',
-			// 	$(this).css(`--${toppingCategory}`),
-			// 	'toppingCategory',
-			// 	toppingCategory,
-			// 	' toppingName',
-			// 	toppingName
-			// );
-
 			const toppingDictionary = {};
 			// record the serving size of the topping
 			if ($(this).css('--half') == 'true') {
@@ -712,7 +695,6 @@ function checkOut() {
 			if ($(this).css('--flavor')) {
 				toppingDictionary['flavor'] = $(this).css('--flavor');
 			}
-			// console.log('ingredientsDict', ingredientsDict);
 
 			ingredientsDict[`${toppingCategory}`].push(toppingDictionary);
 		}
