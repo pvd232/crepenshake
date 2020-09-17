@@ -10,6 +10,10 @@ $(window).on('load', function () {
 	// 	order[key] = JSON.parse(localStorage.getItem(key));
 	// 	console.log('order', order);
 	// }
+	if (localStorage.getItem('reload') === 'true') {
+		showShoppingCart();
+		localStorage.setItem('reload', 'false');
+	}
 	for (var i = 0; i < localStorage.length; i++) {
 		var key = localStorage.key(i);
 		console.log('key: %s', key);
@@ -32,9 +36,11 @@ $(window).on('load', function () {
 		left: (bw - w) / 2 + 'px',
 	});
 	doShowAll();
-	$('#shoppingCart').modal('show');
 });
-
+function showShoppingCart() {
+	console.log('weeeeeeeee');
+	$('#shoppingCart').modal('toggle');
+}
 function modifyItem(index, itemType, operation) {
 	if (operation === 'copy') {
 		if (itemType === 'crepe') {
@@ -74,6 +80,7 @@ function modifyItem(index, itemType, operation) {
 			location.reload();
 		}
 	}
+	localStorage.setItem('reload', 'true');
 }
 
 function copyItem(index) {
@@ -140,7 +147,7 @@ function doShowAll() {
 					}
 					$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
 					$(`#container${k}`).append(
-						`<div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe Order #${
+						`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe Order #${
 							k + 1
 						}</h5></div>`
 					);
@@ -246,15 +253,15 @@ function doShowAll() {
 
 							// the i iterator ends with an id of k, i+1 so this must be formattedOtherToppings.length not formattedothertoppings.length -1
 							// insert the subtotal after completing the insertion of the toppings
-							$(
-								`<div class="row" id=row${k}${
-									formattedOtherToppings.length + 1
-								} style="margin-top: 20px; margin-bottom: 20px; margin-top: 20px; border-top: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Crepe #${
-									k + 1
-								} Total</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700;">$${subtotal.toFixed(
-									2
-								)}</h4></div></div>`
-							).insertAfter($(`#row${k}${formattedOtherToppings.length}`));
+							// $(
+							// 	`<div class="row" id=row${k}${
+							// 		formattedOtherToppings.length + 1
+							// 	} style="margin-top: 20px; margin-bottom: 20px; margin-top: 20px; border-top: 2px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Crepe #${
+							// 		k + 1
+							// 	} Total</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700;">$${subtotal.toFixed(
+							// 		2
+							// 	)}</h4></div></div>`
+							// ).insertAfter($(`#row${k}${formattedOtherToppings.length}`));
 							if (subtotal) {
 								orderPrice += subtotal;
 							}
@@ -303,7 +310,7 @@ function doShowAll() {
 										z += 1;
 										const topping = toppingArray[j];
 										console.log('topping', topping);
-										const toppingName = topping['name'];
+										const toppingName = splitCamelCaseToString(topping['name']);
 										const toppingCost = topping['cost'];
 										const toppingQuantity = topping['quantity'];
 										sweetCrepeSubtotal += toppingCost;
@@ -336,14 +343,14 @@ function doShowAll() {
 							const lastElementId = $('#modalBody1').find('.row').last().attr('id');
 							console.log('lastElementId: %s', lastElementId);
 
-							$(
-								`<div class="row"
-								style="margin-top: 20px; margin-bottom: 20px; margin-top: 20px; border-top: 1px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Crepe #${
-									k + 1
-								} Total</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700;">$${sweetCrepeSubtotal.toFixed(
-									2
-								)}</h4></div></div>`
-							).insertAfter($(`#${lastElementId}`));
+							// $(
+							// 	`<div class="row"
+							// 	style="margin-top: 20px; margin-bottom: 20px; margin-top: 20px; border-top: 2px solid black" id=""><div class="col-9" id="0col23" style="margin-left: 0px;"><h5 style="font-weight: 700" ;="">Crepe #${
+							// 		k + 1
+							// 	} Total</h5></div><div class="col-3" id="0col22" style="margin-left: 0px;"><h4 style="font-weight: 700;">$${sweetCrepeSubtotal.toFixed(
+							// 		2
+							// 	)}</h4></div></div>`
+							// ).insertAfter($(`#${lastElementId}`));
 							if (subtotal) {
 								orderPrice += sweetCrepeSubtotal;
 							}
@@ -372,14 +379,14 @@ function doShowAll() {
 					$(`<div class="grid-container" id="menubuttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#container${k}`));
 					$(`#menubuttoncontainer${k}`).append(
-						`<div id="col5"><button class="btn" onclick="modifyItem('${itemIndex}', 'crepe', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
+						`<div id="col5"><button class="btn8" onclick="modifyItem('${itemIndex}', 'crepe', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
 					);
 					// pass in the item that is being modified to the make your own crepe page
 					$(`#menubuttoncontainer${k}`).append(
-						`<div  id="col6" ><button class= "btn" style="margin-top:.5px;" onclick="location.assign('/order/${crepeURL}?editOrder=${itemIndex}')">Edit</button></div>`
+						`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/${crepeURL}?editOrder=${itemIndex}')">Edit</button></div>`
 					);
 					$(`#menubuttoncontainer${k}`).append(
-						`<div id="col5"><button class="btn" onclick="modifyItem('${itemIndex}', 'crepe', 'remove')" >Remove</button></div>`
+						`<div id="col5"><button class="btn8" onclick="modifyItem('${itemIndex}', 'crepe', 'remove')" >Remove</button></div>`
 					);
 				}
 			} // end of for loop confirming orderCrepe existence
@@ -396,7 +403,7 @@ function doShowAll() {
 						var drinkSubTotal = 0;
 
 						$('#modalBody1').append(
-							`<div class="container" id="drinkContainer${k}"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="drinkRow${k}0"><h5 style='font-weight: 700; '>Drink Order #${
+							`<div class="container" id="drinkContainer${k}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="drinkRow${k}0"><h5 style='font-weight: 700; '>Drink Order #${
 								k + 1
 							}</h5></div></div>`
 						);
@@ -496,14 +503,14 @@ function doShowAll() {
 						$(`<div class="grid-container" id="drinkButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${k}`));
 						$(`#drinkButtonContainer${k}`).append(
-							`<div id="col5"><button class="btn" onclick="modifyItem('${drinkItemIndex}', 'drink', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
+							`<div id="col5"><button class="btn8" onclick="modifyItem('${drinkItemIndex}', 'drink', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#drinkButtonContainer${k}`).append(
-							`<div  id="col6" ><button class= "btn" style="margin-top:.5px;" onclick="location.assign('/order/drink?editOrder=${drinkItemIndex}')">Edit</button></div>`
+							`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/drink?editOrder=${drinkItemIndex}')">Edit</button></div>`
 						);
 						$(`#drinkButtonContainer${k}`).append(
-							`<div id="col5"><button class="btn" onclick="modifyItem('${drinkItemIndex}', 'drink', 'remove')" >Remove</button></div>`
+							`<div id="col5"><button class="btn8" onclick="modifyItem('${drinkItemIndex}', 'drink', 'remove')" >Remove</button></div>`
 						);
 						if (drinkSubTotal) {
 							orderPrice += drinkSubTotal;
@@ -526,7 +533,7 @@ function doShowAll() {
 						// const lastElementId = $('#modalBody1').children().last().attr('id');
 						//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
 						$('#modalBody1').append(
-							`<div class="container" id="sideContainer${k}"><div class="row" style= "border-bottom: 1px solid black; margin-bottom:20px;" id="sideRow${k}0"><h5 style='font-weight: 700; '>Side Order #${
+							`<div class="container" id="sideContainer${k}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="sideRow${k}0"><h5 style='font-weight: 700; '>Side Order #${
 								k + 1
 							}</h5></div></div>`
 						);
@@ -629,22 +636,26 @@ function doShowAll() {
 						$(`<div class="grid-container" id="sideButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             			grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${k}`));
 						$(`#sideButtonContainer${k}`).append(
-							`<div id="col5"><button class="btn" onclick="modifyItem('${sideItemIndex}', 'side', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
+							`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#sideButtonContainer${k}`).append(
-							`<div  id="col6" ><button class= "btn" style="margin-top:.5px;" onclick="location.assign('/order/side?editOrder=${sideItemIndex}')">Edit</button></div>`
+							`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/side?editOrder=${sideItemIndex}')">Edit</button></div>`
 						);
 						$(`#sideButtonContainer${k}`).append(
-							`<div id="col5"><button class="btn" onclick="modifyItem('${sideItemIndex}', 'side', 'remove')" >Remove</button></div>`
+							`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'remove')" >Remove</button></div>`
 						);
 						console.log('sideSubTotal: %s', sideSubTotal);
 					}
 				}
 			}
 		}
-
-		$(`<div class="modal-footer" id="footer"></div>`).insertAfter(`#modalBody1`);
+		const updatedOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
+		updatedOrder['orderTotal'] = orderPrice;
+		localStorage.setItem('order', JSON.stringify(updatedOrder));
+		$(`<div class="modal-footer" id="footer" style= " border-top: 2px solid black"></div>`).insertAfter(
+			`#modalBody1`
+		);
 
 		$(`#footer`).append(`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3>
 		</div>`);

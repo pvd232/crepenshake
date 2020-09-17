@@ -1,190 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-		<title>Crepe N Shake</title>
+{% extends "template_page.html" %} {% block style %}
 
-		<!-- Bootstrap -->
-		<link rel="stylesheet" href="../static/css/styles.css" />
-		<link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
+<link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
+<script src="../static/js/buildYourOwnSavoryCrepe.js" type="module"></script>
 
-		<script
-			src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-			integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-			crossorigin="anonymous"
-		></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-			crossorigin="anonymous"
-		></script>
+{% endblock %} {% block content %}
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-		<script
-			src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-			integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-			crossorigin="anonymous"
-		></script>
-		<link
-			rel="stylesheet"
-			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-			crossorigin="anonymous"
-		/>
-
-		<script src="../static/js/buildYourOwnSavoryCrepe.js" type="module"></script>
-	</head>
-
-	<body>
-		<nav
-			class="header-navbar navbar-dark navbar-expand-lg"
-			style="background-color: black; margin-bottom: 30px"
-			href="#"
-		>
-			<a class="navbar-brand" style="background-color: black" href='{{url_for("home")}}'>
-				<img class="img-responsive" src="../static/images/NewLogo.png" width="350" height="150" alt="" />
-			</a>
-
-			<nav class="navbar navbar-dark navbar-expand-lg" style="background-color: black" href="#">
-				<button
-					class="navbar-toggler"
-					type="button"
-					data-toggle="collapse"
-					data-target="#navbarTogglerDemo02"
-					aria-controls="navbarTogglerDemo02"
-					aria-expanded="false"
-					aria-label="Toggle navigation"
-				>
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<!-- https://www.geeksforgeeks.org/how-to-align-navbar-items-to-center-using-bootstrap-4/ -->
-				<div class="collapse navbar-collapse"></div>
-				<div class="collapse navbar-collapse" id="navbarTogglerDemo02" style="margin-top: 0px">
-					<ul class="navbar-nav mt-2 mt-lg-0">
-						<li class="nav-item px-3">
-							<a class="nav-link" style="color: #fb2331" href='{{url_for("home")}}'>Home</a>
-						</li>
-						<li class="nav-item px-3">
-							<a class="nav-link" style="color: #fb2331" href='{{url_for("menu")}}'>Menu</a>
-						</li>
-						<li class="nav-item px-3">
-							<a class="nav-link" style="color: #fb2331" href='{{url_for("contact")}}'>Contact</a>
-						</li>
-						<li class="nav-item px-3">
-							<a class="nav-link" style="color: #fb2331" href='{{url_for("about")}}'>About</a>
-						</li>
-						<li class="nav-item px-3">
-							<a class="nav-link" style="color: #fb2331" href='{{url_for("team")}}'>Team</a>
-						</li>
-					</ul>
+<div class="container1">
+	<div
+		class="card"
+		style="
+			width: 100%;
+			border-right-color: white;
+			border-left-color: white;
+			border-top-color: white;
+			margin: 0 auto;
+			float: none;
+		"
+	>
+		<div class="d-flex align-items-center" style="margin-left: 30px; margin-right: 30px"></div>
+		<div class="row no-gutters">
+			<div class="col-md-4">
+				<div class="d-flex align-items-center" style="margin-top: 50px; margin-bottom: 30px">
+					<img
+						src="../static/images/crepe.jpg"
+						class="card-img"
+						alt="..."
+						style="vertical-align: middle; margin-left: 80px"
+						id="crepeImg"
+					/>
 				</div>
-			</nav>
-		</nav>
-
-		<div class="container1">
-			<div
-				class="card"
-				style="
-					width: 100%;
-					border-right-color: white;
-					border-left-color: white;
-					border-top-color: white;
-					margin: 0 auto;
-					float: none;
-				"
-			>
-				<div class="d-flex align-items-center" style="margin-left: 30px; margin-right: 30px"></div>
-				<div class="row no-gutters">
-					<div class="col-md-4">
-						<div class="d-flex align-items-center" style="margin-top: 50px; margin-bottom: 30px">
-							<img
-								src="../static/images/crepe.jpg"
-								class="card-img"
-								alt="..."
-								style="vertical-align: middle; margin-left: 80px"
-								id="crepeImg"
-							/>
-						</div>
+			</div>
+			<div class="col-md-8">
+				<div class="card-body" style="margin-left: 150px" id="cardBody">
+					<div class="d-flex align-items-center" style="margin-bottom: 0px; margin-top: 0px">
+						<h2 class="card-title head2" style="margin-bottom: 10px">Build Your</h2>
 					</div>
-					<div class="col-md-8">
-						<div class="card-body" style="margin-left: 150px" id="cardBody">
-							<div class="d-flex align-items-center" style="margin-bottom: 0px; margin-top: 0px">
-								<h2 class="card-title" style="margin-bottom: 10px">Build Your</h2>
-							</div>
-							<div class="d-flex align-items-center" style="margin-bottom: 10px; margin-top: 0px">
-								<h3 class="card-title">CREPE</h3>
-							</div>
-						</div>
-						<p
-							class="card-text"
-							style="margin-left: 170px; margin-right: 50px; margin-bottom: 0px"
-							id="cardText"
-						>
-							Craft your designer crepe with your choice of freshly grilled meat or tofu wrapped in a thin
-							crepe with your choice of cheese and herbs topped off with a gourmet sauce.
-						</p>
+					<div class="d-flex align-items-center" style="margin-bottom: 10px; margin-top: 0px">
+						<h3 class="card-title head3">CREPE</h3>
 					</div>
 				</div>
+				<p class="card-text" style="margin-left: 170px; margin-right: 50px; margin-bottom: 0px" id="cardText">
+					Craft your designer crepe with your choice of freshly grilled meat or tofu wrapped in a thin crepe
+					with your choice of cheese and herbs topped off with a gourmet sauce.
+				</p>
 			</div>
 		</div>
-		{% if editOrder %}
-		<div id="{{editOrder}}" class="edit"></div>
-		{% endif %} {% for j in range(ingredient_categories|length) %}
+	</div>
+</div>
+{% if editOrder %}
+<div id="{{editOrder}}" class="edit"></div>
+{% endif %} {% for j in range(ingredient_categories|length) %}
 
-		<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-			<div class="row">
-				<h3>{{ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
-			</div>
-			<div class="card-deck" id="{{ingredient_categories[j].id}}">
-				{% for i in ingredient_prices %} {% if i.ingredient_category_id == ingredient_categories[j].id %} {% if
-				i.price > 0.0 %}
-				<div class="card" id="card1">
-					<img src="" class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">{{i.id}}</h5>
-						<p class="card-text">${{i.price}}</p>
-					</div>
-				</div>
-
-				{% else %}
-				<div class="card" id="card1">
-					<img src="" class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">{{i.id}}</h5>
-						<p class="card-text"></p>
-					</div>
-				</div>
-				{% endif %} {% endif %} {% endfor %}
+<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+	<div class="row">
+		<h3 class="head3">{{ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
+	</div>
+	<div class="card-deck" id="{{ingredient_categories[j].id}}">
+		{% for i in ingredient_prices %} {% if i.ingredient_category_id == ingredient_categories[j].id %} {% if i.price
+		> 0.0 %}
+		<div class="card" id="card1">
+			<img src="" class="card-img-top" alt="..." />
+			<div class="card-body">
+				<h5 class="card-title">{{i.id}}</h5>
+				<p class="card-text">${{i.price}}</p>
 			</div>
 		</div>
-		{% endfor %}
-		<div class="row" style="margin-bottom: 140px"></div>
 
-		<!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
-		<div class="footer d-flex align-items-center">
-			<div
-				class="alert-danger"
-				role="alert"
-				id="error2"
-				style="
-					font-size: 30px;
-					display: none;
-					font-weight: 500;
-					position: fixed;
-					margin-bottom: 80px;
-					left: 0;
-					bottom: 0;
-					right: 0;
-					text-align: center;
-				"
-			>
-				Please select a protein.
+		{% else %}
+		<div class="card" id="card1">
+			<img src="" class="card-img-top" alt="..." />
+			<div class="card-body">
+				<h5 class="card-title">{{i.id}}</h5>
+				<p class="card-text"></p>
 			</div>
-			<button class="btn5" id="checkOut">Add to Cart</button>
 		</div>
-	</body>
-</html>
+		{% endif %} {% endif %} {% endfor %}
+	</div>
+</div>
+{% endfor %}
+<div class="row" style="margin-bottom: 140px"></div>
+
+<!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
+<div class="footer d-flex align-items-center">
+	<div
+		class="alert-danger"
+		role="alert"
+		id="error2"
+		style="
+			font-size: 30px;
+			display: none;
+			font-weight: 500;
+			position: fixed;
+			margin-bottom: 80px;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			text-align: center;
+		"
+	>
+		Please select a protein.
+	</div>
+	<button class="btn5 btn1" id="checkOut">Add to Cart</button>
+</div>
+{% endblock %}

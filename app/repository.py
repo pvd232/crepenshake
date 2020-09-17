@@ -49,7 +49,7 @@ class Order_Repository(object):
         new_order = Order(id=order.id, customer_id=order.customer_id,
                           cost=order.cost, date=date.today())
         session.add(new_order)
-
+        print('new_model_crepe_list', new_model_crepe_list)
         if order_crepe_list:
             if custom_crepe_list:
                 for new_model_crepe in new_model_crepe_list:
@@ -57,8 +57,10 @@ class Order_Repository(object):
                                       flavor_profile_id=new_model_crepe.flavor_profile_id)
                     session.add(new_crepe)
                 for custom_crepe in custom_crepe_list:
+                    print("custom_crepe: %s", custom_crepe.serialize())
+
                     new_custom_crepe = Custom_Crepe(
-                        crepe_id=custom_crepe.crepe_id, ingredient_id=custom_crepe.ingredient_id, quantity=custom_crepe.quantity)
+                        crepe_id=custom_crepe.crepe_id, ingredient_id=custom_crepe.ingredient_id, serving_size=custom_crepe.serving_size)
                     session.add(new_custom_crepe)
             for each_order_crepe in order_crepe_list:
 

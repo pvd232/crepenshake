@@ -132,10 +132,10 @@ class Menu_Crepe_Model():
 
 
 class Custom_Crepe_Model(object):
-    def __init__(self, crepe_id=None, ingredient_id=None, quantity=None):
+    def __init__(self, crepe_id=None, ingredient_id=None, serving_size=None):
         self.crepe_id = crepe_id
         self.ingredient_id = ingredient_id
-        self.quantity = quantity
+        self.serving_size = serving_size
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())

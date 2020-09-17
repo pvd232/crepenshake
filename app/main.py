@@ -57,14 +57,8 @@ def menu():
 
 
 @app.route('/order')
-def order(userOrder=None):
-    userOrder = request.args.get('userOrder')
-
-    if userOrder == None:
-        return render_template('order.html')
-
-    else:
-        return render_template('order.html', userOrder=True)
+def order():
+    return render_template('order.html')
 
 
 @app.route('/order/make-your-own-savory-crepe')
@@ -96,12 +90,11 @@ def make_your_own_sweet_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
     ingredient_prices = [humanize(x, 'id')
                          for x in ingredient_service.get_sweet_ingredient_prices()]
-
+    for i in ingredient_prices:
+        print('i', i.id)
     # for price in ingredient_prices:
     # print('price', price.serialize())
     sweet_ingredient_categories = ingredient_service.get_sweet_ingredient_categories()
-    for i in sweet_ingredient_categories:
-        print('i', i.id)
 
     # print('iCat', ingredient_categories)
 
@@ -178,9 +171,10 @@ def checkout():
         return render_template('checkout.html')
     elif request.method == 'POST':
         new_order = request.json
-
+        new_order_value = new_order['order']
+        print("new_order: %s", new_order)
         order_service = Order_Service()
-        order_service.create_order(new_order)
+        order_service.create_order(new_order_value)
         return jsonify(200)
 
 

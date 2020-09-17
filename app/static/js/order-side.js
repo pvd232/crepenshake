@@ -301,7 +301,7 @@ $(window).on('load', function () {
 		const editSideParam = $('.edit').first().attr('id');
 		const editSideArray = editSideParam.split('-');
 		//have to subtract one because the side index on the shopping cart is 1 higher than the array index
-		editSideIndex = parseInt(editSideArray[editSideArray.length - 1]) - 1;
+		editSideIndex = editSideArray[editSideArray.length - 1];
 		console.log('editSideIndex: %s', editSideIndex);
 
 		editSide = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderSide'][editSideIndex];

@@ -110,7 +110,7 @@ class Order_Service(object):
         self.connection_string_end = "@localhost:5432/crepenshake"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
-        self.ingredient_repository = Ingredient_Repository()
+        self.order_repository = Order_Repository()
 
     @contextmanager
     def session_scope(self):
@@ -134,6 +134,7 @@ class Order_Service(object):
         # now all calls to Session() will create a thread-local session
 
     def create_order(self, order):
+
         customer_data = order['customerData']
         new_customer_model = Customer_Model(id=customer_data['email'], first_name=customer_data['firstName'], last_name=customer_data['lastName'],
                                             street=customer_data['address'], city=customer_data['city'], zipcode=customer_data['zip'], state=customer_data['state'], country=customer_data['country'])
@@ -146,21 +147,34 @@ class Order_Service(object):
         new_model_crepe_list = None
 
         if 'orderCrepe' in list(order.keys()):
-            crepes = order['orderCrepe']
+            crepe_order_list = order['orderCrepe']
+            print("crepe_order_list: %s", crepe_order_list)
+
             id_list = []
-            for crepe in crepes:
-                key = list(crepe.keys())[0]
-                order_crepe = crepe[key]
+            for i in range(len(crepe_order_list)):
+                order = crepe_order_list[i]
+                print("order: %s", order)
+                crepes = order['crepes']
+                print("crepes pre id: %s", crepes)
 
-                print('order_crepe', order_crepe)
-                if order_crepe['customCrepe'] == True:
-                    order_crepe['id'] = uuid.uuid4()
-                crepe_id = order_crepe['id']
+                for crepe in crepes:
+                    print()
+                    print("crepe: %s", crepe)
 
-                if crepe_id not in id_list:
-                    id_list.append(crepe_id)
+                # key = list(crepe.keys())[0]
+                # order_crepe = crepe[key]
+
+                # print('order_crepe', order_crepe)
+                    if crepe['customCrepe'] == True:
+                        crepe['id'] = uuid.uuid4()
+                    crepe_id = crepe['id']
+
+                    if crepe_id not in id_list:
+                        id_list.append(crepe_id)
 
             # order_crepe_list will have the order_crepe_model with the menu crepes and the custom crepes
+            print('crepes post Id', crepes)
+            print('id_list', id_list)
             order_crepe_list = []
             custom_crepe_model_list = []
             new_model_crepe_list = []
@@ -168,35 +182,46 @@ class Order_Service(object):
 
                 order_crepe_model = Order_Crepe_Model(
                     order_id=new_order_model.id, crepe_id=aCrepe_id, quantity=0)
-                for crepe in crepes:
-                    key = list(crepe.keys())[0]
-                    order_crepe = crepe[key]
-                    crepe_id = order_crepe['id']
-                    if crepe_id == aCrepe_id:
-                        order_crepe_model.quantity += 1
+                for i in range(len(crepe_order_list)):
+                    crepe_list = crepe_order_list[i]["crepes"]
+                    for i in range(len(crepe_list)):
+                        crepe = crepe_list[i]
+                        crepe_id = crepe['id']
+                        if crepe_id == aCrepe_id:
+                            order_crepe_model.quantity += 1
                 order_crepe_list.append(order_crepe_model)
-            for crepe in crepes:
-                ingredient_id_list = []
-                key = list(crepe.keys())[0]
-                order_crepe = crepe[key]
+            for i in range(len(crepe_order_list)):
+                crepe_list = crepe_order_list[i]["crepes"]
+                for i in range(len(crepe_list)):
+                    ingredient_id_list = []
+                    crepe = crepe_list[i]
+                    crepe_id = crepe['id']
 
-                crepe_id = order_crepe['id']
-                if order_crepe['customCrepe'] == True:
-                    new_crepe_model = Crepe_Model(
-                        id=order_crepe['id'], orgination_id='custom', flavor_profile_id=order_crepe['flavorProfile'])
+                    if crepe['customCrepe'] == True:
+                        new_crepe_model = Crepe_Model(
+                            id=crepe['id'], orgination_id='custom', flavor_profile_id=crepe['flavorProfile'])
                     new_model_crepe_list.append(new_crepe_model)
-                    ingredients = order_crepe['ingredients']
+                    ingredients = crepe['ingredients']
 
-                    for ingredientDictList in ingredients.values():
+                    for ingredient_dict_list in ingredients.values():
 
-                        for ingredientDict in ingredientDictList:
-                            ingredientName = list(ingredientDict.keys())[
-                                0]
-                            ingredientQuantity = list(
-                                ingredientDict.values())[0]
-                            if ingredientName != 'price':
+                        for ingredient_dict in ingredient_dict_list:
+                            if 'price' not in ingredient_dict:
+                                print("ingredientDict: %s", ingredient_dict)
+                                print()
+                                ingredient_name = change_case(
+                                    ingredient_dict['name'])
+                                print("ingredient_name: %s", ingredient_name)
+                                print()
+                                ingredient_serving_size = ingredient_dict['servingSize']
+                                if ingredient_serving_size == 'half':
+                                    ingredient_serving_size = 'light'
+                                print("ingredient_serving_size: %s",
+                                      ingredient_serving_size)
+
+                                print()
                                 custom_crepe = Custom_Crepe_Model(
-                                    crepe_id=crepe_id, ingredient_id=change_case(ingredientName), quantity=ingredientQuantity)
+                                    crepe_id=crepe_id, ingredient_id=change_case(ingredient_name), serving_size=ingredient_serving_size)
                                 custom_crepe_model_list.append(custom_crepe)
 
             # order_crepe_list.append(custom_crepe)
@@ -222,10 +247,13 @@ class Order_Service(object):
                     if drink_id == aDrink_id:
                         order_drink_model.quantity += 1
                 order_drink_list.append(order_drink_model)
-
+        print(list(order.keys()))
         if 'order_side' in list(order.keys()):
             order_side_list = []
             sides = order['order_side']
+            print()
+            print("sides: %s", sides)
+
             id_list = []
             price = 0
             for side in sides:
@@ -245,6 +273,9 @@ class Order_Service(object):
                     if side_id == aSide_id:
                         order_side_model.quantity += 1
                 order_side_list.append(order_side_model)
+        print('order_drink_list', order_drink_list)
+        print('order_side_list', order_side_list)
+
         with self.session_scope() as session:
             self.order_repository.post_order(session, customer=new_customer_model, order=new_order_model,
                                              order_crepe_list=order_crepe_list, order_drink_list=order_drink_list, order_side_list=order_side_list, custom_crepe_list=custom_crepe_model_list, new_model_crepe_list=new_model_crepe_list)

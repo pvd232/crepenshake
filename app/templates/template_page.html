@@ -17,7 +17,7 @@
 		<link rel="stylesheet" href="../static/css/styles.css" />
 
 		<!-- Bootstrap -->
-		<link rel="stylesheet" href="../static/css/styles.css" />
+		<link rel="stylesheet" href="../static/css/modal.css" />
 
 		<script
 			src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -51,6 +51,8 @@
 				}
 			}
 		</script>
+		<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+		<script src="../static/js/shoppingCart.js"></script>
 
 		{% block style %} {%endblock%} {% block script %} {%endblock%}
 	</head>
@@ -82,7 +84,7 @@
 				<!-- https://www.geeksforgeeks.org/how-to-align-navbar-items-to-center-using-bootstrap-4/ -->
 				<div class="collapse navbar-collapse"></div>
 				<div class="collapse navbar-collapse" id="navbarTogglerDemo02" style="margin-top: 0px">
-					<ul class="navbar-nav mt-2 mt-lg-0">
+					<ul class="navbar-nav mt-2 mt-lg-0" style="position: relative; margin-left: 60px">
 						<li class="nav-item px-3">
 							<a class="nav-link" style="color: #fb2331" href='{{url_for("home")}}'>Home</a>
 						</li>
@@ -100,9 +102,52 @@
 						</li>
 					</ul>
 				</div>
+				<i
+					class="fas fa-shopping-cart"
+					style="font-size: 28px; margin-right: 40px; color: #fb2331"
+					onclick="showShoppingCart()"
+					onhover="opacity:.5"
+				></i>
 			</nav>
 		</nav>
-
-		{% block content %} {% endblock %}
+		<div
+			class="modal fade"
+			id="shoppingCart"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="exampleModalCenterTitle"
+			aria-hidden="true"
+			style="width: auto"
+		>
+			<div class="modal-dialog modal-dialog-centered" id="dialog" role="document">
+				<div class="modal-content" id="content">
+					<div class="modal-header" style="margin-bottom: 10px; border-bottom: 2px solid black;">
+						<h5
+							class="modal-title"
+							style="font-size: 30px;""
+							id="exampleModalLongTitle"
+						>
+							Meal Summary
+						</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body" id="modalBody1"></div>
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="btn btn9 mr-auto ml-auto"
+							onclick="showShoppingCart()"
+							data-dismiss="modal"
+						>
+							Continue Shopping
+						</button>
+						<button type="button" class="btn btn9 mr-auto ml-auto" onclick="location.assign('/checkout')">
+							Proceed to Checkout
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="non-modal">{% block content %} {% endblock %}</div>
 	</body>
 </html>

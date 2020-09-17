@@ -6,7 +6,7 @@
 <div id="{{editOrder}}" class="edit"></div>
 {% endif %} {% for j in range(drink_categories|length) %} {% if drink_categories[j].id == 'coffee' %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-	<h3>{{drink_categories[j].id }}</h3>
+	<h3 class="head3">{{drink_categories[j].id }}</h3>
 	<div class="card-deck" id="{{drink_categories[j].id}}">
 		{% for i in coffee_drinks %}
 		<div class="card" id="card1">
@@ -20,7 +20,7 @@
 	</div>
 	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 		<div class="container" style="display: inline-block; display: flex; align-items: center; justify-content: left">
-			<h3 style="float: left">Select a Milk for Your Coffee</h3>
+			<h3 class="head3" style="float: left">Select a Milk for Your Coffee</h3>
 			<h5 id="errorMilk" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
 		</div>
 		<div class="card-deck" id="milk">
@@ -40,7 +40,7 @@
 
 	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 		<div class="container" style="display: inline-block; display: flex; align-items: center; justify-content: left">
-			<h3 style="float: left">add extra coffee flavoring ($0.99 extra)</h3>
+			<h3 class="head3" style="float: left">add extra coffee flavoring ($0.99 extra)</h3>
 			<h5 id="errorSyrup" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
 		</div>
 		<div class="card-deck" id="coffee_syrup">
@@ -58,7 +58,7 @@
 
 {% endif %} {% if drink_categories[j].id == 'milkshake'%}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-	<h3>Gourmet {{drink_categories[j].id }}s</h3>
+	<h3 class="head3">Gourmet {{drink_categories[j].id }}s</h3>
 	<div class="card-deck" id="{{drink_categories[j].id}}">
 		{% for i in milkshakes %}
 		<div class="card" id="card1">
@@ -73,7 +73,7 @@
 </div>
 {% endif %} {% if drink_categories[j].id == 'non-coffee'%}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-	<h3>{{drink_categories[j].id }} drinks</h3>
+	<h3 class="head3">{{drink_categories[j].id }} drinks</h3>
 	<div class="card-deck" id="{{drink_categories[j].id}}">
 		{% for i in non_coffee_drinks %}
 		<div class="card" id="card1" style="max-width: 240px !important; min-width: 210px !important">
@@ -88,7 +88,7 @@
 </div>
 {% endif %} {% if drink_categories[j].id == 'bottled'%}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-	<h3>{{drink_categories[j].id }} drinks</h3>
+	<h3 class="head3">{{drink_categories[j].id }} drinks</h3>
 	<div class="card-deck" id="{{drink_categories[j].id}}">
 		{% for i in bottled_drinks %}
 		<div class="card" id="card1">
