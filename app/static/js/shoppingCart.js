@@ -432,11 +432,15 @@ function doShowAll() {
 								if ('milk' in drink) {
 									const milk = drink['milk'];
 									const milkPrice = milk['price'];
-
 									const milkName = splitCamelCaseToString(milk['name']);
 									const espresso = drink['espresso'];
 									const espressoPrice = espresso['price'];
 									const espressFormat = espresso['quantity'] + 'x Espresso Shot';
+									const syrup = drink['syrup'];
+									const syrupName = syrup['name'];
+									const syrupPrice = syrup['price'];
+									const syrupServingSize = syrup['servingSize'];
+
 									$(`<div class="row" style= "margin-bottom: 20px;">
 										<div class="col-9" style="margin-right: 0px; " >
 											<h5 style=''>${drinkQuantity + ' ' + drinkName}</h5>
@@ -459,10 +463,17 @@ function doShowAll() {
 										<div class="col-3" style=""id="drinkCol${k}${i + 2}">
 											<h4 style=''>$${milkPrice}</h4>
 										</div>
+										</div><div class="row" style= "margin-bottom: 20px;" id="drinkRow${k}${i + 1}">
+										<div class="col-9" style="margin-right: 0px; " id="drinkCol${k}${i}">
+											<h5 style=''>${capitalize(syrupServingSize)} ${capitalize(syrupName)}</h5>
+										</div>
+										<div class="col-3" style=""id="drinkCol${k}${i + 2}">
+											<h4 style=''>$${syrupPrice}</h4>
+										</div>
 										</div>`).insertAfter(`#drinkRow${k}${i}`);
 									drinkSubTotal += parseFloat(milkPrice);
 									drinkSubTotal += parseFloat(espressoPrice);
-								} // coffee block
+								} // milk block
 								else {
 									if (drinkQuantity > 1) {
 										// add an "s" to the title
@@ -650,9 +661,16 @@ function doShowAll() {
 				}
 			}
 		}
-		const updatedOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
-		updatedOrder['orderTotal'] = orderPrice;
-		localStorage.setItem('order', JSON.stringify(updatedOrder));
+		var updatedOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
+		console.log('updatedOrder: %s', updatedOrder);
+		if (updatedOrder) {
+			updatedOrder['orderTotal'] = orderPrice;
+			localStorage.setItem('order', JSON.stringify(updatedOrder));
+		}
+		// else {
+		// 	updatedOrder['orderTotal'] = 0;
+		// 	localStorage.setItem('order', JSON.stringify(updatedOrder));
+		// }
 		$(`<div class="modal-footer" id="footer" style= " border-top: 2px solid black"></div>`).insertAfter(
 			`#modalBody1`
 		);

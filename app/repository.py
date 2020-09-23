@@ -42,6 +42,7 @@ class Order_Repository(object):
 
         user = session.query(Customer).filter(
             Customer.id == customer.id).first()
+        # check to make sure the customer doesn't already exist in the database
         if not user:
             new_customer = Customer(id=customer.id, first_name=customer.first_name, last_name=customer.last_name,
                                     street=customer.street, city=customer.city, state=customer.state, zipcode=customer.zipcode, country=customer.country)
@@ -121,6 +122,11 @@ class Drink_Repository(object):
     def get_drink_categories(self, session):
         drink_categories = session.query(
             Drink_Category)
+        return drink_categories
+
+    def get_temperature(self, session):
+        drink_categories = session.query(
+            Coffee_Temperature)
         return drink_categories
 
 

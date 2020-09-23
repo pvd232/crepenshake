@@ -145,16 +145,16 @@ class Order_Service(object):
         order_drink_list = None
         order_side_list = None
         new_model_crepe_list = None
-
+        print('order dinosaur', order)
         if 'orderCrepe' in list(order.keys()):
             crepe_order_list = order['orderCrepe']
             print("crepe_order_list: %s", crepe_order_list)
 
             id_list = []
             for i in range(len(crepe_order_list)):
-                order = crepe_order_list[i]
+                crepe_order = crepe_order_list[i]
                 print("order: %s", order)
-                crepes = order['crepes']
+                crepes = crepe_order['crepes']
                 print("crepes pre id: %s", crepes)
 
                 for crepe in crepes:
@@ -173,7 +173,6 @@ class Order_Service(object):
                         id_list.append(crepe_id)
 
             # order_crepe_list will have the order_crepe_model with the menu crepes and the custom crepes
-            print('crepes post Id', crepes)
             print('id_list', id_list)
             order_crepe_list = []
             custom_crepe_model_list = []
@@ -225,32 +224,100 @@ class Order_Service(object):
                                 custom_crepe_model_list.append(custom_crepe)
 
             # order_crepe_list.append(custom_crepe)
-
-        if 'order_drink' in list(order.keys()):
+        if 'orderDrink' in list(order.keys()):
             order_drink_list = []
-            drinks = order['order_drink']
-            id_list = []
-            price = 0
-            for drink in drinks:
-                drink = drink['drink']
-                drink_id = drink['id']
-                price += float(drink['price'])
-                if drink_id not in id_list:
-                    id_list.append(drink_id)
+            drink_id_list = []
+            order_coffee_list = []
+            drink_orders = order['orderDrink']
+            for i in range(len(drink_orders)):
+                drink_order = drink_orders[i]['drinks']
+                print("drink_order: %s", drink_order)
+                # print('drink_order.values()', drink_order.values())
+                for key, value in drink_order.items():
+                    if len(value) > 0:
+                        drink_dict_list = value
+                        print()
+                        print("drink_dict_list: %s", drink_dict_list)
+                        print()
+                        # each drink dict will be a drink order, but in the case of coffee it will be multiple drink dicts because one will be milk
+                        for drink_dict in drink_dict_list:
+                            if 'name' in drink_dict:
+                                drink_name = drink_dict['name']
+                                drink_category = key
+                                if key == 'coffee':
+                                    drink_id = uuid.uuid4()
+                                    drink_model = Drink_Model(
+                                        id=drink_id, drink_category_id=drink_category)
+                                    order_drink_list.append(drink_model)
+                                    print("key: %s", key)
+                                    print()
+                                    print("drink_dict: %s", drink_dict)
+                                    print()
+                                    drink_serving_size = drink_dict['servingSize']
+                                    print("coffee_name: %s", drink_name)
+                                    syrup = drink_dict['syrup']
+                                    flavor_syrup = syrup['name']
+                                    flavor_syrup_serving_size = syrup['servingSize']
+                                    drink_price = syrup['price']
+                                    print("coffee_price: %s", drink_price)
+                                    espresso = drink_dict['espresso']
+                                    espresso_name = espresso['name']
+                                    espresso_serving_size = espresso['quantity']
+                                    temperature = drink_dict['temperature']
+                                    espresso_price = espresso['price']
+                                    # for key, value in drink_dict:
+                                    milk = drink_dict['milk']
+                                    # if key == 'milk':
+                                    milk_name = milk['name']
+                                    print("milk_name: %s", milk_name)
+                                    milk_price = milk['price']
+                                    espresso = drink_dict['espresso']
+                                    # TODO finish order_coffee and order_coffee and drink model objects
+                                    order_coffee = Order_Coffee(id=drink_id, coffee_name_id=drink_name, serving_size_id=drink_serving_size, temperature_id=temperature,
+                                                                flavor_syrup_id=flavor_syrup, flavor_serving_size_id=flavor_syrup_serving_size, espresso_serving_size_id=espresso_serving_size, milk_type_id=milk_name)
+                                    drink_id_list.append(drink_id)
+                                    order_drink_list.append()
+                                    print("milk_price: %s", milk_price)
+                                    # TODO make order drink model objects and drink model objects and create uuid for coffee
+                                    print()
+                                else:
+                                    drink_id = drink_dict['name']
+                                    drink_model = Drink_Model(
+                                        id=drink_id, drink_category_id=drink_category)
+                                    order_drink_list.append(drink_model)
+                                    print(drink_dict)
 
-            for aDrink_id in id_list:
-                order_drink_model = Order_Drink_Model(
-                    order_id=new_order_model.id, drink_id=aDrink_id, quantity=0)
-                for drink in drinks:
-                    drink = drink['drink']
-                    drink_id = drink['id']
-                    if drink_id == aDrink_id:
-                        order_drink_model.quantity += 1
-                order_drink_list.append(order_drink_model)
-        print(list(order.keys()))
-        if 'order_side' in list(order.keys()):
+                                # else:
+                                #     print("drink_dict: %s", drink_dict)
+                                #     print("drink_id: %s", drink_id)
+
+                                #     if drink_id not in drink_id_list:
+                                #         drink_id_list.append(drink_id)
+
+                                # for drink_order_dict_list in drink_order.values():
+                                #     print("drink_order_dict_list: %s",
+                                #           drink_order_dict_list)
+                                #     for drink_dict in drink_order_dict_list:
+                                #         print("drink_dict: %s", drink_dict)
+                                #         price = 0
+                                #         drink = drink['drink']
+                                #         drink_id = drink['id']
+                                #         price += float(drink['price'])
+                                #         if drink_id not in id_list:
+                                #             id_list.append(drink_id)
+
+                                #     for aDrink_id in id_list:
+                                #         order_drink_model = Order_Drink_Model(
+                                #             order_id=new_order_model.id, drink_id=aDrink_id, quantity=0)
+                                #         for drink in drinks:
+                                #             drink = drink['drink']
+                                #             drink_id = drink['id']
+                                #             if drink_id == aDrink_id:
+                                #                 order_drink_model.quantity += 1
+                                #         order_drink_list.append(order_drink_model)
+        if 'orderSide' in list(order.keys()):
             order_side_list = []
-            sides = order['order_side']
+            sides = order['orderSide']
             print()
             print("sides: %s", sides)
 
@@ -384,7 +451,16 @@ class Drink_Service(object):
                 drink_model = Drink_Model(
                     coffee_syrup_flavor=coffee_syrup.id)
                 response.append(drink_model)
+            return response
 
+    def get_coffee_temperature(self):
+        response = []
+
+        with self.session_scope() as session:
+            for temp in self.drink_repository.get_temperature(session):
+                temp_model = Temperature(
+                    id=temp.id)
+                response.append(temp_model)
             return response
 
 

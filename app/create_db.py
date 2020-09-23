@@ -666,6 +666,7 @@ def create_everything():
     create_coffee_flavor_syrup_serving_size()
     create_coffee_flavor_syrup_serving_size_price()
     create_coffee_name_serving_size_price()
+    create_coffee_temperature()
     create_all_drinks()
     create_milk()
     create_crepe_origination()

@@ -168,6 +168,39 @@ class Drink_Model(object):
         return serialized_attributes
 
 
+class Order_Coffee(object):
+    def __init__(self, id=None, coffee_name_id=None, serving_size_id=None, temperature_id=None, flavor_syrup_id=None, flavor_serving_size_id=None, espresso_serving_size_id=None, milk_type_id=None):
+        self.id = id
+        self.coffee_name_id = coffee_name_id
+        self.serving_size_id = serving_size_id
+        self.temperature_id = temperature_id
+        self.flavor_syrup_id = flavor_syrup_id
+        self.flavor_serving_size_id = flavor_serving_size_id
+        self.espresso_serving_size_id = espresso_serving_size_id
+        self.milk_type_id = milk_type_id
+
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
+
+
+class Temperature(object):
+    def __init__(self, id=None):
+        self.id = id
+
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
+
+
 class Side_Model(object):
     def __init__(self, id=None, side_type_id=None, side_name_id=None, flavor=None, price=None, serving_size=None, topping=None):
         self.id = id

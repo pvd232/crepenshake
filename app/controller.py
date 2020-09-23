@@ -129,8 +129,10 @@ def order_drink(editOrder=None):
     non_coffee_drinks = [humanize(x, "name")
                          for x in drink_service.get_non_coffee_drinks()]
     milk_drinks = [humanize(x, "id") for x in drink_service.get_milk_drinks()]
+    coffee_temperatures = [humanize(x, "id")
+                           for x in drink_service.get_coffee_temperature()]
     editOrder = request.args.get('editOrder')
-    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups, editOrder=editOrder)
+    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups, editOrder=editOrder, coffee_temperatures=coffee_temperatures)
 
 
 @app.route('/order/side')

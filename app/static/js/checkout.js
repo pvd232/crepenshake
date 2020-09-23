@@ -314,6 +314,15 @@ $(window).on('load', function () {
 							console.log('drinkName', drinkName);
 
 							const drinkPrice = drink['price'];
+							const drinkServingSize = drink['servingSize'];
+							console.log('drinkServingSize: %s', drinkServingSize);
+
+							const drinkFlavorSyrup = drink['flavorSyrup'];
+							console.log('drinkFlavorSyrup: %s', drinkFlavorSyrup);
+
+							const drinkFlavorSyrupServingSize = drink['flavorSyrupServingSize'];
+							console.log('drinkFlavorSyrupServingSize: %s', drinkFlavorSyrupServingSize);
+
 							orderTotal += drinkPrice;
 							for (var key in drink) {
 								console.log('key plz', key);
@@ -323,6 +332,8 @@ $(window).on('load', function () {
 							if ('milk' in drink) {
 								const milk = drink['milk'];
 								const milkPrice = milk['price'];
+								const temperature = drink['temperature'];
+								console.log('temperature: %s', temperature);
 
 								const milkName = splitCamelCaseToString(milk['name']);
 								const espresso = drink['espresso'];
