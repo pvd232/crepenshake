@@ -237,7 +237,7 @@ $(window).on('load', function () {
 
 	$('.btn2').each(function (i) {
 		this.id = 'btn' + i;
-		$(this).css('--quantity', 0);
+		$(this).css('--quantity', 1);
 		// var drinkName = $(this).closest('.card').find('.card-title').text().split(' ').pop().toLowerCase();
 		// console.log('drinkName1', drinkName);
 
@@ -580,7 +580,7 @@ $(window).on('load', function () {
 														$(this).css('opacity', '.3');
 													}
 												});
-											$('#errorTemp').html('You may only select one milk for your coffee');
+											$('#errorTemp').html('You may only select one temperature for your coffee');
 											$('#errorTemp').show();
 										}
 									} else {
@@ -601,7 +601,7 @@ $(window).on('load', function () {
 								else {
 									console.log('milkBooooool: %s', milkBool);
 									checkIfMilkSelected();
-									// make sure a milk hasn't already been selected
+									// make sure a milk hasn't already been selected when selecting a milk card
 									if (!milkBool) {
 										console.log(';weeewew');
 										$(this)
@@ -699,7 +699,6 @@ $(window).on('load', function () {
 							});
 							$('#errorTemp').hide();
 						}
-
 						// after selecting one coffee the rest become unavailable
 
 						$('#coffee')
@@ -713,15 +712,15 @@ $(window).on('load', function () {
 									$(this).css('opacity', '.3');
 								}
 							});
+						// if no coffee is selected then we need to make sure they're all available, and make sure we knock out the milk and syrup and temp options
 					} else {
-						// if no coffee is selected then we need to make sure they're all available
 						$('#coffee')
 							.find('.card')
 							.each(function () {
 								$(this).css('opacity', '1');
 							});
-						// if you unselected coffee then we need to reset the milk and syrup values
-						$('#milk, #coffee_syrup').each(function () {
+						// if you unselected coffee then we need to reset the milk and syrup and temp values
+						$('#milk, #coffee_syrup, #temperature').each(function () {
 							var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
 							var toppingCategory = toppingCategoryAndToppingNameArray[0];
 							var toppingName = toppingCategoryAndToppingNameArray[1];
@@ -1029,28 +1028,35 @@ function checkOut() {
 
 			console.log($(this).css('--half'), $(this).css('--regular'), $(this).css('--extra'));
 			var toppingDictionary = {};
-			if ($(this).css('--half') == 'true') {
-				toppingDictionary['servingSize'] = 'half';
-			} else if ($(this).css('--regular') == 'true') {
-				toppingDictionary['servingSize'] = 'regular';
-			} else if ($(this).css('--extra') == 'true') {
-				toppingDictionary['servingSize'] = 'extra';
-			}
-			// if the drink is a drink with a quantity then it won't have half or regular or extra and the previous if blocks won't grab the topping name
-			else {
-				toppingDictionary['servingSize'] = 'regular';
-			}
-			toppingDictionary['name'] = `${toppingName}`;
-			if (`${toppingCategory}` == 'coffee') {
-				toppingDictionary['temperature'] = null;
-			}
-			if ($(this).css('--price')) {
-				console.log('price', $(this).css('--price'));
-				toppingDictionary['price'] = parseFloat($(this).css('--price'));
-			} else {
+			if (toppingCategory == 'temperature') {
+				const temperature = $(`#temperature`).find('.card-title').text();
+				console.log('temperature: %s', temperature);
+
+				toppingDictionary['name'] = temperature;
 				toppingDictionary['price'] = 0;
+			} else {
+				if ($(this).css('--half') == 'true') {
+					toppingDictionary['servingSize'] = 'half';
+				} else if ($(this).css('--regular') == 'true') {
+					toppingDictionary['servingSize'] = 'regular';
+				} else if ($(this).css('--extra') == 'true') {
+					toppingDictionary['servingSize'] = 'extra';
+				}
+				// if the drink is a drink with a quantity then it won't have half or regular or extra and the previous if blocks won't grab the topping name
+				else {
+					toppingDictionary['servingSize'] = 'regular';
+				}
+
+				console.log('toppingName: %s', toppingName);
+				toppingDictionary['quantity'] = $(this).css('--quantity');
+				toppingDictionary['name'] = toppingName;
+				if ($(this).css('--price')) {
+					console.log('price', $(this).css('--price'));
+					toppingDictionary['price'] = parseFloat($(this).css('--price'));
+				} else {
+					toppingDictionary['price'] = 0;
+				}
 			}
-			toppingDictionary['quantity'] = $(this).css('--quantity');
 
 			drinkDict[`${toppingCategory}`].push(toppingDictionary);
 		}
@@ -1097,7 +1103,6 @@ function checkOut() {
 					orderTotal += espressoPrice;
 				} else if (key === 'milk') {
 					coffeeArray[0]['milk'] = drink;
-
 					// create a new key in the coffee dictionary whose value is the milk dictionary. remmeber that the coffee dictionary is the first element of the coffee array (selecting the first element of the coffee array works because the user can only order one coffee per visit to this page)
 					// after cloning the dictionary, delete the milk category from orderItems
 					orderTotal += drink['price'];
@@ -1118,6 +1123,16 @@ function checkOut() {
 					// recompartmentalize the coffee_syrup dictionary into the coffee dictionary in the coffee array then delete the coffee_syrup category from orderItems
 					coffeeArray[0]['syrup'] = dictSource;
 					delete orderItems[key]; // https://www.tutorialspoint.com/Remove-elements-from-a-Dictionary-using-Javascript
+				} else if (key === 'temperature') {
+					coffeeArray[0]['temperature'] = drink;
+					delete orderItems[key];
+					for (var key in orderItems) {
+						console.log('key', key);
+						console.log('value', orderItems[key]);
+					}
+
+					// create a new key in the coffee dictionary whose value is the milk dictionary. remmeber that the coffee dictionary is the first element of the coffee array (selecting the first element of the coffee array works because the user can only order one coffee per visit to this page)
+					// after cloning the dictionary, delete the milk category from orderItems
 				} else if (key === 'milkshake') {
 					console.log('itemQuantity', itemQuantity);
 					console.log('itemPrice', itemPrice);
@@ -1159,13 +1174,13 @@ function checkOut() {
 	console.log('orderToppingsDictwithIngredient', orderToppingsDict);
 	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
 	if (editDrinkIndex != undefined) {
-		stringify(orderToppingsDict);
+		// stringify(orderToppingsDict);
 
-		// $.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
 	} else {
-		stringify(orderToppingsDict);
+		// stringify(orderToppingsDict);
 
-		// $.when(stringify(orderToppingsDict)).then(location.assign('/order/side'));
+		$.when(stringify(orderToppingsDict)).then(location.assign('/order/side'));
 	}
 }
 // all this code changes display for smaller screen sizes

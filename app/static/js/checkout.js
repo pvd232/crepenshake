@@ -357,6 +357,8 @@ $(window).on('load', function () {
 								orderTotal += parseFloat(espressoPrice);
 							} // coffee block
 							else {
+								const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
+
 								$(`<li class="list-group-item d-flex justify-content-between lh-condensed" id="drinkRow${k}${i}"><div class="col-9" style="margin-right: 0px; " id="col${k}${i}"><h5 style=''>
 													${drinkQuantity + 'x' + ' ' + drinkName}</h5>
 														</div><div class="col-3" style=""id="col${k}${i + 2}"><h4 style=''>$${drinkPrice.toFixed(

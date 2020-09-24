@@ -417,7 +417,13 @@ function doShowAll() {
 							for (var i = 0; i < drinksInDrinkCategory.length; i++) {
 								const drink = drinksInDrinkCategory[i];
 								const drinkName = splitCamelCaseToString(drink['name']);
+								for (var key in drink) {
+									drinkKey = key;
+									console.log('drinkKey: %s', drinkKey);
 
+									drinkValue = drink[drinkKey];
+									console.log('drinkValue: %s', drinkValue);
+								}
 								console.log('drink: %s', drink);
 
 								const drinkQuantity = drink['quantity'];
@@ -536,40 +542,41 @@ function doShowAll() {
 
 			if ('orderSide' in orderDict) {
 				if ($('#modalBody1').children.length > 0) {
-					// format the drink list
+					if (orderDict['orderSide'].length > 0) {
+						// format the drink list
 
-					const orderSide = orderDict['orderSide'];
+						const orderSide = orderDict['orderSide'];
 
-					for (var k = 0; k < orderSide.length; k++) {
-						// const lastElementId = $('#modalBody1').children().last().attr('id');
-						//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-						$('#modalBody1').append(
-							`<div class="container" id="sideContainer${k}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="sideRow${k}0"><h5 style='font-weight: 700; '>Side Order #${
-								k + 1
-							}</h5></div></div>`
-						);
-						const sides = orderSide[k]['sides'];
-						var sideSubTotal = 0;
-						for (var key in sides) {
-							console.log('sideSubTotal: %s', sideSubTotal);
+						for (var k = 0; k < orderSide.length; k++) {
+							// const lastElementId = $('#modalBody1').children().last().attr('id');
+							//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+							$('#modalBody1').append(
+								`<div class="container" id="sideContainer${k}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="sideRow${k}0"><h5 style='font-weight: 700; '>Side Order #${
+									k + 1
+								}</h5></div></div>`
+							);
+							const sides = orderSide[k]['sides'];
+							var sideSubTotal = 0;
+							for (var key in sides) {
+								console.log('sideSubTotal: %s', sideSubTotal);
 
-							// if (key != 'sideTotal') {
-							console.log('key', key);
-							const sidesInSideCategory = sides[key];
-							console.log('sidesInSideCategory: %s', sidesInSideCategory);
+								// if (key != 'sideTotal') {
+								console.log('key', key);
+								const sidesInSideCategory = sides[key];
+								console.log('sidesInSideCategory: %s', sidesInSideCategory);
 
-							if (sidesInSideCategory != '') {
-								console.log('sidesInSideCategory', sidesInSideCategory);
-								for (var i = 0; i < sidesInSideCategory.length; i++) {
-									var side = sidesInSideCategory[i];
-									console.log('side: %s', side);
-									var sideName = splitCamelCaseToString(side['name']);
-									console.log('sideName', sideName);
-									const sideQuantity = side['quantity'];
-									console.log('sideQuantity: %s', sideQuantity);
-									var sidePrice = parseFloat(side['price']);
+								if (sidesInSideCategory != '') {
+									console.log('sidesInSideCategory', sidesInSideCategory);
+									for (var i = 0; i < sidesInSideCategory.length; i++) {
+										var side = sidesInSideCategory[i];
+										console.log('side: %s', side);
+										var sideName = splitCamelCaseToString(side['name']);
+										console.log('sideName', sideName);
+										const sideQuantity = side['quantity'];
+										console.log('sideQuantity: %s', sideQuantity);
+										var sidePrice = parseFloat(side['price']);
 
-									$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${k}${i + 1}">
+										$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${k}${i + 1}">
 										<div class="col-9" style="margin-right: 0px; " id="sideCol${k}${i}">
 											<h5 style=''>${sideName}</h5>
 										</div>
@@ -577,39 +584,39 @@ function doShowAll() {
 											<h4 style=''>$${sidePrice}</h4>
 										</div>
 										</div>`).insertAfter(`#sideRow${k}${i}`);
-									console.log('sideSubTotal: %s', sideSubTotal);
-
-									// i will add the side with the side price regardless of whether there are toppings that go after it, thus i check for the existence of the toppings array afer
-									if ('toppings' in side) {
-										const arrayOfToppingDictionaries = side['toppings'];
-										console.log('arrayOfToppingDictionaries: %s', arrayOfToppingDictionaries);
 										console.log('sideSubTotal: %s', sideSubTotal);
 
-										for (var j = 0; j < arrayOfToppingDictionaries.length; j++) {
-											const toppingDictionary = arrayOfToppingDictionaries[j];
-											console.log('toppingDictionary: %s', toppingDictionary);
-
-											const toppingServingSize = splitCamelCaseToString(
-												toppingDictionary['servingSize']
-											);
+										// i will add the side with the side price regardless of whether there are toppings that go after it, thus i check for the existence of the toppings array afer
+										if ('toppings' in side) {
+											const arrayOfToppingDictionaries = side['toppings'];
+											console.log('arrayOfToppingDictionaries: %s', arrayOfToppingDictionaries);
 											console.log('sideSubTotal: %s', sideSubTotal);
 
-											const toppingName = splitCamelCaseToString(toppingDictionary['name']);
-											const toppingPrice = toppingDictionary['price'];
-											console.log('toppingPrice: %s', toppingPrice);
+											for (var j = 0; j < arrayOfToppingDictionaries.length; j++) {
+												const toppingDictionary = arrayOfToppingDictionaries[j];
+												console.log('toppingDictionary: %s', toppingDictionary);
 
-											sideSubTotal += toppingPrice;
-											var toppingFormat = '';
-											if (toppingServingSize === 'Extra') {
-												const newToppingServingSize = 'Double';
-												toppingFormat += newToppingServingSize;
-											} else {
-												toppingFormat += toppingServingSize;
-											}
-											toppingFormat += ' ';
-											toppingFormat += toppingName;
+												const toppingServingSize = splitCamelCaseToString(
+													toppingDictionary['servingSize']
+												);
+												console.log('sideSubTotal: %s', sideSubTotal);
 
-											$(`<div class="row" style= "margin-bottom: 20px;">
+												const toppingName = splitCamelCaseToString(toppingDictionary['name']);
+												const toppingPrice = toppingDictionary['price'];
+												console.log('toppingPrice: %s', toppingPrice);
+
+												sideSubTotal += toppingPrice;
+												var toppingFormat = '';
+												if (toppingServingSize === 'Extra') {
+													const newToppingServingSize = 'Double';
+													toppingFormat += newToppingServingSize;
+												} else {
+													toppingFormat += toppingServingSize;
+												}
+												toppingFormat += ' ';
+												toppingFormat += toppingName;
+
+												$(`<div class="row" style= "margin-bottom: 20px;">
 											<div class="col-9" style="margin-right: 0px; " id="toppingCol${k}${j}">
 												<h5 style=''>${toppingFormat}</h5>
 											</div>
@@ -617,46 +624,47 @@ function doShowAll() {
 												<h4 style=''>$${toppingPrice.toFixed(2)}</h4>
 											</div>
 											</div>`).insertAfter($(`#sideRow${k}${i + 1}`));
+											}
 										}
-									}
-								} // end of for loop iterating through side list
-								// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
-								console.log('sideSubTotal', sideSubTotal);
-							} // end of for loop iterating through sides in side order
+									} // end of for loop iterating through side list
+									// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
+									console.log('sideSubTotal', sideSubTotal);
+								} // end of for loop iterating through sides in side order
+								console.log('sideSubTotal: %s', sideSubTotal);
+							}
+							console.log('orderPriceSide: %s', orderPrice);
+							console.log('sideSubTotal: %s', sideSubTotal);
+							if (sideSubTotal) {
+								orderPrice += sideSubTotal;
+							}
+							console.log('orderPriceSide: %s', orderPrice);
+
+							const sideItemIndex =
+								$(`#sideContainer${k}`)
+									.find('.row')
+									.first()
+									.text()
+									.replace('Order ', '')
+									.replace(' ', '-')
+									.replace('#', '')
+									.toLowerCase()
+									.split('-')[1] - 1;
+							console.log('sideItemIndex: %s', sideItemIndex);
+
+							$(`<div class="grid-container" id="sideButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+            			grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${k}`));
+							$(`#sideButtonContainer${k}`).append(
+								`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
+							);
+							// pass in the item that is being modified to the make your own crepe page
+							$(`#sideButtonContainer${k}`).append(
+								`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/side?editOrder=${sideItemIndex}')">Edit</button></div>`
+							);
+							$(`#sideButtonContainer${k}`).append(
+								`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'remove')" >Remove</button></div>`
+							);
 							console.log('sideSubTotal: %s', sideSubTotal);
 						}
-						console.log('orderPriceSide: %s', orderPrice);
-						console.log('sideSubTotal: %s', sideSubTotal);
-						if (sideSubTotal) {
-							orderPrice += sideSubTotal;
-						}
-						console.log('orderPriceSide: %s', orderPrice);
-
-						const sideItemIndex =
-							$(`#sideContainer${k}`)
-								.find('.row')
-								.first()
-								.text()
-								.replace('Order ', '')
-								.replace(' ', '-')
-								.replace('#', '')
-								.toLowerCase()
-								.split('-')[1] - 1;
-						console.log('sideItemIndex: %s', sideItemIndex);
-
-						$(`<div class="grid-container" id="sideButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
-            			grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${k}`));
-						$(`#sideButtonContainer${k}`).append(
-							`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
-						);
-						// pass in the item that is being modified to the make your own crepe page
-						$(`#sideButtonContainer${k}`).append(
-							`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/side?editOrder=${sideItemIndex}')">Edit</button></div>`
-						);
-						$(`#sideButtonContainer${k}`).append(
-							`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'remove')" >Remove</button></div>`
-						);
-						console.log('sideSubTotal: %s', sideSubTotal);
 					}
 				}
 			}

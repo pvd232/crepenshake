@@ -218,3 +218,33 @@ class Side_Model(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
+
+class Ice_Cream_Model(object):
+    def __init__(self, id=None, serving_size=None):
+        self.id = id
+        self.serving_size = serving_size
+
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
+
+
+class Order_Ice_Cream_Model(object):
+    def __init__(self, id=None, flavor=None, price=None, serving_size=None, topping=None, topping_serving_size=None):
+        self.id = id
+        self.flavor = flavor
+        self.topping = topping
+        self.topping_serving_size = topping_serving_size
+
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
