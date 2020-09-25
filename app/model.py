@@ -145,6 +145,19 @@ class Custom_Crepe_Model(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+class Drink_Category(object):
+    def __init__(self, id=None):
+        self.id = id
+
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
+
+
 
 class Drink_Model(object):
     def __init__(self, id=None, drink_category_id=None,  name=None,  milk_type_id=None, flavor=None, price=None, espresso=None, coffee_syrup_flavor=None, serving_size=None):

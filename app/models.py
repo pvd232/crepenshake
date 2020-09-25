@@ -342,7 +342,7 @@ class Drink(db.Model):
     milkshake = relationship('Milkshake', lazy=True)
     non_coffee_drink = relationship('Non_Coffee_Drink', lazy=True)
     bottled_drink = relationship('Bottled_Drink', lazy=True)
-    order_coffee = relationship('Order_Coffee', lazy=True)
+    coffee = relationship('Coffee', lazy=True)
 
     @property
     def serialize(self):
@@ -359,7 +359,7 @@ class Coffee_Name_Serving_Size_Price(db.Model):
     serving_size = db.Column(db.String(80), db.ForeignKey(
         "drink_serving_size.id"), primary_key=True, nullable=False)
     coffee_name = db.Column(db.String(80), db.ForeignKey(
-        "coffee.id"), primary_key=True, nullable=False)
+        "coffee_name.id"), primary_key=True, nullable=False)
     price = db.Column(db.Float(), nullable=False)
 
     @property
@@ -377,7 +377,7 @@ class Coffee_Temperature(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
                    nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
-    order_coffee = relationship('Order_Coffee', lazy=True)
+    coffee = relationship('Coffee', lazy=True)
 
     @property
     def serialize(self):
@@ -389,9 +389,9 @@ class Coffee_Temperature(db.Model):
         return serialized_attributes
 
 
-class Coffee(db.Model):
-    __tablename__ = 'coffee'
-    id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
+class Coffee_Name(db.Model):
+    __tablename__ = 'coffee_name'
+    id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the coffee
                    nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
     coffee_name_serving_size_price = relationship(
@@ -430,8 +430,8 @@ class Espresso(db.Model):
     serving_size = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
                              nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
-    order_coffee = relationship(
-        'Order_Coffee', backref='espresso', lazy=True)
+    coffee = relationship(
+        'Coffee', backref='espresso', lazy=True)
     price = db.Column(db.Float(), nullable=False)
 
     @property
@@ -449,8 +449,8 @@ class Coffee_Flavor_Syrup(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
                    nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
-    order_coffee = relationship(
-        'Order_Coffee', backref='coffee_flavor_syrup', lazy=True)
+    coffee = relationship(
+        'Coffee', backref='coffee_flavor_syrup', lazy=True)
 
     @property
     def serialize(self):
@@ -467,8 +467,8 @@ class Coffee_Flavor_Syrup_Serving_Size(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
                    nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
-    order_coffee = relationship(
-        'Order_Coffee', backref='coffee_flavor_syrup_serving_size', lazy=True)
+    coffee = relationship(
+        'Coffee', backref='coffee_flavor_syrup_serving_size', lazy=True)
     coffee_flavor_syrup_serving_size_price = relationship(
         'Coffee_Flavor_Syrup_Serving_Size_Price', backref='coffee_flavor_syrup_serving_size', lazy=True)
 
@@ -504,9 +504,9 @@ class Coffee_Flavor_Syrup_Serving_Size_Price(db.Model):
 class Milk(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
                    nullable=False)
+    price = db.Column(db.Float(), nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
-    order_coffee = relationship('Order_Coffee', lazy=True)
-
+    coffee = relationship('Coffee', lazy=True)
     @property
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -517,11 +517,11 @@ class Milk(db.Model):
         return serialized_attributes
 
 
-class Order_Coffee(db.Model):
-    __tablename__ = 'order_coffee'
+class Coffee(db.Model):
+    __tablename__ = 'coffee'
     id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
                    nullable=False)
-    coffee_name_id = db.Column(db.String(80), db.ForeignKey('coffee.id'),
+    coffee_name_id = db.Column(db.String(80), db.ForeignKey('coffee_name.id'),
                                nullable=False)
     serving_size_id = db.Column(db.String(80), db.ForeignKey('drink_serving_size.id'),
                                 nullable=False)
@@ -686,14 +686,20 @@ class Ice_Cream_Flavor(db.Model):
         return serialized_attributes
 
 
+class Ice_Cream(db.Model):
+    __tablename__ = 'ice_cream'
+    id = db.Column(UUID(as_uuid=True), db.ForeignKey(
+        "side.id"), primary_key=True, nullable=False)
+    serving_size = db.Column(db.String(80), db.ForeignKey(
+        "ice_cream_serving_size.id"), nullable=False)
+
+
 class Order_Ice_Cream(db.Model):
     __tablename__ = 'order_ice_cream'
     id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         "side.id"),  primary_key=True,  nullable=False)
     flavor = db.Column(db.String(80),  db.ForeignKey(
         "ice_cream_flavor.id"),  nullable=False)
-    serving_size = db.Column(db.String(80), db.ForeignKey(
-        "ice_cream_serving_size.id"), nullable=False)
     topping = db.Column(db.String(80), db.ForeignKey(
         "ingredient.id"), nullable=False)
     topping_serving_size = db.Column(

@@ -281,7 +281,9 @@ class Order_Service(object):
                                     # TODO make order drink model objects and drink model objects and create uuid for coffee
                                     print()
                                 else:
-                                    drink_id = drink_dict['name']
+                                    drink_id = drink_dict['id']
+                                    #need to pull out drink quantity for order_drink to make my life easier
+                                    drink_quantity = drink_dict['quantity']
                                     drink_model = Drink_Model(
                                         id=drink_id, drink_category_id=drink_category)
                                     drink_list.append(drink_model)
@@ -443,8 +445,8 @@ class Drink_Service(object):
 
         with self.session_scope() as session:
             for drink_category in self.drink_repository.get_drink_categories(session):
-                drink_category = drink_category.serialize
-                response.append(drink_category)
+                drink_category_model = Drink_Category(id = drink_category.id)
+                response.append(drink_category_model)
                 # response.append(drink_model.serialize())
 
             return response
@@ -498,7 +500,7 @@ class Drink_Service(object):
             for milk_drink in self.drink_repository.get_milk_drinks(session):
 
                 drink_model = Drink_Model(
-                    id=milk_drink.id)
+                    id=milk_drink.id, price=milk_drink.price)
                 response.append(drink_model)
             return response
 

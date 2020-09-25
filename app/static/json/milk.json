@@ -1,23 +1,30 @@
 [
 	{
-		"id": "whole_milk"
+		"id": "whole_milk",
+		"price": 0
 	},
 	{
-		"id": "2%_milk"
+		"id": "2%_milk",
+		"price": 0
 	},
 	{
-		"id": "almond_milk"
+		"id": "almond_milk",
+		"price": 0.5
 	},
 	{
-		"id": "quarter_moon_milk"
+		"id": "quarter_moon_milk",
+		"price": 0
 	},
 	{
-		"id": "half_moon_milk"
+		"id": "half_moon_milk",
+		"price": 0
 	},
 	{
-		"id": "three_quarter_moon_milk"
+		"id": "three_quarter_moon_milk",
+		"price": 0
 	},
 	{
-		"id": "full_moon_milk"
+		"id": "full_moon_milk",
+		"price": 0
 	}
 ]

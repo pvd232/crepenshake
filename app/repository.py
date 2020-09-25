@@ -92,12 +92,12 @@ class Drink_Repository(object):
 
     def get_bottled_drinks(self, session):
         bottled_drinks = session.execute(
-            "SELECT m.name, m.price, d.drink_category_id FROM bottled_drink m JOIN drink d ON m.drink_id=d.id")
+            "SELECT m.name, m.price, d.id, d.drink_category_id FROM bottled_drink m JOIN drink d ON m.drink_id=d.id")
         return bottled_drinks
 
     def get_milkshakes(self, session):
         milkshakes = session.execute(
-            "SELECT m.name, m.price, d.drink_category_id FROM milkshake m JOIN drink d ON m.drink_id=d.id")
+            "SELECT m.name, m.price, d.id, d.drink_category_id FROM milkshake m JOIN drink d ON m.drink_id=d.id")
         return milkshakes
 
     def get_coffee_drinks(self, session):
@@ -107,11 +107,11 @@ class Drink_Repository(object):
 
     def get_non_coffee_drinks(self, session):
         non_coffee = session.execute(
-            "SELECT m.name, m.price, m.serving_size, d.drink_category_id FROM non_coffee_drink m JOIN drink d ON m.drink_id=d.id")
+            "SELECT m.name, m.price, m.serving_size, d.id, d.drink_category_id FROM non_coffee_drink m JOIN drink d ON m.drink_id=d.id")
         return non_coffee
 
     def get_milk_drinks(self, session):
-        milk_drinks = session.execute("SELECT id FROM milk")
+        milk_drinks = session.execute("SELECT id, price FROM milk")
         return milk_drinks
 
     def get_coffee_syrups(self, session):

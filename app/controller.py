@@ -12,7 +12,7 @@ app = application
 
 
 def humanize(dict, attr):
-    print('dict', dict.serialize())
+    # print('dict', dict.serialize())
     str = dict.__getattribute__(attr)
 
     frags = str.split('_')
@@ -26,7 +26,7 @@ def humanize(dict, attr):
         newFrags.append(frag)
 
     newFrags = " ".join(newFrags)
-    print('newFrags', newFrags)
+    # print('newFrags', newFrags)
     setattr(dict, attr, newFrags)
     return dict
 
@@ -115,21 +115,28 @@ def make_your_own_sweet_crepe(editOrder=None):
 def order_drink(editOrder=None):
     drink_service = Drink_Service()
 
-    milkshakes = [humanize(x, "name") for x in drink_service.get_milkshakes()]
-    bottled_drinks = [humanize(x, "name")
+    milkshakes = [humanize(x, "name").serialize()
+                  for x in drink_service.get_milkshakes()]
+    bottled_drinks = [humanize(x, "name").serialize()
                       for x in drink_service.get_bottled_drinks()]
 
-    drink_categories = drink_service.get_drink_categories()
+    drink_categories = [x.serialize() for x in drink_service.get_drink_categories()]
     print("drink_categories", drink_categories)
-    coffee_syrups = [humanize(x, "coffee_syrup_flavor")
+    coffee_syrups = [humanize(x, "coffee_syrup_flavor").serialize()
                      for x in drink_service.get_coffee_syrups()]
 
-    coffee_drinks = [humanize(x, "name")
+    coffee_drinks = [humanize(x, "name").serialize()
                      for x in drink_service.get_coffee_drinks()]
-    non_coffee_drinks = [humanize(x, "name")
+    print("coffee_drinks: %s", coffee_drinks)
+
+    print()
+    
+    non_coffee_drinks = [humanize(x, "name").serialize()
                          for x in drink_service.get_non_coffee_drinks()]
-    milk_drinks = [humanize(x, "id") for x in drink_service.get_milk_drinks()]
-    coffee_temperatures = [humanize(x, "id")
+    milk_drinks = [humanize(x, "id").serialize() for x in drink_service.get_milk_drinks()]
+    print("milk_drinks: %s", milk_drinks)
+    
+    coffee_temperatures = [humanize(x, "id").serialize()
                            for x in drink_service.get_coffee_temperature()]
     editOrder = request.args.get('editOrder')
     return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups, editOrder=editOrder, coffee_temperatures=coffee_temperatures)

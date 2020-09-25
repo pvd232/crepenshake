@@ -157,8 +157,8 @@ def create_milk():
 
     for item in test_items:
         id = item['id']
-
-        new_milk = Milk(id=id)
+        price = item['price']
+        new_milk = Milk(id=id, price=price)
 
         # After I create the item, I can then add it to my session.
         db.session.add(new_milk)
@@ -274,7 +274,7 @@ def create_coffee_name():
 
     for item in json_items:
         id = item['id']
-        new_coffee_name = Coffee(
+        new_coffee_name = Coffee_Name(
             id=id)
 
         # After I create the ingredient, I can then add it to my session.
