@@ -65,7 +65,6 @@ class Drink {
 			}
 			else {
 			this._quantity -= 1;
-
 			}
 		} else if (value === 'increase') {
 			this._quantity += 1;
@@ -121,6 +120,9 @@ class Coffee {
 	set milkType(value) {
 		this._milkType = value;
 	}
+	set milkPrice(value) {
+		this._milkPrice = value;
+	}
 	set price(value) {
 		this._price = value;
 	}
@@ -148,6 +150,9 @@ class Coffee {
 	get milkType() {
 		return this._milkType;
 	}
+	get milkPrice() {
+		return this._milkPrice;
+	}
 	get price() {
 		return this._price;
 	}
@@ -161,7 +166,7 @@ class Coffee {
 		this._name = coffeeName;
 		this._price = coffeePrice;
 		this._servingSize = servingSize;
-		this._drinkCategory = 'coffee'
+		this._drinkCategory = 'coffee';
 	};
 }
 
@@ -191,17 +196,24 @@ class Order {
 		}
 		return false;
 	};
-	checkIfThisTempSelected = (index) => {
+	checkIfThisTempSelected = (index, selectedItemCategory) => {
 		const temp = temperatures[index];
-		for (var i = 0; i < this.orderDrink.length; i++) {
-			if (this.orderDrink[i].drinkCategory === 'coffee') {
-				if (this.orderDrink[i].temperature === temp.id) {
-					return true;
-				} else {
-					return false;
+		console.log('temp: %s', temp);
+		if (selectedItemCategory === 'temperature') {
+			for (var i = 0; i < this.orderDrink.length; i++) {
+				if (this.orderDrink[i].drinkCategory === 'coffee') {
+					console.log('this.orderDrink: %s', this.orderDrink);
+					console.log('this.orderDrink[i]: %s', this.orderDrink[i]);
+
+					if (this.orderDrink[i].temperature === temp.id) {
+						return true;
+					} else {
+						return false;
+					}
 				}
 			}
 		}
+		return false;
 	};
 	checkIfMilkSelected = () => {
 		for (var i = 0; i < this.orderDrink.length; i++) {
@@ -215,22 +227,39 @@ class Order {
 		}
 		return false;
 	};
-	checkIfThisMilkSelected = (index) => {
-		const milk = milkDrinks[index];
-		for (var i = 0; i < this.orderDrink.length; i++) {
-			if (this.orderDrink[i].drinkCategory === 'coffee') {
-				console.log('this.orderDrink[i]: %s', this.orderDrink[i]);
-				console.log('milk.id', milk.id);
-				if (this.orderDrink[i].milkType === milk.id) {
-					return true;
-				} else {
-					return false;
+	checkIfThisMilkSelected = (index, selectedItemCategory) => {
+		if (selectedItemCategory === 'milk') {
+			const milk = milkDrinks[index];
+			for (var i = 0; i < this.orderDrink.length; i++) {
+				if (this.orderDrink[i].drinkCategory === 'coffee') {
+					console.log('this.orderDrink[i]: %s', this.orderDrink[i]);
+					console.log('milk.id', milk.id);
+					if (this.orderDrink[i].milkType === milk.id) {
+						return true;
+					} else {
+						return false;
+					}
 				}
 			}
 		}
 		return false;
 	};
-	checkIfDrinkSelected = (index, selectedItemCategoryIndex) => {
+	checkIfThisSyrupSelected = (index, selectedItemCategory) => {
+		if (selectedItemCategory === 'syrup') {
+			const syrup = coffeeSyrups[index];
+			for (var i = 0; i < this.orderDrink.length; i++) {
+				if (this.orderDrink[i].drinkCategory === 'coffee') {
+					if (this.orderDrink[i].flavorSyrup === syrup.coffee_syrup_flavor) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			}
+		}
+		return false;
+	};
+	checkIfThisDrinkSelected = (index, selectedItemCategoryIndex) => {
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
 			if (this.orderDrink[i].name === selectedDrink.name) {
@@ -253,8 +282,14 @@ class Order {
 		}
 	};
 	findDrink = (index, selectedItemCategoryIndex) => {
+		console.log('index: %s', index);
+
+		console.log('selectedItemCategoryIndex: %s', selectedItemCategoryIndex);
+
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+			console.log('selectedDrink: %s', selectedDrink);
+
 			if (this.orderDrink[i].name === selectedDrink.name) {
 				return this.orderDrink[i];
 			}
@@ -265,7 +300,9 @@ class Order {
 		if (!this.findDrink(index, selectedItemCategoryIndex)) {
 			const drink = new Drink();
 			drink.initFromHTML(index, selectedItemCategoryIndex);
-			for (var i = 0; i < this.orderDrink.length; i++) {}
+			for (var i = 0; i < this.orderDrink.length; i++) {
+				console.log('this.orderDrink[i]', this.orderDrink[i]);
+			}
 			this.orderDrink.push(drink);
 			for (var i = 0; i < this.orderDrink.length; i++) {}
 		}
@@ -285,6 +322,9 @@ class Order {
 		const coffee = new Coffee();
 		coffee.initFromHTML(index, servingSize);
 		this.orderDrink.push(coffee);
+		for (var i = 0; i < this.orderDrink.length; i++) {
+			console.log('this.orderDrink[i]', this.orderDrink[i]);
+		}
 	};
 	addTemp = (index) => {
 		const temp = temperatures[index];
@@ -328,9 +368,22 @@ class Order {
 	};
 	addSyrup = (index, servingSize) => {
 		const syrup = coffeeSyrups[index];
+		console.log('syrup: %s', syrup.coffee_syrup_flavor);
+
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			if (this.orderDrink[i].drinkCategory === 'coffee') {
-				this.orderDrink[i].addSyrup(syrup, servingSize);
+				this.orderDrink[i].flavorSyrup = syrup.coffee_syrup_flavor;
+				this.orderDrink[i].flavorServingSize = servingSize;
+				return true;
+			}
+		}
+		return false;
+	};
+	removeSyrup = () => {
+		for (var i = 0; i < this.orderDrink.length; i++) {
+			if (this.orderDrink[i].drinkCategory === 'coffee') {
+				this.orderDrink[i].coffee_syrup_flavor = undefined;
+				this.orderDrink[i].flavorServingSize = undefined;
 				return true;
 			}
 		}
@@ -425,11 +478,17 @@ $(window).on('load', function () {
 	coffeeDrinks = $('#coffeeDrinks').data('coffee');
 	milkDrinks = $('#milkDrinks').data('milk');
 	coffeeSyrups = $('#coffeeSyrups').data('syrup');
+	for (var i = 0; i < coffeeSyrups.length; i++) { 
+		console.log('coffeeSyrups[i]', coffeeSyrups[i])
+	}
+	for (var i = 0; i < milkDrinks.length; i++) {
+		console.log('milk[i]', milkDrinks[i]);
+	}
 	milkshakes = $('#milkshakeDrinks').data('milkshake');
 	nonCoffeeDrinks = $('#nonCoffeeDrinks').data('noncoffee');
 	bottledDrinks = $('#bottledDrinks').data('bottled');
 	drinkCategories = $('#drinkCategories').data('category');
-	console.log('drinkCategories: %s', drinkCategories);
+	// console.log('drinkCategories: %s', drinkCategories);
 
 	temperatures = $('#coffeeTemperature').data('temperature');
 
@@ -438,6 +497,7 @@ $(window).on('load', function () {
 	drinkCategories.splice(2, 0, { id: 'temperature' });
 	drinkCategories.splice(3, 0, { id: 'syrup' });
 	for (var i = 0; i < drinkCategories.length; i++) {
+		console.log('drinkCategories', drinkCategories[i]);
 	}
 	drinkCategoryDataArray = new Array();
 	drinkCategoryDataArray.push(coffeeDrinks);
@@ -454,6 +514,9 @@ $(window).on('load', function () {
 	$('.card-img-top').each(function (i) {
 		const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 		const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
+		// console.log("selectedItemCategory: %s", selectedItemCategory)
+		
+		
 		
 		if (selectedItemCategory === 'syrup') {
 			$('<button class="btn" type="button">Customize</button>').insertAfter($(this));
@@ -692,11 +755,10 @@ $(window).on('load', function () {
 		.on('mouseenter', '.card', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			console.log("selectedItemIndex: %s", selectedItemIndex)
-			
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id
 			// if the card isn't milk or temperature
-			if (selectedItemCategory != 'milk' && selectedItemCategory != 'temperature') {
+			if (selectedItemCategory != 'milk' && selectedItemCategory != 'temperature' && selectedItemCategory != 'syrup') {
 				// if the card also isn't coffee then fade it out
 				if (selectedItemCategory != 'coffee') {
 					$(this).find('.card-body').css('opacity', '.3');
@@ -709,7 +771,7 @@ $(window).on('load', function () {
 					$(this).find('.btn').show();
 				}
 				// if you hover over a selected coffee card it will fade out otherwise it won't but it will already be faded out
-				else if (userOrderDrink.checkIfDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+				else if (userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
 				}
@@ -725,7 +787,7 @@ $(window).on('load', function () {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
 				// if a milk has been selected then we only want to highlight the card if it is that milk
-				} else if (userOrderDrink.checkIfThisMilkSelected(selectedItemIndex)) {
+				} else if (userOrderDrink.checkIfThisMilkSelected(selectedItemIndex, selectedItemCategory)) {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
 				}
@@ -733,7 +795,7 @@ $(window).on('load', function () {
 				if (!userOrderDrink.checkIfTempSelected()) {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
-				} else if (userOrderDrink.checkIfThisTempSelected(selectedItemIndex)) {
+				} else if (userOrderDrink.checkIfThisTempSelected(selectedItemIndex, selectedItemCategory)) {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
 				}
@@ -750,7 +812,7 @@ $(window).on('load', function () {
 						'userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex): %s',
 						userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex)
 					);
-					console.log(userOrderDrink.checkIfDrinkSelected(selectedItemIndex, selectedItemCategoryIndex));
+					console.log(userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex));
 
 						
 					if (
@@ -770,10 +832,15 @@ $(window).on('load', function () {
 					}
 
 					// if you click the card and it has already been selected then remove the item
-					else if (userOrderDrink.checkIfDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+					else if (userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+						for (var i = 0; i < userOrderDrink.length; i++) { 
+							console.log('userOrderDrink', userOrderDrink[i])
+						}
 						userOrderDrink.removeDrink(selectedItemIndex, selectedItemCategoryIndex);
 						$(this).closest('.card').find('.btn2').toggle()
-
+							for (var i = 0; i < userOrderDrink.length; i++) {
+								console.log('userOrderDrink', userOrderDrink[i]);
+							}
 						// if the card you removed was a coffee card
 						if (!userOrderDrink.checkIfCoffeeSelected()) {
 							// reactivate all the coffee cards
@@ -782,19 +849,14 @@ $(window).on('load', function () {
 								.each(function () {
 									$(this).css('opacity', '1');
 								});
-							$('#cardDeck-1')
-								.find('.card')
-								.each(function () {
-									$(this).css('opacity', '.3');
-								});
-							$('#cardDeck-2')
+							$('#cardDeck-1, #cardDeck-2, #cardDeck-3')
 								.find('.card')
 								.each(function () {
 									$(this).css('opacity', '.3');
 								});
 						}
 						// if the selected item is a milk card
-					} else if (userOrderDrink.checkIfThisMilkSelected(selectedItemIndex)) {
+					} else if (userOrderDrink.checkIfThisMilkSelected(selectedItemIndex, selectedItemCategory)) {
 						userOrderDrink.removeMilk()
 						// reactivate all the milk cards
 						$(this).closest('.card').find('.btn2').hide()
@@ -805,7 +867,7 @@ $(window).on('load', function () {
 							});
 
 					}
-					else if (userOrderDrink.checkIfThisTempSelected(selectedItemIndex)) {
+					else if (userOrderDrink.checkIfThisTempSelected(selectedItemIndex, selectedItemCategory)) {
 						userOrderDrink.removeTemp();
 						$(this).closest('.card').find('.btn2').hide();
 						// reactivate all the milk cards
@@ -814,11 +876,19 @@ $(window).on('load', function () {
 							.each(function () {
 								$(this).css('opacity', '1');
 							});
+					} else if (userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory)) {
+						userOrderDrink.removeSyrup();
+						$(this).closest('.card').find('.btn2').hide();
+						// reactivate all the milk cards
+						$('#cardDeck-3')
+							.find('.card')
+							.each(function () {
+								$(this).css('opacity', '1');
+							});
 					}
 					// if the drink/temp/milk hasn't already been selected and is not bottled non-coffee or milkshake
-						
 					else if (
-						!userOrderDrink.checkIfDrinkSelected(selectedItemIndex, selectedItemCategoryIndex) &&
+						!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex) &&
 						!userOrderDrink.checkIfThisTempSelected(selectedItemIndex) &&
 						!userOrderDrink.checkIfThisMilkSelected(selectedItemIndex)
 					) {
@@ -838,9 +908,20 @@ $(window).on('load', function () {
 											$('#cardDeck-2')
 												.find('.card')
 												.each(function () {
+													const selectedItemIndex = $(this)
+														.closest('.card')
+														.attr('id')
+														.split('-')[1];
+													const selectedItemCategoryIndex = $(this)
+														.closest('.card-deck')
+														.attr('id')
+														.split('-')[1];
+													const selectedItemCategory =
+														drinkCategories[selectedItemCategoryIndex].id;
 													if (
 														!userOrderDrink.checkIfThisTempSelected(
-															$(this).closest('.card').attr('id')
+															selectedItemIndex,
+															selectedItemCategory
 														)
 													) {
 														$(this).css('opacity', '.3');
@@ -851,7 +932,7 @@ $(window).on('load', function () {
 										}
 									} else {
 										// if the selected card is coffee syrup flavor
-										userOrderDrink.addDrink(selectedItemIndex, selectedItemCategoryIndex);
+										userOrderDrink.addSyrup(selectedItemIndex, selectedItemCategoryIndex);
 										$(this).closest('.card').find('.btn2').html('✓');
 										$(this).closest('.card').find('.btn2').toggle();
 									}
@@ -869,8 +950,16 @@ $(window).on('load', function () {
 											.find('.card')
 											.each(function () {
 												const selectedItemIndex = $(this).attr('id').split('-')[1];
+												const selectedItemCategory =
+													drinkCategories[selectedItemCategoryIndex].id;
+
 												// make sure that you don't hide the already selected milk
-												if (!userOrderDrink.checkIfThisMilkSelected(selectedItemIndex)) {
+												if (
+													!userOrderDrink.checkIfThisMilkSelected(
+														selectedItemIndex,
+														selectedItemCategory
+													)
+												) {
 													$(this).css('opacity', '.3');
 												}
 											});
@@ -889,6 +978,13 @@ $(window).on('load', function () {
 								$(this)
 									.find('.card')
 									.each(function () {
+										const selectedItemCategoryIndex = $(this)
+											.closest('.card-deck')
+											.attr('id')
+											.split('-')[1];
+										const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
+										console.log('selectedItemCategory: %s', selectedItemCategory);
+
 										$(this).css('opacity', '1');
 									});
 								$('#errorMilk').hide();
@@ -903,7 +999,12 @@ $(window).on('load', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
-			if (!userOrderDrink.checkIfDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+			if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+				$(this).find('.btn').hide();
+				$(this).find('.btn3').hide();
+				$(this).find('.btn4').hide();
+			}
+			else if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory)) {
 				$(this).find('.btn').hide();
 				$(this).find('.btn3').hide();
 				$(this).find('.btn4').hide();
@@ -915,6 +1016,8 @@ $(window).on('load', function () {
 			$(this).find('.btn').html('Customize');
 			$(this).find('img').css('opacity', '1');
 			$(this).find('.card-body').css('opacity', '1');
+			$(this).find('.card-img-top').css('opacity', '1');
+
 		});
 	// click the card buttons
 
@@ -946,28 +1049,34 @@ $(window).on('load', function () {
 				}
 			} else {
 				const servingSize = 'extra';
-				if (selectedItemCategory=== 'syrup') {
-					userOrderDrink.addSyrup(selectedItemIndex);
+				if (selectedItemCategory === 'syrup') {
+					userOrderDrink.addSyrup(selectedItemIndex, servingSize);
+						$('#cardDeck-3')
+							.find('.card')
+							.each(function () {
+								const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+								const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+								const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
+								
+								if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory)) {
+									$(this).css('opacity', '.3');
+								}
+							});
+					$(this).closest('.card').find('.btn2').html('2X');
 				} else if (selectedItemCategory === 'coffee') {
 					userOrderDrink.addCoffee(selectedItemIndex, servingSize);
-				}
-				userOrderDrink.addDrink(selectedItemIndex, selectedItemCategoryIndex);
-				$(this).html('Customize');
-				$(this).blur();
-				$(this).closest('.card').find('.btn2').html('3X');
-				$(this).closest('.card').find('.btn2').show();
-				$(this).closest('.card').find('.btn3').hide();
-				$(this).closest('.card').find('.btn4').hide();
-				if (userOrderDrink.checkIfCoffeeSelected()) {
+					$(this).closest('.card').find('.btn2').html('3X');
 					// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
-					$('cardDeck-0')
-						.find(' .card')
+					$('#cardDeck-0')
+						.find('.card')
 						.each(function () {
-							if (!userOrderDrink.checkIfDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+							const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+							const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+							if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
 								$(this).css('opacity', '.3');
 							}
 						});
-					$('#cardDeck-1, #cardDeck-2').each(function () {
+					$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
 						$(this)
 							.find('.card')
 							.each(function () {
@@ -978,6 +1087,11 @@ $(window).on('load', function () {
 						$('#errorTemp').hide();
 					});
 				}
+				$(this).html('Customize');
+				$(this).blur();
+				$(this).closest('.card').find('.btn2').show();
+				$(this).closest('.card').find('.btn3').hide();
+				$(this).closest('.card').find('.btn4').hide();
 			}
 		});
 
@@ -997,53 +1111,16 @@ $(window).on('load', function () {
 			$(this).closest('.card').find('.btn2').html('½');
 			$(this).closest('.card').find('.btn2').show();
 			$(this).hide();
-			$(this).closest('.card').find('.btn3').hide();
 			$(this).closest('.card').find('.btn4').hide();
 			$(this).closest('.card').find('.btn').html('Customize');
-			if (userOrderDrink.checkIfCoffeeSelected()) {
-				// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
-				$('cardDeck-0')
-					.find('.card')
-					.each(function () {
-						if (!userOrderDrink.checkIfDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
-							$(this).css('opacity', '.3');
-						}
-					});
-				$('#cardDeck-1, #cardDeck-2').each(function () {
-					$(this)
-						.find('.card')
-						.each(function () {
-							$(this).css('opacity', '1');
-						});
-					$('#errorMilk').hide();
-					$('#errorSyrup').hide();
-					$('#errorTemp').hide();
-				});
-			}
-		});
-
-	$('.btn4')
-		.unbind('click')
-		.bind('click', function () {
-			const servingSize = 'regular';
-			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
-
-			if (selectedItemCategory === 'syrup') {
-				userOrderDrink.addSyrup(selectedItemIndex);
-			} else if (selectedItemCategory === 'coffee') {
-				userOrderDrink.addCoffee(selectedItemIndex, servingSize);
-			}
-
-			if (userOrderDrink.checkIfCoffeeSelected()) {
+			if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'coffee') {
 				// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
 				$('#cardDeck-0')
 					.find('.card')
 					.each(function () {
-						const selectedItemIndex = $(this).attr('id').split('-')[1];
-
-						if (!userOrderDrink.checkIfDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+						const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+						const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+						if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
 							$(this).css('opacity', '.3');
 						}
 					});
@@ -1057,6 +1134,68 @@ $(window).on('load', function () {
 					$('#errorSyrup').hide();
 					$('#errorTemp').hide();
 				});
+			} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'syrup') {
+				$('#cardDeck-3')
+					.find('.card')
+					.each(function () {
+						const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+						const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+						if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+							$(this).css('opacity', '.3');
+						}
+					});
+			}
+		});
+
+	$('.btn4')
+		.unbind('click')
+		.bind('click', function () {
+			const servingSize = 'regular';
+			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
+
+			if (selectedItemCategory === 'syrup') {
+				userOrderDrink.addSyrup(selectedItemIndex, servingSize);
+			} else if (selectedItemCategory === 'coffee') {
+				userOrderDrink.addCoffee(selectedItemIndex, servingSize);
+			}
+			$(this).closest('.card').find('.btn2').html('✓');
+			$(this).closest('.card').find('.btn2').show();
+			$(this).hide();
+			$(this).closest('.card').find('.btn4').hide();
+			$(this).closest('.card').find('.btn').html('Customize');
+			if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'coffee') {
+				// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
+				$('#cardDeck-0')
+					.find('.card')
+					.each(function () {
+						const selectedItemIndex = $(this).attr('id').split('-')[1];
+
+						if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+							$(this).css('opacity', '.3');
+						}
+					});
+				$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
+					$(this)
+						.find('.card')
+						.each(function () {
+							$(this).css('opacity', '1');
+						});
+					$('#errorMilk').hide();
+					$('#errorSyrup').hide();
+					$('#errorTemp').hide();
+				});
+			} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'syrup') {
+				$('#cardDeck-3')
+					.find('.card')
+					.each(function () {
+						const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+						const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+						if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+							$(this).css('opacity', '.3');
+						}
+					});
 			}
 		});
 
@@ -1065,13 +1204,11 @@ $(window).on('load', function () {
 		.bind('click', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex);
-			userOrderDrink.addDrink(selectedItemIndex, selectedItemCategoryIndex);
 			userOrderDrink.changeDrinkQuantity(selectedItemIndex, selectedItemCategoryIndex, 'decrease');
 			if (userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity <= 0) {
 				$(this).closest('.card').find('.btn2').hide();
 				$(this).closest('.card').find('.btn2').html(userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity);
-				userOrderDrink.removeDrink(selectedItemIndex);
+				userOrderDrink.removeDrink(selectedItemIndex, selectedItemCategoryIndex);
 				$(this).hide();
 				$(this).closest('.card').find('.btn7').hide();
 			} else {
@@ -1084,11 +1221,9 @@ $(window).on('load', function () {
 		.unbind('click')
 		.bind('click', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id');
-			
+			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			userOrderDrink.changeDrinkQuantity(selectedItemIndex, selectedItemCategoryIndex, 'increase');
 			$(this).closest('.card').find('.btn2').html(userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity);
-
 			$(this).closest('.card').find('.btn2').show();
 		});
 });
