@@ -1,10 +1,6 @@
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
-
-var coffeeBool = false;
-var milkBool = false;
-var tempBool = false;
 var editDrinkIndex = undefined;
 var editDrink = undefined;
 var drinkCategoryDataArray;
@@ -15,26 +11,18 @@ var milkshakes;
 var nonCoffeeDrinks;
 var bottledDrinks;
 var drinkCategories;
+var newDrinkCategories;
 var temperatures;
+var userOrderDrink;
 
-class Drink {
-	constructor(name = undefined, price = undefined, quantity = 0, drinkCategory = undefined) {
+export class Drink {
+	constructor(name = undefined, price = 0, quantity = 1, servingSize = undefined, drinkCategory = undefined) {
 		this.name = name;
 		this.price = price;
 		this.quantity = quantity;
+		this.servingSize = servingSize;
 		this.drinkCategory = drinkCategory;
-	}
-	set name(value) {
-		this._name = value;
-	}
-	set price(value) {
-		this._price = value;
-	}
-	set quantity(value) {
-		this._quantity = value
-	}
-	set drinkCategory(value) {
-		this._drinkCategory = value;
+		
 	}
 	get name() {
 		return this._name;
@@ -45,26 +33,72 @@ class Drink {
 	get quantity() {
 		return this._quantity;
 	}
+	get servingSize() {
+		return this._servingSize;
+	}
 	get drinkCategory() {
 		return this._drinkCategory;
 	}
+	set name(value) {
+		this._name = value;
+	}
+	set price(value) {
+		this._price = value;
+	}
+	set quantity(value) {
+		this._quantity = value;
+	}
+	set servingSize(value) {
+		this._servingSize = value;
+	}
+	set drinkCategory(value) {
+		this._drinkCategory = value;
+	}
 	initFromHTML = (index, selectedItemCategoryIndex) => {
 		const newDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+		const drinkCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 		for (var i = 0; i < drinkCategoryDataArray.length; i++) {
 			console.log(drinkCategoryDataArray[i]);
 		}
 		const drinkName = newDrink.name;
 		const drinkPrice = newDrink.price;
+		const drinkServingSize = newDrink.serving_size;
+
 		this._name = drinkName;
 		this._price = drinkPrice;
+		this._drinkCategory = drinkCategory;
+		this._servingSize = drinkServingSize;
+	};
+	toJSON = () => {
+		const data = {
+			name: this.name,
+			price: this.price,
+			quantity: this.quantity,
+			servingSize: this.servingSize,
+			drinkCategory: this.drinkCategory,
+		};
+		return data;
+		
+	};
+	fromJSON = (json) => {
+		data = JSON.parse(json)
+		const drinkName = data.name;
+		
+		const drinkPrice = data.price;
+		
+		const drinkQuantity = data.quantity;
+		const drinkServingSize = data.servingSize;
+		const drinkCategory = data.drinkCategory;
+		drink.name = drinkName
+		drink.price = drinkPrice
+		return new Drink(drinkName, drinkPrice, drinkQuantity, drinkServingSize, drinkCategory)
 	};
 	updateDrinkQuantity = (value) => {
 		if (value === 'decrease') {
-			if (this._quantity === 0){ 
-				return
-			}
-			else {
-			this._quantity -= 1;
+			if (this._quantity === 0) {
+				return;
+			} else {
+				this._quantity -= 1;
 			}
 		} else if (value === 'increase') {
 			this._quantity += 1;
@@ -72,7 +106,7 @@ class Drink {
 	};
 }
 
-class Coffee {
+export class Coffee {
 	constructor(
 		id = undefined,
 		name = undefined,
@@ -81,10 +115,12 @@ class Coffee {
 		flavorSyrup = undefined,
 		flavorServingSize = undefined,
 		espressoServingSize = undefined,
+		espressoPrice = undefined,
 		milkType = undefined,
 		milkPrice = 0,
 		price = undefined,
-		drinkCategory = undefined
+		drinkCategory = undefined,
+		quantity = 1
 	) {
 		this.id = id;
 		this.name = name;
@@ -93,41 +129,12 @@ class Coffee {
 		this.flavorSyrup = flavorSyrup;
 		this.flavorServingSize = flavorServingSize;
 		this.espressoServingSize = espressoServingSize;
+		this.espressoPrice = espressoPrice;
 		this.milkType = milkType;
 		this.milkPrice = milkPrice;
 		this.price = price;
 		this.drinkCategory = drinkCategory;
-	}
-
-	set name(value) {
-		this._name = value;
-	}
-	set servingSize(value) {
-		this._servingSize = value;
-	}
-	set temperature(value) {
-		this._temperature = value;
-	}
-	set flavorSyrup(value) {
-		this._flavorSyrup = value;
-	}
-	set flavorServingSize(value) {
-		this._flavorServingSize = value;
-	}
-	set espressoServingSize(value) {
-		this._espressoServingSize = value;
-	}
-	set milkType(value) {
-		this._milkType = value;
-	}
-	set milkPrice(value) {
-		this._milkPrice = value;
-	}
-	set price(value) {
-		this._price = value;
-	}
-	set drinkCategory(value) {
-		this._drinkCategory = value;
+		this.quantity = quantity;
 	}
 	get name() {
 		return this._name;
@@ -147,6 +154,9 @@ class Coffee {
 	get espressoServingSize() {
 		return this._espressoServingSize;
 	}
+	get espressoPrice() {
+		return this._espressoPrice;
+	}
 	get milkType() {
 		return this._milkType;
 	}
@@ -159,23 +169,127 @@ class Coffee {
 	get drinkCategory() {
 		return this._drinkCategory;
 	}
-	initFromHTML = (index, servingSize) => {
+	get quantity() {
+		return this._quantity;
+	}
+	set name(value) {
+		this._name = value;
+	}
+	set servingSize(value) {
+		this._servingSize = value;
+	}
+	set temperature(value) {
+		this._temperature = value;
+	}
+	set flavorSyrup(value) {
+		this._flavorSyrup = value;
+	}
+	set flavorServingSize(value) {
+		this._flavorServingSize = value;
+	}
+	set espressoServingSize(value) {
+		this._espressoServingSize = value;
+	}
+	set espressoPrice(value) {
+		this._espressoPrice = value;
+	}
+	set milkType(value) {
+		this._milkType = value;
+	}
+	set milkPrice(value) {
+		this._milkPrice = value;
+	}
+	set price(value) {
+		this._price = value;
+	}
+	set drinkCategory(value) {
+		this._drinkCategory = value;
+	}
+	set quantity(value) {
+		this._quantity = value;
+	}
+
+	initFromHTML = (index, espressoServingSize) => {
 		const coffeeName = coffeeDrinks[index].name;
 		const coffeePrice = coffeeDrinks[index].price;
+		const coffeeServingSize = coffeeDrinks[index].serving_size;
 		// UUID will be generated in the backend
 		this._name = coffeeName;
 		this._price = coffeePrice;
-		this._servingSize = servingSize;
+		this._servingSize = coffeeServingSize;
+		this._espressoServingSize = espressoServingSize;
+		if (espressoServingSize === 'extra') {
+			this._espressoPrice = 2;
+		} else {
+			this._espressoPrice = 0;
+		}
 		this._drinkCategory = 'coffee';
 	};
 }
 
-class Order {
-	constructor(orderCrepe = new Array(), orderDrink = new Array(), orderSide = new Array()) {
+export class Order {
+	constructor(
+		orderCrepe = new Array(),
+		orderDrink = new Array(),
+		orderSide = new Array(),
+		orderTotal = 0,
+		customerData = undefined
+	) {
 		this.orderCrepe = orderCrepe;
 		this.orderDrink = orderDrink;
 		this.orderSide = orderSide;
+		this.orderTotal = orderTotal;
+		this.customerData = customerData;
+		
 	}
+
+	get orderCrepe() {
+		return this._orderCrepe;
+	}
+	get orderDrink() {
+		return this._orderDrink;
+	}
+	get orderSide() {
+		return this._orderSide;
+	}
+	get orderTotal() {
+		return this._orderTotal;
+	}
+	get customerData() {
+		return this._customerData;
+	}
+	set orderCrepe(value) {
+		this._orderCrepe = value;
+	}
+	set orderDrink(value) {
+		this._orderDrink = value;
+	}
+	set orderSide(value) {
+		this._orderSide = value;
+	}
+	set orderTotal(value) {
+		this._orderTotal = value;
+	}
+	set customerData(value) {
+		this._customerData = value;
+	}
+	toJSON = () => {
+		const data = {
+			orderCrepe: this.orderCrepe,
+			orderDrink: this.orderDrink,
+			orderSide: this.orderSide,
+			orderTotal: this.orderTotal,
+			customerData: this.orderTotal,
+		};
+		// console.log('this.data: %s', this.data);
+
+		return data;
+		
+	};
+	fromJSON = (json) => {
+		data = JSON.parse(json)
+		return new Order(data.orderCrepe, data.orderDrink, data.orderSide, data.orderTotal, data.customerData);
+	};
 	checkIfCoffeeSelected = () => {
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			if (this.orderDrink[i].drinkCategory === 'coffee') {
@@ -198,13 +312,9 @@ class Order {
 	};
 	checkIfThisTempSelected = (index, selectedItemCategory) => {
 		const temp = temperatures[index];
-		console.log('temp: %s', temp);
 		if (selectedItemCategory === 'temperature') {
 			for (var i = 0; i < this.orderDrink.length; i++) {
 				if (this.orderDrink[i].drinkCategory === 'coffee') {
-					console.log('this.orderDrink: %s', this.orderDrink);
-					console.log('this.orderDrink[i]: %s', this.orderDrink[i]);
-
 					if (this.orderDrink[i].temperature === temp.id) {
 						return true;
 					} else {
@@ -232,8 +342,6 @@ class Order {
 			const milk = milkDrinks[index];
 			for (var i = 0; i < this.orderDrink.length; i++) {
 				if (this.orderDrink[i].drinkCategory === 'coffee') {
-					console.log('this.orderDrink[i]: %s', this.orderDrink[i]);
-					console.log('milk.id', milk.id);
 					if (this.orderDrink[i].milkType === milk.id) {
 						return true;
 					} else {
@@ -262,7 +370,10 @@ class Order {
 	checkIfThisDrinkSelected = (index, selectedItemCategoryIndex) => {
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-			if (this.orderDrink[i].name === selectedDrink.name) {
+			if (
+				this.orderDrink[i].name === selectedDrink.name &&
+				this.orderDrink[i].servingSize === selectedDrink.serving_size
+			) {
 				return true;
 			}
 		}
@@ -272,25 +383,16 @@ class Order {
 		if (!this.findDrink(index, selectedItemCategoryIndex)) {
 			this.addDrink(index, selectedItemCategoryIndex);
 		} else {
-			for (var i = 0; i < this.orderDrink.length; i++) {
-				const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-				if (this.orderDrink[i].name === selectedDrink.name) {
-					this.orderDrink[i].updateDrinkQuantity(value);
-				}
-			}
-			return false;
+			this.findDrink(index, selectedItemCategoryIndex).updateDrinkQuantity(value);
 		}
 	};
 	findDrink = (index, selectedItemCategoryIndex) => {
-		console.log('index: %s', index);
-
-		console.log('selectedItemCategoryIndex: %s', selectedItemCategoryIndex);
-
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-			console.log('selectedDrink: %s', selectedDrink);
-
-			if (this.orderDrink[i].name === selectedDrink.name) {
+			if (
+				this.orderDrink[i].name === selectedDrink.name &&
+				this.orderDrink[i].servingSize === selectedDrink.serving_size
+			) {
 				return this.orderDrink[i];
 			}
 		}
@@ -300,11 +402,7 @@ class Order {
 		if (!this.findDrink(index, selectedItemCategoryIndex)) {
 			const drink = new Drink();
 			drink.initFromHTML(index, selectedItemCategoryIndex);
-			for (var i = 0; i < this.orderDrink.length; i++) {
-				console.log('this.orderDrink[i]', this.orderDrink[i]);
-			}
 			this.orderDrink.push(drink);
-			for (var i = 0; i < this.orderDrink.length; i++) {}
 		}
 	};
 	removeDrink = (index, selectedItemCategoryIndex) => {
@@ -318,13 +416,10 @@ class Order {
 		}
 		return false;
 	};
-	addCoffee = (index, servingSize) => {
+	addCoffee = (index, espressoServingSize) => {
 		const coffee = new Coffee();
-		coffee.initFromHTML(index, servingSize);
+		coffee.initFromHTML(index, espressoServingSize);
 		this.orderDrink.push(coffee);
-		for (var i = 0; i < this.orderDrink.length; i++) {
-			console.log('this.orderDrink[i]', this.orderDrink[i]);
-		}
 	};
 	addTemp = (index) => {
 		const temp = temperatures[index];
@@ -368,8 +463,6 @@ class Order {
 	};
 	addSyrup = (index, servingSize) => {
 		const syrup = coffeeSyrups[index];
-		console.log('syrup: %s', syrup.coffee_syrup_flavor);
-
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			if (this.orderDrink[i].drinkCategory === 'coffee') {
 				this.orderDrink[i].flavorSyrup = syrup.coffee_syrup_flavor;
@@ -390,59 +483,55 @@ class Order {
 		return false;
 	};
 }
-
 function jq(myid) {
 	return myid.replace(/(:|\.|\[|\]|%|,|=|@)/g, '\\$1');
 }
-function stringify(dataObject) {
-	console.log('dataObject drank: %s', dataObject['drinks']);
-	var orderBool = false;
-	for (key in dataObject['drinks']) {
-		if (dataObject['drinks'][key].length) {
-			orderBool = true;
-		}
-	}
-	// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
-	// the object is a dictionary with a key called order and the value being an array which will hold each crepe as either a menu crepe object
-	if (orderBool) {
+
+function stringify(drinkOrder) {
+	console.log('weee', JSON.stringify(drinkOrder));
+
+	//check to make sure a drink was selected
+	if (drinkOrder.orderDrink.length) {
 		if (editDrinkIndex === undefined) {
 			if (localStorage.length > 0) {
+				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 				const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
-				console.log('order local stor > 0', order);
 				if ('orderDrink' in order) {
-					order['orderDrink'].push(dataObject);
-					const stringifiedDataObject = JSON.stringify(order);
-					console.log('stringifiedDataObject', stringifiedDataObject);
-					localStorage.setItem('order', stringifiedDataObject);
+					// only one drink order will be processed on this page at a time
+					order['orderDrink'].push(order.orderDrink[0]);
+					const drinkOrderTotal = drinkOrder.orderDrink[0]['drinkTotal'];
+					order['orderTotal'] += drinkOrderTotal;
+					const stringifiedDrinkOrder = JSON.stringify(order);
+					localStorage.setItem('order', stringifiedDrinkOrder);
 				} else {
-					order['orderDrink'] = [];
-					order['orderDrink'].push(dataObject);
-					const stringifiedDataObject = JSON.stringify(order);
-					console.log('order', order);
-					console.log('stringifiedDataObject', stringifiedDataObject);
-					localStorage.setItem('order', stringifiedDataObject);
+					order['orderDrink'] = [...drinkOrder.orderDrink];
+					const stringifiedDrinkOrder = JSON.stringify(order);
+					// const stringifiedDrinkOrder = JSON.stringify(order);
+					const drinkOrderTotal = drinkOrder.orderDrink[0]['drinkTotal'];
+					order['orderTotal'] += drinkOrderTotal;
+					localStorage.setItem('order', stringifiedDrinkOrder);
 				}
 			} else {
-				const order = {};
-				order['orderDrink'] = [];
-				order['orderDrink'].push(dataObject);
-				const stringifiedDataObject = JSON.stringify(order);
-				console.log('order', order);
-				console.log('stringifiedDataObject', stringifiedDataObject);
-				localStorage.setItem('order', stringifiedDataObject);
+				// const stringifiedDrinkOrder = JSON.stringify(drinkOrder);
+				const stringifiedDrinkOrder = JSON.stringify(drinkOrder)
+
+				localStorage.setItem('order', stringifiedDrinkOrder);
 			}
 		} else {
 			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
 			var currentOrderDrinkList = currentOrder['orderDrink'];
 			var currentOrderDrink = currentOrderDrinkList[editDrinkIndex];
-			Object.assign(currentOrderDrink, dataObject);
+			Object.assign(currentOrderDrink, drinkOrder.orderDrink);
+			const drinkOrderTotal = drinkOrder.orderDrink[0]['drinkTotal'];
+			currentOrder['orderTotal'] += drinkOrderTotal;
 			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
 			for (var i = 0; i < currentOrderDrinkList.length; i++) {
 				if (currentOrderDrinkList[i] === {}) {
 					currentOrderDrinkList.splice(i);
 				}
 			}
-			localStorage.setItem('order', JSON.stringify(currentOrder));
+			// localStorage.setItem('order', JSON.stringify(currentOrder));
+			localStorage.setItem('order', currentOrder.toJson());
 		}
 	}
 
@@ -455,6 +544,7 @@ function stringify(dataObject) {
 	}
 	return true;
 }
+
 function removeAllChildNodes(parent) {
 	while (parent.firstChild) {
 		parent.removeChild(parent.firstChild);
@@ -470,7 +560,7 @@ $(window).on('load', function () {
 		$(this)
 			.find('.card')
 			.each(function (i) {
-				var cardId = 'card-'
+				var cardId = 'card-';
 				cardId += String(i);
 				this.id = cardId;
 			});
@@ -478,8 +568,9 @@ $(window).on('load', function () {
 	coffeeDrinks = $('#coffeeDrinks').data('coffee');
 	milkDrinks = $('#milkDrinks').data('milk');
 	coffeeSyrups = $('#coffeeSyrups').data('syrup');
-	for (var i = 0; i < coffeeSyrups.length; i++) { 
-		console.log('coffeeSyrups[i]', coffeeSyrups[i])
+
+	for (var i = 0; i < coffeeSyrups.length; i++) {
+		console.log('coffeeSyrups[i]', coffeeSyrups[i]);
 	}
 	for (var i = 0; i < milkDrinks.length; i++) {
 		console.log('milk[i]', milkDrinks[i]);
@@ -491,13 +582,13 @@ $(window).on('load', function () {
 	// console.log('drinkCategories: %s', drinkCategories);
 
 	temperatures = $('#coffeeTemperature').data('temperature');
-
+	newDrinkCategories = [...drinkCategories];
 	// i have to add the milk and syrup and temp categories so that the index of card decks will be correct
-	drinkCategories.splice(1, 0, { id: 'milk' });
-	drinkCategories.splice(2, 0, { id: 'temperature' });
-	drinkCategories.splice(3, 0, { id: 'syrup' });
-	for (var i = 0; i < drinkCategories.length; i++) {
-		console.log('drinkCategories', drinkCategories[i]);
+	newDrinkCategories.splice(1, 0, { id: 'milk' });
+	newDrinkCategories.splice(2, 0, { id: 'temperature' });
+	newDrinkCategories.splice(3, 0, { id: 'syrup' });
+	for (var i = 0; i < newDrinkCategories.length; i++) {
+		console.log('newDrinkCategories', newDrinkCategories[i]);
 	}
 	drinkCategoryDataArray = new Array();
 	drinkCategoryDataArray.push(coffeeDrinks);
@@ -511,13 +602,14 @@ $(window).on('load', function () {
 	//https://api.jquery.com/wrap/
 	$('.card-img-top').wrap('<div class="container2"></div>');
 
+	$('#checkout')
+		.unbind('click')
+		.bind('click', function () {
+			checkOut();
+		});
 	$('.card-img-top').each(function (i) {
 		const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-		const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
-		// console.log("selectedItemCategory: %s", selectedItemCategory)
-		
-		
-		
+		const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 		if (selectedItemCategory === 'syrup') {
 			$('<button class="btn" type="button">Customize</button>').insertAfter($(this));
 			$('<button class="btn4" type="button">1 Pump</button>').insertAfter($(this));
@@ -537,7 +629,7 @@ $(window).on('load', function () {
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 				$(this)
 			);
-			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
+			$('<button class="btn2" type="button">1</button>').insertAfter($(this));
 		} else if (
 			selectedItemCategory === 'bottled' ||
 			selectedItemCategory === 'milkshake' ||
@@ -703,7 +795,7 @@ $(window).on('load', function () {
 							}
 						});
 				}
-				
+
 				if (userOrderDrink.checkIfTempSelected()) {
 					$('#cardDeck-3')
 						.find('.card')
@@ -730,35 +822,27 @@ $(window).on('load', function () {
 				}
 			}
 		}
-
-		for (var key in editDrink) {
-			console.log(key);
-			console.log(editDrink[key]);
-		}
-		console.log('editDrink: %s', editDrink);
-		console.log('editDrinkIndex: %s', editDrinkIndex);
-		console.log('editDrink: %s', editDrink);
 	}
-	const userOrderDrink = new Order();
-	// var x = document.getElementsByClassName('card-title');
-	// var y = [];
-
-	// for (i = 2; i < x.length; i++) {
-	// 	y.push(x[i].innerHTML);
-	// }
 
 	$('.card-img-top').each(function () {
-		// this.src = '/static/images/' + y[j] + '.jpg';
-		this.src = '/static/images/steak.jpg';
+		this.src = '../static/images/steak.jpg';
+		console.log('this.src: %s', this.src);
 	});
+
+	userOrderDrink = new Order();
+
 	$(document)
 		.on('mouseenter', '.card', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			console.log("selectedItemIndex: %s", selectedItemIndex)
+			console.log('selectedItemIndex: %s', selectedItemIndex);
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id
+			const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 			// if the card isn't milk or temperature
-			if (selectedItemCategory != 'milk' && selectedItemCategory != 'temperature' && selectedItemCategory != 'syrup') {
+			if (
+				selectedItemCategory != 'milk' &&
+				selectedItemCategory != 'temperature' &&
+				selectedItemCategory != 'syrup'
+			) {
 				// if the card also isn't coffee then fade it out
 				if (selectedItemCategory != 'coffee') {
 					$(this).find('.card-body').css('opacity', '.3');
@@ -775,18 +859,18 @@ $(window).on('load', function () {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
 				}
-			// if the hover card is syrup and a coffee has been selected then fade it out
+				// if the hover card is syrup and a coffee has been selected then fade it out
 			} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'syrup') {
 				$(this).find('.card-body').css('opacity', '.3');
 				$(this).find('.card-img-top').css('opacity', '.3');
 				$(this).find('.btn').show();
-			// if the hover card is milk and a coffee has been selected then fade it out
+				// if the hover card is milk and a coffee has been selected then fade it out
 			} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'milk') {
 				// 	make sure a milk hasn't already been selected
 				if (!userOrderDrink.checkIfMilkSelected()) {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
-				// if a milk has been selected then we only want to highlight the card if it is that milk
+					// if a milk has been selected then we only want to highlight the card if it is that milk
 				} else if (userOrderDrink.checkIfThisMilkSelected(selectedItemIndex, selectedItemCategory)) {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
@@ -807,14 +891,13 @@ $(window).on('load', function () {
 				.bind('click', function () {
 					const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 					const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-					const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
+					const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 					console.log(
 						'userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex): %s',
 						userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex)
 					);
 					console.log(userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex));
 
-						
 					if (
 						selectedItemCategory === 'bottled' ||
 						selectedItemCategory === 'non-coffee' ||
@@ -833,14 +916,14 @@ $(window).on('load', function () {
 
 					// if you click the card and it has already been selected then remove the item
 					else if (userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
-						for (var i = 0; i < userOrderDrink.length; i++) { 
-							console.log('userOrderDrink', userOrderDrink[i])
+						for (var i = 0; i < userOrderDrink.length; i++) {
+							console.log('userOrderDrink', userOrderDrink[i]);
 						}
 						userOrderDrink.removeDrink(selectedItemIndex, selectedItemCategoryIndex);
-						$(this).closest('.card').find('.btn2').toggle()
-							for (var i = 0; i < userOrderDrink.length; i++) {
-								console.log('userOrderDrink', userOrderDrink[i]);
-							}
+						$(this).closest('.card').find('.btn2').toggle();
+						for (var i = 0; i < userOrderDrink.length; i++) {
+							console.log('userOrderDrink', userOrderDrink[i]);
+						}
 						// if the card you removed was a coffee card
 						if (!userOrderDrink.checkIfCoffeeSelected()) {
 							// reactivate all the coffee cards
@@ -857,17 +940,15 @@ $(window).on('load', function () {
 						}
 						// if the selected item is a milk card
 					} else if (userOrderDrink.checkIfThisMilkSelected(selectedItemIndex, selectedItemCategory)) {
-						userOrderDrink.removeMilk()
+						userOrderDrink.removeMilk();
 						// reactivate all the milk cards
-						$(this).closest('.card').find('.btn2').hide()
+						$(this).closest('.card').find('.btn2').hide();
 						$('#cardDeck-1')
 							.find('.card')
 							.each(function () {
 								$(this).css('opacity', '1');
 							});
-
-					}
-					else if (userOrderDrink.checkIfThisTempSelected(selectedItemIndex, selectedItemCategory)) {
+					} else if (userOrderDrink.checkIfThisTempSelected(selectedItemIndex, selectedItemCategory)) {
 						userOrderDrink.removeTemp();
 						$(this).closest('.card').find('.btn2').hide();
 						// reactivate all the milk cards
@@ -917,7 +998,7 @@ $(window).on('load', function () {
 														.attr('id')
 														.split('-')[1];
 													const selectedItemCategory =
-														drinkCategories[selectedItemCategoryIndex].id;
+														newDrinkCategories[selectedItemCategoryIndex].id;
 													if (
 														!userOrderDrink.checkIfThisTempSelected(
 															selectedItemIndex,
@@ -942,6 +1023,7 @@ $(window).on('load', function () {
 									// make sure a milk hasn't already been selected when selecting a milk card
 									if (!userOrderDrink.checkIfMilkSelected()) {
 										userOrderDrink.addMilk(selectedItemIndex, selectedItemCategoryIndex);
+										console.log('fuck');
 										$(this).closest('.card').find('.btn2').html('✓');
 										$(this).closest('.card').find('.btn2').toggle();
 										// if a milk has been selected then we want to make sure all the other milk cards are knocked out
@@ -951,7 +1033,7 @@ $(window).on('load', function () {
 											.each(function () {
 												const selectedItemIndex = $(this).attr('id').split('-')[1];
 												const selectedItemCategory =
-													drinkCategories[selectedItemCategoryIndex].id;
+													newDrinkCategories[selectedItemCategoryIndex].id;
 
 												// make sure that you don't hide the already selected milk
 												if (
@@ -970,7 +1052,9 @@ $(window).on('load', function () {
 							}
 							// if a coffee has not already been selected and the card being selected isn't any of the other drink options then the card being selected should be coffee
 						} else if (selectedItemCategory === 'coffee') {
-							userOrderDrink.addCoffee(selectedItemIndex, 'regular');
+							const espressoServingSize = 'regular';
+							console.log('coffee');
+							userOrderDrink.addCoffee(selectedItemIndex, espressoServingSize);
 							$(this).closest('.card').find('.btn2').html('✓');
 							$(this).closest('.card').find('.btn2').toggle();
 							// activate the milk and temp and syrup cards after selecting coffee
@@ -978,13 +1062,6 @@ $(window).on('load', function () {
 								$(this)
 									.find('.card')
 									.each(function () {
-										const selectedItemCategoryIndex = $(this)
-											.closest('.card-deck')
-											.attr('id')
-											.split('-')[1];
-										const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
-										console.log('selectedItemCategory: %s', selectedItemCategory);
-
 										$(this).css('opacity', '1');
 									});
 								$('#errorMilk').hide();
@@ -998,13 +1075,12 @@ $(window).on('load', function () {
 		.on('mouseleave', '.card', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
+			const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 			if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
 				$(this).find('.btn').hide();
 				$(this).find('.btn3').hide();
 				$(this).find('.btn4').hide();
-			}
-			else if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory)) {
+			} else if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory)) {
 				$(this).find('.btn').hide();
 				$(this).find('.btn3').hide();
 				$(this).find('.btn4').hide();
@@ -1017,16 +1093,15 @@ $(window).on('load', function () {
 			$(this).find('img').css('opacity', '1');
 			$(this).find('.card-body').css('opacity', '1');
 			$(this).find('.card-img-top').css('opacity', '1');
-
 		});
-	// click the card buttons
 
+	// click the card buttons
 	$('.btn')
 		.unbind('click')
 		.bind('click', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
+			const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 			if ($(this).html() == 'Customize') {
 				if (selectedItemCategory === 'syrup') {
 					//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
@@ -1040,28 +1115,22 @@ $(window).on('load', function () {
 					$(this).html('3 Espresso Shots');
 					$(this).closest('.card').find('.btn3').show();
 					$(this).closest('.card').find('.btn4').show();
-				} else {
-					//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
-					$(this).blur();
-					$(this).html('Extra');
-					$(this).closest('.card').find('.btn3').show();
-					$(this).closest('.card').find('.btn4').show();
 				}
 			} else {
 				const servingSize = 'extra';
 				if (selectedItemCategory === 'syrup') {
 					userOrderDrink.addSyrup(selectedItemIndex, servingSize);
-						$('#cardDeck-3')
-							.find('.card')
-							.each(function () {
-								const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-								const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-								const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
-								
-								if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory)) {
-									$(this).css('opacity', '.3');
-								}
-							});
+					$('#cardDeck-3')
+						.find('.card')
+						.each(function () {
+							const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+							const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+							const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+
+							if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory)) {
+								$(this).css('opacity', '.3');
+							}
+						});
 					$(this).closest('.card').find('.btn2').html('2X');
 				} else if (selectedItemCategory === 'coffee') {
 					userOrderDrink.addCoffee(selectedItemIndex, servingSize);
@@ -1072,7 +1141,9 @@ $(window).on('load', function () {
 						.each(function () {
 							const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 							const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-							if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+							if (
+								!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)
+							) {
 								$(this).css('opacity', '.3');
 							}
 						});
@@ -1095,109 +1166,66 @@ $(window).on('load', function () {
 			}
 		});
 
-	$('.btn3')
-		.unbind('click')
-		.bind('click', function () {
-			const servingSize = 'half';
-			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
-			
-			if (selectedItemCategory === 'syrup') {
-				userOrderDrink.addSyrup(selectedItemIndex);
-			} else if (selectedItemCategory === 'coffee') {
-				userOrderDrink.addCoffee(selectedItemIndex, servingSize);
-			}
-			$(this).closest('.card').find('.btn2').html('½');
-			$(this).closest('.card').find('.btn2').show();
-			$(this).hide();
-			$(this).closest('.card').find('.btn4').hide();
-			$(this).closest('.card').find('.btn').html('Customize');
-			if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'coffee') {
-				// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
-				$('#cardDeck-0')
-					.find('.card')
-					.each(function () {
-						const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-						const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-						if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
-							$(this).css('opacity', '.3');
-						}
-					});
-				$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
-					$(this)
+	$('.btn3, .btn4').each(function () {
+		$(this)
+			.unbind('click')
+			.bind('click', function () {
+				var servingSize;
+				if ($(this).attr('class') === 'btn3') {
+					servingSize = 'half';
+					$(this).closest('.card').find('.btn2').html('½');
+				} else if ($(this).attr('class') === 'btn4') {
+					servingSize = 'regular';
+					$(this).closest('.card').find('.btn2').html('✓');
+				}
+				console.log('click');
+				const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+				const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+				const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+
+				if (selectedItemCategory === 'syrup') {
+					userOrderDrink.addSyrup(selectedItemIndex, servingSize);
+					$('#cardDeck-3')
 						.find('.card')
 						.each(function () {
-							$(this).css('opacity', '1');
+							const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+							const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+							const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+							if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory)) {
+								$(this).css('opacity', '.3');
+							}
 						});
-					$('#errorMilk').hide();
-					$('#errorSyrup').hide();
-					$('#errorTemp').hide();
-				});
-			} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'syrup') {
-				$('#cardDeck-3')
-					.find('.card')
-					.each(function () {
-						const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-						const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-						if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
-							$(this).css('opacity', '.3');
-						}
-					});
-			}
-		});
-
-	$('.btn4')
-		.unbind('click')
-		.bind('click', function () {
-			const servingSize = 'regular';
-			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			const selectedItemCategory = drinkCategories[selectedItemCategoryIndex].id;
-
-			if (selectedItemCategory === 'syrup') {
-				userOrderDrink.addSyrup(selectedItemIndex, servingSize);
-			} else if (selectedItemCategory === 'coffee') {
-				userOrderDrink.addCoffee(selectedItemIndex, servingSize);
-			}
-			$(this).closest('.card').find('.btn2').html('✓');
-			$(this).closest('.card').find('.btn2').show();
-			$(this).hide();
-			$(this).closest('.card').find('.btn4').hide();
-			$(this).closest('.card').find('.btn').html('Customize');
-			if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'coffee') {
-				// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
-				$('#cardDeck-0')
-					.find('.card')
-					.each(function () {
-						const selectedItemIndex = $(this).attr('id').split('-')[1];
-
-						if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
-							$(this).css('opacity', '.3');
-						}
-					});
-				$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
-					$(this)
+				} else if (selectedItemCategory === 'coffee') {
+					userOrderDrink.addCoffee(selectedItemIndex, servingSize);
+					// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
+					$('#cardDeck-0')
 						.find('.card')
 						.each(function () {
-							$(this).css('opacity', '1');
+							const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+							const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+							if (
+								!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)
+							) {
+								$(this).css('opacity', '.3');
+							}
 						});
-					$('#errorMilk').hide();
-					$('#errorSyrup').hide();
-					$('#errorTemp').hide();
-				});
-			} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'syrup') {
-				$('#cardDeck-3')
-					.find('.card')
-					.each(function () {
-						const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-						const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-						if (!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
-							$(this).css('opacity', '.3');
-						}
+					$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
+						$(this)
+							.find('.card')
+							.each(function () {
+								$(this).css('opacity', '1');
+							});
+						$('#errorMilk').hide();
+						$('#errorSyrup').hide();
+						$('#errorTemp').hide();
 					});
-			}
-		});
+				}
+				$(this).closest('.card').find('.btn2').show();
+				$(this).hide();
+				$(this).closest('.card').find('.btn4').hide();
+				$(this).closest('.card').find('.btn').html('Customize');
+			});
+	});
 
 	$('.btn6')
 		.unbind('click')
@@ -1207,12 +1235,18 @@ $(window).on('load', function () {
 			userOrderDrink.changeDrinkQuantity(selectedItemIndex, selectedItemCategoryIndex, 'decrease');
 			if (userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity <= 0) {
 				$(this).closest('.card').find('.btn2').hide();
-				$(this).closest('.card').find('.btn2').html(userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity);
+				$(this)
+					.closest('.card')
+					.find('.btn2')
+					.html(userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity);
 				userOrderDrink.removeDrink(selectedItemIndex, selectedItemCategoryIndex);
 				$(this).hide();
 				$(this).closest('.card').find('.btn7').hide();
 			} else {
-				$(this).closest('.card').find('.btn2').html(userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity);
+				$(this)
+					.closest('.card')
+					.find('.btn2')
+					.html(userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity);
 				$(this).closest('.card').find('.btn2').show();
 			}
 		});
@@ -1220,187 +1254,71 @@ $(window).on('load', function () {
 	$('.btn7')
 		.unbind('click')
 		.bind('click', function () {
+			console.log('click btn7');
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			userOrderDrink.changeDrinkQuantity(selectedItemIndex, selectedItemCategoryIndex, 'increase');
-			$(this).closest('.card').find('.btn2').html(userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity);
+			$(this)
+				.closest('.card')
+				.find('.btn2')
+				.html(userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex).quantity);
 			$(this).closest('.card').find('.btn2').show();
 		});
 });
-
-const orderToppingsDict = {};
-const drinkDict = {};
-orderToppingsDict['drinks'] = [];
 function checkOut() {
-
-	// $('.btn2').each(function () {
-	// var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-	// var toppingCategory = toppingCategoryAndToppingNameArray[0];
-	// var toppingName = toppingCategoryAndToppingNameArray[1];
-
-	// if ($(this).css(`--${toppingCategory}`) == toppingName) {
-	// 		var toppingDictionary = {};
-	// 		if (toppingCategory == 'temperature') {
-	// 			const temperature = $(`#cardDeck-3`).find('.card-title').text();
-
-	// 			toppingDictionary['name'] = temperature;
-	// 			toppingDictionary['price'] = 0;
-	// 		} else {
-	// 			if ($(this).css('--half') == 'true') {
-	// 				toppingDictionary['servingSize'] = 'half';
-	// 			} else if ($(this).css('--regular') == 'true') {
-	// 				toppingDictionary['servingSize'] = 'regular';
-	// 			} else if ($(this).css('--extra') == 'true') {
-	// 				toppingDictionary['servingSize'] = 'extra';
-	// 			}
-	// 			// if the drink is a drink with a quantity then it won't have half or regular or extra and the previous if blocks won't grab the topping name
-	// 			else {
-	// 				toppingDictionary['servingSize'] = 'regular';
-	// 			}
-
-	// 			toppingDictionary['quantity'] = $(this).css('--quantity');
-	// 			toppingDictionary['name'] = toppingName;
-	// 			if ($(this).css('--price')) {
-	// 				toppingDictionary['price'] = parseFloat($(this).css('--price'));
-	// 			} else {
-	// 				toppingDictionary['price'] = 0;
-	// 			}
-	// 		}
-
-	// 		drinkDict[`${toppingCategory}`].push(toppingDictionary);
-	// 	}
-	// });
-
-	var orderItems = userOrderDrink;
-	console.log('oldOrderItems', orderItems);
-	//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-	// var proteinCategoryCount = [];
-	const coffeeArray = orderItems['coffee'];
+	const order = new Order();
+	//the order object will have one key drinks, which has an array as its value which will store drink category objects which will have the key as the drink category they represent, and an array for the value which will store individual drink objects
+	const orderDrink = {};
+	orderDrink['drinkCategories'] = [];
 	var orderTotal = 0;
-	for (var key in orderItems) {
-		console.log('key: %s', key);
+	for (var i = 0; i < drinkCategories.length; i++) {
+		const drinkCategoryDict = {};
+		const drinksForDrinkCategoryArray = new Array();
+		// the sole key in the drink category dict will be the name of the drink category. its value will be an array of the drinks from that category in this order
+		drinkCategoryDict['drinkCategory'] = drinkCategories[i].id;
+		drinkCategoryDict['drinks'] = drinksForDrinkCategoryArray;
+		for (var j = 0; j < userOrderDrink.orderDrink.length; j++) {
+			if (userOrderDrink.orderDrink[j].drinkCategory === drinkCategories[i].id) {
+				const drinkQuantity = userOrderDrink.orderDrink[j].quantity;
+				const price = userOrderDrink.orderDrink[j].price;
+				var drinkPrice = drinkQuantity * price;
+				console.log('drinkPrice: %s', drinkPrice);
 
-		const drinksForItemCategory = orderItems[key];
-		// console.log('drinksForItemCategory', drinksForItemCategory);
-		if (drinksForItemCategory.length) {
-			// console.log('drinksForItemCategory', drinksForItemCategory);
-			for (var i = 0; i < drinksForItemCategory.length; i++) {
-				var drink = drinksForItemCategory[i];
-				// console.log('drink', drink);
-
-				const itemQuantity = drink['quantity'];
-				const itemServingSize = drink['servingSize'];
-				// console.log('preParse', drink['price']);
-				var itemPrice = drink['price'];
-				if (key === 'coffee') {
-					var espressoPrice = 0;
-					const espressoDict = {};
-					if (itemServingSize === 'extra') {
-						espressoPrice = 3;
-						espressoDict['quantity'] = 3;
-					} else if (itemServingSize === 'regular') {
-						espressoPrice = 2;
-						espressoDict['quantity'] = 2;
-					} else if (itemServingSize === 'half') {
-						espressoPrice = 2;
-						espressoDict['quantity'] = 1;
-					}
-					// console.log('itemPricetoFixed', espressoPrice);
-					espressoDict['price'] = espressoPrice;
-					espressoDict['name'] = 'espresso';
-					drink['espresso'] = espressoDict;
-					orderTotal += espressoPrice;
-				} else if (key === 'milk') {
-					coffeeArray[0]['milk'] = drink;
-					// create a new key in the coffee dictionary whose value is the milk dictionary. remmeber that the coffee dictionary is the first element of the coffee array (selecting the first element of the coffee array works because the user can only order one coffee per visit to this page)
-					// after cloning the dictionary, delete the milk category from orderItems
-					orderTotal += drink['price'];
-					delete orderItems[key];
-				} else if (key === 'syrup') {
-					var syrupPrice = 0;
-					const dictSource = {};
-					if (itemServingSize === 'extra') {
-						syrupPrice = 2;
-						dictSource['servingSize'] = itemServingSize;
-					} else {
-						syrupPrice = 1;
-						dictSource['servingSize'] = itemServingSize;
-					}
-					dictSource['price'] = syrupPrice;
-					orderTotal += syrupPrice;
-					dictSource['name'] = drink['name'];
-					// recompartmentalize the syrup dictionary into the coffee dictionary in the coffee array then delete the syrup category from orderItems
-					coffeeArray[0]['syrup'] = dictSource;
-					delete orderItems[key]; // https://www.tutorialspoint.com/Remove-elements-from-a-Dictionary-using-Javascript
-				} else if (key === 'temperature') {
-					coffeeArray[0]['temperature'] = drink;
-					delete orderItems[key];
-					for (var key in orderItems) {
-						// console.log('key', key);
-						// console.log('value', orderItems[key]);
-					}
-
-					// create a new key in the coffee dictionary whose value is the milk dictionary. remmeber that the coffee dictionary is the first element of the coffee array (selecting the first element of the coffee array works because the user can only order one coffee per visit to this page)
-					// after cloning the dictionary, delete the milk category from orderItems
-				} else if (key === 'milkshake') {
-					const milkShakePrice = itemQuantity * itemPrice;
-					const dictSource = {};
-					dictSource['price'] = milkShakePrice;
-					var milkshakeName = drink['name'];
-					milkshakeName += 'Milkshake';
-					dictSource['name'] = milkshakeName;
-					orderTotal += milkShakePrice;
-					Object.assign(drink, dictSource);
-				} else if (key === 'bottled') {
-					const bottledPrice = itemQuantity * itemPrice;
-					const dictSource = {};
-					dictSource['price'] = bottledPrice;
-					orderTotal += bottledPrice;
-					Object.assign(drink, dictSource);
-				} else if (key === 'non-coffee') {
-					const nonCoffeePrice = itemQuantity * itemPrice;
-					const dictSource = {};
-					dictSource['price'] = nonCoffeePrice;
-					Object.assign(drink, dictSource);
+				if (drinkCategories[i].id === 'coffee') {
+					const milkPrice = userOrderDrink.orderDrink[j].milkPrice;
+					const espressoPrice = userOrderDrink.orderDrink[j].espressoPrice;
+					drinkPrice += milkPrice;
+					drinkPrice += espressoPrice;
 				}
+				orderTotal += drinkPrice;
+				drinkCategoryDict['drinks'].push(userOrderDrink.orderDrink[j]);
 			}
-			// need to populate the milk values
-		} else if (key === 'milk' && coffeeArray[0]) {
-			// console.log('fuck');
-			const milkDict = {};
-			milkDict['name'] = '2%Milk';
-			milkDict['servingSize'] = 'regular';
-			milkDict['price'] = 0;
-			coffeeArray[0]['milk'] = milkDict;
 		}
+		orderDrink['drinkCategories'].push(drinkCategoryDict);
 	}
-	console.log('newOrderItems', orderItems);
+	orderDrink['drinkTotal'] = orderTotal;
+	console.log('orderTotalFinal: %s', orderTotal);
 
-	orderToppingsDict['drinks'] = drinkDict;
-	// console.log('drinks dict', orderToppingsDict);
-	// console.log('orderToppingsDictwithIngredient', orderToppingsDict);
-	//https://developer.mozilla.org/en-US/docs/Web/API/Window/location
+	order.orderDrink.push(orderDrink);
+	order['orderTotal'] = orderTotal;
+		console.log('order: %s', order);
+
 	if (editDrinkIndex != undefined) {
-		// stringify(orderToppingsDict);
-
-		$.when(stringify(orderToppingsDict)).then(location.assign('/order?userOrder=true'));
+		stringify(order);
+		
+		// $.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		// stringify(orderToppingsDict);
-
-		$.when(stringify(orderToppingsDict)).then(location.assign('/order/side'));
+		stringify(order);
+		// $.when(stringify(order)).then(location.assign('/order/side'));
 	}
 }
 // all this code changes display for smaller screen sizes
-//https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 var cWidth = $(window).width();
-//https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
 $(window).on('load resize', function () {
-	newWidth = $(window).width();
-
+	var newWidth = $(window).width();
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
-
 	if ($(window).width() < 767) {
 		const a = document.getElementsByClassName('container');
 		const b = document.getElementsByClassName('card-deck');
@@ -1522,11 +1440,6 @@ $(window).on('load resize', function () {
 		$('#cardBody').css('margin-left', '170px');
 	}
 });
-// TODO: add sauteed onions & peppers, pesto, dill
-
-// this code reformats the page if the user goes from small screen size to large
-//var doc = document;
-//var cWidth = doc.body.clientWidth;
 var cWidth = $(window).width();
 $(window).on('resize', function () {
 	newWidth = $(window).width();

@@ -1,7 +1,7 @@
 {% extends "template_page.html" %} {% block style %}
 
 <link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
-<script src="../static/js/order-drink.js"></script>
+<script type= "module" src="../static/js/order-drink.js"></script>
 {% endblock %} {% block content %} {% if editOrder %}
 <div id='{{editOrder}}' class="edit"></div>
 {% endif %} {% if drink_categories %}
@@ -144,7 +144,7 @@ coffee_drinks %}
 
 <!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
 <div class="footer d-flex align-items-center">
-	<button class="btn5" id="checkout" onclick="checkOut()">Add to Cart</button>
+	<button class="btn5" id="checkout">Add to Cart</button>
 	<!-- <button class="btn5" id="checkout" onclick="location.assign('/order-drink')">Add to Cart</button> -->
 </div>
 {% endblock %}

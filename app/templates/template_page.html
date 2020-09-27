@@ -31,7 +31,7 @@
 		></script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+ 
 		<script
 			src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
 			integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
@@ -51,8 +51,12 @@
 				}
 			}
 		</script>
+		<script>function showShoppingCart() {
+	// console.log('weeeeeeeee');
+	$('#shoppingCart').modal('toggle');
+}</script>
 		<script src="https://kit.fontawesome.com/a076d05399.js"></script>
-		<script src="../static/js/shoppingCart.js"></script>
+		<script type="module" src="../static/js/shoppingCart.js" ></script>
 
 		{% block style %} {%endblock%} {% block script %} {%endblock%}
 	</head>
@@ -105,6 +109,7 @@
 				<i
 					class="fas fa-shopping-cart"
 					style="font-size: 28px; margin-right: 40px; color: #fb2331"
+					id = "showShoppingCart"
 					onclick="showShoppingCart()"
 					onhover="opacity:.5"
 				></i>
@@ -124,7 +129,7 @@
 					<div class="modal-header" style="margin-bottom: 10px; border-bottom: 2px solid black;">
 						<h5
 							class="modal-title"
-							style="font-size: 30px;""
+							style="font-size: 30px;"
 							id="exampleModalLongTitle"
 						>
 							Meal Summary
@@ -135,13 +140,13 @@
 					<div class="modal-footer">
 						<button
 							type="button"
-							class="btn btn9 mr-auto ml-auto"
+							class="btn9 mr-auto ml-auto"
 							onclick="showShoppingCart()"
 							data-dismiss="modal"
 						>
 							Continue Shopping
 						</button>
-						<button type="button" class="btn btn9 mr-auto ml-auto" onclick="location.assign('/checkout')">
+						<button type="button" class="btn9 mr-auto ml-auto" onclick="location.assign('/checkout')">
 							Proceed to Checkout
 						</button>
 					</div>

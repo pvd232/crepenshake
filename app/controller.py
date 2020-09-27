@@ -134,7 +134,6 @@ def order_drink(editOrder=None):
     non_coffee_drinks = [humanize(x, "name").serialize()
                          for x in drink_service.get_non_coffee_drinks()]
     milk_drinks = [humanize(x, "id").serialize() for x in drink_service.get_milk_drinks()]
-    print("milk_drinks: %s", milk_drinks)
     
     coffee_temperatures = [humanize(x, "id").serialize()
                            for x in drink_service.get_coffee_temperature()]

@@ -2,36 +2,6 @@
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
 
-// var dripBool = false;
-// var latteBool = false;
-
-// class side {
-// 	constructor(name = undefined, price = undefined, quantity = undefined) {
-// 		this.name = name;
-// 		this.price = price;
-// 		this.quantity = quantity;
-// 		this.makeSound = () => console.log(`The ${this.name} named ${this.price} goes ${this.quantity}!`);
-// 	}
-// }
-
-// class thisOrder {
-// 	constructor(orderSide = new Array()) {
-// 		this.orderSide = orderSide;
-// 		this.display = () => alert(this.orderSide);
-// 	}
-
-// 	addSide = (side) => {
-// 		this.orderSide.push(side);
-// 	};
-
-// 	alertSides = () => {
-// 		for (var i = 0; i < this.orderSide.length; i++) {
-// 			this.orderSide[i].makeSound();
-// 		}
-// 		{
-// 		}
-// 	};
-// }
 var iceCreamBool = false;
 var editSideIndex = undefined;
 var editSide = undefined;

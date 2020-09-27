@@ -1,25 +1,26 @@
 //https://stackoverflow.com/questions/39627549/how-to-center-modal-to-the-center-of-screen/39636961
+import { Order, Drink, Coffee} from './order-drink.js'
 $(window).on('load', function () {
 	const modal = $('#shoppingCart');
 	// console.log('fdjaopisdfjaosij');
 	// console.log(localStorage.length, 'localStorage.length');
-	// for (var i = 0; i < localStorage.length; i++) {
-	// 	const order = {};
-	// 	const key = localStorage.key(0);
-	// 	console.log('key', key);
-	// 	order[key] = JSON.parse(localStorage.getItem(key));
-	// 	console.log('order', order);
-	// }
+	for (var i = 0; i < localStorage.length; i++) {
+		const order = {};
+		const key = localStorage.key(0);
+		console.log('key', key);
+		order[key] = JSON.parse(localStorage.getItem(key));
+		console.log('order', order);
+	}
 	if (localStorage.getItem('reload') === 'true') {
 		showShoppingCart();
 		localStorage.setItem('reload', 'false');
 	}
 	for (var i = 0; i < localStorage.length; i++) {
 		var key = localStorage.key(i);
-		// console.log('key: %s', key);
+		console.log('key: %s', key);
 
 		var value = localStorage[key];
-		// console.log('value: %s', value);
+		console.log('value: %s', value);
 	}
 	const body = $(window);
 	// Get modal size
@@ -393,47 +394,36 @@ function doShowAll() {
 			if ('orderDrink' in orderDict) {
 				if ($('#modalBody1').children.length > 0) {
 					// format the drink list
-
 					const orderDrinks = orderDict['orderDrink'];
-					// console.log('orderDrinks Lookng for milk: %s', orderDrinks);
-
-					for (var k = 0; k <= orderDrinks.length - 1; k++) {
-						// for each drink order, tracked by the index number k, i will add a new container with a row appended to it that lists the drink order # k
-
+					for (var i = 0; i < orderDrinks.length; i++) {
+						// for each drink order, tracked by the index number i, j will add a new container with a row appended to it that lists the drink order # i
 						var drinkSubTotal = 0;
-
 						$('#modalBody1').append(
-							`<div class="container" id="drinkContainer${k}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="drinkRow${k}0"><h5 style='font-weight: 700; '>Drink Order #${
-								k + 1
+							`<div class="container" id="drinkContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="drinkRow${i}0"><h5 style='font-weight: 700; '>Drink Order #${
+								i + 1
 							}</h5></div></div>`
 						);
-						const drinks = orderDrinks[k]['drinks'];
-						// console.log('drinks milk: %s', drinks);
-
-						for (var key in drinks) {
+						const drinks = orderDrinks[i]['drinkCategories'];
+						for (var j = 0; j < drinks.length - 1; j++) {
 							// console.log('key milk: %s', key);
 
-							const drinksInDrinkCategory = drinks[key];
-							for (var i = 0; i < drinksInDrinkCategory.length; i++) {
-								const drink = drinksInDrinkCategory[i];
-								const drinkName = splitCamelCaseToString(drink['name']);
-								for (var key in drink) {
-									drinkKey = key;
-									// console.log('drinkKey: %s', drinkKey);
-
-									drinkValue = drink[drinkKey];
-									// console.log('drinkValue: %s', drinkValue);
+							const drinksInDrinkCategory = drinks[j]['drinks'];
+							console.log("drinksInDrinkCategory: %s", drinksInDrinkCategory)
+							
+							for (var k = 0; k < drinksInDrinkCategory.length; k++) {
+								const drink = drinksInDrinkCategory[k];
+								console.log("drink: %s", drink)
+								for (var key in drink) { 
+									console.log('key', key)
+									console.log('drink value', drink[key]);
+									
 								}
-								// console.log('drink: %s', drink);
-
+								console.log('drink.name: %s', drink.name);
 								const drinkQuantity = drink['quantity'];
 								// console.log('drinkName', drinkName);
 								const drinkPrice = drink['price'];
 								drinkSubTotal += drinkPrice;
-								for (var key in drink) {
-									// console.log('key plz', key);
-								}
-								// console.log('drinkPrice: %s', drinkPrice);
+
 
 								if ('milk' in drink) {
 									const milk = drink['milk'];
@@ -449,64 +439,68 @@ function doShowAll() {
 
 									$(`<div class="row" style= "margin-bottom: 20px;">
 										<div class="col-9" style="margin-right: 0px; " >
-											<h5 style=''>${drinkQuantity + ' ' + drinkName}</h5>
+											<h5 style=''>${drink.quantity + ' ' + drink.name}</h5>
 										</div>
 										<div class="col-3">
 											<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
 										</div>
 										</div>
-										<div class="row" style= "margin-bottom: 20px;">
+									<div class="row" style= "margin-bottom: 20px;">
 										<div class="col-9" style="margin-right: 0px; " >
 											<h5 style=''>${espressFormat}</h5>
 										</div>
 										<div class="col-3" style="">
 											<h4 style=''>$${espressoPrice}</h4>
 										</div></div>
-										<div class="row" style= "margin-bottom: 20px;" id="drinkRow${k}${i + 1}">
-										<div class="col-9" style="margin-right: 0px; " id="drinkCol${k}${i}">
+									<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${k + 1}">
+										<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
 											<h5 style=''>${milkName}</h5>
 										</div>
-										<div class="col-3" style=""id="drinkCol${k}${i + 2}">
+										<div class="col-3" style=""id="drinkCol${i}${k + 2}">
 											<h4 style=''>$${milkPrice}</h4>
 										</div>
-										</div><div class="row" style= "margin-bottom: 20px;" id="drinkRow${k}${i + 1}">
-										<div class="col-9" style="margin-right: 0px; " id="drinkCol${k}${i}">
+									</div><div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${k + 1}">
+										<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
 											<h5 style=''>${capitalize(syrupServingSize)} ${capitalize(syrupName)}</h5>
 										</div>
-										<div class="col-3" style=""id="drinkCol${k}${i + 2}">
+										<div class="col-3" style=""id="drinkCol${i}${k + 2}">
 											<h4 style=''>$${syrupPrice}</h4>
 										</div>
-										</div>`).insertAfter(`#drinkRow${k}${i}`);
-									drinkSubTotal += parseFloat(milkPrice);
-									drinkSubTotal += parseFloat(espressoPrice);
-								} // milk block
-								else {
-									if (drinkQuantity > 1) {
-										// add an "s" to the title
-										$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${k}${i + 1}">
-											<div class="col-9" style="margin-right: 0px; " id="drinkCol${k}${i}">
-												<h5 style=''>${drinkQuantity + ' ' + drinkName + 's'}</h5>
+										</div>`).insertAfter(`#drinkRow${i}${k}`);
+														drinkSubTotal += parseFloat(milkPrice);
+														drinkSubTotal += parseFloat(espressoPrice);
+													} // milk block
+													else {
+														if (drink.quantity > 1) {
+															// add an "s" to the title
+															$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${
+																k + 1
+															}">
+											<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
+												<h5 style=''>${drink.quantity + ' ' + drink.name + 's'}</h5>
 											</div>
-											<div class="col-3" style=""id="drinkCol${k}${i + 2}">
+											<div class="col-3" style=""id="drinkCol${i}${k + 2}">
 												<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
 											</div>
-											</div>`).insertAfter(`#drinkRow${k}${i}`);
-									} else {
-										$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${k}${i + 1}">
-											<div class="col-9" style="margin-right: 0px; " id="drinkCol${k}${i}">
-												<h5 style=''>${drinkQuantity + ' ' + drinkName}</h5>
+											</div>`).insertAfter(`#drinkRow${i}${k}`);
+														} else {
+															$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${
+																k + 1
+															}">
+											<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
+												<h5 style=''>${drink.quantity + ' ' + drink.name}</h5>
 											</div>
-											<div class="col-3" style=""id="drinkCol${k}${i + 2}">
+											<div class="col-3" style=""id="drinkCol${i}${k + 2}">
 												<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
 											</div>
-											</div>`).insertAfter(`#drinkRow${k}${i}`);
-									}
-								} // end of non-coffee drinks else block
-							} // end of for loop iterating through list of drink dictionaries in drink category
-						} // end of loop itering through drink category key values
+											</div>`).insertAfter(`#drinkRow${i}${k}`);
+														}
+													} // end of non-coffee drinks else block
+												} // end of for loop iterating through list of drink dictionaries in drink category
+											} // end of loop itering through drink category key values
 
 						const drinkItemIndex =
-							$(`#drinkContainer${k}`)
+							$(`#drinkContainer${i}`)
 								.find('.row')
 								.first()
 								.text()
@@ -517,16 +511,16 @@ function doShowAll() {
 								.split('-')[1] - 1;
 						// console.log('drinkItemIndex: %s', drinkItemIndex);
 
-						$(`<div class="grid-container" id="drinkButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
-            				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${k}`));
-						$(`#drinkButtonContainer${k}`).append(
+						$(`<div class="grid-container" id="drinkButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+            				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${i}`));
+						$(`#drinkButtonContainer${i}`).append(
 							`<div id="col5"><button class="btn8" onclick="modifyItem('${drinkItemIndex}', 'drink', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
-						$(`#drinkButtonContainer${k}`).append(
+						$(`#drinkButtonContainer${i}`).append(
 							`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/drink?editOrder=${drinkItemIndex}')">Edit</button></div>`
 						);
-						$(`#drinkButtonContainer${k}`).append(
+						$(`#drinkButtonContainer${i}`).append(
 							`<div id="col5"><button class="btn8" onclick="modifyItem('${drinkItemIndex}', 'drink', 'remove')" >Remove</button></div>`
 						);
 						if (drinkSubTotal) {
