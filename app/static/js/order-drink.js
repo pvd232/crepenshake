@@ -1,8 +1,8 @@
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
-var editDrinkIndex = undefined;
-var editDrink = undefined;
+var editDrinkIndex = null;
+var editDrink = null;
 var drinkCategoryDataArray;
 var coffeeDrinks;
 var milkDrinks;
@@ -15,8 +15,8 @@ var newDrinkCategories;
 var temperatures;
 var userOrderDrink;
 
-export class Drink {
-	constructor(name = undefined, price = 0, quantity = 1, servingSize = undefined, drinkCategory = undefined) {
+class Drink {
+	constructor(name = null, price = 0, quantity = 1, servingSize = null, drinkCategory = null) {
 		this.name = name;
 		this.price = price;
 		this.quantity = quantity;
@@ -71,11 +71,11 @@ export class Drink {
 	};
 	toJSON = () => {
 		const data = {
-			name: this.name,
-			price: this.price,
-			quantity: this.quantity,
-			servingSize: this.servingSize,
-			drinkCategory: this.drinkCategory,
+			name: this._name,
+			price: this._price,
+			quantity: this._quantity,
+			servingSize: this._servingSize,
+			drinkCategory: this._drinkCategory,
 		};
 		return data;
 		
@@ -106,20 +106,20 @@ export class Drink {
 	};
 }
 
-export class Coffee {
+class Coffee {
 	constructor(
-		id = undefined,
-		name = undefined,
-		servingSize = undefined,
-		temperature = undefined,
-		flavorSyrup = undefined,
-		flavorServingSize = undefined,
-		espressoServingSize = undefined,
-		espressoPrice = undefined,
-		milkType = undefined,
+		id = null,
+		name = null,
+		servingSize = null,
+		temperature = null,
+		flavorSyrup = null,
+		flavorSyrupServingSize = null,
+		espressoServingSize = null,
+		espressoPrice = null,
+		milkType = null,
 		milkPrice = 0,
-		price = undefined,
-		drinkCategory = undefined,
+		price = null,
+		drinkCategory = null,
 		quantity = 1
 	) {
 		this.id = id;
@@ -127,7 +127,7 @@ export class Coffee {
 		this.servingSize = servingSize;
 		this.temperature = temperature;
 		this.flavorSyrup = flavorSyrup;
-		this.flavorServingSize = flavorServingSize;
+		this.flavorSyrupServingSize = flavorSyrupServingSize;
 		this.espressoServingSize = espressoServingSize;
 		this.espressoPrice = espressoPrice;
 		this.milkType = milkType;
@@ -135,6 +135,9 @@ export class Coffee {
 		this.price = price;
 		this.drinkCategory = drinkCategory;
 		this.quantity = quantity;
+	}
+	get id() {
+		return this._id;
 	}
 	get name() {
 		return this._name;
@@ -148,7 +151,7 @@ export class Coffee {
 	get flavorSyrup() {
 		return this._flavorSyrup;
 	}
-	get flavorServingSize() {
+	get flavorSyrupServingSize() {
 		return this._flavorServingSize;
 	}
 	get espressoServingSize() {
@@ -172,6 +175,9 @@ export class Coffee {
 	get quantity() {
 		return this._quantity;
 	}
+	set id(value) {
+		this._id = value;
+	}
 	set name(value) {
 		this._name = value;
 	}
@@ -184,7 +190,7 @@ export class Coffee {
 	set flavorSyrup(value) {
 		this._flavorSyrup = value;
 	}
-	set flavorServingSize(value) {
+	set flavorSyrupServingSize(value) {
 		this._flavorServingSize = value;
 	}
 	set espressoServingSize(value) {
@@ -225,15 +231,55 @@ export class Coffee {
 		}
 		this._drinkCategory = 'coffee';
 	};
+
+	toJSON = () => {
+		// if they didn't select a milk then the default is 2%
+		if (!this._milkType) {
+			this._milkType = '2% Milk'
+		}
+		const data = {
+			id: this._id,
+			name: this._name,
+			servingSize: this._servingSize,
+			temperature: this._temperature,
+			flavorSyrup: this._flavorSyrup,
+			flavorSyrupServingSize: this._flavorServingSize,
+			espressoServingSize: this._espressoServingSize,
+			espressoPrice: this._espressoPrice,
+			milkType: this._milkType,
+			milkPrice: this._milkPrice,
+			price: this._price,
+			drinkCategory: this._drinkCategory,
+			quantity: this._quantity,
+		};
+		return data;
+	};
+	fromJSON = (json) => {
+		data = JSON.parse(json);
+		const id = data.id;
+		const coffeeName = data.name;
+		const coffeeServingSize = data.servingSize;
+		const temperature = data.temperature;
+		const flavorSyrup = data.flavorSyrup
+		const flavorSyrupServingSize = data.flavorSyrupServingSize;
+		const espressoServingSize = data.espressoServingSize;
+		const espressoPrice = data.espressoPrice;
+		const milkType = data.milkType;
+		const milkPrice = data.milkPrice;
+		const price = data.price;
+		const quantity = data.quantity;
+		const drinkCategory = data.drinkCategory;
+		return new Coffee(id, coffeeName, coffeeServingSize, temperature, flavorSyrup, flavorSyrupServingSize, espressoServingSize,espressoPrice,  milkType,milkPrice, price, drinkCategory, quantity );
+	};
 }
 
-export class Order {
+class Order {
 	constructor(
 		orderCrepe = new Array(),
 		orderDrink = new Array(),
 		orderSide = new Array(),
 		orderTotal = 0,
-		customerData = undefined
+		customerData = null
 	) {
 		this.orderCrepe = orderCrepe;
 		this.orderDrink = orderDrink;
@@ -275,11 +321,11 @@ export class Order {
 	}
 	toJSON = () => {
 		const data = {
-			orderCrepe: this.orderCrepe,
-			orderDrink: this.orderDrink,
-			orderSide: this.orderSide,
-			orderTotal: this.orderTotal,
-			customerData: this.orderTotal,
+			orderCrepe: this._orderCrepe,
+			orderDrink: this._orderDrink,
+			orderSide: this._orderSide,
+			orderTotal: this._orderTotal,
+			customerData: this._orderTotal,
 		};
 		// console.log('this.data: %s', this.data);
 
@@ -420,6 +466,18 @@ export class Order {
 		const coffee = new Coffee();
 		coffee.initFromHTML(index, espressoServingSize);
 		this.orderDrink.push(coffee);
+		for (var i = 0; i < this.orderDrink.length; i++){
+			console.log("this.orderDrink: %s", this.orderDrink[i])
+			for (var key in this.orderDrink[i]) {
+				console.log("this.orderDrink[i]: %s", this.orderDrink[i][key])
+				
+				console.log("key: %s", key)
+				
+				
+			}
+			
+			
+		}
 	};
 	addTemp = (index) => {
 		const temp = temperatures[index];
@@ -434,7 +492,7 @@ export class Order {
 	removeTemp = () => {
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			if (this.orderDrink[i].drinkCategory === 'coffee') {
-				this.orderDrink[i].temperature = undefined;
+				this.orderDrink[i].temperature = null;
 				return true;
 			}
 		}
@@ -454,8 +512,8 @@ export class Order {
 	removeMilk = () => {
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			if (this.orderDrink[i].drinkCategory === 'coffee') {
-				this.orderDrink[i].milkType = undefined;
-				this.orderDrink[i].milkPrice = undefined;
+				this.orderDrink[i].milkType = null;
+				this.orderDrink[i].milkPrice = null;
 				return true;
 			}
 		}
@@ -466,7 +524,7 @@ export class Order {
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			if (this.orderDrink[i].drinkCategory === 'coffee') {
 				this.orderDrink[i].flavorSyrup = syrup.coffee_syrup_flavor;
-				this.orderDrink[i].flavorServingSize = servingSize;
+				this.orderDrink[i].flavorSyrupServingSize = servingSize;
 				return true;
 			}
 		}
@@ -475,8 +533,8 @@ export class Order {
 	removeSyrup = () => {
 		for (var i = 0; i < this.orderDrink.length; i++) {
 			if (this.orderDrink[i].drinkCategory === 'coffee') {
-				this.orderDrink[i].coffee_syrup_flavor = undefined;
-				this.orderDrink[i].flavorServingSize = undefined;
+				this.orderDrink[i].coffee_syrup_flavor = null;
+				this.orderDrink[i].flavorSyrupServingSize = null;
 				return true;
 			}
 		}
@@ -488,33 +546,27 @@ function jq(myid) {
 }
 
 function stringify(drinkOrder) {
-	console.log('weee', JSON.stringify(drinkOrder));
-
 	//check to make sure a drink was selected
 	if (drinkOrder.orderDrink.length) {
-		if (editDrinkIndex === undefined) {
+		if (editDrinkIndex === null) {
 			if (localStorage.length > 0) {
 				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 				const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
 				if ('orderDrink' in order) {
 					// only one drink order will be processed on this page at a time
-					order['orderDrink'].push(order.orderDrink[0]);
+					order['orderDrink'].push(drinkOrder.orderDrink[0]);
 					const drinkOrderTotal = drinkOrder.orderDrink[0]['drinkTotal'];
-					order['orderTotal'] += drinkOrderTotal;
 					const stringifiedDrinkOrder = JSON.stringify(order);
 					localStorage.setItem('order', stringifiedDrinkOrder);
 				} else {
 					order['orderDrink'] = [...drinkOrder.orderDrink];
 					const stringifiedDrinkOrder = JSON.stringify(order);
-					// const stringifiedDrinkOrder = JSON.stringify(order);
 					const drinkOrderTotal = drinkOrder.orderDrink[0]['drinkTotal'];
 					order['orderTotal'] += drinkOrderTotal;
 					localStorage.setItem('order', stringifiedDrinkOrder);
 				}
 			} else {
-				// const stringifiedDrinkOrder = JSON.stringify(drinkOrder);
 				const stringifiedDrinkOrder = JSON.stringify(drinkOrder)
-
 				localStorage.setItem('order', stringifiedDrinkOrder);
 			}
 		} else {
@@ -533,14 +585,6 @@ function stringify(drinkOrder) {
 			// localStorage.setItem('order', JSON.stringify(currentOrder));
 			localStorage.setItem('order', currentOrder.toJson());
 		}
-	}
-
-	for (i = 0; i < localStorage.length; i++) {
-		var key = localStorage.key(i);
-		console.log('key: %s', key);
-
-		var value = localStorage[key];
-		console.log('value: %s', value);
 	}
 	return true;
 }
@@ -568,18 +612,10 @@ $(window).on('load', function () {
 	coffeeDrinks = $('#coffeeDrinks').data('coffee');
 	milkDrinks = $('#milkDrinks').data('milk');
 	coffeeSyrups = $('#coffeeSyrups').data('syrup');
-
-	for (var i = 0; i < coffeeSyrups.length; i++) {
-		console.log('coffeeSyrups[i]', coffeeSyrups[i]);
-	}
-	for (var i = 0; i < milkDrinks.length; i++) {
-		console.log('milk[i]', milkDrinks[i]);
-	}
 	milkshakes = $('#milkshakeDrinks').data('milkshake');
 	nonCoffeeDrinks = $('#nonCoffeeDrinks').data('noncoffee');
 	bottledDrinks = $('#bottledDrinks').data('bottled');
 	drinkCategories = $('#drinkCategories').data('category');
-	// console.log('drinkCategories: %s', drinkCategories);
 
 	temperatures = $('#coffeeTemperature').data('temperature');
 	newDrinkCategories = [...drinkCategories];
@@ -834,7 +870,6 @@ $(window).on('load', function () {
 	$(document)
 		.on('mouseenter', '.card', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			console.log('selectedItemIndex: %s', selectedItemIndex);
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 			// if the card isn't milk or temperature
@@ -892,12 +927,6 @@ $(window).on('load', function () {
 					const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 					const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 					const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
-					console.log(
-						'userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex): %s',
-						userOrderDrink.findDrink(selectedItemIndex, selectedItemCategoryIndex)
-					);
-					console.log(userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex));
-
 					if (
 						selectedItemCategory === 'bottled' ||
 						selectedItemCategory === 'non-coffee' ||
@@ -917,12 +946,10 @@ $(window).on('load', function () {
 					// if you click the card and it has already been selected then remove the item
 					else if (userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
 						for (var i = 0; i < userOrderDrink.length; i++) {
-							console.log('userOrderDrink', userOrderDrink[i]);
 						}
 						userOrderDrink.removeDrink(selectedItemIndex, selectedItemCategoryIndex);
 						$(this).closest('.card').find('.btn2').toggle();
 						for (var i = 0; i < userOrderDrink.length; i++) {
-							console.log('userOrderDrink', userOrderDrink[i]);
 						}
 						// if the card you removed was a coffee card
 						if (!userOrderDrink.checkIfCoffeeSelected()) {
@@ -1303,13 +1330,13 @@ function checkOut() {
 	order['orderTotal'] = orderTotal;
 		console.log('order: %s', order);
 
-	if (editDrinkIndex != undefined) {
-		stringify(order);
+	if (editDrinkIndex != null) {
+		// stringify(order);
 		
-		// $.when(stringify(order)).then(location.assign('/order?userOrder=true'));
+		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		stringify(order);
-		// $.when(stringify(order)).then(location.assign('/order/side'));
+		// stringify(order);
+		$.when(stringify(order)).then(location.assign('/order/side'));
 	}
 }
 // all this code changes display for smaller screen sizes

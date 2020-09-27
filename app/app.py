@@ -8,6 +8,8 @@ from repository import Ingredient_Repository
 
 
 application = Flask(__name__)
+print("__name__: %s", __name__)
+
 app = application
 
 
@@ -199,5 +201,5 @@ def favicon():
 
 
 if __name__ == "__main__":
-    app.debug = True
+    app.run(debug=True, use_reloader=False)
     app.run()

@@ -7,73 +7,37 @@
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<meta name="msapplication-TileColor" content="#da532c" />
 		<meta name="theme-color" content="#ffffff" />
-		<link rel="apple-touch-icon" sizes="180x180" href="../static/favico/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="../static/favico/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="../static/favico/favicon-16x16.png" />
-		<link rel="shortcut icon" href="../static/favico/favicon.ico" type="image/x-icon" />
-		<link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials" type="application/manifest+json" />
-		<link rel="mask-icon" href="../static/favico/safari-pinned-tab.svg" color="#5bbad5" />
-
-		<link rel="stylesheet" href="../static/css/styles.css" />
-
-		<!-- Bootstrap -->
-		<link rel="stylesheet" href="../static/css/modal.css" />
-
-		<script
-			src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-			integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-			crossorigin="anonymous"
-		></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-			crossorigin="anonymous"
-		></script>
-
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
- 
-		<script
-			src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-			integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-			crossorigin="anonymous"
-		></script>
-		<link
+			<link rel="stylesheet"  type="text/css" href="../static/css/styles.css" />
+		<link rel="stylesheet"  type="text/css" href="../static/css/modal.css" />
+				<link
 			rel="stylesheet"
 			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
 			crossorigin="anonymous"
 		/>
-
-		<script>
-			function removeAllChildNodes(parent) {
-				while (parent.firstChild) {
-					parent.removeChild(parent.firstChild);
-				}
-			}
-		</script>
-		<script>function showShoppingCart() {
-	// console.log('weeeeeeeee');
-	$('#shoppingCart').modal('toggle');
-}</script>
-		<script src="https://kit.fontawesome.com/a076d05399.js"></script>
-		<script type="module" src="../static/js/shoppingCart.js" ></script>
-
-		{% block style %} {%endblock%} {% block script %} {%endblock%}
+		<link rel="apple-touch-icon" sizes="180x180" href="../static/favico/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="../static/favico/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="../static/favico/favicon-16x16.png" />
+		<link rel="shortcut icon" href="../static/favico/favicon.ico" type="image/x-icon" />
+		<!-- <link rel="manifest"  type="text/css" href="/site.webmanifest" crossorigin="use-credentials" type="application/manifest+json" /> -->
+		<link rel="mask-icon"  type="text/css" href="../static/favico/safari-pinned-tab.svg" color="#5bbad5" />
+	
+		{% block style %} {%endblock%} 
 	</head>
 
 	<body>
 		{% block navbar %}
-
+		
 		<nav
 			class="header-navbar navbar-dark navbar-expand-lg"
 			style="background-color: black; margin-bottom: 30px"
-			href="#"
+			
 		>
 			{% endblock %}
 			<a class="navbar-brand" style="background-color: black" href='{{url_for("home")}}'>
-				<img class="img-responsive" src="../static/images/NewLogo.png" width="350" height="150" alt="" />
+				<img class="img-responsive" src="../static/images/NewLogo.png" width="350" height="150"/>
 			</a>
-			<nav class="navbar navbar-dark navbar-expand-lg" style="background-color: black" href="#">
+			<nav class="navbar navbar-dark navbar-expand-lg" style="background-color: black">
 				<button
 					class="navbar-toggler"
 					type="button"
@@ -86,9 +50,8 @@
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<!-- https://www.geeksforgeeks.org/how-to-align-navbar-items-to-center-using-bootstrap-4/ -->
-				<div class="collapse navbar-collapse"></div>
-				<div class="collapse navbar-collapse" id="navbarTogglerDemo02" style="margin-top: 0px">
-					<ul class="navbar-nav mt-2 mt-lg-0" style="position: relative; margin-left: 60px">
+				<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+					<ul class="navbar-nav mx-auto" >
 						<li class="nav-item px-3">
 							<a class="nav-link" style="color: #fb2331" href='{{url_for("home")}}'>Home</a>
 						</li>
@@ -108,8 +71,8 @@
 				</div>
 				<i
 					class="fas fa-shopping-cart"
-					style="font-size: 28px; margin-right: 40px; color: #fb2331"
-					id = "showShoppingCart"
+					style="font-size: 28px; color: #fb2331"
+					id="showShoppingCart"
 					onclick="showShoppingCart()"
 					onhover="opacity:.5"
 				></i>
@@ -126,14 +89,8 @@
 		>
 			<div class="modal-dialog modal-dialog-centered" id="dialog" role="document">
 				<div class="modal-content" id="content">
-					<div class="modal-header" style="margin-bottom: 10px; border-bottom: 2px solid black;">
-						<h5
-							class="modal-title"
-							style="font-size: 30px;"
-							id="exampleModalLongTitle"
-						>
-							Meal Summary
-						</h5>
+					<div class="modal-header" style="margin-bottom: 10px; border-bottom: 2px solid black">
+						<h5 class="modal-title" style="font-size: 30px" id="exampleModalLongTitle">Meal Summary</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body" id="modalBody1"></div>
@@ -154,5 +111,33 @@
 			</div>
 		</div>
 		<div class="non-modal">{% block content %} {% endblock %}</div>
+	
+				<!-- Bootstrap -->
+
+		<script
+			src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+			integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+			crossorigin="anonymous"
+		></script>
+		<script src="/static/js/template_page.js"></script>
+
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+			crossorigin="anonymous"
+		></script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+		<script
+			src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+			integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+			crossorigin="anonymous"
+		></script>
+		<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+		<script src="../static/js/shoppingCart.js"></script>
+		{% block script %} {%endblock%}
 	</body>
+	
 </html>

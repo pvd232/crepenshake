@@ -1,11 +1,10 @@
 {% extends "template_page.html" %} {% block style %}
 
 <link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
-<script type= "module" src="../static/js/order-drink.js"></script>
 {% endblock %} {% block content %} {% if editOrder %}
 <div id='{{editOrder}}' class="edit"></div>
 {% endif %} {% if drink_categories %}
-<div id="drinkCategories" data-category='{{ drink_categories|tojson }}''></div>
+<div id="drinkCategories" data-category='{{ drink_categories|tojson }}'></div>
 {% endif %} {% for j in range(drink_categories|length) %} {% if drink_categories[j].id == 'coffee' %} {% if
 coffee_drinks %}
 <div id="coffeeDrinks" data-coffee='{{ coffee_drinks|tojson }}'></div>
@@ -37,7 +36,7 @@ coffee_drinks %}
 				<div class="card-body">
 					<h5 class="card-title">{{i.id}}</h5>
 					{% if i.id == 'Almond Milk' %}
-					<p class="card-text">$'{{i.price}}' extra</p>
+					<p class="card-text">${{i.price}} extra</p>
 					{% endif %}
 				</div>
 			</div>
@@ -148,3 +147,6 @@ coffee_drinks %}
 	<!-- <button class="btn5" id="checkout" onclick="location.assign('/order-drink')">Add to Cart</button> -->
 </div>
 {% endblock %}
+{% block script %}
+<script src="../static/js/order-drink.js"></script>
+{% endblock %} 

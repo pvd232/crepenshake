@@ -1,6 +1,6 @@
 //https://stackoverflow.com/questions/39627549/how-to-center-modal-to-the-center-of-screen/39636961
-import { Order, Drink, Coffee} from './order-drink.js'
-$(window).on('load', function () {
+// import { Order, Drink, Coffee} from './order-drink.js'
+$(window).unbind('load').bind('load', function () {
 	const modal = $('#shoppingCart');
 	// console.log('fdjaopisdfjaosij');
 	// console.log(localStorage.length, 'localStorage.length');
@@ -413,88 +413,86 @@ function doShowAll() {
 							for (var k = 0; k < drinksInDrinkCategory.length; k++) {
 								const drink = drinksInDrinkCategory[k];
 								console.log("drink: %s", drink)
-								for (var key in drink) { 
-									console.log('key', key)
-									console.log('drink value', drink[key]);
+								
+								drinkSubTotal += drink.price
+
+
+								if ('milkType' in drink) {
 									
-								}
-								console.log('drink.name: %s', drink.name);
-								const drinkQuantity = drink['quantity'];
-								// console.log('drinkName', drinkName);
-								const drinkPrice = drink['price'];
-								drinkSubTotal += drinkPrice;
+									const milkName = splitCamelCaseToString(drink.milkType);
+									
+									const milkPrice = drink.milkPrice;
+									const espressoPrice = drink.price;
+									const espressoServingSize = drink.espressoServingSize
+									var espressFormat;
+									var flavorSyrup = '';
+									var flavorSyrupServingSize = '';
+									var flavorSyrupPrice = '';
 
-
-								if ('milk' in drink) {
-									const milk = drink['milk'];
-									const milkPrice = milk['price'];
-									const milkName = splitCamelCaseToString(milk['name']);
-									const espresso = drink['espresso'];
-									const espressoPrice = espresso['price'];
-									const espressFormat = espresso['quantity'] + 'x Espresso Shot';
-									const syrup = drink['syrup'];
-									const syrupName = syrup['name'];
-									const syrupPrice = syrup['price'];
-									const syrupServingSize = syrup['servingSize'];
-
-									$(`<div class="row" style= "margin-bottom: 20px;">
-										<div class="col-9" style="margin-right: 0px; " >
-											<h5 style=''>${drink.quantity + ' ' + drink.name}</h5>
+									if (espressoServingSize === 'extra') {
+										espressFormat = '3x Espresso Shot';
+									} else if (espressoServingSize === 'regular') {
+										espressFormat = '2x Espresso Shot';
+									} else if (espressoServingSize === 'half') {
+										espressFormat = '1x Espresso Shot';
+									}
+									if (drink.flavorSyrup && drink.flavorSyrupServingSize) {
+										flavorSyrup = drink.flavorSyrup;
+										flavorSyrupServingSize = drink.flavorSyrupServingSize;
+										if (flavorSyrupServingSize === 'extra') {
+											flavorSyrupPrice = 0.99;
+										} else {
+											flavorSyrupPrice = 0;
+										}
+									} 
+									
+									$(`	<div class="row" style= "margin-bottom: 20px;">
+											<div class="col-9" style="margin-right: 0px; " >
+												<h5 style=''>${drink.quantity + 'x' + ' ' + drink.name}</h5>
+											</div>
+											<div class="col-3">
+												<h4 style=''>$${drink.price.toFixed(2)}</h4>
+											</div>
 										</div>
-										<div class="col-3">
-											<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
+										<div class="row" style= "margin-bottom: 20px;">
+											<div class="col-9" style="margin-right: 0px; " >
+												<h5 style=''>${espressFormat}</h5>
+											</div>
+											<div class="col-3" style="">
+												<h4 style=''>$${espressoPrice}</h4>
+											</div></div>
+										<div class="row" style= "margin-bottom: 20px;">
+											<div class="col-9" style="margin-right: 0px;">
+												<h5 style=''>${milkName}</h5>
+											</div>
+											<div class="col-3" style="">
+												<h4 style=''>$${milkPrice}</h4>
+											</div>
 										</div>
-										</div>
-									<div class="row" style= "margin-bottom: 20px;">
-										<div class="col-9" style="margin-right: 0px; " >
-											<h5 style=''>${espressFormat}</h5>
-										</div>
-										<div class="col-3" style="">
-											<h4 style=''>$${espressoPrice}</h4>
-										</div></div>
-									<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${k + 1}">
-										<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
-											<h5 style=''>${milkName}</h5>
-										</div>
-										<div class="col-3" style=""id="drinkCol${i}${k + 2}">
-											<h4 style=''>$${milkPrice}</h4>
-										</div>
-									</div><div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${k + 1}">
-										<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
-											<h5 style=''>${capitalize(syrupServingSize)} ${capitalize(syrupName)}</h5>
-										</div>
-										<div class="col-3" style=""id="drinkCol${i}${k + 2}">
-											<h4 style=''>$${syrupPrice}</h4>
-										</div>
+										<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${k + 1}">
+											<div class="col-9" style="margin-right: 0px;">
+												<h5 style=''>${capitalize(flavorSyrupServingSize)} ${capitalize(flavorSyrup)}</h5>
+											</div>
+											<div class="col-3" style="">
+												<h4 style=''>$${flavorSyrupPrice}</h4>
+											</div>
 										</div>`).insertAfter(`#drinkRow${i}${k}`);
 														drinkSubTotal += parseFloat(milkPrice);
 														drinkSubTotal += parseFloat(espressoPrice);
 													} // milk block
 													else {
-														if (drink.quantity > 1) {
-															// add an "s" to the title
+													
 															$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${
 																k + 1
 															}">
 											<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
-												<h5 style=''>${drink.quantity + ' ' + drink.name + 's'}</h5>
+												<h5 style=''>${drink.quantity + 'x' + ' ' + drink.name}</h5>
 											</div>
 											<div class="col-3" style=""id="drinkCol${i}${k + 2}">
-												<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
+												<h4 style=''>$${drink.price.toFixed(2)}</h4>
 											</div>
 											</div>`).insertAfter(`#drinkRow${i}${k}`);
-														} else {
-															$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${
-																k + 1
-															}">
-											<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
-												<h5 style=''>${drink.quantity + ' ' + drink.name}</h5>
-											</div>
-											<div class="col-3" style=""id="drinkCol${i}${k + 2}">
-												<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
-											</div>
-											</div>`).insertAfter(`#drinkRow${i}${k}`);
-														}
+														
 													} // end of non-coffee drinks else block
 												} // end of for loop iterating through list of drink dictionaries in drink category
 											} // end of loop itering through drink category key values
