@@ -604,6 +604,8 @@ class Side(db.Model):
                    unique=True, nullable=False)
     side_type_id = db.Column(db.String(80), db.ForeignKey('side_type.id'),  # natural key
                              nullable=False)
+    side_name_id = db.Column(db.String(80), db.ForeignKey('side_name.id'),  # natural key
+                             nullable=False)
     order_side = relationship('Order_Side', lazy=True)
 
     ice_cream = relationship('Order_Ice_Cream', backref='side', lazy=True)
@@ -622,7 +624,7 @@ class Side_Name(db.Model):
     __tablename__ = 'side_name'
     id = db.Column(db.String(80), primary_key=True,
                    unique=True, nullable=False)
-    croissant = relationship('Croissant', lazy=True)
+    side = relationship('Side', lazy=True)
 
     @property
     def serialize(self):
@@ -653,9 +655,7 @@ class Side_Type(db.Model):
 class Croissant(db.Model):
     side_id = db.Column(UUID(as_uuid=True), db.ForeignKey('side.id'), primary_key=True,  # natural key
                         nullable=False)
-    side_name_id = db.Column(db.String(80), db.ForeignKey('side_name.id'),  # natural key
-                             nullable=False)
-    flavor = db.Column(db.String(80), unique=True, nullable=False)
+    flavor_id = db.Column(db.String(80), unique=True, nullable=False)
     price = db.Column(db.Float(), nullable=False)
 
     @property
@@ -674,7 +674,7 @@ class Ice_Cream_Flavor(db.Model):
                    nullable=False)
     order_ice_cream = relationship('Order_Ice_Cream', lazy=True)
     ice_cream_serving_size_price = relationship(
-        'Ice_Cream_Serving_Size_Price', lazy=True)
+        'Ice_Cream_Bowl', lazy=True)
 
     @property
     def serialize(self):
@@ -686,12 +686,13 @@ class Ice_Cream_Flavor(db.Model):
         return serialized_attributes
 
 
-class Ice_Cream(db.Model):
-    __tablename__ = 'ice_cream'
-    id = db.Column(UUID(as_uuid=True), db.ForeignKey(
-        "side.id"), primary_key=True, nullable=False)
-    serving_size = db.Column(db.String(80), db.ForeignKey(
-        "ice_cream_serving_size.id"), nullable=False)
+class Ice_Cream_Bowl(db.Model):
+    __tablename__ = 'ice_cream_bowl'
+    side_id = db.Column(UUID(as_uuid=True), db.ForeignKey("side.id"), primary_key=True, nullable=False)
+    flavor_id = db.Column(db.String(80), db.ForeignKey("ice_cream_flavor.id"),  primary_key=True, nullable=False)
+    serving_size_id = db.Column(db.String(80), db.ForeignKey("ice_cream_serving_size.id"), nullable=False)
+    price = db.Column(db.Float(), nullable=False)
+
 
 
 class Order_Ice_Cream(db.Model):
@@ -705,6 +706,7 @@ class Order_Ice_Cream(db.Model):
     topping_serving_size = db.Column(
         db.String(80), db.ForeignKey(
             "ingredient_serving_size.id"), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
 
     @property
     def serialize(self):
@@ -720,7 +722,7 @@ class Ice_Cream_Serving_Size(db.Model):
     __tablename__ = 'ice_cream_serving_size'
     id = db.Column(db.String(80), primary_key=True, unique=True,
                    nullable=False)
-    ice_cream_serving_size_price = relationship('Ice_Cream_Serving_Size_Price')
+    ice_cream_serving_size_price = relationship('Ice_Cream_Bowl')
 
     @property
     def serialize(self):
@@ -730,26 +732,6 @@ class Ice_Cream_Serving_Size(db.Model):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
-
-
-class Ice_Cream_Serving_Size_Price(db.Model):
-    __tablename__ = 'ice_cream_serving_size_price'
-    flavor_id = db.Column(db.String(80), db.ForeignKey("ice_cream_flavor.id"),  primary_key=True,
-                          nullable=False)
-    serving_size_id = db.Column(db.String(80), db.ForeignKey(
-        "ice_cream_serving_size.id"),  primary_key=True,
-        nullable=False)
-    price = db.Column(db.Float(), nullable=False)
-
-    @property
-    def serialize(self):
-        attribute_names = list(self.__dict__.keys())
-        attributes = list(self.__dict__.values())
-        serialized_attributes = {}
-        for i in range(len(attributes)):
-            serialized_attributes[attribute_names[i]] = attributes[i]
-        return serialized_attributes
-
 
 # 2000-12-31
 db.drop_all()

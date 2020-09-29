@@ -50,9 +50,7 @@ body {visibility: hidden;}
 	align-content: center;
 	text-align: center;
 } */
-body:not(.loaded) #slider img {
-  display:none;
-}
+
 .fas.fa-shopping-cart:hover {
 	opacity: 0.5;
 	cursor: pointer;

@@ -215,14 +215,13 @@ class Temperature(object):
 
 
 class Side_Model(object):
-    def __init__(self, id=None, side_type_id=None, side_name_id=None, flavor=None, price=None, serving_size=None, topping=None):
+    def __init__(self, id=None, side_type_id=None, side_name_id=None, flavor=None, price=None, serving_size=None):
         self.id = id
         self.side_type_id = side_type_id
         self.side_name_id = side_name_id
         self.flavor = flavor
         self.price = price
         self.serving_size = serving_size
-        self.topping = topping
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())

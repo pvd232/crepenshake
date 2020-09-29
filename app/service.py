@@ -100,6 +100,15 @@ class Ingredient_Service(object):
                     id=ingredient_category.id)
                 response.append(ingredient_category)
             return response
+    
+    def get_ingredient_serving_sizes(self):
+        response = []
+        with self.session_scope() as session:
+            for ingredient_serving_size in self.ingredient_repository.get_ingredient_serving_sizes(session):
+                ingredient_serving_size_model = Ingredient_Model(
+                    serving_size=ingredient_serving_size.id)
+                response.append(ingredient_serving_size_model)
+            return response
 
 
 class Order_Service(object):
@@ -558,29 +567,37 @@ class Side_Service(object):
 
     def get_croissants(self):
         response = []
-
         with self.session_scope() as session:
             for croissant in self.side_repository.get_croissants(session):
-                croissant_model = Side_Model(
-                    side_name_id=croissant.side_name_id, flavor=croissant.flavor, price=croissant.price)
+                # the front end needs the side_name prop
+                croissant_model = Side_Model(id=croissant.side_id, side_name_id='croissant',
+                    flavor=croissant.flavor_id, price=croissant.price)
                 response.append(croissant_model)
             return response
 
-    def get_side_names(self):
+    def get_side_types(self):
         response = []
 
         with self.session_scope() as session:
-            for side_name in self.side_repository.get_side_names(session):
-                side_name_model = Side_Model(side_name_id=side_name.id)
-                response.append(side_name_model)
+            for side_type in self.side_repository.get_side_types(session):
+                side_type_model = Side_Model(side_type_id=side_type.id)
+                response.append(side_type_model)
 
             return response
 
-    def get_ice_cream_prices(self):
+    def get_side_names(self):
+            response = []
+            with self.session_scope() as session:
+                for side_name in self.side_repository.get_side_names(session):
+                    side_name_model = Side_Model(side_name_id=side_name.id)
+                    response.append(side_name_model)
+                return response
+
+    def get_ice_cream_bowls(self):
         response = []
         with self.session_scope() as session:
-            for ice_cream in self.side_repository.get_ice_cream_prices(session):
-                ice_cream = Side_Model(
+            for ice_cream in self.side_repository.get_ice_cream_bowls(session):
+                ice_cream = Side_Model(id=ice_cream.side_id, side_name_id='ice_cream_bowl',
                     flavor=ice_cream.flavor_id, serving_size=ice_cream.serving_size_id, price=ice_cream.price)
                 response.append(ice_cream)
             return response
@@ -589,7 +606,6 @@ class Side_Service(object):
         response = []
         with self.session_scope() as session:
             for topping in self.side_repository.get_toppings(session):
-                print(topping.serialize)
                 topping = Ingredient_Model(
                     id=topping.ingredient_id, price=topping.price)
                 response.append(topping)

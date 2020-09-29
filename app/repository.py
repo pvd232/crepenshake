@@ -35,6 +35,11 @@ class Ingredient_Repository(object):
         print("ingredient_categories: %s", ingredient_categories)
         return ingredient_categories
 
+    def get_ingredient_serving_sizes(self, session):
+        ingredient_serving_sizes = session.query(Ingredient_Serving_Size)
+        return ingredient_serving_sizes
+
+
 
 class Order_Repository(object):
 
@@ -135,13 +140,20 @@ class Side_Repository(object):
         croissants = session.query(Croissant)
         return croissants
 
+    def get_side_types(self, session):
+        side_types = session.query(Side_Type)
+        return side_types
+
     def get_side_names(self, session):
         side_names = session.query(Side_Name)
         return side_names
 
-    def get_ice_cream_prices(self, session):
-        ice_cream_prices = session.query(Ice_Cream_Serving_Size_Price)
-        return ice_cream_prices
+    def get_side_serving_sizes(self, session):
+        side_serving_sizes = session.query()
+
+    def get_ice_cream_bowls(self, session):
+        ice_cream = session.query(Ice_Cream_Bowl)
+        return ice_cream
 
     def get_toppings(self, session):
         toppings = session.query(Ingredient_Serving_Size_Price).join(Ingredient).filter(or_(

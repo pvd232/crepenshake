@@ -466,18 +466,6 @@ class Order {
 		const coffee = new Coffee();
 		coffee.initFromHTML(index, espressoServingSize);
 		this.orderDrink.push(coffee);
-		for (var i = 0; i < this.orderDrink.length; i++){
-			console.log("this.orderDrink: %s", this.orderDrink[i])
-			for (var key in this.orderDrink[i]) {
-				console.log("this.orderDrink[i]: %s", this.orderDrink[i][key])
-				
-				console.log("key: %s", key)
-				
-				
-			}
-			
-			
-		}
 	};
 	addTemp = (index) => {
 		const temp = temperatures[index];
@@ -927,6 +915,9 @@ $(window).on('load', function () {
 					const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 					const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 					const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+					// check to see if the card is bottled or non-coffee or milkshake first because when you click on those cards, if they have already been selected you don't want to remove them
+					// these cards have counters so they will have fundamentally different logic from the rest of the cards which is why we want to evaluate them first and then apply other logical conditions after
+					// we know the selected card is not one of them
 					if (
 						selectedItemCategory === 'bottled' ||
 						selectedItemCategory === 'non-coffee' ||
@@ -945,12 +936,8 @@ $(window).on('load', function () {
 
 					// if you click the card and it has already been selected then remove the item
 					else if (userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex)) {
-						for (var i = 0; i < userOrderDrink.length; i++) {
-						}
 						userOrderDrink.removeDrink(selectedItemIndex, selectedItemCategoryIndex);
 						$(this).closest('.card').find('.btn2').toggle();
-						for (var i = 0; i < userOrderDrink.length; i++) {
-						}
 						// if the card you removed was a coffee card
 						if (!userOrderDrink.checkIfCoffeeSelected()) {
 							// reactivate all the coffee cards

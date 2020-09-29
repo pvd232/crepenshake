@@ -8,15 +8,12 @@ from repository import Ingredient_Repository
 
 
 application = Flask(__name__)
-print("__name__: %s", __name__)
 
 app = application
 
 
 def humanize(dict, attr):
-    # print('dict', dict.serialize())
     str = dict.__getattribute__(attr)
-
     frags = str.split('_')
     if len(frags) < 2:
         str = str.capitalize()
@@ -26,9 +23,7 @@ def humanize(dict, attr):
     for frag in frags:
         frag = frag.capitalize()
         newFrags.append(frag)
-
     newFrags = " ".join(newFrags)
-    # print('newFrags', newFrags)
     setattr(dict, attr, newFrags)
     return dict
 
@@ -70,11 +65,7 @@ def make_your_own_savory_crepe(editOrder=None):
                          for x in ingredient_service.get_ingredient_prices()]
 
     # for price in ingredient_prices:
-    # print('price', price.serialize())
     ingredient_categories = ingredient_service.get_ingredient_categories()
-
-    # print('iCat', ingredient_categories)
-
     rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
                                "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
     editOrder = request.args.get('editOrder')
@@ -83,7 +74,6 @@ def make_your_own_savory_crepe(editOrder=None):
         return render_template('make_your_own_savory_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
 
     else:
-        print('editOrder', editOrder)
         return render_template('make_your_own_savory_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
 
 
@@ -92,14 +82,7 @@ def make_your_own_sweet_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
     ingredient_prices = [humanize(x, 'id')
                          for x in ingredient_service.get_sweet_ingredient_prices()]
-    for i in ingredient_prices:
-        print('i', i.id)
-    # for price in ingredient_prices:
-    # print('price', price.serialize())
     sweet_ingredient_categories = ingredient_service.get_sweet_ingredient_categories()
-
-    # print('iCat', ingredient_categories)
-
     rules_for_each_category = ["(2 Fruit Servings Included, +$0.99 per additional serving)",
                                "(1 Servings Included, +$0.99 per additional serving)"]
     editOrder = request.args.get('editOrder')
@@ -109,8 +92,6 @@ def make_your_own_sweet_crepe(editOrder=None):
 
     else:
         return render_template('build_your_own_sweet_crepe.html', ingredient_prices=ingredient_prices, sweet_ingredient_categories=sweet_ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
-
-    # print(ingredient_prices[0].serialize)
 
 
 @app.route('/order/drink')
@@ -123,16 +104,11 @@ def order_drink(editOrder=None):
                       for x in drink_service.get_bottled_drinks()]
 
     drink_categories = [x.serialize() for x in drink_service.get_drink_categories()]
-    print("drink_categories", drink_categories)
     coffee_syrups = [humanize(x, "coffee_syrup_flavor").serialize()
                      for x in drink_service.get_coffee_syrups()]
 
     coffee_drinks = [humanize(x, "name").serialize()
                      for x in drink_service.get_coffee_drinks()]
-    print("coffee_drinks: %s", coffee_drinks)
-
-    print()
-    
     non_coffee_drinks = [humanize(x, "name").serialize()
                          for x in drink_service.get_non_coffee_drinks()]
     milk_drinks = [humanize(x, "id").serialize() for x in drink_service.get_milk_drinks()]
@@ -146,17 +122,23 @@ def order_drink(editOrder=None):
 @app.route('/order/side')
 def order_side(editOrder=None):
     side_service = Side_Service()
-    croissants = [humanize(x, 'flavor') for x in side_service.get_croissants()]
-
-    side_names = side_service.get_side_names()
-    ice_cream_prices = [humanize(x, 'flavor')
-                        for x in side_service.get_ice_cream_prices()]
-    toppings = [humanize(x, 'id')
+    ingredient_service = Ingredient_Service()
+    croissants = [x.serialize() for x in side_service.get_croissants()]
+    formatted_croissants = [humanize(x, 'flavor') for x in side_service.get_croissants()]
+    side_names = [x.serialize() for x in side_service.get_side_names()]
+    formatted_side_names = [humanize(x, 'side_name_id') for x in side_service.get_side_names()]
+    side_types = [x.serialize() for x in side_service.get_side_types()]
+    ice_cream_bowls = [x.serialize() for x in side_service.get_ice_cream_bowls()]
+    topping_serving_sizes = [x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
+    for x in ice_cream_bowls:
+        print(x)
+    formatted_ice_cream_bowls = [humanize(x, 'flavor')
+                        for x in side_service.get_ice_cream_bowls()]
+    toppings = [x.serialize() for x in side_service.get_toppings()]
+    formatted_toppings = [humanize(x, 'id')
                 for x in side_service.get_toppings()]
-    for x in toppings:
-        print(x.serialize())
     editOrder = request.args.get('editOrder')
-    return render_template('order_side.html', side_names=side_names, croissants=croissants, ice_cream_prices=ice_cream_prices, toppings=toppings, editOrder=editOrder)
+    return render_template('order_side.html', croissants=croissants, formatted_croissants=formatted_croissants, side_names=side_names, formatted_side_names=formatted_side_names, side_types=side_types, ice_cream_bowls=ice_cream_bowls, formatted_ice_cream_bowls = formatted_ice_cream_bowls, toppings=toppings, formatted_toppings=formatted_toppings, topping_serving_sizes=topping_serving_sizes, editOrder=editOrder)
 
 
 @app.route('/order/menu-crepe')
@@ -182,7 +164,6 @@ def checkout():
     elif request.method == 'POST':
         new_order = request.json
         new_order_value = new_order['order']
-        print("new_order: %s", new_order)
         order_service = Order_Service()
         order_service.create_order(new_order_value)
         return jsonify(200)
@@ -201,5 +182,5 @@ def favicon():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True)
     app.run()
