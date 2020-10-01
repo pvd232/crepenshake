@@ -16,6 +16,14 @@ class Crepe_Model(object):
 class Ingredient_Category(object):
     def __init__(self, id=None):
         self.id = id
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
+
 
 
 class Ingredient_Model(object):

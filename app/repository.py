@@ -21,7 +21,6 @@ class Ingredient_Repository(object):
     def get_ingredient_categories(self, session):
         ingredient_categories = session.query(
             Ingredient_Category.id).filter(Ingredient_Category.id != 'fruit').filter(Ingredient_Category.id != 'sweetness')
-        print("ingredient_categories: %s", ingredient_categories)
         return ingredient_categories
 
     def get_sweet_ingredient_prices(self, session):
@@ -32,7 +31,6 @@ class Ingredient_Repository(object):
     def get_sweet_ingredient_categories(self, session):
         ingredient_categories = session.query(
             Ingredient_Category.id).filter(or_(Ingredient_Category.id == 'fruit', Ingredient_Category.id == 'sweetness'))
-        print("ingredient_categories: %s", ingredient_categories)
         return ingredient_categories
 
     def get_ingredient_serving_sizes(self, session):

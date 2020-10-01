@@ -193,9 +193,6 @@ def create_sides():
     serialized_sides = [x.serialize for x in sides]
     for i in range(len(croissant_items)):
         side = croissant_items[i]
-        print("serialized_sides[i]['side_name_id']: %s",
-              serialized_sides[i]['side_name_id'])
-
         if serialized_sides[i]['side_name_id'] == 'croissant':
             id = serialized_sides[i]['id']
             side_flavor = side['flavor_id']
@@ -208,7 +205,6 @@ def create_sides():
     for i in range(len(croissant_items), len(croissant_items) + len(ice_cream_items)):
         ice_cream_index = i - len(croissant_items)
         side = ice_cream_items[ice_cream_index]
-        print("serialized_sides[i]['side_name_id']: %s", serialized_sides[i]['side_name_id'])
         if serialized_sides[i]['side_name_id'] == 'ice_cream_bowl':
             side_id = serialized_sides[i]['id']
             side_flavor = side['flavor_id']
@@ -437,7 +433,7 @@ def create_drinks():
     for i in range(len(milkshake_items), len(milkshake_items) + len(non_coffee_items)):
         coffeeIndex = i - len(milkshake_items)
         item = non_coffee_items[coffeeIndex]
-        if serialized_drinks[i]["drink_category_id"] == 'non-cofee':
+        if serialized_drinks[i]["drink_category_id"] == 'non-coffee':
             drink_id = serialized_drinks[i]['id']
             name = item['name']
             price = item['price']

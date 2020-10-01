@@ -1,8 +1,5 @@
 {% extends "template_page.html" %} {% block style %}
-
 <link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
-<script src="../static/js/buildYourOwnSavoryCrepe.js" type="module"></script>
-
 {% endblock %} {% block content %}
 
 <div class="container1">
@@ -55,7 +52,7 @@
 	<div class="row">
 		<h3 class="head3">{{ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
 	</div>
-	<div class="card-deck" id="{{ingredient_categories[j].id}}">
+	<div class="card-deck" id='{{ingredient_categories[j].id}}'>
 		{% for i in ingredient_prices %} {% if i.ingredient_category_id == ingredient_categories[j].id %} {% if i.price
 		> 0.0 %}
 		<div class="card" id="card1">
@@ -102,4 +99,7 @@
 	</div>
 	<button class="btn5 btn1" id="checkOut">Add to Cart</button>
 </div>
+{% endblock %}
+{% block script %}
+<script src="../static/js/buildYourOwnSavoryCrepe.js" type="module"></script>
 {% endblock %}

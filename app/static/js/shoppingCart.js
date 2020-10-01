@@ -1,26 +1,27 @@
 //https://stackoverflow.com/questions/39627549/how-to-center-modal-to-the-center-of-screen/39636961
-// import { Order, Drink, Coffee} from './order-drink.js'
-$(window).unbind('load').bind('load', function () {
+('use strict');
+
+import { Order, Drink, Coffee } from './order-drink.js'
+import { Crepe, Ingredient } from './build-your-own-sweet-crepe.js';
+import { IceCreamBowl, Topping } from './order-side.js';
+ 
+$(window).ready(function () {
 	const modal = $('#shoppingCart');
+	$('#showShoppingCart')
+		.unbind('click')
+		.bind('click', function () {
+			console.log('hey');
+			showShoppingCart();
+		});
 	// console.log('fdjaopisdfjaosij');
 	// console.log(localStorage.length, 'localStorage.length');
 	for (var i = 0; i < localStorage.length; i++) {
 		const order = {};
-		const key = localStorage.key(0);
-		console.log('key', key);
-		order[key] = JSON.parse(localStorage.getItem(key));
-		console.log('order', order);
+		console.log(JSON.parse(localStorage.getItem(localStorage.key(0))));
 	}
 	if (localStorage.getItem('reload') === 'true') {
 		showShoppingCart();
 		localStorage.setItem('reload', 'false');
-	}
-	for (var i = 0; i < localStorage.length; i++) {
-		var key = localStorage.key(i);
-		console.log('key: %s', key);
-
-		var value = localStorage[key];
-		console.log('value: %s', value);
 	}
 	const body = $(window);
 	// Get modal size
@@ -132,105 +133,43 @@ function doShowAll() {
 	if (checkBrowser()) {
 		var orderPrice = 0;
 		key = localStorage.key(0);
-		const orderDict = JSON.parse(localStorage.getItem(key));
-		// console.log('check orderDict', orderDict);
+		const orderDict = localStorage.getItem(key);
 		if (orderDict) {
-			if ('orderCrepe' in orderDict) {
-				const orderCrepes = orderDict['orderCrepe'];
-				for (var k = 0; k <= orderCrepes.length - 1; k++) {
-					// the crepe is an object with the higher level crepe properties like the crepe price and type of crepe as keys
-					// the crepe is inside an object whose only key is "ordercrepes" and whose value is a list of different orders of crepes. for custom crepes there will only be one crepe in the list
-					const crepes = orderCrepes[k]['crepes'];
-					// console.log('crepes: %s', crepes);
-					for (key in crepes) {
-						// console.log('key: %s', key);
-						// console.log('crepes key: %s', crepes[key]);
-					}
-					$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
-					$(`#container${k}`).append(
-						`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe Order #${
-							k + 1
-						}</h5></div>`
-					);
-					for (var i = 0; i < crepes.length; i++) {
-						const crepe = crepes[i];
-						// console.log('crepe: %s', crepe);
+			console.log("orderDict: %s", orderDict)
+			const order = new Order();
+			console.log('check orderDict b4', order);
 
-						if (crepe['customCrepe'] && crepe['flavorProfile'] === 'savory') {
-							//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-							var formattedOtherToppings = [];
-							const customCrepeIngredients = crepe['ingredients'];
-							// console.log('customCrepeIngredients', customCrepeIngredients);
-							for (var key in customCrepeIngredients) {
-								// console.log('key', key);
-								const topping = customCrepeIngredients[key];
-								// console.log('topping', topping);
-								if (topping != '' && topping != []) {
-									// console.log('topping', topping);
-									const formatDict = {};
-									if (key != 'protein') {
-										var format = '';
-										for (var i = 0; i < topping.length; i++) {
-											var toppingName = topping[i]['name'];
-											// console.log('toppingName: %s', toppingName);
+			order.fromJSON(orderDict)
+			console.log('check orderDict after', order);
 
-											var toppingQuantity = topping[i]['servingSize'];
-											// console.log('toppingQuantity: %s', toppingQuantity);
+			if (!order) {
+				if (order.orderCrepe.length) {
+					const orderCrepes = order.orderCrepe;
+					console.log("orderCrepes: %s", JSON.stringify(orderCrepes))
+				
+					for (var k = 0; k <= orderCrepes.length - 1; k++) {
+						// the crepe is an object with the higher level crepe properties like the crepe price and type of crepe as keys
+						// the crepe is inside an object whose only key is "ordercrepes" and whose value is a list of different orders of crepes. for custom crepes there will only be one crepe in the list
+						const orderCrepe = orderCrepes[k]
+						console.log("orderCrepe: %s", JSON.stringify(orderCrepe))
+					
+					
 
-											if (toppingName) {
-												toppingQuantity = capitalize(toppingQuantity);
-												if (toppingQuantity != 'Regular') {
-													format += toppingQuantity;
-													format += ' ';
-												}
-												toppingName = splitCamelCaseToString(toppingName);
-												format += toppingName;
-												if (i != topping.length - 2) {
-													format += ' and ';
-												}
-											} else {
-												formatDict['price'] = topping[i]['price'];
-											}
-										}
+						if (orderCrepe.flavorProfile === 'sweet' && orderCrepe.origination === 'custom') {
+							const orderCrepeIngredientCategories = orderCrepe.ingredients[0]['ingredients'];
+							$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
+							$(`#container${k}`).append(
+								`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe Order #${k + 1
+								}</h5></div>`
+							);
+							for (var j = 0; j < orderCrepeIngredientCategories.length; j++) {
+								const ingredientsInIngredientCategory = orderCrepeIngredientCategories[j]['ingredients'];
+								console.log("ingredientsInIngredientCategory: %s", ingredientsInIngredientCategory)
+							
+								for (var k = 0; k < ingredientsInIngredientCategory.length; k++) {
+									const ingredient = ingredientsInIngredientCategory[k];
+									console.log("ingredient: %s", ingredient)
 
-										formatDict['format'] = format;
-										formattedOtherToppings.push(formatDict);
-									} else {
-										const protein = customCrepeIngredients[key];
-										// console.log('protein', protein);
-										var formattedProtein = '';
-										for (var i = 0; i < protein.length; i++) {
-											var proteinName = protein[i]['name'];
-											var proteinQuantity = protein[i]['servingSize'];
-											if (proteinName) {
-												// console.log('pq', proteinQuantity);
-												// console.log('pn', proteinName);
-												proteinName = splitCamelCaseToString(proteinName);
-												proteinQuantity = capitalize(proteinQuantity);
-												if (proteinQuantity != 'Regular') {
-													formattedProtein += proteinQuantity;
-													formattedProtein += ' ';
-												}
-
-												formattedProtein += proteinName;
-												// console.log('protein', protein);
-												formattedProtein += ' and ';
-											} else {
-												formatDict['price'] = protein[i]['price'];
-											}
-										}
-										// console.log('formattedProtein1: %s', formattedProtein);
-
-										formattedProtein = Array.from(formattedProtein).splice(
-											0,
-											formattedProtein.length - 5
-										);
-										formattedProtein = formattedProtein.join('');
-										// console.log('formattedProtein2: %s', formattedProtein);
-
-										formatDict['format'] = formattedProtein;
-										formattedOtherToppings.unshift(formatDict);
-									}
 								}
 							}
 
@@ -238,19 +177,16 @@ function doShowAll() {
 							// insert the row and child header with the crepe number
 							// console.log('formattedOtherToppings', formattedOtherToppings);
 
-							for (var i = 0; i < formattedOtherToppings.length; i++) {
-								const toppingPrice = parseFloat(formattedOtherToppings[i]['price']);
+							const toppingPrice = parseFloat(formattedOtherToppings[i]['price']);
 
-								subtotal += toppingPrice;
+							subtotal += toppingPrice;
 
-								$(`<div class="row" name="savory" style= "margin-bottom: 20px;" id="row${k}${
-									i + 1
+							$(`<div class="row" name="savory" style= "margin-bottom: 20px;" id="row${k}${i + 1
 								}"><div class="col-9" style="margin-right: 0px; " id="col${k}${i}"><h5 style=''>
 								${formattedOtherToppings[i]['format']}</h5>
 									</div><div class="col-3" style=""id="col${k}${i + 2}"><h4 style=''>$${formattedOtherToppings[i]['price'].toFixed(
 									2
 								)}</h4></div></div>`).insertAfter(`#row${k}${i}`);
-							} // end of the loop iterating through the toppings in the crepe
 
 							// the i iterator ends with an id of k, i+1 so this must be formattedOtherToppings.length not formattedothertoppings.length -1
 							// insert the subtotal after completing the insertion of the toppings
@@ -285,7 +221,8 @@ function doShowAll() {
 									<h4 style=''>$${crepePrice.toFixed(2)}</h4>
 								</div>
 								</div>`).insertAfter(`#row${k}${i}`);
-
+							
+					
 							const itemIndex =
 								$(`#container${k}`)
 									.find('.row')
@@ -316,9 +253,8 @@ function doShowAll() {
 										const toppingQuantity = topping['quantity'];
 										sweetCrepeSubtotal += toppingCost;
 										const lastElementId = $('#modalBody1').find('.row').last().attr('id');
-										$(`<div class="row" name="sweet" style= "margin-bottom: 20px;" id="sweetRow${j}${
-											z + 1
-										}">
+										$(`<div class="row" name="sweet" style= "margin-bottom: 20px;" id="sweetRow${j}${z + 1
+											}">
 											<div class="col-9" style="margin-right: 0px; " id="sweetCrepeCol${j}${z}">
 												<h5 style=''>${toppingQuantity + 'x' + ' ' + toppingName}</h5>
 											</div>
@@ -356,7 +292,9 @@ function doShowAll() {
 								orderPrice += sweetCrepeSubtotal;
 							}
 						}
+					
 					} // end of the loop iterating through crepes in the order
+
 					const itemIndex =
 						$(`#container${k}`)
 							.find('.row')
@@ -389,64 +327,63 @@ function doShowAll() {
 					$(`#menubuttoncontainer${k}`).append(
 						`<div id="col5"><button class="btn8" onclick="modifyItem('${itemIndex}', 'crepe', 'remove')" >Remove</button></div>`
 					);
-				}
-			} // end of for loop confirming orderCrepe existence
-			if ('orderDrink' in orderDict) {
-				if ($('#modalBody1').children.length > 0) {
-					// format the drink list
-					const orderDrinks = orderDict['orderDrink'];
-					for (var i = 0; i < orderDrinks.length; i++) {
-						// for each drink order, tracked by the index number i, j will add a new container with a row appended to it that lists the drink order # i
-						var drinkSubTotal = 0;
-						$('#modalBody1').append(
-							`<div class="container" id="drinkContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="drinkRow${i}0"><h5 style='font-weight: 700; '>Drink Order #${
-								i + 1
-							}</h5></div></div>`
-						);
-						const drinks = orderDrinks[i]['drinkCategories'];
-						for (var j = 0; j < drinks.length - 1; j++) {
-							// console.log('key milk: %s', key);
+			
+				} // end of for loop confirming orderCrepe existence
+				if (orderDict.orderDrink.length) {
+					if ($('#modalBody1').children.length > 0) {
+						// format the drink list
+						const orderDrinks = orderDict['orderDrink'];
+						for (var i = 0; i < orderDrinks.length; i++) {
+							// for each drink order, tracked by the index number i, j will add a new container with a row appended to it that lists the drink order # i
+							var drinkSubTotal = 0;
+							$('#modalBody1').append(
+								`<div class="container" id="drinkContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="drinkRow${i}0"><h5 style='font-weight: 700; '>Drink Order #${i + 1
+								}</h5></div></div>`
+							);
+							const drinks = orderDrinks[i]['drinkCategories'];
+							for (var j = 0; j < drinks.length - 1; j++) {
+								// console.log('key milk: %s', key);
 
-							const drinksInDrinkCategory = drinks[j]['drinks'];
-							console.log("drinksInDrinkCategory: %s", drinksInDrinkCategory)
+								const drinksInDrinkCategory = drinks[j]['drinks'];
+								console.log("drinksInDrinkCategory: %s", drinksInDrinkCategory)
 							
-							for (var k = 0; k < drinksInDrinkCategory.length; k++) {
-								const drink = drinksInDrinkCategory[k];
-								console.log("drink: %s", drink)
+								for (var k = 0; k < drinksInDrinkCategory.length; k++) {
+									const drink = drinksInDrinkCategory[k];
+									console.log("drink: %s", drink)
 								
-								drinkSubTotal += drink.price
+									drinkSubTotal += drink.price
 
 
-								if ('milkType' in drink) {
+									if ('milkType' in drink) {
 									
-									const milkName = splitCamelCaseToString(drink.milkType);
+										const milkName = splitCamelCaseToString(drink.milkType);
 									
-									const milkPrice = drink.milkPrice;
-									const espressoPrice = drink.price;
-									const espressoServingSize = drink.espressoServingSize
-									var espressFormat;
-									var flavorSyrup = '';
-									var flavorSyrupServingSize = '';
-									var flavorSyrupPrice = '';
+										const milkPrice = drink.milkPrice;
+										const espressoPrice = drink.price;
+										const espressoServingSize = drink.espressoServingSize
+										var espressFormat;
+										var flavorSyrup = '';
+										var flavorSyrupServingSize = '';
+										var flavorSyrupPrice = '';
 
-									if (espressoServingSize === 'extra') {
-										espressFormat = '3x Espresso Shot';
-									} else if (espressoServingSize === 'regular') {
-										espressFormat = '2x Espresso Shot';
-									} else if (espressoServingSize === 'half') {
-										espressFormat = '1x Espresso Shot';
-									}
-									if (drink.flavorSyrup && drink.flavorSyrupServingSize) {
-										flavorSyrup = drink.flavorSyrup;
-										flavorSyrupServingSize = drink.flavorSyrupServingSize;
-										if (flavorSyrupServingSize === 'extra') {
-											flavorSyrupPrice = 0.99;
-										} else {
-											flavorSyrupPrice = 0;
+										if (espressoServingSize === 'extra') {
+											espressFormat = '3x Espresso Shot';
+										} else if (espressoServingSize === 'regular') {
+											espressFormat = '2x Espresso Shot';
+										} else if (espressoServingSize === 'half') {
+											espressFormat = '1x Espresso Shot';
 										}
-									} 
+										if (drink.flavorSyrup && drink.flavorSyrupServingSize) {
+											flavorSyrup = drink.flavorSyrup;
+											flavorSyrupServingSize = drink.flavorSyrupServingSize;
+											if (flavorSyrupServingSize === 'extra') {
+												flavorSyrupPrice = 0.99;
+											} else {
+												flavorSyrupPrice = 0;
+											}
+										}
 									
-									$(`	<div class="row" style= "margin-bottom: 20px;">
+										$(`	<div class="row" style= "margin-bottom: 20px;">
 											<div class="col-9" style="margin-right: 0px; " >
 												<h5 style=''>${drink.quantity + 'x' + ' ' + drink.name}</h5>
 											</div>
@@ -477,14 +414,13 @@ function doShowAll() {
 												<h4 style=''>$${flavorSyrupPrice}</h4>
 											</div>
 										</div>`).insertAfter(`#drinkRow${i}${k}`);
-														drinkSubTotal += parseFloat(milkPrice);
-														drinkSubTotal += parseFloat(espressoPrice);
-													} // milk block
-													else {
+										drinkSubTotal += parseFloat(milkPrice);
+										drinkSubTotal += parseFloat(espressoPrice);
+									} // milk block
+									else {
 													
-															$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${
-																k + 1
-															}">
+										$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${k + 1
+											}">
 											<div class="col-9" style="margin-right: 0px; " id="drinkCol${i}${k}">
 												<h5 style=''>${drink.quantity + 'x' + ' ' + drink.name}</h5>
 											</div>
@@ -493,146 +429,12 @@ function doShowAll() {
 											</div>
 											</div>`).insertAfter(`#drinkRow${i}${k}`);
 														
-													} // end of non-coffee drinks else block
-												} // end of for loop iterating through list of drink dictionaries in drink category
-											} // end of loop itering through drink category key values
+									} // end of non-coffee drinks else block
+								} // end of for loop iterating through list of drink dictionaries in drink category
+							} // end of loop itering through drink category key values
 
-						const drinkItemIndex =
-							$(`#drinkContainer${i}`)
-								.find('.row')
-								.first()
-								.text()
-								.replace('Order ', '')
-								.replace(' ', '-')
-								.replace('#', '')
-								.toLowerCase()
-								.split('-')[1] - 1;
-						// console.log('drinkItemIndex: %s', drinkItemIndex);
-
-						$(`<div class="grid-container" id="drinkButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
-            				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${i}`));
-						$(`#drinkButtonContainer${i}`).append(
-							`<div id="col5"><button class="btn8" onclick="modifyItem('${drinkItemIndex}', 'drink', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
-						);
-						// pass in the item that is being modified to the make your own crepe page
-						$(`#drinkButtonContainer${i}`).append(
-							`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/drink?editOrder=${drinkItemIndex}')">Edit</button></div>`
-						);
-						$(`#drinkButtonContainer${i}`).append(
-							`<div id="col5"><button class="btn8" onclick="modifyItem('${drinkItemIndex}', 'drink', 'remove')" >Remove</button></div>`
-						);
-						if (drinkSubTotal) {
-							orderPrice += drinkSubTotal;
-						}
-					} // end of for loop iterating through drink list
-					// console.log('drinkSubTotal', drinkSubTotal);
-				}
-				// console.log('orderPriceDrink: %s', orderPrice);
-
-				// console.log('orderPriceDrink: %s', orderPrice);
-			}
-
-			if ('orderSide' in orderDict) {
-				if ($('#modalBody1').children.length > 0) {
-					if (orderDict['orderSide'].length > 0) {
-						// format the drink list
-
-						const orderSide = orderDict['orderSide'];
-
-						for (var k = 0; k < orderSide.length; k++) {
-							// const lastElementId = $('#modalBody1').children().last().attr('id');
-							//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-							$('#modalBody1').append(
-								`<div class="container" id="sideContainer${k}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="sideRow${k}0"><h5 style='font-weight: 700; '>Side Order #${
-									k + 1
-								}</h5></div></div>`
-							);
-							const sides = orderSide[k]['sides'];
-							var sideSubTotal = 0;
-							for (var key in sides) {
-								// console.log('sideSubTotal: %s', sideSubTotal);
-
-								// if (key != 'sideTotal') {
-								// console.log('key', key);
-								const sidesInSideCategory = sides[key];
-								// console.log('sidesInSideCategory: %s', sidesInSideCategory);
-
-								if (sidesInSideCategory != '') {
-									// console.log('sidesInSideCategory', sidesInSideCategory);
-									for (var i = 0; i < sidesInSideCategory.length; i++) {
-										var side = sidesInSideCategory[i];
-										// console.log('side: %s', side);
-										var sideName = splitCamelCaseToString(side['name']);
-										// console.log('sideName', sideName);
-										const sideQuantity = side['quantity'];
-										// console.log('sideQuantity: %s', sideQuantity);
-										var sidePrice = parseFloat(side['price']);
-
-										$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${k}${i + 1}">
-										<div class="col-9" style="margin-right: 0px; " id="sideCol${k}${i}">
-											<h5 style=''>${sideName}</h5>
-										</div>
-										<div class="col-3" style=""id="sideCol${k}${i + 2}">
-											<h4 style=''>$${sidePrice}</h4>
-										</div>
-										</div>`).insertAfter(`#sideRow${k}${i}`);
-										// console.log('sideSubTotal: %s', sideSubTotal);
-
-										// i will add the side with the side price regardless of whether there are toppings that go after it, thus i check for the existence of the toppings array afer
-										if ('toppings' in side) {
-											const arrayOfToppingDictionaries = side['toppings'];
-											// console.log('arrayOfToppingDictionaries: %s', arrayOfToppingDictionaries);
-											// console.log('sideSubTotal: %s', sideSubTotal);
-
-											for (var j = 0; j < arrayOfToppingDictionaries.length; j++) {
-												const toppingDictionary = arrayOfToppingDictionaries[j];
-												// console.log('toppingDictionary: %s', toppingDictionary);
-
-												const toppingServingSize = splitCamelCaseToString(
-													toppingDictionary['servingSize']
-												);
-												// console.log('sideSubTotal: %s', sideSubTotal);
-
-												const toppingName = splitCamelCaseToString(toppingDictionary['name']);
-												const toppingPrice = toppingDictionary['price'];
-												// console.log('toppingPrice: %s', toppingPrice);
-
-												sideSubTotal += toppingPrice;
-												var toppingFormat = '';
-												if (toppingServingSize === 'Extra') {
-													const newToppingServingSize = 'Double';
-													toppingFormat += newToppingServingSize;
-												} else {
-													toppingFormat += toppingServingSize;
-												}
-												toppingFormat += ' ';
-												toppingFormat += toppingName;
-
-												$(`<div class="row" style= "margin-bottom: 20px;">
-											<div class="col-9" style="margin-right: 0px; " id="toppingCol${k}${j}">
-												<h5 style=''>${toppingFormat}</h5>
-											</div>
-											<div class="col-3" style=""id="toppingCol${k}${j + 2}">
-												<h4 style=''>$${toppingPrice.toFixed(2)}</h4>
-											</div>
-											</div>`).insertAfter($(`#sideRow${k}${i + 1}`));
-											}
-										}
-									} // end of for loop iterating through side list
-									// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
-									// console.log('sideSubTotal', sideSubTotal);
-								} // end of for loop iterating through sides in side order
-								// console.log('sideSubTotal: %s', sideSubTotal);
-							}
-							// console.log('orderPriceSide: %s', orderPrice);
-							// console.log('sideSubTotal: %s', sideSubTotal);
-							if (sideSubTotal) {
-								orderPrice += sideSubTotal;
-							}
-							// console.log('orderPriceSide: %s', orderPrice);
-
-							const sideItemIndex =
-								$(`#sideContainer${k}`)
+							const drinkItemIndex =
+								$(`#drinkContainer${i}`)
 									.find('.row')
 									.first()
 									.text()
@@ -641,47 +443,181 @@ function doShowAll() {
 									.replace('#', '')
 									.toLowerCase()
 									.split('-')[1] - 1;
-							// console.log('sideItemIndex: %s', sideItemIndex);
+							// console.log('drinkItemIndex: %s', drinkItemIndex);
 
-							$(`<div class="grid-container" id="sideButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
-            			grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${k}`));
-							$(`#sideButtonContainer${k}`).append(
-								`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
+							$(`<div class="grid-container" id="drinkButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+            				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${i}`));
+							$(`#drinkButtonContainer${i}`).append(
+								`<div id="col5"><button class="btn8" onclick="modifyItem('${drinkItemIndex}', 'drink', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
 							);
 							// pass in the item that is being modified to the make your own crepe page
-							$(`#sideButtonContainer${k}`).append(
-								`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/side?editOrder=${sideItemIndex}')">Edit</button></div>`
+							$(`#drinkButtonContainer${i}`).append(
+								`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/drink?editOrder=${drinkItemIndex}')">Edit</button></div>`
 							);
-							$(`#sideButtonContainer${k}`).append(
-								`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'remove')" >Remove</button></div>`
+							$(`#drinkButtonContainer${i}`).append(
+								`<div id="col5"><button class="btn8" onclick="modifyItem('${drinkItemIndex}', 'drink', 'remove')" >Remove</button></div>`
 							);
-							// console.log('sideSubTotal: %s', sideSubTotal);
+							if (drinkSubTotal) {
+								orderPrice += drinkSubTotal;
+							}
+						} // end of for loop iterating through drink list
+						// console.log('drinkSubTotal', drinkSubTotal);
+					}
+					// console.log('orderPriceDrink: %s', orderPrice);
+
+					// console.log('orderPriceDrink: %s', orderPrice);
+				}
+
+				if ('orderSide' in orderDict) {
+					if ($('#modalBody1').children.length > 0) {
+						if (orderDict['orderSide'].length > 0) {
+							// format the drink list
+
+							const orderSide = orderDict['orderSide'];
+
+							for (var k = 0; k < orderSide.length; k++) {
+								// const lastElementId = $('#modalBody1').children().last().attr('id');
+								//https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+								$('#modalBody1').append(
+									`<div class="container" id="sideContainer${k}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="sideRow${k}0"><h5 style='font-weight: 700; '>Side Order #${k + 1
+									}</h5></div></div>`
+								);
+								const sides = orderSide[k]['sides'];
+								var sideSubTotal = 0;
+								for (var key in sides) {
+									// console.log('sideSubTotal: %s', sideSubTotal);
+
+									// if (key != 'sideTotal') {
+									// console.log('key', key);
+									const sidesInSideCategory = sides[key];
+									// console.log('sidesInSideCategory: %s', sidesInSideCategory);
+
+									if (sidesInSideCategory != '') {
+										// console.log('sidesInSideCategory', sidesInSideCategory);
+										for (var i = 0; i < sidesInSideCategory.length; i++) {
+											var side = sidesInSideCategory[i];
+											// console.log('side: %s', side);
+											var sideName = splitCamelCaseToString(side['name']);
+											// console.log('sideName', sideName);
+											const sideQuantity = side['quantity'];
+											// console.log('sideQuantity: %s', sideQuantity);
+											var sidePrice = parseFloat(side['price']);
+
+											$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${k}${i + 1}">
+										<div class="col-9" style="margin-right: 0px; " id="sideCol${k}${i}">
+											<h5 style=''>${sideName}</h5>
+										</div>
+										<div class="col-3" style=""id="sideCol${k}${i + 2}">
+											<h4 style=''>$${sidePrice}</h4>
+										</div>
+										</div>`).insertAfter(`#sideRow${k}${i}`);
+											// console.log('sideSubTotal: %s', sideSubTotal);
+
+											// i will add the side with the side price regardless of whether there are toppings that go after it, thus i check for the existence of the toppings array afer
+											if ('toppings' in side) {
+												const arrayOfToppingDictionaries = side['toppings'];
+												// console.log('arrayOfToppingDictionaries: %s', arrayOfToppingDictionaries);
+												// console.log('sideSubTotal: %s', sideSubTotal);
+
+												for (var j = 0; j < arrayOfToppingDictionaries.length; j++) {
+													const toppingDictionary = arrayOfToppingDictionaries[j];
+													// console.log('toppingDictionary: %s', toppingDictionary);
+
+													const toppingServingSize = splitCamelCaseToString(
+														toppingDictionary['servingSize']
+													);
+													// console.log('sideSubTotal: %s', sideSubTotal);
+
+													const toppingName = splitCamelCaseToString(toppingDictionary['name']);
+													const toppingPrice = toppingDictionary['price'];
+													// console.log('toppingPrice: %s', toppingPrice);
+
+													sideSubTotal += toppingPrice;
+													var toppingFormat = '';
+													if (toppingServingSize === 'Extra') {
+														const newToppingServingSize = 'Double';
+														toppingFormat += newToppingServingSize;
+													} else {
+														toppingFormat += toppingServingSize;
+													}
+													toppingFormat += ' ';
+													toppingFormat += toppingName;
+
+													$(`<div class="row" style= "margin-bottom: 20px;">
+											<div class="col-9" style="margin-right: 0px; " id="toppingCol${k}${j}">
+												<h5 style=''>${toppingFormat}</h5>
+											</div>
+											<div class="col-3" style=""id="toppingCol${k}${j + 2}">
+												<h4 style=''>$${toppingPrice.toFixed(2)}</h4>
+											</div>
+											</div>`).insertAfter($(`#sideRow${k}${i + 1}`));
+												}
+											}
+										} // end of for loop iterating through side list
+										// const lastElementId = $('#modalBody1').find('.container').last().attr('id');
+										// console.log('sideSubTotal', sideSubTotal);
+									} // end of for loop iterating through sides in side order
+									// console.log('sideSubTotal: %s', sideSubTotal);
+								}
+								// console.log('orderPriceSide: %s', orderPrice);
+								// console.log('sideSubTotal: %s', sideSubTotal);
+								if (sideSubTotal) {
+									orderPrice += sideSubTotal;
+								}
+								// console.log('orderPriceSide: %s', orderPrice);
+
+								const sideItemIndex =
+									$(`#sideContainer${k}`)
+										.find('.row')
+										.first()
+										.text()
+										.replace('Order ', '')
+										.replace(' ', '-')
+										.replace('#', '')
+										.toLowerCase()
+										.split('-')[1] - 1;
+								// console.log('sideItemIndex: %s', sideItemIndex);
+
+								$(`<div class="grid-container" id="sideButtonContainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+            			grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${k}`));
+								$(`#sideButtonContainer${k}`).append(
+									`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'copy')" style="margin-left:40px;">Duplicate</button></div>`
+								);
+								// pass in the item that is being modified to the make your own crepe page
+								$(`#sideButtonContainer${k}`).append(
+									`<div  id="col6" ><button class= "btn8" style="margin-top:.5px;" onclick="location.assign('/order/side?editOrder=${sideItemIndex}')">Edit</button></div>`
+								);
+								$(`#sideButtonContainer${k}`).append(
+									`<div id="col5"><button class="btn8" onclick="modifyItem('${sideItemIndex}', 'side', 'remove')" >Remove</button></div>`
+								);
+								// console.log('sideSubTotal: %s', sideSubTotal);
+							}
 						}
 					}
 				}
 			}
-		}
-		var updatedOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
-		// console.log('updatedOrder: %s', updatedOrder);
-		if (updatedOrder) {
-			updatedOrder['orderTotal'] = orderPrice;
-			localStorage.setItem('order', JSON.stringify(updatedOrder));
-		}
-		// else {
-		// 	updatedOrder['orderTotal'] = 0;
-		// 	localStorage.setItem('order', JSON.stringify(updatedOrder));
-		// }
-		$(`<div class="modal-footer" id="footer" style= " border-top: 2px solid black"></div>`).insertAfter(
-			`#modalBody1`
-		);
+			// var updatedOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
+			// // console.log('updatedOrder: %s', updatedOrder);
+			// if (updatedOrder) {
+			// 	updatedOrder['orderTotal'] = orderPrice;
+			// 	localStorage.setItem('order', JSON.stringify(updatedOrder));
+			// }
+			// else {
+			// 	updatedOrder['orderTotal'] = 0;
+			// 	localStorage.setItem('order', JSON.stringify(updatedOrder));
+			// }
+			$(`<div class="modal-footer" id="footer" style= " border-top: 2px solid black"></div>`).insertAfter(
+				`#modalBody1`
+			);
 
-		$(`#footer`).append(`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3>
+			$(`#footer`).append(`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3>
 		</div>`);
-		$(`#footer`)
-			.append(`<div class="col-3" style="margin-left: 21px; " id="footerCol1"><h3 style="float:right; font-weight: bold; ">$${orderPrice.toFixed(
-			2
-		)}</h3>
+			$(`#footer`)
+				.append(`<div class="col-3" style="margin-left: 21px; " id="footerCol1"><h3 style="float:right; font-weight: bold; ">$${orderPrice.toFixed(
+					2
+				)}</h3>
 		</div>`);
+		}
 	}
 }
 

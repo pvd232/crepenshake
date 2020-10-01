@@ -1,9 +1,27 @@
 {% extends "template_page.html" %} {% block style %}
-
 <link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
-<script src="../static/js/build-your-own-sweet-crepe.js"></script>
-{% endblock %} {% block content %} {% if editOrder %}
+{% endblock %} 
+
+{% block content %} 
+
+{% if editOrder %}
 <div id="{{editOrder}}" class="edit"></div>
+{% endif %}
+
+{% if sweetness_ingredients %}
+<div id="sweetnessIngredients" data-sweetnessingredients='{{ sweetness_ingredients|tojson }}'></div>
+{% endif %}
+
+{% if fruit_ingredients %}
+<div id="fruitIngredients" data-fruitingredients='{{ fruit_ingredients|tojson }}'></div>
+{% endif %}
+
+{% if sweet_ingredient_categories %}
+<div id="sweetIngredientCategories" data-sweetingredientcategories='{{ sweet_ingredient_categories|tojson }}'></div>
+{% endif %}
+
+{% if ingredient_serving_sizes %}
+<div id="ingredientServingSizes" data-ingredientservingsizes='{{ ingredient_serving_sizes|tojson }}'></div>
 {% endif %}
 
 <div class="container1">
@@ -34,10 +52,10 @@
 			<div class="col-md-8">
 				<div class="card-body" style="margin-left: 150px" id="cardBody">
 					<div class="d-flex align-items-center" style="margin-bottom: 0px; margin-top: 0px">
-						<h2 class="card-title" style="margin-bottom: 10px">Build Your</h2>
+						<h2 class="card-title head2" style="margin-bottom: 10px">Build Your</h2>
 					</div>
 					<div class="d-flex align-items-center" style="margin-bottom: 10px; margin-top: 0px">
-						<h3 class="card-title">CREPE</h3>
+						<h3 class="card-title head3">CREPE</h3>
 					</div>
 				</div>
 				<p class="card-text" style="margin-left: 170px; margin-right: 50px; margin-bottom: 0px" id="cardText">
@@ -48,16 +66,14 @@
 		</div>
 	</div>
 </div>
-{% if editOrder %}
-<div id="{{editOrder}}" class="edit"></div>
-{% endif %} {% for j in range(sweet_ingredient_categories|length) %}
+{% for j in range(sweet_ingredient_categories|length) %}
 
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<div class="row">
-		<h3>{{sweet_ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
+		<h3 class="head3">{{formatted_sweet_ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
 	</div>
 	<div class="card-deck" id="{{sweet_ingredient_categories[j].id}}">
-		{% for i in ingredient_prices %} {% if i.ingredient_category_id == sweet_ingredient_categories[j].id %} {% if
+		{% for i in formatted_sweet_ingredients %} {% if i.ingredient_category_id == sweet_ingredient_categories[j].id %} {% if
 		i.price > 0 %}
 		<div class="card" id="card1">
 			<img src="" class="card-img-top" alt="..." />
@@ -101,6 +117,9 @@
 	>
 		Please select a protein.
 	</div>
-	<button class="btn5" onclick="checkOut()">Add to Cart</button>
+	<button class="btn5" id="buildSweetCrepecheckout">Add to Cart</button>
 </div>
+{% endblock %}
+{% block script %} 
+<script type="module" src="../static/js/build-your-own-sweet-crepe.js"></script>
 {% endblock %}
