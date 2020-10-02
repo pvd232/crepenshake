@@ -1,9 +1,7 @@
 //https://stackoverflow.com/questions/39627549/how-to-center-modal-to-the-center-of-screen/39636961
 ('use strict');
 
-import { Order, Drink, Coffee } from './order-drink.js'
-import { Crepe, Ingredient } from './build-your-own-sweet-crepe.js';
-import { IceCreamBowl, Topping } from './order-side.js';
+import { Order } from './model.js'
  
 $(window).ready(function () {
 	const modal = $('#shoppingCart');
@@ -40,7 +38,6 @@ $(window).ready(function () {
 	doShowAll();
 });
 function showShoppingCart() {
-	// console.log('weeeeeeeee');
 	$('#shoppingCart').modal('toggle');
 }
 function modifyItem(index, itemType, operation) {
@@ -86,7 +83,6 @@ function modifyItem(index, itemType, operation) {
 }
 
 function copyItem(index) {
-	// console.log('foo');
 	index = index.split('-')[1] - 1;
 	const order = JSON.parse(localStorage.getItem(localStorage.key(0)));
 	const crepeToBeCopied = order['orderCrepe'][index];
@@ -98,8 +94,6 @@ function copyItem(index) {
 //https://www.smashingmagazine.com/2019/08/shopping-cart-html5-web-storage/
 function checkBrowser() {
 	if ('localStorage' in window && window['localStorage'] !== null) {
-		// console.log('true');
-		// We can use localStorage object to store data.
 		return true;
 	} else {
 		return false;
@@ -141,7 +135,7 @@ function doShowAll() {
 
 			order.fromJSON(orderDict)
 			console.log('check orderDict after', order);
-
+			// to do finish the serialization and deserialization of all the classes, then build savory crepe, then menu crepe pg, then clover pmt in backend, then mobile buttons
 			if (!order) {
 				if (order.orderCrepe.length) {
 					const orderCrepes = order.orderCrepe;
@@ -152,9 +146,6 @@ function doShowAll() {
 						// the crepe is inside an object whose only key is "ordercrepes" and whose value is a list of different orders of crepes. for custom crepes there will only be one crepe in the list
 						const orderCrepe = orderCrepes[k]
 						console.log("orderCrepe: %s", JSON.stringify(orderCrepe))
-					
-					
-
 						if (orderCrepe.flavorProfile === 'sweet' && orderCrepe.origination === 'custom') {
 							const orderCrepeIngredientCategories = orderCrepe.ingredients[0]['ingredients'];
 							$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);

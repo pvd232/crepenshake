@@ -13,7 +13,6 @@ class Ingredient_Repository(object):
         return ingredients
 
     def get_ingredient_prices(self, session):
-
         ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price FROM ingredient i JOIN ingredient_serving_size_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
                                             {"param": "regular"})
         return ingredient_prices
@@ -24,8 +23,8 @@ class Ingredient_Repository(object):
         return ingredient_categories
 
     def get_sweet_ingredient_prices(self, session):
-        sweet_ingredients = session.query(Ingredient_Serving_Size_Price.ingredient_id, Ingredient_Serving_Size_Price.price, Ingredient.ingredient_category_id).join(Ingredient).filter(or_(
-            Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'))
+        sweet_ingredients = session.query(Ingredient_Serving_Size_Price.ingredient_id, Ingredient_Serving_Size_Price.serving_size, Ingredient_Serving_Size_Price.price, Ingredient.ingredient_category_id).join(Ingredient).filter(or_(
+            Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'), Ingredient_Serving_Size_Price.serving_size == 'regular')
         return sweet_ingredients
 
     def get_sweet_ingredient_categories(self, session):
@@ -42,7 +41,6 @@ class Ingredient_Repository(object):
 class Order_Repository(object):
 
     def post_order(self, session, customer, order, order_drink_list=None, order_side_list=None,  order_crepe_list=None, custom_crepe_list=None, new_model_crepe_list=None):
-
         user = session.query(Customer).filter(
             Customer.id == customer.id).first()
         # check to make sure the customer doesn't already exist in the database

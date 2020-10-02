@@ -85,7 +85,7 @@ class Ingredient_Service(object):
         response = []
         with self.session_scope() as session:
             for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
-                if ingredient.ingredient_category_id == 'sweetness':
+                if ingredient.ingredient_category_id == 'sweetness' and ingredient.serving_size == 'regular':
                     print(ingredient)
                     ingredient_model = Ingredient_Model(
                         id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
