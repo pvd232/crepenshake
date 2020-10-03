@@ -34,7 +34,7 @@
 			
 		>
 			{% endblock %}
-			<a class="navbar-brand" style="background-color: black" href='{{url_for("home")}}'>
+			<a class="navbar-centered" style="background-color: black;" href='{{url_for("home")}}'>
 				<img class="img-responsive" src="../static/images/NewLogo.png" width="350" height="150"/>
 			</a>
 			<nav class="navbar navbar-dark navbar-expand-lg" style="background-color: black">
@@ -59,13 +59,10 @@
 							<a class="nav-link" style="color: #fb2331" href='{{url_for("menu")}}'>Menu</a>
 						</li>
 						<li class="nav-item px-3">
-							<a class="nav-link" style="color: #fb2331" href='{{url_for("contact")}}'>Contact</a>
+							<a class="nav-link" style="color: #fb2331" href='{{url_for("contact")}}'>Contact & FAQs</a>
 						</li>
 						<li class="nav-item px-3">
 							<a class="nav-link" style="color: #fb2331" href='{{url_for("about")}}'>About</a>
-						</li>
-						<li class="nav-item px-3">
-							<a class="nav-link" style="color: #fb2331" href='{{url_for("team")}}'>Team</a>
 						</li>
 					</ul>
 				</div>

@@ -1,9 +1,14 @@
-.center {
-	margin-top: 50px;
+.non-modal .left {
+	margin-left: 25px;
+	text-align: left;
+}
+
+.non-modal .center {
+	margin-top: 25px;
 	text-align: center;
 }
 
-.myHeader {
+.non-modal .myHeader {
 	font-size: 3.5em;
 	font-weight: 500;
 }

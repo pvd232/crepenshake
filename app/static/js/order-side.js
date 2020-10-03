@@ -86,6 +86,8 @@ $(window).on('load', function () {
 	croissants = $('#sideCroissants').data('croissants');
 	iceCreamBowls = $('#iceCreamBowls').data('icecreambowls');
 	toppings = $('#sideToppings').data('sidetoppings');
+	console.log("toppings: %s", JSON.stringify(toppings))
+	
 	toppingServingSizes = $('#toppingServingSizes').data('toppingservingsizes');
 
 	// i have to add the topping Cateogory so that the index of card decks will be correct
@@ -95,6 +97,8 @@ $(window).on('load', function () {
 	sideCategoryDataArray.push(croissants);
 	sideCategoryDataArray.push(iceCreamBowls);
 	sideCategoryDataArray.push(toppings);
+	console.log("sideCategoryDataArray: %s", JSON.stringify(sideCategoryDataArray))
+	
 
 	$('.card-img-top').wrap('<div class="container2"></div>');
 	$('#cardDeck-2')
@@ -244,11 +248,14 @@ $(window).on('load', function () {
 					// logic for toppings is the most complex and should be evaluated last. de facto the non-topping cards are ice cream and croissant which have counters
 
 					if (selectedItemCategory != 'topping') {
-						if (!userOrderSide.findSide(selectedItemIndex, selectedItemCategoryIndex)) {
+						if (
+							!userOrderSide.findSide(selectedItemIndex, selectedItemCategoryIndex, selectedItemCategory, sideCategoryDataArray)
+						) {
 							const updatedSide = userOrderSide.changeSideQuantity(
 								selectedItemIndex,
 								selectedItemCategoryIndex,
-								'increase'
+								'increase',
+								selectedItemCategory, sideCategoryDataArray
 							);
 							$(this).closest('.card').find('.btn2').html(updatedSide.quantity);
 
@@ -261,13 +268,27 @@ $(window).on('load', function () {
 					// if the selected card is a topping and if it has been selected
 					else if (
 						selectedItemCategory === 'topping' &&
-						userOrderSide.checkIfThisToppingSelected(selectedItemIndex, selectedItemCategoryIndex)
+						userOrderSide.checkIfThisToppingSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							selectedItemCategory,
+							sideCategoryDataArray
+						)
 					) {
-						userOrderSide.removeTopping(selectedItemIndex, selectedItemCategoryIndex);
+						userOrderSide.removeTopping(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							sideCategoryDataArray
+						);
 						$(this).closest('.card').find('.btn2').hide();
 					} else if (
 						selectedItemCategory === 'topping' &&
-						!userOrderSide.checkIfThisToppingSelected(selectedItemIndex, selectedItemCategoryIndex)
+						!userOrderSide.checkIfThisToppingSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							selectedItemCategory,
+							sideCategoryDataArray
+						)
 					) {
 						if (userOrderSide.checkIfIceCreamSelected()) {
 							const servingSizeIndex = $(this).closest('.card').find('.btn').attr('id').split('-')[1];
@@ -275,7 +296,8 @@ $(window).on('load', function () {
 							const newTopping = userOrderSide.addTopping(
 								selectedItemIndex,
 								selectedItemCategoryIndex,
-								toppingServingSize
+								toppingServingSize,
+								sideCategoryDataArray
 							);
 
 							$(this).closest('.card').find('.btn').show();
@@ -293,7 +315,14 @@ $(window).on('load', function () {
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			const selectedItemCategory = newSideNames[selectedItemCategoryIndex].side_name_id;
 			if (selectedItemCategory === 'topping') {
-				if (!userOrderSide.checkIfThisToppingSelected(selectedItemIndex, selectedItemCategoryIndex)) {
+				if (
+					!userOrderSide.checkIfThisToppingSelected(
+						selectedItemIndex,
+						selectedItemCategoryIndex,
+						selectedItemCategory,
+						sideCategoryDataArray
+					)
+				) {
 					$(this).find('.btn').hide();
 					$(this).find('.btn3').hide();
 					$(this).find('.btn4').hide();
@@ -321,7 +350,12 @@ $(window).on('load', function () {
 					$(this).closest('.card').find('.btn3').show();
 					$(this).closest('.card').find('.btn4').show();
 				} else {
-					userOrderSide.addTopping(selectedItemIndex, selectedItemCategoryIndex, toppingServingSize);
+					userOrderSide.addTopping(
+						selectedItemIndex,
+						selectedItemCategoryIndex,
+						toppingServingSize,
+						sideCategoryDataArray
+					);
 					$(this).html('Customize');
 					$(this).blur();
 					$(this).closest('.card').find('.btn2').html('2X');
@@ -341,7 +375,12 @@ $(window).on('load', function () {
 			if (selectedItemCategory == 'topping') {
 				const servingSizeIndex = $(this).attr('id').split('-')[1];
 				const toppingServingSize = toppingServingSizes[servingSizeIndex];
-				userOrderSide.addTopping(selectedItemIndex, selectedItemCategoryIndex, toppingServingSize);
+				userOrderSide.addTopping(
+					selectedItemIndex,
+					selectedItemCategoryIndex,
+					toppingServingSize,
+					sideCategoryDataArray
+				);
 				$(this).closest('.card').find('.btn2').html('½');
 				$(this).closest('.card').find('.btn2').show();
 				$(this).hide();
@@ -360,7 +399,12 @@ $(window).on('load', function () {
 			if (selectedItemCategory == 'topping') {
 				const servingSizeIndex = $(this).attr('id').split('-')[1];
 				const toppingServingSize = toppingServingSizes[servingSizeIndex];
-				userOrderSide.addTopping(selectedItemIndex, selectedItemCategoryIndex, toppingServingSize);
+				userOrderSide.addTopping(
+					selectedItemIndex,
+					selectedItemCategoryIndex,
+					toppingServingSize,
+					sideCategoryDataArray
+				);
 				$(this).closest('.card').find('.btn2').html('✓');
 				$(this).closest('.card').find('.btn2').show();
 				$(this).hide();
@@ -375,10 +419,14 @@ $(window).on('load', function () {
 		.bind('click', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+			const selectedItemCategory = newSideNames[selectedItemCategoryIndex].side_name_id;
+
 			const updatedSide = userOrderSide.changeSideQuantity(
 				selectedItemIndex,
 				selectedItemCategoryIndex,
-				'decrease'
+				'decrease',
+				selectedItemCategory,
+				sideCategoryDataArray
 			);
 			if (updatedSide) {
 				if (updatedSide.quantity <= 0) {
@@ -398,10 +446,13 @@ $(window).on('load', function () {
 		.bind('click', function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+			const selectedItemCategory = newSideNames[selectedItemCategoryIndex].side_name_id;
+
 			const updatedSide = userOrderSide.changeSideQuantity(
 				selectedItemIndex,
 				selectedItemCategoryIndex,
-				'increase'
+				'increase',
+				selectedItemCategory, sideCategoryDataArray
 			);
 			$(this).closest('.card').find('.btn2').html(updatedSide.quantity);
 			$(this).closest('.card').find('.btn2').show();

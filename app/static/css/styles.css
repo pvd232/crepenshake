@@ -8,15 +8,17 @@ h2 {
 https://mdbootstrap.com/snippets/jquery/ascensus/145665#css-tab-view
 https://stackoverflow.com/questions/33404154/bootstrap-change-the-navbar-font-size
 */
-body {visibility: hidden;}
-.navbar-brand {
-	min-width: auto;
+body {
+	visibility: hidden;
+}
+.navbar-centered {
 	min-height: auto;
 	margin-bottom: 50px;
 	height: 100px;
-	position: relative;
-	left: 36.5%;
 	margin-top: auto;
+	position:relative; 
+	left: auto;
+	right: auto; 
 	
 }
 .navbar {
@@ -34,6 +36,8 @@ body {visibility: hidden;}
 	min-height: auto;
 	margin-bottom: auto;
 	margin-top: auto;
+	text-align:center;
+
 }
 .navbar.navbar-dark.navbar-expand-lg {
 	min-width: auto;
