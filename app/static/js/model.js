@@ -1291,7 +1291,7 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	addIngredient = (index, selectedItemCategoryIndex, ingredientCategoryDataArray) => {
+	addIngredient = (index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize = null) => {
 		const newIngredient = new Ingredient();
 		newIngredient.initFromHTML(index, selectedItemCategoryIndex, ingredientCategoryDataArray);
 		this._ingredients.push(newIngredient);
@@ -1328,6 +1328,29 @@ export class OrderCrepe {
 			return selectedIngredient;
 		}
 	};
+	changeSavoryIngredientQuantity = (index, selectedItemCategoryIndex, ingredientCategoryDataArray) => {
+		const selectedIngredient = this.findIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray);
+		if (!selectedIngredient) {
+			if (selectedIngredient.ingredient_category_id != 'protein') {
+				const addedIngredient = this.addIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize);
+				this.priceCrepe();
+				return addedIngredient;
+			}
+			else {
+				// if a protein has alread been selected then we want to add this protein as either a regular quantity if the other is extra, or a half quantity if the other is regular
+				if (this.checkIfProteinSelected()) {
+					// check the serving size of the already selected protein
+					// TODO finish adding in logic for protein ingredients and test it
+					const servingSize = this.checkIfProteinSelected()
+					console.log("servingSize: %s", servingSize)
+					this.addIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize)
+				}
+			}
+		}
+		else {
+
+		}
+	}
 	priceCrepe = () => {
 		this._orderTotal = 0;
 		if (this._ingredients.length) {
@@ -1335,5 +1358,13 @@ export class OrderCrepe {
 				this._orderTotal += this._ingredients[i].price * this._ingredients[i].quantity;
 			}
 		}
+	};
+	checkIfProteinSelected = () => {
+		for (var i = 0; i < this._ingredients.length; i++) {
+			if (this._ingredients[i].category === 'protein') {
+				return this._ingredients[i].servingSize;
+			}
+		}
+		return false;
 	};
 }

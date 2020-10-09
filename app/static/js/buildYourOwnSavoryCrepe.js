@@ -1213,7 +1213,7 @@ var editCrepe = null;
 // var sweetIngredientCategories;
 var ingredientCategories;
 var ingredientServingSizes;
-var ingredientCategoryDataArray;
+var ingredientCategoryDataArray = new Array();
 var userOrderCrepe;
 
 const stringify = (crepeOrder) => {
@@ -1299,19 +1299,15 @@ $(window).on('load', function () {
 			});
 	});
 
-	// ingredientCategories = $('#ingredientCategories').data('ingredientcategories');
-	// console.log('ingredientCategories: %s', ingredientCategories);
-
-	// sweetnessIngredients = $('#sweetnessIngredients').data('sweetnessingredients');
-	// console.log('sweetnessIngredients: %s', sweetnessIngredients);
-
-	// fruitIngredients = $('#fruitIngredients').data('fruitingredients');
-	// console.log('fruitIngredients: %s', fruitIngredients);
-
 	ingredientServingSizes = $('#ingredientServingSizes').data('ingredientservingsizes');
 	console.log('ingredientServingSizes: %s', ingredientServingSizes);
-	// ingredientCategoryDataArray = new Array();
-	ingredientCategoryDataArray = $('#ingredientPricesByCategory').data('ingredientpricesbycategory');
+
+	// had to reformat this data to match what the orderCrepe model is expecting. index the ingredient category with its associated ingredients in a list
+	const unformattedIngredientCategoryDataArray = $('#ingredientPricesByCategory').data('ingredientpricesbycategory');
+	for (var i = 0; i < unformattedIngredientCategoryDataArray.length; i++) {
+		const ingredients = [...unformattedIngredientCategoryDataArray[i].ingredients];
+		ingredientCategoryDataArray.push(ingredients);
+	}
 	// ingredientCategoryDataArray.push(fruitIngredients);
 	// ingredientCategoryDataArray.push(sweetnessIngredients);
 	console.log('ingredientCategoryDataArray: %s', JSON.stringify(ingredientCategoryDataArray));
@@ -1421,14 +1417,14 @@ $(window).on('load', function () {
 							ingredientCategoryDataArray
 						)
 					) {
-						const updatedIngredient = userOrderCrepe.changeIngredientQuantity(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							'increase',
-							ingredientCategoryDataArray
-						);
-						console.log('quant: %s', updatedIngredient.quantity);
-
+						// const updatedIngredient = userOrderCrepe.changeIngredientQuantity(
+						// 	selectedItemIndex,
+						// 	selectedItemCategoryIndex,
+						// 	'increase',
+						// 	ingredientCategoryDataArray
+						// );
+						// console.log('quant: %s', updatedIngredient.quantity);
+						userOrderCrepe.up
 						$(this).closest('.card').find('.btn2').html(updatedIngredient.quantity);
 						$(this).closest('.card').find('.btn2').show();
 						//after clicking the card show the + and - buttons
@@ -1537,7 +1533,7 @@ $(window).on('load resize', function () {
 		var cardDeckChildrenLength = [];
 		var constCardDeckNodes = [];
 		for (i = 0; i < constBLength; i++) {
-			clone = b[i].cloneNode(true);
+			const clone = b[i].cloneNode(true);
 			constCardDeckNodes.push(clone);
 			var cardDeckCards = b[i].children;
 			var counter = 0;
@@ -1619,7 +1615,7 @@ $(window).on('load resize', function () {
 // TODO: add sauteed onions & peppers, pesto, dill
 var cWidth = $(window).width();
 $(window).on('resize', function () {
-	newWidth = $(window).width();
+	var newWidth = $(window).width();
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
