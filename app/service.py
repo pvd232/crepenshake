@@ -54,64 +54,16 @@ class Ingredient_Service(object):
             self.session.close()
         # now all calls to Session() will create a thread-local session
 
-    def get_ingredients(self):
-        response = []
-        with self.session_scope() as session:
-            for ingredient in self.ingredient_repository.get_ingredients(session):
-                ingredient_model = Ingredient_Model(
-                    id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id)
-                response.append(ingredient_model)
-            return response
-
-    def get_ingredient_prices(self):
-        response = []
-        with self.session_scope() as session:
-            for ingredient in self.ingredient_repository.get_ingredient_prices(session):
-                ingredient_model = Ingredient_Model(
-                    id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
-                response.append(ingredient_model)
-            return response
-
-    def get_sweet_ingredient_prices(self):
-        response = []
-        with self.session_scope() as session:
-            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
-                ingredient_model = Ingredient_Model(
-                    id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
-                response.append(ingredient_model)
-            return response
-
-    def get_sweetness_ingredients(self):
-        response = []
-        with self.session_scope() as session:
-            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
-                if ingredient.ingredient_category_id == 'sweetness' and ingredient.serving_size == 'regular':
-                    print(ingredient)
-                    ingredient_model = Ingredient_Model(
-                        id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
-                    response.append(ingredient_model)
-            return response
-
-    def get_fruit_ingredients(self):
-        response = []
-        with self.session_scope() as session:
-            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
-                if ingredient.ingredient_category_id == 'fruit':
-                    ingredient_model = Ingredient_Model(
-                        id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
-                    response.append(ingredient_model)
-            return response
-
     def get_ingredient_categories(self):
         response = []
         with self.session_scope() as session:
             for ingredient_category in self.ingredient_repository.get_ingredient_categories(session):
-    
                 ingredient_category_model = Ingredient_Category(
                     id=ingredient_category.id)
-                response.append(ingredient_category)
+                response.append(ingredient_category_model)
             return response
 
+    
     def get_sweet_ingredient_categories(self):
         response = []
         with self.session_scope() as session:
@@ -129,6 +81,80 @@ class Ingredient_Service(object):
                 ingredient_serving_size_model = Ingredient_Model(
                     serving_size=ingredient_serving_size.id)
                 response.append(ingredient_serving_size_model)
+            return response
+
+
+
+    def get_ingredients(self):
+        response = []
+        with self.session_scope() as session:
+            for ingredient in self.ingredient_repository.get_ingredients(session):
+                ingredient_model = Ingredient_Model(
+                    id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id)
+                response.append(ingredient_model)
+            return response
+
+    def get_ingredient_prices(self):
+        response = []
+        with self.session_scope() as session:
+            for ingredient in self.ingredient_repository.get_ingredient_prices(session):
+                ingredient_model = Ingredient_Model(
+                    id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                response.append(ingredient_model)
+            return response
+    
+
+    def get_ingredient_prices_by_category(self):
+        # response = []
+        # with self.session_scope() as session:
+        #     for ingredient in self.ingredient_repository.get_ingredient_prices(session):
+                # ingredient_model = Ingredient_Model(
+                #     id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+        #         response.append(ingredient_model)
+        #     return response
+        response = []
+        ingredient_categories = self.get_ingredient_categories()
+        with self.session_scope() as session:
+            for ingredient_category in ingredient_categories:
+                ingredient_category_dict = {}
+                ingredient_category_dict['ingredients'] = []
+                for ingredient in self.ingredient_repository.get_ingredient_prices(session):
+                    if ingredient_category.id == ingredient.ingredient_category_id:
+                        ingredient_category_dict['ingredient_category'] = ingredient_category.id
+                        ingredient_model = Ingredient_Model(id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                        ingredient_category_dict['ingredients'].append(
+                            ingredient_model)
+                response.append(ingredient_category_dict)
+            return response
+
+                
+    def get_sweet_ingredient_prices(self):
+        response = []
+        with self.session_scope() as session:
+            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
+                ingredient_model = Ingredient_Model(
+                    id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                response.append(ingredient_model)
+            return response
+
+    def get_sweetness_ingredients(self):
+        response = []
+        with self.session_scope() as session:
+            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
+                if ingredient.ingredient_category_id == 'sweetness':
+                    ingredient_model = Ingredient_Model(
+                        id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                    response.append(ingredient_model)
+            return response
+
+    def get_fruit_ingredients(self):
+        response = []
+        with self.session_scope() as session:
+            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
+                if ingredient.ingredient_category_id == 'fruit':
+                    ingredient_model = Ingredient_Model(
+                        id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                    response.append(ingredient_model)
             return response
 
 

@@ -12,7 +12,21 @@ application = Flask(__name__)
 app = application
 
 
-def humanize(dict, attr):
+def humanize(dict=None, attr=None, format=False):
+    if format == True:
+        for x in dict['ingredients']:
+            str = x.__getattribute__(attr)
+            frags = str.split('_')
+            if len(frags) < 2:
+                str = str.capitalize()
+                setattr(x, attr, str)
+            newFrags = []
+            for frag in frags:
+                frag = frag.capitalize()
+                newFrags.append(frag)
+            newFrags = " ".join(newFrags)
+            setattr(x, attr, newFrags)
+        return dict
     str = dict.__getattribute__(attr)
     frags = str.split('_')
     if len(frags) < 2:
@@ -61,25 +75,38 @@ def order():
 @app.route('/order/make-your-own-savory-crepe')
 def make_your_own_savory_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
-    ingredient_prices = [humanize(x, 'id')
-                         for x in ingredient_service.get_ingredient_prices()]
+    
+    ingredient_prices_by_category = ingredient_service.get_ingredient_prices_by_category()
+    new_ingredient_prices_by_category = []
+    for x in ingredient_prices_by_category:
+        new_ingredient_category_dict = {}
+        new_ingredient_category_dict['ingredient_category'] = x['ingredient_category']
+        new_ingredient_category_dict['ingredients'] = []
+        for y in x['ingredients']:
+            new_ingredient_category_dict['ingredients'].append(y.serialize())
+        new_ingredient_prices_by_category.append(new_ingredient_category_dict)
+        
+    print('ingredient_prices_by_category', ingredient_prices_by_category)
+    print()
+    print("new_ingredient_prices_by_category: %s", new_ingredient_prices_by_category)
 
+    formatted_ingredient_prices_by_category = [humanize(x, 'id', True)
+                         for x in ingredient_service.get_ingredient_prices_by_category()]
+    for x in formatted_ingredient_prices_by_category:
+        print('format', x)
     ingredient_categories = ingredient_service.get_ingredient_categories()
+    formatted_ingredient_categories = [humanize(x, 'id') for x in ingredient_service.get_ingredient_categories()]
+    ingredient_serving_sizes = [x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
     rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
                                "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
     editOrder = request.args.get('editOrder')
-
-    if editOrder == None:
-        return render_template('make_your_own_savory_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
-
-    else:
-        return render_template('make_your_own_savory_crepe.html', ingredient_prices=ingredient_prices, ingredient_categories=ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
+    return render_template('make_your_own_savory_crepe.html', formatted_ingredient_prices_by_category = formatted_ingredient_prices_by_category, ingredient_prices_by_category = new_ingredient_prices_by_category, ingredient_categories=ingredient_categories, formatted_ingredient_categories=formatted_ingredient_categories, ingredient_serving_sizes=ingredient_serving_sizes, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
 
 
 @app.route('/order/make-your-own-sweet-crepe')
 def make_your_own_sweet_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
-    sweet_ingredients = ingredient_service.get_ingredient_prices()
+    sweet_ingredients = ingredient_service.get_sweet_ingredient_prices()
     formatted_sweet_ingredients = [humanize(x, 'id') for x in ingredient_service.get_sweet_ingredient_prices()]
     ingredient_serving_sizes = [
         x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]

@@ -14,7 +14,7 @@ class Ingredient_Repository(object):
 
     def get_ingredient_prices(self, session):
         ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price FROM ingredient i JOIN ingredient_serving_size_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
-                                            {"param": "regular"})
+                                        {"param": "regular"})
         return ingredient_prices
 
     def get_ingredient_categories(self, session):
@@ -25,7 +25,10 @@ class Ingredient_Repository(object):
     def get_sweet_ingredient_prices(self, session):
         sweet_ingredients = session.query(Ingredient_Serving_Size_Price.ingredient_id, Ingredient_Serving_Size_Price.serving_size, Ingredient_Serving_Size_Price.price, Ingredient.ingredient_category_id).join(Ingredient).filter(or_(
             Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'), Ingredient_Serving_Size_Price.serving_size == 'regular')
+        for x in sweet_ingredients:
+            print('sweet' , x)
         return sweet_ingredients
+
 
     def get_sweet_ingredient_categories(self, session):
         ingredient_categories = session.query(
@@ -152,7 +155,7 @@ class Side_Repository(object):
         return ice_cream
 
     def get_toppings(self, session):
-        toppings = session.query(Ingredient_Serving_Size_Price).join(Ingredient).filter(or_(
+        toppings = session.query(Ingredient).filter(or_(
             Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'))
         return toppings
 

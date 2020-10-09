@@ -2,6 +2,14 @@
 <link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
 {% endblock %} {% block content %}
 
+{% if ingredient_prices_by_category %}
+<div id="ingredientPricesByCategory" data-ingredientpricesbycategory='{{ ingredient_prices_by_category|tojson }}'></div>
+{% endif %}
+
+{% if ingredient_serving_sizes %}
+<div id="ingredientServingSizes" data-ingredientservingsizes='{{ ingredient_serving_sizes|tojson }}'></div>
+{% endif %}
+
 <div class="container1">
 	<div
 		class="card"
@@ -46,32 +54,33 @@
 </div>
 {% if editOrder %}
 <div id="{{editOrder}}" class="edit"></div>
-{% endif %} {% for j in range(ingredient_categories|length) %}
+{% endif %} {% for i in range(ingredient_prices_by_category|length) %}
 
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<div class="row">
-		<h3 class="head3">{{ingredient_categories[j].id + "s"+" " + rules_for_each_category[j]}}</h3>
+		<h3 class="head3">{{formatted_ingredient_prices_by_category[i].ingredient_category}}</h3>
 	</div>
-	<div class="card-deck" id='{{ingredient_categories[j].id}}'>
-		{% for i in ingredient_prices %} {% if i.ingredient_category_id == ingredient_categories[j].id %} {% if i.price
-		> 0.0 %}
-		<div class="card" id="card1">
-			<img src="" class="card-img-top" alt="..." />
-			<div class="card-body">
-				<h5 class="card-title">{{i.id}}</h5>
-				<p class="card-text">${{i.price}}</p>
-			</div>
-		</div>
+	<div class="card-deck" id="{{ingredient_prices_by_category[i].ingredient_category}}">
+			{% for j in range(ingredient_prices_by_category[i].ingredients|length) %}
+				{% if ingredient_prices_by_category[i].ingredients[j].price > 0.0 %} 
+					<div class="card" id="card1">
+						<img src="" class="card-img-top" alt="..." />
+						<div class="card-body">
+							<h5 class="card-title">{{formatted_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
+							<p class="card-text">${{formatted_ingredient_prices_by_category[i].ingredients[j].price}}</p>
+						</div>
+					</div>
 
-		{% else %}
-		<div class="card" id="card1">
-			<img src="" class="card-img-top" alt="..." />
-			<div class="card-body">
-				<h5 class="card-title">{{i.id}}</h5>
-				<p class="card-text"></p>
-			</div>
-		</div>
-		{% endif %} {% endif %} {% endfor %}
+				{% else %}
+					<div class="card" id="card1">
+						<img src="" class="card-img-top" alt="..." />
+						<div class="card-body">
+							<h5 class="card-title">{{formatted_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
+							<p class="card-text"></p>
+						</div>
+					</div>
+				{% endif %} 
+			{% endfor %} 
 	</div>
 </div>
 {% endfor %}
@@ -97,7 +106,7 @@
 	>
 		Please select a protein.
 	</div>
-	<button class="btn5 btn1" id="checkOut">Add to Cart</button>
+	<button class="btn5 btn1" id="savoryCrepeCheckOut">Add to Cart</button>
 </div>
 {% endblock %}
 {% block script %}
