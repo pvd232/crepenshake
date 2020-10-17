@@ -128,30 +128,39 @@ def make_your_own_sweet_crepe(editOrder=None):
 def order_drink(editOrder=None):
     drink_service = Drink_Service()
 
-    milkshakes = [humanize(x, "name").serialize()
+    milkshakes = [x.serialize() for x in drink_service.get_milkshakes()]
+    formatted_milkshakes = [humanize(x, "name").serialize()
                   for x in drink_service.get_milkshakes()]
 
-    for x in milkshakes:
-        print(x)
-    bottled_drinks = [humanize(x, "name").serialize()
+    bottled_drinks = [x.serialize() for x in drink_service.get_bottled_drinks()]
+    formatted_bottled_drinks = [humanize(x, "name").serialize()
                       for x in drink_service.get_bottled_drinks()]
 
     drink_categories = [x.serialize()
                         for x in drink_service.get_drink_categories()]
-    coffee_syrups = [humanize(x, "coffee_syrup_flavor").serialize()
+
+    coffee_syrups = [x.serialize() for x in drink_service.get_coffee_syrups()]
+    formatted_coffee_syrups = [humanize(x, "coffee_syrup_flavor").serialize()
                      for x in drink_service.get_coffee_syrups()]
 
-    coffee_drinks = [humanize(x, "name").serialize()
+    coffee_drinks = [x.serialize() for x in drink_service.get_coffee_drinks()]
+    formatted_coffee_drinks = [humanize(x, "name").serialize()
                      for x in drink_service.get_coffee_drinks()]
-    non_coffee_drinks = [humanize(x, "name").serialize()
+
+    non_coffee_drinks = [x.serialize() for x in drink_service.get_non_coffee_drinks()]
+    formatted_non_coffee_drinks = [humanize(x, "name").serialize()
                          for x in drink_service.get_non_coffee_drinks()]
-    milk_drinks = [humanize(x, "id").serialize()
+    
+    milk_drinks = [x.serialize() for x in drink_service.get_milk_drinks()]
+    formatted_milk_drinks = [humanize(x, "id").serialize()
                    for x in drink_service.get_milk_drinks()]
 
-    coffee_temperatures = [humanize(x, "id").serialize()
+    coffee_temperatures = [x.serialize() for x in drink_service.get_coffee_temperature()]
+    formatted_coffee_temperatures = [humanize(x, "id").serialize()
                            for x in drink_service.get_coffee_temperature()]
+
     editOrder = request.args.get('editOrder')
-    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks=non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups, editOrder=editOrder, coffee_temperatures=coffee_temperatures)
+    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, formatted_bottled_drinks = formatted_bottled_drinks, milkshakes=milkshakes, formatted_milkshakes = formatted_milkshakes, coffee_drinks=coffee_drinks, formatted_coffee_drinks = formatted_coffee_drinks, non_coffee_drinks = non_coffee_drinks, formatted_non_coffee_drinks = formatted_non_coffee_drinks, milk_drinks=milk_drinks, formatted_milk_drinks = formatted_milk_drinks, coffee_syrups=coffee_syrups, formatted_coffee_syrups = formatted_coffee_syrups, coffee_temperatures=coffee_temperatures, formatted_coffee_temperatures = formatted_coffee_temperatures, editOrder=editOrder)
 
 
 @app.route('/order/side')

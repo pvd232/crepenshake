@@ -1464,7 +1464,7 @@ export class OrderCrepe {
 }
 // Bugs: 
 // 1. fix pricing for sweet crepe page
-// 2. seperate formatted values from actual database values in drinks page
+// 2. 
 //
 //
 //

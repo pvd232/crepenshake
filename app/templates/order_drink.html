@@ -14,7 +14,7 @@ coffee_drinks %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class="head3">{{ drink_categories[j].id }}</h3>
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
-		{% for i in coffee_drinks %}
+		{% for i in formatted_coffee_drinks %}
 		<div class="card" id="card1">
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
@@ -30,7 +30,7 @@ coffee_drinks %}
 			<h5 id="errorMilk" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
 		</div>
 		<div class="card-deck" id="milk">
-			{% for i in milk_drinks %}
+			{% for i in formatted_milk_drinks %}
 			<div class="card" id="card1">
 				<img src="" class="card-img-top" alt="..." />
 				<div class="card-body">
@@ -53,7 +53,7 @@ coffee_drinks %}
 			<h5 id="errorTemp" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
 		</div>
 		<div class="card-deck" id="temperature">
-			{% for i in coffee_temperatures %}
+			{% for i in formatted_coffee_temperatures %}
 			<div class="card" id="card1">
 				<img src="" class="card-img-top" alt="..." />
 				<div class="card-body">
@@ -73,7 +73,7 @@ coffee_drinks %}
 			<h5 id="errorSyrup" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
 		</div>
 		<div class="card-deck" id="coffee_syrup">
-			{% for i in coffee_syrups %}
+			{% for i in formatted_coffee_syrups %}
 			<div class="card" id="card1">
 				<img src="" class="card-img-top" alt="..." />
 				<div class="card-body">
@@ -91,7 +91,7 @@ coffee_drinks %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class="head3">Gourmet {{drink_categories[j].id }}s</h3>
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
-		{% for i in milkshakes %}
+		{% for i in formatted_milkshakes %}
 		<div class="card" id="card1">
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
@@ -109,7 +109,7 @@ coffee_drinks %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class="head3">{{drink_categories[j].id }} drinks</h3>
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
-		{% for i in non_coffee_drinks %}
+		{% for i in formatted_non_coffee_drinks %}
 		<div class="card" id="card1" style="max-width: 240px !important; min-width: 210px !important">
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
@@ -127,7 +127,7 @@ coffee_drinks %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class="head3">{{drink_categories[j].id }} drinks</h3>
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
-		{% for i in bottled_drinks %}
+		{% for i in formatted_bottled_drinks %}
 		<div class="card" id="card1">
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
