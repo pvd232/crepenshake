@@ -174,6 +174,8 @@ $(window).on('load', function () {
 		console.log('this.src: %s', this.src);
 	});
 	userOrderCrepe = new OrderCrepe();
+	userOrderCrepe._flavor = 'sweet';
+	userOrderCrepe._origination = 'custom';
 
 	//veggie + all other topping functionality
 	$(document)

@@ -154,10 +154,10 @@ class Side_Repository(object):
         ice_cream = session.query(Ice_Cream_Bowl)
         return ice_cream
 
-    def get_toppings(self, session):
-        toppings = session.query(Ingredient).filter(or_(
-            Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'))
-        return toppings
+    # def get_toppings(self, session):
+    #     toppings = session.query(Ingredient).filter(or_(
+    #         Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'))
+    #     return toppings
 
 
 class Menu_Crepe_Repository(object):

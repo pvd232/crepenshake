@@ -168,9 +168,9 @@ def order_side(editOrder=None):
         x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
     formatted_ice_cream_bowls = [humanize(x, 'flavor')
                                  for x in side_service.get_ice_cream_bowls()]
-    toppings = [x.serialize() for x in side_service.get_toppings()]
+    toppings = [x.serialize() for x in ingredient_service.get_sweet_ingredient_prices()]
     formatted_toppings = [humanize(x, 'id')
-                          for x in side_service.get_toppings()]
+                          for x in ingredient_service.get_sweet_ingredient_prices()]
     editOrder = request.args.get('editOrder')
     return render_template('order_side.html', croissants=croissants, formatted_croissants=formatted_croissants, side_names=side_names, formatted_side_names=formatted_side_names, side_types=side_types, ice_cream_bowls=ice_cream_bowls, formatted_ice_cream_bowls=formatted_ice_cream_bowls, toppings=toppings, formatted_toppings=formatted_toppings, topping_serving_sizes=topping_serving_sizes, editOrder=editOrder)
 

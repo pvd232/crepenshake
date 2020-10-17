@@ -23,6 +23,15 @@ function jq(myid) {
 }
 const checkOut = (order) => {
 	if (editDrinkIndex != null) {
+		// when checking out make sure that if no milk has been selected then we assign the default value of 2%
+		for (var i = 0; i < userOrderDrink.orderDrink.length; i++){
+			if (userOrderDrink.orderDrink[i].drinkCategory === 'coffee') {
+				if (!userOrderDrink.orderDrink[i]._milkType) {
+					userOrderDrink.orderDrink[i]._milkType = '2% Milk';
+				}
+			}
+		}
+				
 		stringify(order);
 		// $.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
@@ -362,6 +371,9 @@ $(window).ready(function () {
 			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+			console.log("selectedItemCategory: %s", selectedItemCategory)
+			console.log("userOrderDrink.checkIfCoffeeSelected(): %s", userOrderDrink.checkIfCoffeeSelected())
+			
 			// if the card isn't milk or temperature
 			if (
 				selectedItemCategory != 'milk' &&
@@ -392,13 +404,12 @@ $(window).ready(function () {
 				// if the hover card is milk and a coffee has been selected then fade it out
 			} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'milk') {
 				// 	make sure a milk hasn't already been selected
+				console.log("userOrderDrink.checkIfMilkSelected(): %s", userOrderDrink.checkIfMilkSelected())
+				
 				if (!userOrderDrink.checkIfMilkSelected()) {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
 					// if a milk has been selected then we only want to highlight the card if it is that milk
-				} else if (userOrderDrink.checkIfThisMilkSelected(selectedItemIndex, selectedItemCategory, drinkCategoryDataArray)) {
-					$(this).find('.card-body').css('opacity', '.3');
-					$(this).find('.card-img-top').css('opacity', '.3');
 				}
 			} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'temperature') {
 				if (!userOrderDrink.checkIfTempSelected()) {
@@ -452,10 +463,18 @@ $(window).ready(function () {
 								.find('.card')
 								.each(function () {
 									$(this).css('opacity', '.3');
+									$(this).find('.btn2').hide();
 								});
 						}
 						// if the selected item is a milk card
-					} else if (userOrderDrink.checkIfThisMilkSelected(selectedItemIndex, selectedItemCategory, drinkCategoryDataArray)) {
+					} else if (
+						userOrderDrink.checkIfThisMilkSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							selectedItemCategory,
+							drinkCategoryDataArray
+						)
+					) {
 						userOrderDrink.removeMilk();
 						// reactivate all the milk cards
 						$(this).closest('.card').find('.btn2').hide();
@@ -464,7 +483,14 @@ $(window).ready(function () {
 							.each(function () {
 								$(this).css('opacity', '1');
 							});
-					} else if (userOrderDrink.checkIfThisTempSelected(selectedItemIndex, selectedItemCategory)) {
+					} else if (
+						userOrderDrink.checkIfThisTempSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							selectedItemCategory,
+							drinkCategoryDataArray
+						)
+					) {
 						userOrderDrink.removeTemp();
 						$(this).closest('.card').find('.btn2').hide();
 						// reactivate all the milk cards
@@ -473,7 +499,14 @@ $(window).ready(function () {
 							.each(function () {
 								$(this).css('opacity', '1');
 							});
-					} else if (userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory, drinkCategoryDataArray)) {
+					} else if (
+						userOrderDrink.checkIfThisSyrupSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							selectedItemCategory,
+							drinkCategoryDataArray
+						)
+					) {
 						userOrderDrink.removeSyrup();
 						$(this).closest('.card').find('.btn2').hide();
 						// reactivate all the milk cards
@@ -485,19 +518,38 @@ $(window).ready(function () {
 					}
 					// if the drink/temp/milk hasn't already been selected and is not bottled non-coffee or milkshake
 					else if (
-						!userOrderDrink.checkIfThisDrinkSelected(selectedItemIndex, selectedItemCategoryIndex, drinkCategoryDataArray) &&
-						!userOrderDrink.checkIfThisTempSelected(selectedItemIndex, selectedItemCategory, drinkCategoryDataArray) &&
-						!userOrderDrink.checkIfThisMilkSelected(selectedItemIndex, selectedItemCategory, drinkCategoryDataArray)
+						!userOrderDrink.checkIfThisDrinkSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							drinkCategoryDataArray
+						) &&
+						!userOrderDrink.checkIfThisTempSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							selectedItemCategory,
+							drinkCategoryDataArray
+						) &&
+						!userOrderDrink.checkIfThisMilkSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							selectedItemCategory,
+							drinkCategoryDataArray
+						)
 					) {
+						//this is being considered before the drink selection has been added to the order
 						// if a coffee has been selected already then milk or syrup can be selected
-						if (userOrderDrink.checkIfCoffeeSelected()) {
+						if (userOrderDrink.checkIfCoffeeSelected()) {	
 							// if coffee has been selected alredy then we don't want to select another coffee!
 							if (selectedItemCategory != 'coffee') {
 								//make sure the selected card isn't milk because we want extra logic in there to make sure a milk hasn't already been selected
 								if (selectedItemCategory != 'milk') {
 									if (selectedItemCategory === 'temperature') {
 										if (!userOrderDrink.checkIfTempSelected()) {
-											userOrderDrink.addTemp(selectedItemIndex, selectedItemCategoryIndex, drinkCategoryDataArray);
+											userOrderDrink.addTemp(
+												selectedItemIndex,
+												selectedItemCategoryIndex,
+												drinkCategoryDataArray
+											);
 											$(this).closest('.card').find('.btn2').html('✓');
 											$(this).closest('.card').find('.btn2').toggle();
 											// if a temp has been selected then we want to make sure all the other temp cards are knocked out
@@ -518,7 +570,9 @@ $(window).ready(function () {
 													if (
 														!userOrderDrink.checkIfThisTempSelected(
 															selectedItemIndex,
-															selectedItemCategory, drinkCategoryDataArray
+															selectedItemCategoryIndex,
+															selectedItemCategory,
+															drinkCategoryDataArray
 														)
 													) {
 														$(this).css('opacity', '.3');
@@ -528,8 +582,14 @@ $(window).ready(function () {
 											$('#errorTemp').show();
 										}
 									} else {
+										const servingSize = 'regular'
 										// if the selected card is coffee syrup flavor
-										userOrderDrink.addSyrup(selectedItemIndex, selectedItemCategoryIndex, drinkCategoryDataArray);
+										userOrderDrink.addSyrup(
+											selectedItemIndex,
+											servingSize,
+											selectedItemCategoryIndex,
+											drinkCategoryDataArray
+										);
 										$(this).closest('.card').find('.btn2').html('✓');
 										$(this).closest('.card').find('.btn2').toggle();
 									}
@@ -538,8 +598,11 @@ $(window).ready(function () {
 								else {
 									// make sure a milk hasn't already been selected when selecting a milk card
 									if (!userOrderDrink.checkIfMilkSelected()) {
-										userOrderDrink.addMilk(selectedItemIndex, selectedItemCategoryIndex, drinkCategoryDataArray);
-										console.log('fuck');
+										userOrderDrink.addMilk(
+											selectedItemIndex,
+											selectedItemCategoryIndex,
+											drinkCategoryDataArray
+										);
 										$(this).closest('.card').find('.btn2').html('✓');
 										$(this).closest('.card').find('.btn2').toggle();
 										// if a milk has been selected then we want to make sure all the other milk cards are knocked out
@@ -555,7 +618,9 @@ $(window).ready(function () {
 												if (
 													!userOrderDrink.checkIfThisMilkSelected(
 														selectedItemIndex,
-														selectedItemCategory, drinkCategoryDataArray
+														selectedItemCategoryIndex,
+														selectedItemCategory,
+														drinkCategoryDataArray
 													)
 												) {
 													$(this).css('opacity', '.3');
@@ -567,24 +632,25 @@ $(window).ready(function () {
 								}
 							}
 							// if a coffee has not already been selected and the card being selected isn't any of the other drink options then the card being selected should be coffee
-						} else if (selectedItemCategory === 'coffee') {
-							const espressoServingSize = 'regular';
-							console.log('coffee');
-							userOrderDrink.addCoffee(selectedItemIndex, espressoServingSize, drinkCategoryDataArray);
-							$(this).closest('.card').find('.btn2').html('✓');
-							$(this).closest('.card').find('.btn2').toggle();
-							// activate the milk and temp and syrup cards after selecting coffee
-							$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
-								$(this)
-									.find('.card')
-									.each(function () {
-										$(this).css('opacity', '1');
-									});
-								$('#errorMilk').hide();
-								$('#errorSyrup').hide();
-								$('#errorTemp').hide();
-							});
 						}
+						// else if (selectedItemCategory === 'coffee') {
+						// 	const espressoServingSize = 'regular';
+						// 	console.log('coffee');
+						// 	userOrderDrink.addCoffee(selectedItemIndex, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray);
+						// 	$(this).closest('.card').find('.btn2').html('✓');
+						// 	$(this).closest('.card').find('.btn2').toggle();
+						// 	// activate the milk and temp and syrup cards after selecting coffee
+						// 	$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
+						// 		$(this)
+						// 			.find('.card')
+						// 			.each(function () {
+						// 				$(this).css('opacity', '1');
+						// 			});
+						// 		$('#errorMilk').hide();
+						// 		$('#errorSyrup').hide();
+						// 		$('#errorTemp').hide();
+						// 	});
+						// }
 					}
 				});
 		})
@@ -596,7 +662,7 @@ $(window).ready(function () {
 				$(this).find('.btn').hide();
 				$(this).find('.btn3').hide();
 				$(this).find('.btn4').hide();
-			} else if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory, drinkCategoryDataArray)) {
+			} else if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray)) {
 				$(this).find('.btn').hide();
 				$(this).find('.btn3').hide();
 				$(this).find('.btn4').hide();
@@ -635,21 +701,21 @@ $(window).ready(function () {
 			} else {
 				const servingSize = 'extra';
 				if (selectedItemCategory === 'syrup') {
-					userOrderDrink.addSyrup(selectedItemIndex, servingSize, drinkCategoryDataArray);
-					$('#cardDeck-3')
-						.find('.card')
-						.each(function () {
-							const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-							const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-							const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+					userOrderDrink.addSyrup(selectedItemIndex, servingSize, selectedItemCategoryIndex, drinkCategoryDataArray);
+					// $('#cardDeck-3')
+					// 	.find('.card')
+					// 	.each(function () {
+					// 		const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
+					// 		const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+					// 		const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 
-							if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory, drinkCategoryDataArray)) {
-								$(this).css('opacity', '.3');
-							}
-						});
+					// 		if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray)) {
+					// 			$(this).css('opacity', '.3');
+					// 		}
+					// 	});
 					$(this).closest('.card').find('.btn2').html('2X');
 				} else if (selectedItemCategory === 'coffee') {
-					userOrderDrink.addCoffee(selectedItemIndex, servingSize, drinkCategoryDataArray);
+					userOrderDrink.addCoffee(selectedItemIndex, servingSize, selectedItemCategoryIndex, drinkCategoryDataArray);
 					$(this).closest('.card').find('.btn2').html('3X');
 					// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
 					$('#cardDeck-0')
@@ -700,19 +766,19 @@ $(window).ready(function () {
 				const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 
 				if (selectedItemCategory === 'syrup') {
-					userOrderDrink.addSyrup(selectedItemIndex, servingSize, drinkCategoryDataArray);
+					userOrderDrink.addSyrup(selectedItemIndex, servingSize, selectedItemCategoryIndex, drinkCategoryDataArray);
 					$('#cardDeck-3')
 						.find('.card')
 						.each(function () {
 							const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
 							const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 							const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
-							if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategory, drinkCategoryDataArray)) {
+							if (!userOrderDrink.checkIfThisSyrupSelected(selectedItemIndex, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray)) {
 								$(this).css('opacity', '.3');
 							}
 						});
 				} else if (selectedItemCategory === 'coffee') {
-					userOrderDrink.addCoffee(selectedItemIndex, servingSize, drinkCategoryDataArray);
+					userOrderDrink.addCoffee(selectedItemIndex, servingSize, selectedItemCategoryIndex, drinkCategoryDataArray);
 					// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
 					$('#cardDeck-0')
 						.find('.card')
@@ -781,6 +847,24 @@ $(window).ready(function () {
 			$(this).closest('.card').find('.btn2').show();
 		});
 });
+if (userOrderDrink.checkIfCoffeeSelected()) {
+	const espressoServingSize = 'regular';
+	console.log('coffee');
+	userOrderDrink.addCoffee(selectedItemIndex, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray);
+	$(this).closest('.card').find('.btn2').html('✓');
+	$(this).closest('.card').find('.btn2').toggle();
+	// activate the milk and temp and syrup cards after selecting coffee
+	$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
+		$(this)
+			.find('.card')
+			.each(function () {
+				$(this).css('opacity', '1');
+			});
+		$('#errorMilk').hide();
+		$('#errorSyrup').hide();
+		$('#errorTemp').hide();
+	});
+}
 
 // all this code changes display for smaller screen sizes
 var cWidth = $(window).width();

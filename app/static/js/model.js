@@ -197,8 +197,8 @@ export class Coffee {
 
 	initFromHTML = (index, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray) => {
 		const coffeeName = drinkCategoryDataArray[selectedItemCategoryIndex][index].name;
-		const coffeePrice = coffeeDrinks[index].price;
-		const coffeeServingSize = coffeeDrinks[index].serving_size;
+		const coffeePrice = drinkCategoryDataArray[selectedItemCategoryIndex][index].price;
+		const coffeeServingSize = drinkCategoryDataArray[selectedItemCategoryIndex][index].serving_size;
 		// UUID will be generated in the backend
 		this._name = coffeeName;
 		this._price = coffeePrice;
@@ -214,9 +214,6 @@ export class Coffee {
 
 	toJSON = () => {
 		// if they didn't select a milk then the default is 2%
-		if (!this._milkType) {
-			this._milkType = '2% Milk';
-		}
 		const data = {
 			id: this._id,
 			name: this._name,
@@ -407,7 +404,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfThisTempSelected = (index, selectedItemCategory, drinkCategoryDataArray) => {
+	checkIfThisTempSelected = (index, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray) => {
 		const temp = drinkCategoryDataArray[selectedItemCategoryIndex][index];
 		if (selectedItemCategory === 'temperature') {
 			for (var i = 0; i < this._orderDrink.length; i++) {
@@ -425,6 +422,8 @@ export class OrderDrink {
 	checkIfMilkSelected = () => {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
+				console.log("this._orderDrink[i]: %s", JSON.stringify(this._orderDrink[i]))
+				
 				if (this._orderDrink[i].milkType) {
 					return true;
 				} else {
@@ -434,9 +433,11 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfThisMilkSelected = (index, selectedItemCategory, drinkCategoryDataArray) => {
+	checkIfThisMilkSelected = (index, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray) => {
 		if (selectedItemCategory === 'milk') {
-			const milk = drinkCategoryDataArray[selectedItemCategory][index];
+			const milk = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+			console.log("milk: %s", milk)
+			
 			for (var i = 0; i < this._orderDrink.length; i++) {
 				if (this._orderDrink[i].drinkCategory === 'coffee') {
 					if (this._orderDrink[i].milkType === milk.id) {
@@ -449,9 +450,9 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfThisSyrupSelected = (index, selectedItemCategory, drinkCategoryDataArray) => {
+	checkIfThisSyrupSelected = (index, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray) => {
 		if (selectedItemCategory === 'syrup') {
-			const syrup = drinkCategoryDataArray[selectedItemCategory][index];
+			const syrup = drinkCategoryDataArray[selectedItemCategoryIndex][index];
 			for (var i = 0; i < this._orderDrink.length; i++) {
 				if (this._orderDrink[i].drinkCategory === 'coffee') {
 					if (this._orderDrink[i].flavorSyrup === syrup.coffee_syrup_flavor) {
@@ -601,7 +602,6 @@ export class OrderDrink {
 	priceDrinks = () => {
 		this._orderTotal = 0;
 		for (var i = 0; i < this._orderDrink.length; i++) {
-			console.log('this._orderDrink: %s', JSON.stringify(this._orderDrink[i]));
 
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				this._orderTotal += this._orderDrink[i].milkPrice;
@@ -1122,10 +1122,13 @@ export class Ingredient {
 	set quantity(value) {
 		this._quantity = value;
 	}
-	initFromHTML = (index, selectedItemCategoryIndex, ingredientCategoryDataArray) => {
+	
+	initFromHTML = (index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize = null) => {
 		const newIngredient = ingredientCategoryDataArray[selectedItemCategoryIndex][index];
 		const ingredientId = newIngredient.id;
-		const ingredientServingSize = newIngredient.servingSize;
+		const ingredientServingSize = servingSize
+		console.log("servingSize: %s", servingSize)
+		
 		const ingredientPrice = newIngredient.price;
 		const ingredientCategory = newIngredient.ingredient_category_id;
 
@@ -1293,11 +1296,13 @@ export class OrderCrepe {
 	};
 	addIngredient = (index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize = null) => {
 		const newIngredient = new Ingredient();
-		newIngredient.initFromHTML(index, selectedItemCategoryIndex, ingredientCategoryDataArray);
+		newIngredient.initFromHTML(index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize);
 		this._ingredients.push(newIngredient);
 		this.priceCrepe();
+		console.log("newIngredient: %s", JSON.stringify(newIngredient))
 
 		return newIngredient;
+		
 	};
 	removeIngredient = (index, selectedItemCategoryIndex, ingredientCategoryDataArray) => {
 		const selectedIngredient = ingredientCategoryDataArray[selectedItemCategoryIndex][index];
@@ -1328,28 +1333,92 @@ export class OrderCrepe {
 			return selectedIngredient;
 		}
 	};
-	changeSavoryIngredientQuantity = (index, selectedItemCategoryIndex, ingredientCategoryDataArray) => {
+	changeSavoryIngredientQuantity = (index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize) => {
+		console.log("ingredientCategoryDataArray: %s", ingredientCategoryDataArray)
+		
 		const selectedIngredient = this.findIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray);
+		const ingredientCategory = ingredientCategoryDataArray[selectedItemCategoryIndex][index].ingredient_category_id
+		const proteinStatus = this.checkIfProteinSelected()
+		
 		if (!selectedIngredient) {
-			if (selectedIngredient.ingredient_category_id != 'protein') {
+			if (ingredientCategory != 'protein') {
+				
 				const addedIngredient = this.addIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize);
-				this.priceCrepe();
+				console.log("addedIngredient: %s", JSON.stringify(addedIngredient))
 				return addedIngredient;
 			}
 			else {
 				// if a protein has alread been selected then we want to add this protein as either a regular quantity if the other is extra, or a half quantity if the other is regular
-				if (this.checkIfProteinSelected()) {
+				if (proteinStatus != true && proteinStatus != false) {
 					// check the serving size of the already selected protein
 					// TODO finish adding in logic for protein ingredients and test it
-					const servingSize = this.checkIfProteinSelected()
-					console.log("servingSize: %s", servingSize)
-					this.addIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize)
+					const proteinIngredient = proteinStatus
+					console.log("proteinIngredient: %s", JSON.stringify(proteinIngredient))
+					const servingSizeOfSelectedProtein = proteinIngredient.servingSize
+					console.log('servingSizeOfSelectedProtein: %s', servingSizeOfSelectedProtein);
+					if (servingSizeOfSelectedProtein === 'regular') {
+						const servingSizeOfNewIngredient = 'half';
+						const addedIngredient = this.addIngredient(
+							index,
+							selectedItemCategoryIndex,
+							ingredientCategoryDataArray,
+							servingSizeOfNewIngredient
+						);
+						this.updateIngredientServingSize(proteinIngredient, 'half')
+						return addedIngredient
+					} else if (servingSizeOfSelectedProtein === 'extra') {
+						const servingSizeOfNewIngredient = 'regular';
+						const addedIngredient = this.addIngredient(
+							index,
+							selectedItemCategoryIndex,
+							ingredientCategoryDataArray,
+							servingSizeOfNewIngredient
+						);
+						this.updateIngredientServingSize(proteinIngredient, 'regular');
+						return addedIngredient;
+					} else if (servingSizeOfSelectedProtein === 'half') {
+						const servingSizeOfNewIngredient = 'half';
+						const addedIngredient = this.addIngredient(
+							index,
+							selectedItemCategoryIndex,
+							ingredientCategoryDataArray,
+							servingSizeOfNewIngredient
+						);
+						return addedIngredient;
+					}
 				}
+				else if (proteinStatus === true) {
+					const addedIngredient = this.addIngredient(
+						index,
+						selectedItemCategoryIndex,
+						ingredientCategoryDataArray,
+						servingSize
+					);
+					console.log('addedIngredient: %s', JSON.stringify(addedIngredient));
+					return addedIngredient;
+				}
+				else if (proteinStatus === false)
+					return proteinStatus
 			}
 		}
 		else {
-
+			console.log('wee')
+			console.log("selectedIngredient: %s", JSON.stringify(selectedIngredient))
+			return this.updateIngredientServingSize(selectedIngredient, servingSize)
+			
+			
 		}
+	}
+	updateIngredientServingSize = (ingredient, servingSize) => {
+		for (var i = 0; i < this._ingredients.length; i++){
+			if (this._ingredients[i].id === ingredient.id) {
+				console.log("this._ingredients[i].id: %s", this._ingredients[i].id)
+				this._ingredients[i].servingSize = servingSize;
+				this.priceCrepe();
+				return true
+			}
+		}
+		return false		
 	}
 	priceCrepe = () => {
 		this._orderTotal = 0;
@@ -1360,11 +1429,26 @@ export class OrderCrepe {
 		}
 	};
 	checkIfProteinSelected = () => {
+		var counter = 0
+		var response = null;
+		console.log(JSON.stringify(this._ingredients))
+		console.log(this._ingredients.length)
 		for (var i = 0; i < this._ingredients.length; i++) {
 			if (this._ingredients[i].category === 'protein') {
-				return this._ingredients[i].servingSize;
+				console.log("this._ingredients[i]: %s", JSON.stringify(this._ingredients[i]))
+				counter += 1
+				console.log("counter: %s", counter)
+				response = this._ingredients[i];
 			}
 		}
-		return false;
+		if (counter > 1) {
+			return false
+		}
+		else if (!response) {
+			return true
+		}
+		else {
+			return response
+		}
 	};
 }

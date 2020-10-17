@@ -649,14 +649,16 @@ class Side_Service(object):
                 response.append(ice_cream)
             return response
 
-    def get_toppings(self):
-        response = []
-        with self.session_scope() as session:
-            for topping in self.side_repository.get_toppings(session):
-                topping = Ingredient_Model(
-                    id=topping.ingredient_id, price=topping.price)
-                response.append(topping)
-            return response
+    # def get_toppings(self):
+    #     response = []
+    #     with self.session_scope() as session:
+    #         for topping in self.side_repository.get_toppings(session):
+    #             print("topping: %s", topping.serialize)
+                
+    #             topping = Ingredient_Model(
+    #                 id=topping.id, price=topping.price)
+    #             response.append(topping)
+    #         return response
 
 
 class Menu_Crepe_Service(object):
