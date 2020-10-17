@@ -1,12 +1,15 @@
 // Drinks Models
 export class Drink {
-	constructor(name = null, price = 0, quantity = 1, servingSize = 
-		'regular', drinkCategory = null) {
+	constructor(id = null, name = null, price = 0, quantity = 1, servingSize = 'regular', drinkCategory = null) {
+		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.quantity = quantity;
 		this.servingSize = servingSize;
 		this.drinkCategory = drinkCategory;
+	}
+	get id() {
+		return this._id;
 	}
 	get name() {
 		return this._name;
@@ -22,6 +25,9 @@ export class Drink {
 	}
 	get drinkCategory() {
 		return this._drinkCategory;
+	}
+	set id(value) {
+		this._id = value;
 	}
 	set name(value) {
 		this._name = value;
@@ -44,10 +50,12 @@ export class Drink {
 		for (var i = 0; i < drinkCategoryDataArray.length; i++) {
 			console.log(drinkCategoryDataArray[i]);
 		}
+		const drinkId = newDrink.id;
 		const drinkName = newDrink.name;
 		const drinkPrice = newDrink.price;
 		const drinkServingSize = newDrink.serving_size;
 
+		this._id = drinkId;
 		this._name = drinkName;
 		this._price = drinkPrice;
 		this._drinkCategory = drinkCategory;
@@ -55,6 +63,7 @@ export class Drink {
 	};
 	toJSON = () => {
 		const data = {
+			id: this._id,
 			name: this._name,
 			price: this._price,
 			quantity: this._quantity,
@@ -67,6 +76,7 @@ export class Drink {
 	fromJSON = (json) => {
 		const data = json;
 		console.log('fromJSON data', data);
+		this._id = data.id;
 		this._name = data.name;
 		this._price = data.price;
 		this._quantity = data.quantity;
@@ -1452,3 +1462,15 @@ export class OrderCrepe {
 		}
 	};
 }
+// Bugs: 
+// 1. fix pricing for sweet crepe page
+// 2. seperate formatted values from actual database values in drinks page
+//
+//
+//
+//
+//
+//
+//
+//
+//

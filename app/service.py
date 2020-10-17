@@ -512,7 +512,7 @@ class Drink_Service(object):
 
         with self.session_scope() as session:
             for milkshake in self.drink_repository.get_milkshakes(session):
-                drink_model = Drink_Model(
+                drink_model = Drink_Model( id = milkshake.id, drink_category_id = milkshake.drink_category_id,
                     name=milkshake.name, price=milkshake.price)
                 response.append(drink_model)
             return response
@@ -523,7 +523,7 @@ class Drink_Service(object):
         with self.session_scope() as session:
             for bottled_drink in self.drink_repository.get_bottled_drinks(session):
 
-                drink_model = Drink_Model(
+                drink_model = Drink_Model( id = bottled_drink.id, drink_category_id= bottled_drink.drink_category_id,
                     name=bottled_drink.name, price=bottled_drink.price)
                 response.append(drink_model)
             return response
@@ -534,7 +534,7 @@ class Drink_Service(object):
         with self.session_scope() as session:
             for coffee_drink in self.drink_repository.get_coffee_drinks(session):
                 drink_model = Drink_Model(
-                    name=coffee_drink.coffee_name, price=coffee_drink.price, serving_size=coffee_drink.serving_size)
+                    name=coffee_drink.coffee_name, drink_category_id='coffee', price=coffee_drink.price, serving_size=coffee_drink.serving_size)
                 response.append(drink_model)
             return response
 
@@ -544,8 +544,8 @@ class Drink_Service(object):
         with self.session_scope() as session:
             for non_coffee_drink in self.drink_repository.get_non_coffee_drinks(session):
 
-                drink_model = Drink_Model(
-                    name=non_coffee_drink.name, price=non_coffee_drink.price, serving_size=non_coffee_drink.serving_size)
+                drink_model = Drink_Model( id = non_coffee_drink.id,
+                    name=non_coffee_drink.name, drink_category_id= non_coffee_drink.drink_category_id, price=non_coffee_drink.price, serving_size=non_coffee_drink.serving_size)
                 response.append(drink_model)
             return response
 

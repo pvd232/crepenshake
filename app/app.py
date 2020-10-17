@@ -130,6 +130,9 @@ def order_drink(editOrder=None):
 
     milkshakes = [humanize(x, "name").serialize()
                   for x in drink_service.get_milkshakes()]
+
+    for x in milkshakes:
+        print(x)
     bottled_drinks = [humanize(x, "name").serialize()
                       for x in drink_service.get_bottled_drinks()]
 
