@@ -1,6 +1,8 @@
 {% extends "template_page.html" %} {% block style %}
 <link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
-{% endblock %} {% block content %} 
+{% endblock %} 
+{% block content %} 
+
 {% if editOrder %}
 <div id='{{editOrder}}' class="edit"></div>
 {% endif %}
@@ -8,6 +10,7 @@
 {% if side_types %}
 <div id="sideTypes" data-sidetypes='{{ side_types|tojson }}'></div>
 {% endif %}
+
 {% if side_names %}
 <div id="sideNames" data-sidenames='{{ side_names|tojson }}'></div>
 {% endif %}
@@ -40,6 +43,7 @@
 {% if ice_cream_bowls %}
 <div id="iceCreamBowls" data-icecreambowls='{{ ice_cream_bowls|tojson }}'></div>
 {% endif %}
+
 {% if side_names[j].side_name_id == 'ice_cream_bowl' %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class="head3">{{formatted_side_names[j].side_name_id }}</h3>

@@ -12,7 +12,7 @@ application = Flask(__name__)
 app = application
 
 
-def humanize(dict=None, attr=None, format=False):
+def humanize(dict = None, attr = None, format = False):
     if format == True:
         for x in dict['ingredients']:
             str = x.__getattribute__(attr)
@@ -118,6 +118,7 @@ def make_your_own_sweet_crepe(editOrder=None):
        x.serialize() for x in ingredient_service.get_sweet_ingredient_categories()]
     formatted_sweet_ingredient_categories = [
         humanize(x, 'id') for x in ingredient_service.get_sweet_ingredient_categories()]
+    
     rules_for_each_category = ["(2 Fruit Servings Included, +$0.99 per additional serving)",
                                "(1 Servings Included, +$0.99 per additional serving)"]
     editOrder = request.args.get('editOrder')
@@ -127,7 +128,7 @@ def make_your_own_sweet_crepe(editOrder=None):
 @app.route('/order/drink')
 def order_drink(editOrder=None):
     drink_service = Drink_Service()
-
+    ingredient_service = Ingredient_Service()
     milkshakes = [x.serialize() for x in drink_service.get_milkshakes()]
     formatted_milkshakes = [humanize(x, "name").serialize()
                   for x in drink_service.get_milkshakes()]
@@ -158,9 +159,10 @@ def order_drink(editOrder=None):
     coffee_temperatures = [x.serialize() for x in drink_service.get_coffee_temperature()]
     formatted_coffee_temperatures = [humanize(x, "id").serialize()
                            for x in drink_service.get_coffee_temperature()]
-
+    serving_sizes = [x.serialize()
+                     for x in ingredient_service.get_ingredient_serving_sizes()]
     editOrder = request.args.get('editOrder')
-    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, formatted_bottled_drinks = formatted_bottled_drinks, milkshakes=milkshakes, formatted_milkshakes = formatted_milkshakes, coffee_drinks=coffee_drinks, formatted_coffee_drinks = formatted_coffee_drinks, non_coffee_drinks = non_coffee_drinks, formatted_non_coffee_drinks = formatted_non_coffee_drinks, milk_drinks=milk_drinks, formatted_milk_drinks = formatted_milk_drinks, coffee_syrups=coffee_syrups, formatted_coffee_syrups = formatted_coffee_syrups, coffee_temperatures=coffee_temperatures, formatted_coffee_temperatures = formatted_coffee_temperatures, editOrder=editOrder)
+    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, formatted_bottled_drinks = formatted_bottled_drinks, milkshakes=milkshakes, formatted_milkshakes = formatted_milkshakes, coffee_drinks=coffee_drinks, formatted_coffee_drinks = formatted_coffee_drinks, non_coffee_drinks = non_coffee_drinks, formatted_non_coffee_drinks = formatted_non_coffee_drinks, milk_drinks=milk_drinks, formatted_milk_drinks = formatted_milk_drinks, coffee_syrups=coffee_syrups, formatted_coffee_syrups = formatted_coffee_syrups, coffee_temperatures=coffee_temperatures, formatted_coffee_temperatures = formatted_coffee_temperatures, serving_sizes = serving_sizes, editOrder=editOrder)
 
 
 @app.route('/order/side')
@@ -190,12 +192,15 @@ def order_side(editOrder=None):
 @app.route('/order/menu-crepe')
 def order_menu_crepe(editOrder=None):
     menu_crepe_service = Menu_Crepe_Service()
-    sweet_menu_crepes = [humanize(x, 'name')
+    sweet_menu_crepes = [x.serialize()
                          for x in menu_crepe_service.get_sweet_menu_crepes()]
-    savory_menu_crepes = [humanize(x, 'name')
+    formatted_sweet_menu_crepes = [humanize(x, 'name').serialize()
+                         for x in menu_crepe_service.get_sweet_menu_crepes()]
+    savory_menu_crepes = [x.serialize() for x in menu_crepe_service.get_savory_menu_crepes()]
+    formatted_savory_menu_crepes = [humanize(x, 'name').serialize()
                           for x in menu_crepe_service.get_savory_menu_crepes()]
     editOrder = request.args.get('editOrder')
-    return render_template('order_menu_crepe.html', savory_menu_crepes=savory_menu_crepes, sweet_menu_crepes=sweet_menu_crepes, editOrder=editOrder)
+    return render_template('order_menu_crepe.html', savory_menu_crepes=savory_menu_crepes, formatted_savory_menu_crepes = formatted_savory_menu_crepes, sweet_menu_crepes=sweet_menu_crepes, formatted_sweet_menu_crepes = formatted_sweet_menu_crepes, editOrder=editOrder)
 
 
 @app.route('/checkout', methods=['POST', 'GET'])
@@ -205,6 +210,8 @@ def checkout():
     elif request.method == 'POST':
         new_order = request.json
         new_order_value = new_order['order']
+        print("new_order_value", new_order_value)
+        
         order_service = Order_Service()
         order_service.create_order(new_order_value)
         return jsonify(200)

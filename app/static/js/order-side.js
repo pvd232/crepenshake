@@ -24,8 +24,6 @@ const stringify = (sideOrder) => {
 				order.fromJSON(localStorage.getItem(localStorage.key(0)));
 				// only one side order will be processed on this page at a time
 				const sideOrderTotal = sideOrder.orderTotal;
-				console.log('sideOrderTotal: %s', sideOrderTotal);
-
 				order.orderTotal += sideOrderTotal;
 				order.orderSide.push(sideOrder);
 
@@ -38,7 +36,6 @@ const stringify = (sideOrder) => {
 				localStorage.setItem('order', stringifiedSideOrder);
 			}
 		} else {
-			console.log('nope');
 			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
 			var currentOrderSideList = currentOrder.orderSide;
 			var currentOrderSide = currentOrderSideList[editSideIndex];
@@ -81,13 +78,9 @@ $(window).on('load', function () {
 			});
 	});
 	sideNames = $('#sideNames').data('sidenames');
-	console.log('sideNames: %s', sideNames);
-
 	croissants = $('#sideCroissants').data('croissants');
 	iceCreamBowls = $('#iceCreamBowls').data('icecreambowls');
 	toppings = $('#sideToppings').data('sidetoppings');
-	console.log("toppings: %s", JSON.stringify(toppings))
-	
 	toppingServingSizes = $('#toppingServingSizes').data('toppingservingsizes');
 
 	// i have to add the topping Cateogory so that the index of card decks will be correct
@@ -97,9 +90,7 @@ $(window).on('load', function () {
 	sideCategoryDataArray.push(croissants);
 	sideCategoryDataArray.push(iceCreamBowls);
 	sideCategoryDataArray.push(toppings);
-	console.log("sideCategoryDataArray: %s", JSON.stringify(sideCategoryDataArray))
 	
-
 	$('.card-img-top').wrap('<div class="container2"></div>');
 	$('#cardDeck-2')
 		.find('.card')
@@ -117,21 +108,21 @@ $(window).on('load', function () {
 		const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 		const selectedItemCategory = newSideNames[selectedItemCategoryIndex].side_name_id;
 		if (selectedItemCategory == 'ice_cream_bowl') {
-			$('<button class="btn2" type="button">1</button>').insertAfter($(this));
+			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 			$(`<div class="grid-container"  style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 				$(this)
 			);
 		} else if (selectedItemCategory == 'croissant') {
-			$('<button class="btn2" type="button">1</button>').insertAfter($(this));
+			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 			$(`<div class="grid-container" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 				$(this)
 			);
 		} else if (selectedItemCategory == 'topping') {
-			$('<button class="btn" id=servingSize-2 type="button">Customize</button>').insertAfter($(this));
-			$('<button class="btn4" id=servingSize-1 type="button">Regular</button>').insertAfter($(this));
-			$('<button class="btn3" id=servingSize-0 type="button">Light</button>').insertAfter($(this));
+			$('<button class="btn" id="servingSize-2" type="button">Customize</button>').insertAfter($(this));
+			$('<button class="btn4" id="servingSize-1" type="button">Regular</button>').insertAfter($(this));
+			$('<button class="btn3" id="servingSize-0" type="button">Light</button>').insertAfter($(this));
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 		}
 	});
@@ -248,6 +239,7 @@ $(window).on('load', function () {
 					// logic for toppings is the most complex and should be evaluated last. de facto the non-topping cards are ice cream and croissant which have counters
 
 					if (selectedItemCategory != 'topping') {
+						// the side will be a croissant or ice cream bowl and it will only be added by clicking the card if it is not currently selected
 						if (
 							!userOrderSide.findSide(selectedItemIndex, selectedItemCategoryIndex, selectedItemCategory, sideCategoryDataArray)
 						) {
@@ -257,8 +249,7 @@ $(window).on('load', function () {
 								'increase',
 								selectedItemCategory, sideCategoryDataArray
 							);
-							$(this).closest('.card').find('.btn2').html(updatedSide.quantity);
-
+							$(this).closest('.card').find('.btn2').html(updatedSide.quantity);							
 							$(this).closest('.card').find('.btn2').show();
 							//after clicking the card show the + and - buttons
 							$(this).closest('.card').find('.btn6').show();
@@ -292,20 +283,17 @@ $(window).on('load', function () {
 					) {
 						if (userOrderSide.checkIfIceCreamSelected()) {
 							const servingSizeIndex = $(this).closest('.card').find('.btn').attr('id').split('-')[1];
-							const toppingServingSize = toppingServingSizes[servingSizeIndex];
+							const toppingServingSize = toppingServingSizes[servingSizeIndex].serving_size;
 							const newTopping = userOrderSide.addTopping(
 								selectedItemIndex,
 								selectedItemCategoryIndex,
-								toppingServingSize,
-								sideCategoryDataArray
+								sideCategoryDataArray,
+								toppingServingSize
 							);
 
 							$(this).closest('.card').find('.btn').show();
-							$(this).closest('.card').find('.btn2').html(newTopping.quantity);
+							$(this).closest('.card').find('.btn2').html('✓');
 							$(this).closest('.card').find('.btn2').show();
-							//after clicking the card show the + and - buttons
-							$(this).closest('.card').find('.btn6').show();
-							$(this).closest('.card').find('.btn7').show();
 						}
 					}
 				});
@@ -342,19 +330,19 @@ $(window).on('load', function () {
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			const selectedItemCategory = newSideNames[selectedItemCategoryIndex].side_name_id;
 			if (selectedItemCategory == 'topping') {
-				const servingSizeIndex = $(this).attr('id').split('-')[1];
-				const toppingServingSize = toppingServingSizes[servingSizeIndex];
 				if ($(this).html() == 'Customize') {
 					$(this).blur();
 					$(this).html('Extra');
 					$(this).closest('.card').find('.btn3').show();
 					$(this).closest('.card').find('.btn4').show();
 				} else {
+					const servingSizeIndex = $(this).attr('id').split('-')[1];
+					const toppingServingSize = toppingServingSizes[servingSizeIndex].serving_size;
 					userOrderSide.addTopping(
 						selectedItemIndex,
 						selectedItemCategoryIndex,
-						toppingServingSize,
-						sideCategoryDataArray
+						sideCategoryDataArray,
+						toppingServingSize
 					);
 					$(this).html('Customize');
 					$(this).blur();
@@ -374,12 +362,12 @@ $(window).on('load', function () {
 			const selectedItemCategory = newSideNames[selectedItemCategoryIndex].side_name_id;
 			if (selectedItemCategory == 'topping') {
 				const servingSizeIndex = $(this).attr('id').split('-')[1];
-				const toppingServingSize = toppingServingSizes[servingSizeIndex];
+				const toppingServingSize = toppingServingSizes[servingSizeIndex].serving_size;
 				userOrderSide.addTopping(
 					selectedItemIndex,
 					selectedItemCategoryIndex,
-					toppingServingSize,
-					sideCategoryDataArray
+					sideCategoryDataArray,
+					toppingServingSize
 				);
 				$(this).closest('.card').find('.btn2').html('½');
 				$(this).closest('.card').find('.btn2').show();
@@ -398,12 +386,12 @@ $(window).on('load', function () {
 			const selectedItemCategory = newSideNames[selectedItemCategoryIndex].side_name_id;
 			if (selectedItemCategory == 'topping') {
 				const servingSizeIndex = $(this).attr('id').split('-')[1];
-				const toppingServingSize = toppingServingSizes[servingSizeIndex];
+				const toppingServingSize = toppingServingSizes[servingSizeIndex].serving_size;
 				userOrderSide.addTopping(
 					selectedItemIndex,
 					selectedItemCategoryIndex,
-					toppingServingSize,
-					sideCategoryDataArray
+					sideCategoryDataArray,
+					toppingServingSize
 				);
 				$(this).closest('.card').find('.btn2').html('✓');
 				$(this).closest('.card').find('.btn2').show();
@@ -421,24 +409,39 @@ $(window).on('load', function () {
 			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
 			const selectedItemCategory = newSideNames[selectedItemCategoryIndex].side_name_id;
 
-			const updatedSide = userOrderSide.changeSideQuantity(
+			const updatedSide = userOrderSide.changeSideQuantity(				
 				selectedItemIndex,
 				selectedItemCategoryIndex,
 				'decrease',
 				selectedItemCategory,
 				sideCategoryDataArray
 			);
-			if (updatedSide) {
-				if (updatedSide.quantity <= 0) {
-					$(this).closest('.card').find('.btn2').hide();
-					$(this).closest('.card').find('.btn2').html(updatedSide.quantity);
-					$(this).hide();
-					$(this).closest('.card').find('.btn7').hide();
+			if (updatedSide === 0) {
+				$(this).closest('.card').find('.btn2').hide();
+				$(this).closest('.card').find('.btn2').html(0);
+				$(this).hide();
+				$(this).closest('.card').find('.btn7').hide();
+				if (userOrderSide.checkIfIceCreamSelected()) {
+					$('#cardDeck-2')
+						.find('.card')
+						.each(function () {
+							$(this).css('opacity', '1');
+						});
 				} else {
+					$('#cardDeck-2')
+						.find('.card')
+						.each(function () {
+							$(this).css('opacity', '.3');
+							$(this).find('.btn2').hide();
+							$(this).find('.btn').hide();
+						});
+				}
+			}
+			else {
 					$(this).closest('.card').find('.btn2').html(updatedSide.quantity);
 					$(this).closest('.card').find('.btn2').show();
 				}
-			}
+			
 		});
 
 	$('.btn7')

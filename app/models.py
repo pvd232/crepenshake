@@ -123,7 +123,7 @@ class Custom_Crepe(db.Model):
 class Menu_Crepe(db.Model):
     __tablename__ = 'menu_crepe'
     crepe_id = db.Column(UUID(as_uuid=True), db.ForeignKey('crepe.id'), primary_key=True,
-                         unique=True, nullable=False)
+                        nullable=False)
 
     name = db.Column(db.String(80), nullable=False)
 
@@ -734,6 +734,6 @@ class Ice_Cream_Serving_Size(db.Model):
         return serialized_attributes
 
 # 2000-12-31
-db.drop_all()
-db.create_all()
+# db.drop_all()
+# db.create_all()
 # End of Models.py

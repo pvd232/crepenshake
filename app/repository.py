@@ -1,6 +1,5 @@
 
 from models import *
-from create_db import db
 from datetime import date
 from sqlalchemy import or_
 from sqlalchemy.orm import load_only
@@ -14,7 +13,7 @@ class Ingredient_Repository(object):
 
     def get_ingredient_prices(self, session):
         ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price FROM ingredient i JOIN ingredient_serving_size_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
-                                        {"param": "regular"})
+                                            {"param": "regular"})
         return ingredient_prices
 
     def get_ingredient_categories(self, session):
@@ -26,9 +25,8 @@ class Ingredient_Repository(object):
         sweet_ingredients = session.query(Ingredient_Serving_Size_Price.ingredient_id, Ingredient_Serving_Size_Price.serving_size, Ingredient_Serving_Size_Price.price, Ingredient.ingredient_category_id).join(Ingredient).filter(or_(
             Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'), Ingredient_Serving_Size_Price.serving_size == 'regular')
         for x in sweet_ingredients:
-            print('sweet' , x)
+            print('sweet', x)
         return sweet_ingredients
-
 
     def get_sweet_ingredient_categories(self, session):
         ingredient_categories = session.query(
@@ -40,54 +38,45 @@ class Ingredient_Repository(object):
         return ingredient_serving_sizes
 
 
-
 class Order_Repository(object):
-
-    def post_order(self, session, customer, order, order_drink_list=None, order_side_list=None,  order_crepe_list=None, custom_crepe_list=None, new_model_crepe_list=None):
+    def post_order(self, session, order):
+        new_customer = order.customer
         user = session.query(Customer).filter(
-            Customer.id == customer.id).first()
+            Customer.id == new_customer.id).first()
         # check to make sure the customer doesn't already exist in the database
         if not user:
-            new_customer = Customer(id=customer.id, first_name=customer.first_name, last_name=customer.last_name,
-                                    street=customer.street, city=customer.city, state=customer.state, zipcode=customer.zipcode, country=customer.country)
+            new_customer = Customer(id=new_customer.id, first_name=new_customer.first_name, last_name=new_customer.last_name,
+                                    street=new_customer.street, city=new_customer.city, state=new_customer.state, zipcode=new_customer.zipcode, country=new_customer.country)
             session.add(new_customer)
-        new_order = Order(id=order.id, customer_id=order.customer_id,
-                          cost=order.cost, date=date.today())
-        session.add(new_order)
-        print('new_model_crepe_list', new_model_crepe_list)
-        if order_crepe_list:
-            if custom_crepe_list:
-                for new_model_crepe in new_model_crepe_list:
-                    new_crepe = Crepe(id=new_model_crepe.id, origination_id=new_model_crepe.origination_id,
-                                      flavor_profile_id=new_model_crepe.flavor_profile_id)
-                    session.add(new_crepe)
-                for custom_crepe in custom_crepe_list:
-                    print("custom_crepe: %s", custom_crepe.serialize())
-
+            new_order = Order(id=order.id, customer_id=new_customer.id,
+                              cost=order.cost, date=order.date)
+            session.add(new_order)
+        else:
+            new_order = Order(id=order.id, customer_id=user.id,
+                              cost=order.cost, date=order.date)
+            session.add(new_order)
+        session.commit()
+        for i in range(len(order.order_crepe.order_crepe)):
+            crepe_to_add = order.order_crepe.order_crepe[i]
+            if crepe_to_add.origination_id == 'custom':
+                new_crepe = Crepe(id=crepe_to_add.crepe_id, origination_id=crepe_to_add.origination_id,
+                                  flavor_profile_id=crepe_to_add.flavor_profile_id)
+                session.add(new_crepe)
+                for ingredient in crepe_to_add.ingredients:
                     new_custom_crepe = Custom_Crepe(
-                        crepe_id=custom_crepe.crepe_id, ingredient_id=custom_crepe.ingredient_id, serving_size=custom_crepe.serving_size)
+                        crepe_id=new_crepe.id, ingredient_id=ingredient.id, serving_size=ingredient.serving_size)
                     session.add(new_custom_crepe)
-            for each_order_crepe in order_crepe_list:
-
                 new_order_crepe = Order_Crepe(
-                    order_id=new_order.id, crepe_id=each_order_crepe.crepe_id, quantity=each_order_crepe.quantity)
+                    order_id=new_order.id, crepe_id=crepe_to_add.crepe_id, quantity=crepe_to_add.quantity)
                 session.add(new_order_crepe)
-
-        if order_drink_list:
-
-            for each_order_drink in order_drink_list:
-                new_order_drink = Order_Drink(
-                    order_id=new_order.id, drink_id=each_order_drink.drink_id, quantity=each_order_drink.quantity)
-                session.add(new_order_drink)
-
-        if order_side_list:
-            for each_order_side in order_side_list:
-                new_order_side = Order_Side(
-                    order_id=new_order.id, side_id=each_order_side.side_id, quantity=each_order_side.quantity)
-                session.add(new_order_side)
+            elif crepe_to_add.origination_id == 'menu':
+                new_order_crepe = Order_Crepe(
+                    order_id=new_order.id, crepe_id=crepe_to_add.crepe_id, quantity=crepe_to_add.quantity)
+                session.add(new_order_crepe)
+        session.commit()
+        return
 
     def get_orders(self, session):
-
         orders = session.query(Order)
         return orders
 
@@ -162,11 +151,11 @@ class Side_Repository(object):
 
 class Menu_Crepe_Repository(object):
     def get_sweet_menu_crepes(self, session):
-        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id).join(Crepe).filter(
+        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id, Crepe.origination_id).join(Crepe).filter(
             Crepe.flavor_profile_id == 'sweet')
         return menu_crepes
 
     def get_savory_menu_crepes(self, session):
-        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id).join(Crepe).filter(
+        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id, Crepe.origination_id).join(Crepe).filter(
             Crepe.flavor_profile_id == 'savory')
         return menu_crepes

@@ -3,45 +3,28 @@ import { Order, OrderCrepe } from './model.js';
 
 var editCrepeIndex = null;
 var editCrepe = null;
-var sweetnessIngredients;
-var fruitIngredients;
-var sweetIngredientCategories;
-var ingredientServingSizes;
-var ingredientCategoryDataArray;
 var userOrderCrepe;
 
 const stringify = (crepeOrder) => {
-	console.log("crepeOrder: %s", JSON.stringify(crepeOrder))
-	
 	if (crepeOrder.ingredients.length) {
 		if (editCrepeIndex === null) {
 			const order = new Order();
 			if (localStorage.length > 0) {
 				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 				order.fromJSON(localStorage.getItem(localStorage.key(0)));
-				console.log("order: %s", JSON.stringify(order))
-				console.log('crepeOrder: %s', JSON.stringify(crepeOrder));
-				
 				// only one crepe order will be processed on this page at a time
 				const crepeOrderTotal = crepeOrder.orderTotal;
-				console.log('crepeOrderTotal: %s', crepeOrderTotal);
-
 				order.orderTotal += crepeOrderTotal;
 				order.orderCrepe.push(crepeOrder);
-
 				const stringifiedCrepeOrder = JSON.stringify(order);
 				localStorage.setItem('order', stringifiedCrepeOrder);
 			} else {
-				console.log('order: %s', JSON.stringify(order));
-
 				order.orderTotal += crepeOrder.orderTotal;
-				
 				order.orderCrepe.push(crepeOrder);
 				const stringifiedCrepeOrder = JSON.stringify(order);
 				localStorage.setItem('order', stringifiedCrepeOrder);
 			}
 		} else {
-			console.log('nope');
 			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
 			var currentOrderCrepeList = currentOrder.orderCrepe;
 			var currentOrderCrepe = currentOrderCrepeList[editCrepeIndex];
@@ -62,9 +45,6 @@ const stringify = (crepeOrder) => {
 };
 
 const checkOut = (order) => {
-	console.log("order: %s", JSON.stringify(order))
-	
-	
 	if (editCrepeIndex != null) {
 		stringify(order);
 		// $.when(stringify(order)).then(location.assign('/order?userOrder=true'));
@@ -94,28 +74,16 @@ $(window).on('load', function () {
 			});
 	});
 
-	sweetIngredientCategories = $('#sweetIngredientCategories').data('sweetingredientcategories');
-	console.log('sweetIngredientCategories: %s', sweetIngredientCategories);
-
-	sweetnessIngredients = $('#sweetnessIngredients').data('sweetnessingredients');
-	console.log('sweetnessIngredients: %s', sweetnessIngredients);
-
-	fruitIngredients = $('#fruitIngredients').data('fruitingredients');
-	console.log('fruitIngredients: %s', fruitIngredients);
-
-	ingredientServingSizes = $('#ingredientServingSizes').data('ingredientservingsizes');
-	console.log('ingredientServingSizes: %s', ingredientServingSizes);
-	ingredientCategoryDataArray = new Array();
+	const sweetnessIngredients = $('#sweetnessIngredients').data('sweetnessingredients');
+	const fruitIngredients = $('#fruitIngredients').data('fruitingredients');
+	const ingredientCategoryDataArray = new Array();
 	ingredientCategoryDataArray.push(fruitIngredients);
 	ingredientCategoryDataArray.push(sweetnessIngredients);
-	console.log('ingredientCategoryDataArray: %s', ingredientCategoryDataArray);
-
 	$('.card-img-top').wrap('<div class="container2"></div>');
 	$('#buildSweetCrepecheckout')
 		.unbind('click')
 		.bind('click', function () {
 			checkOut(userOrderCrepe);
-			console.log('checkout func');
 		});
 	
 	$('.card-img-top').each(function () {
@@ -132,28 +100,12 @@ $(window).on('load', function () {
 		//have to subtract one because the crepe index on the shopping cart is 1 higher than the array index
 		// editCrepeIndex = parseInt(editCrepeArray[editCrepeArray.length - 1]);
 		editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex]['crepes'][0];
-		console.log('editCrepe: %s', editCrepe);
-		for (var key in editCrepe) {
-			console.log('key: %s', key);
-			console.log('editCrepe[key]', editCrepe[key]);
-		}
 		const crepeIngredients = editCrepe['ingredients'];
-		console.log('crepeIngredients: %s', crepeIngredients);
-
-		for (var key in crepeIngredients) {
-			console.log('key: %s', key);
-			console.log('crepeIngredients[key]', crepeIngredients[key]);
-		}
 		for (var ingredientCategoryKey in crepeIngredients) {
-			console.log('ingredientCategoryKey: %s', ingredientCategoryKey);
-
 			const ingredientArray = crepeIngredients[ingredientCategoryKey];
-			console.log('ingredientArray: %s', ingredientArray);
-
 			for (var i = 0; i < ingredientArray.length; i++) {
 				const ingredient = ingredientArray[i];
 				if ('name' in ingredient) {
-					console.log('ingredient name: %s', ingredient['name']);
 					const ingredientName = ingredient['name'];
 					const ingredientQuantity = ingredient['quantity'];
 					const ingredientServingSize = ingredient['servingSize'];
@@ -163,7 +115,6 @@ $(window).on('load', function () {
 					$(`#${ingredientName}`).find('.btn2').show();
 					$(`#${ingredientName}`).find('.btn6').show();
 					$(`#${ingredientName}`).find('.btn7').show();
-					console.log('ingredientServingSize: %s', ingredientServingSize);
 				}
 			}
 		}
@@ -171,7 +122,6 @@ $(window).on('load', function () {
 
 	$('.card-img-top').each(function () {
 		this.src = '../static/images/vanilla_ice_cream.jpg';
-		console.log('this.src: %s', this.src);
 	});
 	userOrderCrepe = new OrderCrepe();
 	userOrderCrepe._flavor = 'sweet';
@@ -191,33 +141,15 @@ $(window).on('load', function () {
 				.unbind('click')
 				.bind('click', function () {
 					const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-					console.log("selectedItemIndex: %s", selectedItemIndex)
-					
 					const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-					console.log("selectedItemCategoryIndex: %s", selectedItemCategoryIndex)
-					
 					// if you click the card and it hasn't been selected
-						console.log('ingredientCategoryDataArray: %s', ingredientCategoryDataArray);
-						const money = userOrderCrepe.checkIfThisIngredientSelected(							
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							ingredientCategoryDataArray
-					)
-							console.log('money: %s', money);
-
-					
-					
-					userOrderCrepe.checkIfThisIngredientSelected(selectedItemIndex, selectedItemCategoryIndex, ingredientCategoryDataArray)
 					if (!userOrderCrepe.checkIfThisIngredientSelected(selectedItemIndex, selectedItemCategoryIndex, ingredientCategoryDataArray)) {
-						
 						const updatedIngredient = userOrderCrepe.changeIngredientQuantity(
 							selectedItemIndex,
 							selectedItemCategoryIndex,
 							'increase',
 							ingredientCategoryDataArray
 						);
-						console.log('quant: %s', updatedIngredient.quantity);
-
 						$(this).closest('.card').find('.btn2').html(updatedIngredient.quantity);
 						$(this).closest('.card').find('.btn2').show();
 						//after clicking the card show the + and - buttons
@@ -264,8 +196,6 @@ $(window).on('load', function () {
 				selectedItemCategoryIndex, 'increase', ingredientCategoryDataArray,
 				
 			);
-			console.log('updatedIngredient.quantity: %s', updatedIngredient.quantity);
-
 			$(this).closest('.card').find('.btn2').html(updatedIngredient.quantity);
 			$(this).closest('.card').find('.btn2').show();
 		});
