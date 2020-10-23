@@ -51,6 +51,8 @@
 					<h5 class="card-title">{{i.id}}</h5>
 					{% if i.id == 'Almond Milk' %}
 					<p class="card-text">${{i.price}} extra</p>
+					{% else %}
+					<p class="card-text"></p>
 					{% endif %}
 				</div>
 			</div>
@@ -72,6 +74,8 @@
 				<img src="" class="card-img-top" alt="..." />
 				<div class="card-body">
 					<h5 class="card-title">{{i.id}}</h5>
+					<p class="card-text"></p>
+
 				</div>
 			</div>
 			{% endfor %}
@@ -92,6 +96,8 @@
 				<img src="" class="card-img-top" alt="..." />
 				<div class="card-body">
 					<h5 class="card-title">{{i.coffee_syrup_flavor}}</h5>
+					<p class="card-text"></p>
+
 				</div>
 			</div>
 			{% endfor %}
@@ -158,7 +164,24 @@
 <!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
 <div class="footer d-flex align-items-center">
 	<button class="btn5" id="drinkcheckout">Add to Cart</button>
-	<!-- <button class="btn5" id="checkout" onclick="location.assign('/order-drink')">Add to Cart</button> -->
+		<div
+		class="alert-danger"
+		role="alert"
+		id="errorCoffee"
+		style="
+			font-size: 30px;
+			display: none;
+			font-weight: 500;
+			position: fixed;
+			margin-bottom: 60px;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			text-align: center;
+		"
+	>
+		Please select a temperature for your coffee.
+	</div>
 </div>
 {% endblock %}
 {% block script %}

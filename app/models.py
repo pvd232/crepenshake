@@ -168,9 +168,9 @@ class Order(db.Model):
         'customer.id'), nullable=False)
     cost = db.Column(db.Float(), nullable=False)
     date = db.Column(db.String(80), nullable=False)
-    orderDrink = relationship('Order_Drink', lazy=True)
-    orderCrepe = relationship('Order_Crepe', lazy=True)
-    orderSide = relationship('Order_Side', lazy=True)
+    order_drink = relationship('Order_Drink', lazy=True)
+    order_crepe = relationship('Order_Crepe', lazy=True)
+    order_side = relationship('Order_Side', lazy=True)
 
     @property
     def serialize(self):
@@ -187,7 +187,9 @@ class Order_Drink(db.Model):
     order_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'order.id'), nullable=False, primary_key=True)
     drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
-                         unique=True, nullable=False)
+                          nullable=False)
+    serving_size = db.Column(
+        db.String(80), db.ForeignKey('drink_serving_size.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     @property
@@ -223,7 +225,7 @@ class Order_Side(db.Model):
     order_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'order.id'), nullable=False, primary_key=True)
     side_id = db.Column(UUID(as_uuid=True), db.ForeignKey('side.id'), primary_key=True,
-                        unique=True, nullable=False)
+                        nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     @property
@@ -302,7 +304,7 @@ class Ingredient_Serving_Size_Price(db.Model):
                               nullable=False)
     serving_size = db.Column(db.String(80), db.ForeignKey(
         'ingredient_serving_size.id'), primary_key=True,  nullable=False)
-    price = db.Column(db.Float(), primary_key=True, nullable=False)
+    price = db.Column(db.Float(), nullable=False)
 
     @property
     def serialize(self):
@@ -334,15 +336,18 @@ class Drink_Category(db.Model):
 
 
 class Drink(db.Model):
-    id = db.Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True,  # https://stackoverflow.com/questions/55917056/how-to-prevent-uuid-primary-key-for-new-sqlalchemy-objects-being-created-with-th
+    id = db.Column(UUID(as_uuid=True), primary_key=True,  # https://stackoverflow.com/questions/55917056/how-to-prevent-uuid-primary-key-for-new-sqlalchemy-objects-being-created-with-th
                    unique=True, nullable=False)
+
+    name = db.Column(db.String(80), nullable = False)
+    price = db.Column(db.Float(), nullable=False)
     drink_category_id = db.Column(db.String(80), db.ForeignKey(
         'drink_category.id'), nullable=False)
-    order_drink = relationship('Order_Drink', lazy=True)
-    milkshake = relationship('Milkshake', lazy=True)
-    non_coffee_drink = relationship('Non_Coffee_Drink', lazy=True)
-    bottled_drink = relationship('Bottled_Drink', lazy=True)
+    # milkshake = relationship('Milkshake', lazy=True)
+    # non_coffee_drink = relationship('Non_Coffee_Drink', lazy=True)
+    # bottled_drink = relationship('Bottled_Drink', lazy=True)
     coffee = relationship('Coffee', lazy=True)
+    order_drink = relationship('Order_Drink', lazy=True)
 
     @property
     def serialize(self):
@@ -519,7 +524,7 @@ class Milk(db.Model):
 
 class Coffee(db.Model):
     __tablename__ = 'coffee'
-    id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
+    drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
                    nullable=False)
     coffee_name_id = db.Column(db.String(80), db.ForeignKey('coffee_name.id'),
                                nullable=False)
@@ -528,10 +533,10 @@ class Coffee(db.Model):
     temperature_id = db.Column(db.String(80), db.ForeignKey("coffee_temperature.id"),
                                nullable=False)
     flavor_syrup_id = db.Column(db.String(80), db.ForeignKey(
-        'coffee_flavor_syrup.id'), nullable=False)
+        'coffee_flavor_syrup.id'), nullable=True)
 
-    flavor_serving_size_id = db.Column(db.String(80), db.ForeignKey(
-        'coffee_flavor_syrup_serving_size.id'), nullable=False)
+    flavor_syrup_serving_size_id = db.Column(db.String(80), db.ForeignKey(
+        'coffee_flavor_syrup_serving_size.id'), nullable=True)
     espresso_serving_size_id = db.Column(db.String(80), db.ForeignKey(
         'espresso.serving_size'), nullable=False)
     milk_type_id = db.Column(
@@ -547,60 +552,8 @@ class Coffee(db.Model):
         return serialized_attributes
 
 
-class Milkshake(db.Model):
-    drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
-                         nullable=False)
-    name = db.Column(db.String(80), nullable=False, unique=True)
-    price = db.Column(db.Float(), nullable=False)
-
-    @property
-    def serialize(self):
-        attribute_names = list(self.__dict__.keys())
-        attributes = list(self.__dict__.values())
-        serialized_attributes = {}
-        for i in range(len(attributes)):
-            serialized_attributes[attribute_names[i]] = attributes[i]
-        return serialized_attributes
-
-
-class Non_Coffee_Drink(db.Model):
-    __tablename__ = 'non_coffee_drink'
-    drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
-                         nullable=False)
-    name = db.Column(db.String(80), nullable=False)
-    price = db.Column(db.Float(), nullable=False)
-    serving_size = db.Column(db.String(80), db.ForeignKey(
-        "drink_serving_size.id"), nullable=False)
-
-    @property
-    def serialize(self):
-        attribute_names = list(self.__dict__.keys())
-        attributes = list(self.__dict__.values())
-        serialized_attributes = {}
-        for i in range(len(attributes)):
-            serialized_attributes[attribute_names[i]] = attributes[i]
-        return serialized_attributes
-
-
-class Bottled_Drink(db.Model):
-    __tablename__ = 'bottled_drink'
-    drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
-                         nullable=False)
-    name = db.Column(db.String(80), nullable=False, unique=True)
-    price = db.Column(db.Float(), nullable=False)
-
-    @property
-    def serialize(self):
-        attribute_names = list(self.__dict__.keys())
-        attributes = list(self.__dict__.values())
-        serialized_attributes = {}
-        for i in range(len(attributes)):
-            serialized_attributes[attribute_names[i]] = attributes[i]
-        return serialized_attributes
-
-
 class Side(db.Model):
-    id = db.Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True,  # https://stackoverflow.com/questions/55917056/how-to-prevent-uuid-primary-key-for-new-sqlalchemy-objects-being-created-with-th
+    id = db.Column(UUID(as_uuid=True),primary_key=True,  # https://stackoverflow.com/questions/55917056/how-to-prevent-uuid-primary-key-for-new-sqlalchemy-objects-being-created-with-th
                    unique=True, nullable=False)
     side_type_id = db.Column(db.String(80), db.ForeignKey('side_type.id'),  # natural key
                              nullable=False)
@@ -609,6 +562,7 @@ class Side(db.Model):
     order_side = relationship('Order_Side', lazy=True)
 
     ice_cream = relationship('Order_Ice_Cream', backref='side', lazy=True)
+    
 
     @property
     def serialize(self):
@@ -693,16 +647,46 @@ class Ice_Cream_Bowl(db.Model):
     serving_size_id = db.Column(db.String(80), db.ForeignKey("ice_cream_serving_size.id"), nullable=False)
     price = db.Column(db.Float(), nullable=False)
 
+    @property
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
+
+
+class Ice_Cream_Flavor_Serving_Size_Price(db.Model):
+    __tablename__ = 'ice_cream_flavor_serving_size_price'
+    flavor_id = db.Column(db.String(80), db.ForeignKey(
+        "ice_cream_flavor.id"),  primary_key=True, nullable=False)
+    serving_size_id = db.Column(db.String(80), db.ForeignKey(
+        "ice_cream_serving_size.id"), primary_key=True, nullable=False)
+    price = db.Column(db.Float(), nullable=False)
+
+    @property
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 
 class Order_Ice_Cream(db.Model):
     __tablename__ = 'order_ice_cream'
-    id = db.Column(UUID(as_uuid=True), db.ForeignKey(
-        "side.id"),  primary_key=True,  nullable=False)
+    side_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
+        "side.id"), primary_key=True, nullable=False)
+    order_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
+        "order.id"), primary_key=True, nullable=False)
     flavor = db.Column(db.String(80),  db.ForeignKey(
-        "ice_cream_flavor.id"),  nullable=False)
+        "ice_cream_flavor.id"), nullable=False)
+    serving_size_id = db.Column(db.String(80), db.ForeignKey(
+        "ice_cream_serving_size.id"), nullable=False)
     topping = db.Column(db.String(80), db.ForeignKey(
-        "ingredient.id"), nullable=False)
+        "ingredient.id"), primary_key=True, nullable=False)
     topping_serving_size = db.Column(
         db.String(80), db.ForeignKey(
             "ingredient_serving_size.id"), nullable=False)
@@ -722,7 +706,7 @@ class Ice_Cream_Serving_Size(db.Model):
     __tablename__ = 'ice_cream_serving_size'
     id = db.Column(db.String(80), primary_key=True, unique=True,
                    nullable=False)
-    ice_cream_serving_size_price = relationship('Ice_Cream_Bowl')
+
 
     @property
     def serialize(self):

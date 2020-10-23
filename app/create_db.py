@@ -178,14 +178,16 @@ def create_sides():
     for i in range(len(croissant_items)):
         side_type_id = 'pastry'
         side_name_id = 'croissant'
-        new_side = Side(side_type_id=side_type_id, side_name_id=side_name_id)
+        side_id = uuid.uuid4()
+        new_side = Side(id=side_id, side_type_id=side_type_id, side_name_id=side_name_id)
         db.session.add(new_side)
     db.session.commit()
 
     for i in range(len(ice_cream_items)):
+        id = uuid.uuid4()
         side_type_id = 'ice_cream'
         side_name_id = 'ice_cream_bowl'
-        new_side = Side(side_type_id=side_type_id, side_name_id=side_name_id)
+        new_side = Side(id=id, side_type_id=side_type_id, side_name_id=side_name_id)
         db.session.add(new_side)
     db.session.commit()
 
@@ -206,12 +208,11 @@ def create_sides():
         ice_cream_index = i - len(croissant_items)
         side = ice_cream_items[ice_cream_index]
         if serialized_sides[i]['side_name_id'] == 'ice_cream_bowl':
-            side_id = serialized_sides[i]['id']
-            side_flavor = side['flavor_id']
-            side_serving_size = side['serving_size_id']
+            side_flavor = side['flavor']
+            side_serving_size = side['serving_size']
             side_price = side['price']
-            new_ice_cream = Ice_Cream_Bowl(
-                side_id = side_id, serving_size_id = side_serving_size, flavor_id = side_flavor, price = side_price)
+            new_ice_cream = Ice_Cream_Flavor_Serving_Size_Price(
+               serving_size_id = side_serving_size, flavor_id = side_flavor, price = side_price)
 
             # After I create the ingredient, I can then add it to my session.
             db.session.add(new_ice_cream)
@@ -394,73 +395,81 @@ def create_drinks():
     bottled_drink_items = load_json(
         r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\bottled_drinks.json")
 
-    for i in range(len(milkshake_items)):
+    for item in milkshake_items:
+        name = item['name']
+        price = item['price']
         drink_category_id = 'milkshake'
-        new_drink = Drink(drink_category_id=drink_category_id)
+        id = uuid.uuid4()
+        new_drink = Drink(id=id, name=name, price=price, drink_category_id=drink_category_id)
         db.session.add(new_drink)
-    db.session.commit()
 
-    for i in range(len(non_coffee_items)):
+    for item in non_coffee_items:
+        name = item['name']
+        price = item['price']
         drink_category_id = 'non-coffee'
-        new_drink = Drink(drink_category_id=drink_category_id)
+        id = uuid.uuid4()
+        new_drink = Drink(id=id, name=name, price=price, drink_category_id=drink_category_id)
         db.session.add(new_drink)
-    db.session.commit()
 
-    for i in range(len(bottled_drink_items)):
+    for item in bottled_drink_items:
+        name = item['name']
+        price = item['price']
+        id = uuid.uuid4()
         drink_category_id = 'bottled'
-        new_drink = Drink(drink_category_id=drink_category_id)
+        new_drink = Drink(id=id, name=name, price=price, drink_category_id=drink_category_id)
         db.session.add(new_drink)
-    db.session.commit()
-
-    drinks = db.session.query(Drink)
-    serialized_drinks = [x.serialize for x in drinks]
-    for i in range(len(milkshake_items)):
-        item = milkshake_items[i]
-        if serialized_drinks[i]["drink_category_id"] == 'milkshake':
-            drink_id = serialized_drinks[i]['id']
-            name = item['name']
-            price = item['price']
-            new_milkshake = Milkshake(
-                drink_id=drink_id, name=name, price=price)
-
-            # After I create the ingredient, I can then add it to my session.
-            db.session.add(new_milkshake)
-
-    # commit the session to my DB.
-
-    drinks = db.session.query(Drink)
-    serialized_drinks = [x.serialize for x in drinks]
-    for i in range(len(milkshake_items), len(milkshake_items) + len(non_coffee_items)):
-        coffeeIndex = i - len(milkshake_items)
-        item = non_coffee_items[coffeeIndex]
-        if serialized_drinks[i]["drink_category_id"] == 'non-coffee':
-            drink_id = serialized_drinks[i]['id']
-            name = item['name']
-            price = item['price']
-            serving_size = item['serving_size']
-            new_non_coffee_item = Non_Coffee_Drink(
-                drink_id=drink_id, name=name, serving_size=serving_size, price=price)
-
-            # After I create the ingredient, I can then add it to my session.
-            db.session.add(new_non_coffee_item)
-
-    drinks = db.session.query(Drink)
-    serialized_drinks = [x.serialize for x in drinks]
-    for i in range(len(milkshake_items) + len(non_coffee_items), len(serialized_drinks)):
-        bottled_drink_index = i - len(milkshake_items) - len(non_coffee_items)
-        item = bottled_drink_items[bottled_drink_index]
-        if serialized_drinks[i]["drink_category_id"] == 'bottled':
-            drink_id = serialized_drinks[i]['id']
-            name = item['name']
-            price = item['price']
-            new_bottled_drink = Bottled_Drink(
-                drink_id=drink_id, name=name, price=price)
-
-            # After I create the ingredient, I can then add it to my session.
-            db.session.add(new_bottled_drink)
-    # commit the session to my DB.
     db.session.commit()
     db.session.remove()
+
+    # drinks = db.session.query(Drink)
+    # serialized_drinks = [x.serialize for x in drinks]
+#     for i in range(len(milkshake_items)):
+#         item = milkshake_items[i]
+#         if serialized_drinks[i]["drink_category_id"] == 'milkshake':
+#             drink_id = serialized_drinks[i]['id']
+#             name = item['name']
+#             price = item['price']
+#             new_milkshake = Milkshake(
+#                 drink_id=drink_id, name=name, price=price)
+
+#             # After I create the ingredient, I can then add it to my session.
+#             db.session.add(new_milkshake)
+
+#     # commit the session to my DB.
+
+#     drinks = db.session.query(Drink)
+#     serialized_drinks = [x.serialize for x in drinks]
+#     for i in range(len(milkshake_items), len(milkshake_items) + len(non_coffee_items)):
+#         coffeeIndex = i - len(milkshake_items)
+#         item = non_coffee_items[coffeeIndex]
+#         if serialized_drinks[i]["drink_category_id"] == 'non-coffee':
+#             drink_id = serialized_drinks[i]['id']
+#             name = item['name']
+#             price = item['price']
+#             serving_size = item['serving_size']
+#             new_non_coffee_item = Non_Coffee_Drink(
+#                 drink_id=drink_id, name=name, serving_size=serving_size, price=price)
+
+#             # After I create the ingredient, I can then add it to my session.
+#             db.session.add(new_non_coffee_item)
+
+#     drinks = db.session.query(Drink)
+#     serialized_drinks = [x.serialize for x in drinks]
+#     for i in range(len(milkshake_items) + len(non_coffee_items), len(serialized_drinks)):
+#         bottled_drink_index = i - len(milkshake_items) - len(non_coffee_items)
+#         item = bottled_drink_items[bottled_drink_index]
+#         if serialized_drinks[i]["drink_category_id"] == 'bottled':
+#             drink_id = serialized_drinks[i]['id']
+#             name = item['name']
+#             price = item['price']
+#             new_bottled_drink = Bottled_Drink(
+#                 drink_id=drink_id, name=name, price=price)
+
+#             # After I create the ingredient, I can then add it to my session.
+#             db.session.add(new_bottled_drink)
+#     # commit the session to my DB.
+#     db.session.commit()
+#     db.session.remove()
 
 
 def create_side_type():

@@ -129,29 +129,60 @@ def make_your_own_sweet_crepe(editOrder=None):
 def order_drink(editOrder=None):
     drink_service = Drink_Service()
     ingredient_service = Ingredient_Service()
-    milkshakes = [x.serialize() for x in drink_service.get_milkshakes()]
-    formatted_milkshakes = [humanize(x, "name").serialize()
-                  for x in drink_service.get_milkshakes()]
 
-    bottled_drinks = [x.serialize() for x in drink_service.get_bottled_drinks()]
+    milkshakes = [x.serialize() for x in drink_service.get_drinks('milkshake')]
+    for x in milkshakes:
+        x['serving_size'] = '16oz'
+    formatted_milkshakes = [humanize(x, "name").serialize()
+                            for x in drink_service.get_drinks('milkshake')]
+
+    bottled_drinks = [x.serialize() for x in drink_service.get_drinks('bottled')]
+    for x in bottled_drinks:
+            x['serving_size'] = '12oz'
+    
+    
     formatted_bottled_drinks = [humanize(x, "name").serialize()
-                      for x in drink_service.get_bottled_drinks()]
+                                for x in drink_service.get_drinks('bottled')]
 
     drink_categories = [x.serialize()
                         for x in drink_service.get_drink_categories()]
 
     coffee_syrups = [x.serialize() for x in drink_service.get_coffee_syrups()]
+    
     formatted_coffee_syrups = [humanize(x, "coffee_syrup_flavor").serialize()
                      for x in drink_service.get_coffee_syrups()]
 
     coffee_drinks = [x.serialize() for x in drink_service.get_coffee_drinks()]
     formatted_coffee_drinks = [humanize(x, "name").serialize()
-                     for x in drink_service.get_coffee_drinks()]
+                               for x in drink_service.get_coffee_drinks()]
 
-    non_coffee_drinks = [x.serialize() for x in drink_service.get_non_coffee_drinks()]
-    formatted_non_coffee_drinks = [humanize(x, "name").serialize()
-                         for x in drink_service.get_non_coffee_drinks()]
+    regular_non_coffee_drinks = [x.serialize()
+                         for x in drink_service.get_drinks('non-coffee')]
+    for x in regular_non_coffee_drinks:
+        x["serving_size"] = '12oz'
+    large_non_coffee_drinks = [x.serialize()
+                         for x in drink_service.get_drinks('non-coffee')]
+    for x in large_non_coffee_drinks:
+        x["serving_size"] = '16oz'
+    non_coffee_drinks = regular_non_coffee_drinks
+    for x in large_non_coffee_drinks:
+        non_coffee_drinks.append(x)
+    print("non_coffee_drinks", non_coffee_drinks)
+        
+    regular_formatted_non_coffee_drinks = [humanize(x, "name").serialize()
+                                   for x in drink_service.get_drinks('non-coffee')]
+    for x in regular_formatted_non_coffee_drinks:
+        x["serving_size"] = '12oz'
+    large_formatted_non_coffee_drinks = [humanize(x, "name").serialize()
+                                           for x in drink_service.get_drinks('non-coffee')]
+    for x in large_formatted_non_coffee_drinks:
+        x['serving_size'] = '16oz'
+    formatted_non_coffee_drinks = regular_formatted_non_coffee_drinks
     
+    for x in large_formatted_non_coffee_drinks:
+        regular_formatted_non_coffee_drinks.append(x)
+    print("formatted_non_coffee_drinks", formatted_non_coffee_drinks)
+
     milk_drinks = [x.serialize() for x in drink_service.get_milk_drinks()]
     formatted_milk_drinks = [humanize(x, "id").serialize()
                    for x in drink_service.get_milk_drinks()]
@@ -178,6 +209,9 @@ def order_side(editOrder=None):
     side_types = [x.serialize() for x in side_service.get_side_types()]
     ice_cream_bowls = [x.serialize()
                        for x in side_service.get_ice_cream_bowls()]
+    print()
+    for x in ice_cream_bowls:
+        print('ice',x)
     topping_serving_sizes = [
         x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
     formatted_ice_cream_bowls = [humanize(x, 'flavor')
@@ -209,9 +243,14 @@ def checkout():
         return render_template('checkout.html')
     elif request.method == 'POST':
         new_order = request.json
-        new_order_value = new_order['order']
-        print("new_order_value", new_order_value)
+        print("new_order", new_order)
         
+        new_order_value = new_order['order']
+        print()
+
+        print("new_order_value", new_order_value)
+        print()
+
         order_service = Order_Service()
         order_service.create_order(new_order_value)
         return jsonify(200)

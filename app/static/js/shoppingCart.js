@@ -72,13 +72,15 @@ export const capitalize = (str) => {
 };
 
 export const humanize = (dict = null, attr = null, format = false) => {
+	var formatDict = JSON.parse(JSON.stringify(dict))
+	
 	if (format === true) {
-		for (var i = 0; i < dict['ingredients'].length; i++) {
-			var str = dict['ingredients'][i][`${attr}`];
+		for (var i = 0; i < formatDict['ingredients'].length; i++) {
+			var str = formatDict['ingredients'][i][`${attr}`];
 			const frags = str.split('_');
 			if (frags.length < 2) {
 				str = capitalize(str);
-				dict['ingredients'][i][`${attr}`] = str;
+				formatDict['ingredients'][i][`${attr}`] = str;
 			}
 			var newFrags = new Array();
 			for (var frag in frags) {
@@ -86,16 +88,16 @@ export const humanize = (dict = null, attr = null, format = false) => {
 				newFrags.push(frag);
 			}
 			newFrags = newFrags.join(' ');
-			dict['ingredients'][i][`${attr}`] = newFrags;
+			formatDict['ingredients'][i][`${attr}`] = newFrags;
 		}
-		return dict;
+		return formatDict;
 	}
-	var str = dict[`${attr}`];
+	var str = formatDict[`${attr}`];
 	var frags = str.split('_');
 	if (frags.length < 2) {
 		str = capitalize(str);
-		dict[`${attr}`] = str;
-		return dict;
+		formatDict[`${attr}`] = str;
+		return formatDict;
 	}
 	var newFrags = new Array();
 	for (var i in frags) {
@@ -103,8 +105,8 @@ export const humanize = (dict = null, attr = null, format = false) => {
 		newFrags.push(capitalFrag);
 	}
 	newFrags = newFrags.join(' ');
-	dict[`${attr}`] = newFrags;
-	return dict;
+	formatDict[`${attr}`] = newFrags;
+	return formatDict;
 };
 //https://www.smashingmagazine.com/2019/08/shopping-cart-html5-web-storage/
 const checkBrowser = () => {
@@ -123,6 +125,9 @@ const doShowAll = () => {
 		if (orderDict) {
 			const order = new Order();
 			order.fromJSON(orderDict);
+			console.log("order", order)
+			
+
 			// to do finish the serialization and deserialization of all the classes, then build savory crepe, then menu crepe pg, then clover pmt in backend, then mobile buttons
 			if (order) {
 				if (order.orderCrepe.length) {
@@ -225,7 +230,7 @@ const doShowAll = () => {
 
 						for (var j = 0; j < drinks.length; j++) {
 							const drink = drinks[j];
-							console.log("drink: %s", drink)
+							console.log("drink", drink)
 							
 							const drinkPrice = drink.price * drink.quantity;
 							if (drink instanceof Coffee) {
@@ -234,8 +239,6 @@ const doShowAll = () => {
 								const espressoPrice = drink.price;
 								const espressoServingSize = drink.espressoServingSize;
 								var espressFormat;
-								var flavorSyrup = '';
-								var flavorSyrupServingSize = '';
 								var flavorSyrupPrice = '';
 
 								if (espressoServingSize === 'extra') {
@@ -246,9 +249,7 @@ const doShowAll = () => {
 									espressFormat = '1x Espresso Shot';
 								}
 								if (drink.flavorSyrup && drink.flavorSyrupServingSize) {
-									flavorSyrup = drink.flavorSyrup;
-									flavorSyrupServingSize = drink.flavorSyrupServingSize;
-									if (flavorSyrupServingSize === 'extra') {
+									if (drink.flavorSyrupServingSize === 'extra') {
 										flavorSyrupPrice = 0.99;
 									} else {
 										flavorSyrupPrice = 0;
@@ -279,7 +280,7 @@ const doShowAll = () => {
 												</div>
 												<div class="row" style= "margin-bottom: 20px;" id='drinkRow${i}${j + 1}'>
 													<div class="col-9" style="margin-right: 0px;">
-														<h5 >${capitalize(flavorSyrupServingSize)} ${capitalize(flavorSyrup)}</h5>
+														<h5 >${humanize(drink, "flavorSyrupServingSize").flavorSyrupServingSize} ${humanize(drink, "flavorSyrup").flavorSyrup}</h5>
 													</div>
 													<div class="col-3" style="">
 														<h4 >$${flavorSyrupPrice}</h4>
@@ -370,30 +371,31 @@ const doShowAll = () => {
 						for (var j = 0; j < sidesInOrder.length; j++) {
 							const side = sidesInOrder[j];
 							if (side.toppings) {
-								for (var k = 0; k < side.toppings.length; k++) {
-									const topping = side.toppings[k];
-									var toppingServingSize;
-									if (toppingServingSize === 'Extra') {
-										toppingServingSize = 'Double';
-									} else {
-										toppingServingSize = capitalize(topping.servingSize);
-									}
-									$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${i}${j + 1}">
+								$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${i}${j + 1}">
 												<div class="col-9" style="margin-right: 0px; " id="sideCol${i}${j}">
 													<h5 >${humanize(side, 'sideName').sideName}</h5>
 												</div>
 												<div class="col-3" id="sideCol${i}${j + 2}">
 													<h4 >$${side.price}</h4>
 												</div>
-										</div>
-										<div class="row" style= "margin-bottom: 20px;">
+										</div>`).insertAfter(`#sideRow${i}${j}`);
+								for (var k = 0; k < side.toppings.length; k++) {
+									const topping = side.toppings[k];
+									var toppingServingSize;
+									if (toppingServingSize === 'extra') {
+										toppingServingSize = 'Double';
+									} else {
+										toppingServingSize = capitalize(topping.servingSize);
+									}
+									$(`
+										<div class="row" style= "margin-bottom: 20px;" id="sideRow${i}${j + 2}">
 											<div class="col-9" style="margin-right:0px;">
 												<h5 >${toppingServingSize + ' ' + humanize(topping, 'id').id}</h5>
 											</div>
 											<div class="col-3">
 												<h4 >$${topping.price.toFixed(2)}</h4>
 											</div>
-										</div>`).insertAfter(`#sideRow${i}${j}`);
+										</div>`).insertAfter(`#sideRow${i}${j + 1}`);
 								}
 							} else {
 								$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${i}${j + 1}">

@@ -7,19 +7,19 @@ var ingredientServingSizes;
 var ingredientCategoryDataArray = new Array();
 var userOrderCrepe;
 
-function displayErrorMsg(element) {
-	const selector = `#${element.closest('.card').attr('id') + 'error'}`;
-	const id = `${element.closest('.card').attr('id') + 'error'}`;
+const displayErrorMsg = (element) => {
+	const selector = `#${element.closest('.card, .list-group-item').attr('id') + 'error'}`;
+	const id = `${element.closest('.card, .list-group-item').attr('id') + 'error'}`;
 	if ($(selector).length) {
 		$(selector).fadeIn('slow').delay(4000).fadeOut('slow'); //https://stackoverflow.com/questions/15686598/jquery-delay-before-fadeout
 	} else {
 		$(
 			`<div class="alert-danger" role="alert" id="${id}" style="font-size: 20px; font-weight: 600; vertical-align: middle; text-align: center; padding: 5px; display: none; line-height: 40px; color:black; height: 100px; top: 100px; position: absolute;">You may only select 2 proteins.</div>`
-		).insertAfter($(element).closest('.card').find('img'));
+		).insertAfter($(element).closest('.card, .list-group-item').find('img'));
 		$(selector).fadeIn('slow').delay(4000).fadeOut('slow');
 	}
 	return false;
-}
+};
 
 const stringify = (crepeOrder) => {
 	if (crepeOrder.ingredients.length) {
@@ -139,85 +139,199 @@ $(window).on('load', function () {
 		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
 	userOrderCrepe = new OrderCrepe();
-	userOrderCrepe._flavor = 'savory'
-	userOrderCrepe._origination = 'custom'
+	userOrderCrepe._flavor = 'savory';
+	userOrderCrepe._origination = 'custom';
 	//veggie + all other topping functionality
 	$(document)
-		.on('mouseenter', '.card', function () {
-			if ($(this).find('.card-body').attr('id') != 'cardBody') {
+		.on('mouseenter', '.card, .list-group', function () {
+			if ($(this).find('.card-body').attr('id') != 'cardBody' && $(this).attr('class') != 'list-group') {
 				$(this).find('.card-body').css('opacity', '.3');
 				$(this).find('.card-img-top').css('opacity', '.3');
 				$(this).find('.btn').show();
 			}
+			if ($(this).attr('class') === 'list-group') {
+				$(this)
+					.find('.list-group-item')
+					.unbind('mouseenter')
+					.bind('mouseenter', function () {
+						const selectedItemIndex = $(this).attr('id').split('-')[1];
+						console.log('selectedItemIndex', selectedItemIndex);
+
+						const selectedItemCategoryIndex = $(this).closest('.list-group').attr('id').split('-')[1];
+						if (
+							!userOrderCrepe.checkIfThisIngredientSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								ingredientCategoryDataArray
+							)
+						) {
+							$(this).find('img, h5, p').css('opacity', '.3');
+							$(this).find('.btn').show();
+						}
+					});
+			}
 
 			//click the card somewhere
 			$(this)
-				.find('.card-text, .card-title, .card-body, .card-img-top')
+				.find('.card-text, .card-title, .card-body, .card-img-top, .list-group-item')
 				.unbind('click')
-				.bind('click', function () {
-					const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-					const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-					// if you click the card and it hasn't been selected
-					const selectedIngredient = userOrderCrepe.checkIfThisIngredientSelected(
-						selectedItemIndex,
-						selectedItemCategoryIndex,
-						ingredientCategoryDataArray
-					);
-					if (!selectedIngredient) {
-						const servingSize = 'regular';
-						const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							ingredientCategoryDataArray,
-							servingSize
-						);
-						if (!addedIngredient) {
-							displayErrorMsg($(this));
-						} else {
-							if (addedIngredient.servingSize === 'light') {
-								$(this).closest('.card').find('.btn2').html('½');
-								$(this).closest('.card').find('.btn2').show();
-							} else if (addedIngredient.servingSize === 'regular') {
-								$(this).closest('.card').find('.btn2').html('✓');
-								$(this).closest('.card').find('.btn2').show();
-							}
-						}
-					} else {
-						userOrderCrepe.removeIngredient(
+				.bind('click', function (event) {
+					const senderElement = event.target;
+					if (this === senderElement) {
+						const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
+						const selectedItemCategoryIndex = $(this)
+							.closest('.card-deck, .list-group')
+							.attr('id')
+							.split('-')[1];
+						// if you click the card and it hasn't been selected
+						const selectedIngredient = userOrderCrepe.checkIfThisIngredientSelected(
 							selectedItemIndex,
 							selectedItemCategoryIndex,
 							ingredientCategoryDataArray
 						);
-						$(this).closest('.card').find('.btn2').hide();
-					}
-					for (var i = 0; i < userOrderCrepe.ingredients.length; i++) {
-						if (userOrderCrepe.ingredients[i].category === 'protein') {
-							for (var j = 0; j < ingredientCategoryDataArray[0].length; j++) {
-								if (ingredientCategoryDataArray[0][j].id === userOrderCrepe.ingredients[i].id) {
-									var selector = '#card-';
-									selector += String(j);
-									if (userOrderCrepe.ingredients[i].servingSize === 'light') {
-										$('#cardDeck-0').find(selector).find('.btn2').html('½');
-									} else if (userOrderCrepe.ingredients[i].servingSize === 'regular') {
-										$('#cardDeck-0').find(selector).find('.btn2').html('✓');
-									} else if (userOrderCrepe.ingredients[i].servingSize === 'extra') {
-										$('#cardDeck-0').find(selector).find('.btn2').html('2x');
+						if (!selectedIngredient) {
+							const servingSize = 'regular';
+							const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								ingredientCategoryDataArray,
+								servingSize
+							);
+							if (!addedIngredient) {
+								displayErrorMsg($(this));
+							} else {
+								if (addedIngredient.servingSize === 'light') {
+									$(this).closest('.card, .list-group-item').find('.btn2').html('½');
+									$(this).closest('.card, .list-group-item').find('.btn2').show();
+								} else if (addedIngredient.servingSize === 'regular') {
+									$(this).closest('.card, .list-group-item').find('.btn2').html('✓');
+									$(this).closest('.card, .list-group-item').find('.btn2').show();
+								}
+							}
+						} else {
+							userOrderCrepe.removeIngredient(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								ingredientCategoryDataArray
+							);
+							$(this).closest('.card, .list-group-item').find('.btn2').hide();
+						}
+						for (var i = 0; i < userOrderCrepe.ingredients.length; i++) {
+							if (userOrderCrepe.ingredients[i].category === 'protein') {
+								for (var j = 0; j < ingredientCategoryDataArray[0].length; j++) {
+									if (ingredientCategoryDataArray[0][j].id === userOrderCrepe.ingredients[i].id) {
+										var selector = '#card-';
+										selector += String(j);
+										if (userOrderCrepe.ingredients[i].servingSize === 'light') {
+											$('#cardDeck-0').find(selector).find('.btn2').html('½');
+										} else if (userOrderCrepe.ingredients[i].servingSize === 'regular') {
+											$('#cardDeck-0').find(selector).find('.btn2').html('✓');
+										} else if (userOrderCrepe.ingredients[i].servingSize === 'extra') {
+											$('#cardDeck-0').find(selector).find('.btn2').html('2x');
+										}
 									}
 								}
 							}
 						}
 					}
 				});
-		})
-		.on('mouseleave', '.card', function () {
-			if ($(this).find('.card-body').attr('id') != 'cardBody') {
+			$('.btn')
+				.unbind('click')
+				.bind('click', function () {
+					const selectedItemIndex = $(this).closest('.card, .list-group-item').attr('id').split('-')[1];
+					const selectedItemCategoryIndex = $(this)
+						.closest('.card-deck, .list-group')
+						.attr('id')
+						.split('-')[1];
+					if ($(this).html() === 'Customize') {
+						// if they select the customize button for the first time
+						//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
+						$(this).blur();
+						$(this).html('Extra');
+						$(this).closest('.card, .list-group-item').find('.btn3').show();
+						$(this).closest('.card, .list-group-item').find('.btn4').show();
+					} else {
+						const servingSizeIndex = $(this).attr('id').split('-')[1];
+						const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
+						// if they select the customize button for the second time then they have selected the extra meat button
+						const selectedIngredient = userOrderCrepe.checkIfThisIngredientSelected(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							ingredientCategoryDataArray
+						);
+						// check if this ingredient is being modified
+						const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
+							selectedItemIndex,
+							selectedItemCategoryIndex,
+							ingredientCategoryDataArray,
+							ingredientServingSize
+						);
+						if (!addedIngredient) {
+							displayErrorMsg($(this));
+						} else {
+							$(this).blur();
+							$(this).closest('.card, .list-group-item').find('.btn2').html('2x');
+							$(this).closest('.card, .list-group-item').find('.btn2').show();
+						}
+					}
+				});
 
-				$(this).find('img').css('opacity', '1');
+			$('.btn3')
+				.unbind('click')
+				.bind('click', function () {
+					const selectedItemIndex = $(this).closest('.card, .list-group-item').attr('id').split('-')[1];
+					const selectedItemCategoryIndex = $(this)
+						.closest('.card-deck, .list-group')
+						.attr('id')
+						.split('-')[1];
+					const servingSizeIndex = $(this).attr('id').split('-')[1];
+					const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
+					const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
+						selectedItemIndex,
+						selectedItemCategoryIndex,
+						ingredientCategoryDataArray,
+						ingredientServingSize
+					);
+					if (!addedIngredient) {
+						displayErrorMsg($(this));
+					} else {
+						$(this).closest('.card, .list-group-item').find('.btn2').html('½');
+						$(this).closest('.card, .list-group-item').find('.btn2').show();
+					}
+				});
+			$('.btn4')
+				.unbind('click')
+				.bind('click', function () {
+					const selectedItemIndex = $(this).closest('.card, .list-group-item').attr('id').split('-')[1];
+					const selectedItemCategoryIndex = $(this)
+						.closest('.card-deck, .list-group')
+						.attr('id')
+						.split('-')[1];
+					const servingSizeIndex = $(this).attr('id').split('-')[1];
+					const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
+					const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
+						selectedItemIndex,
+						selectedItemCategoryIndex,
+						ingredientCategoryDataArray,
+						ingredientServingSize
+					);
+					if (!addedIngredient) {
+						displayErrorMsg($(this));
+					} else {
+						$(this).closest('.card, .list-group-item').find('.btn2').html('✓');
+						$(this).closest('.card, .list-group-item').find('.btn2').show();
+					}
+				});
+		})
+		.on('mouseleave', '.card, .list-group-item', function () {
+			if ($(this).find('.card-body').attr('id') != 'cardBody') {
+				$(this).find('img, h5, p').css('opacity', '1');
+
 				$(this).find('.card-body').css('opacity', '1');
 				$(this).find('.btn').html('Customize');
-			
-				const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-				const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+
+				const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
+				const selectedItemCategoryIndex = $(this).closest('.card-deck, .list-group').attr('id').split('-')[1];
 				if (
 					!userOrderCrepe.checkIfThisIngredientSelected(
 						selectedItemIndex,
@@ -233,88 +347,6 @@ $(window).on('load', function () {
 					$(this).find('.btn4').hide();
 				}
 			}
-			});
-
-	$('.btn')
-		.unbind('click')
-		.bind('click', function () {
-			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			if ($(this).html() === 'Customize') {
-				// if they select the customize button for the first time
-				//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
-				$(this).blur();
-				$(this).html('Extra');
-				$(this).closest('.card').find('.btn3').show();
-				$(this).closest('.card').find('.btn4').show();
-			} else {
-				const servingSizeIndex = $(this).attr('id').split('-')[1];
-				const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
-				// if they select the customize button for the second time then they have selected the extra meat button
-				const selectedIngredient = userOrderCrepe.checkIfThisIngredientSelected(
-					selectedItemIndex,
-					selectedItemCategoryIndex,
-					ingredientCategoryDataArray
-				);
-				// check if this ingredient is being modified
-				const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
-					selectedItemIndex,
-					selectedItemCategoryIndex,
-					ingredientCategoryDataArray,
-					ingredientServingSize
-				);
-				if (!addedIngredient) {
-					displayErrorMsg($(this));
-				}
-				else {
-					$(this).blur();
-					$(this).closest('.card').find('.btn2').html('2x');
-					$(this).closest('.card').find('.btn2').show();
-				}
-			}
-		});
-
-	$('.btn3')
-		.unbind('click')
-		.bind('click', function () {
-			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			const servingSizeIndex = $(this).attr('id').split('-')[1];
-			const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
-			const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
-				selectedItemIndex,
-				selectedItemCategoryIndex,
-				ingredientCategoryDataArray,
-				ingredientServingSize
-			);
-			if (!addedIngredient) {
-				displayErrorMsg($(this));
-			}
-			else {
-				$(this).closest('.card').find('.btn2').html('½');
-				$(this).closest('.card').find('.btn2').show();
-			}
-		});
-	$('.btn4')
-		.unbind('click')
-		.bind('click', function () {
-			const selectedItemIndex = $(this).closest('.card').attr('id').split('-')[1];
-			const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
-			const servingSizeIndex = $(this).attr('id').split('-')[1];
-			const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
-			const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
-				selectedItemIndex,
-				selectedItemCategoryIndex,
-				ingredientCategoryDataArray,
-				ingredientServingSize
-			);
-			if (!addedIngredient) {
-				displayErrorMsg($(this));
-			}
-			else {
-				$(this).closest('.card').find('.btn2').html('✓');
-				$(this).closest('.card').find('.btn2').show();
-			}
 		});
 });
 
@@ -323,20 +355,18 @@ $(window).on('load', function () {
 var cWidth = $(window).width();
 //https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
 $(window).on('load resize', function () {
-	var newWidth = $(window).width();
+	const newWidth = $(window).width();
 
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
 
 	if ($(window).width() < 767) {
-		const a = document.getElementsByClassName('container');
-		const b = document.getElementsByClassName('card-deck');
-		const c = document.getElementsByClassName('card-title');
-		const d = document.getElementsByClassName('card-text');
-		const e = document.getElementsByClassName('card-img-top');
-		const f = document.getElementsByClassName('card');
-		const g = document.getElementsByClassName('h3');
+		const cardDeckElements = document.getElementsByClassName('card-deck');
+		const cardTitleElements = document.getElementsByClassName('card-title');
+		const cardTextElements = document.getElementsByClassName('card-text');
+		const cardImgTopElements = document.getElementsByClassName('card-img-top');
+		const h3Elements = document.getElementsByClassName('h3');
 
 		$('#crepeImg').css('margin-left', '0px');
 		$('#cardText').css('margin-left', '0px');
@@ -344,38 +374,38 @@ $(window).on('load resize', function () {
 		$('#cardText').css('margin-bottom', '20px');
 		$('#cardBody').css('margin-left', '0px');
 
-		var cardTitleValues = [];
-		for (var i = 2; i < c.length; i++) {
-			cardTitleValues.push(c[i].innerHTML);
+		const cardTitleValues = new Array();
+		for (var i = 2; i < cardTitleElements.length; i++) {
+			cardTitleValues.push(cardTitleElements[i].innerHTML);
 		}
 
 		const constCardTitleValues = [...cardTitleValues];
-		var cardTextValues = [];
-		for (var i = 1; i < d.length; i++) {
-			cardTextValues.push(d[i].innerHTML);
+		const cardTextValues = new Array();
+		for (var i = 1; i < cardTextElements.length; i++) {
+			cardTextValues.push(cardTextElements[i].innerHTML);
 		}
 
 		const constCardTextValues = [...cardTextValues];
-		var cardImgSrcValues = [];
-		for (var i = 0; i < e.length; i++) {
-			cardImgSrcValues.push(e[i].src);
+		var cardImgSrcValues = new Array();
+		for (var i = 0; i < cardImgTopElements.length; i++) {
+			cardImgSrcValues.push(cardImgTopElements[i].src);
 		}
 
 		const constCardImgSrcValues = [...cardImgSrcValues];
-		const constBLength = b.length;
-		var cardDeckTitleValues = [];
-		for (var i = 0; i < g.length; i++) {
-			cardDeckTitleValues.push(g[i].innerHTML);
+		const cardDeckElementsLength = cardDeckElements.length;
+		var cardDeckTitleValues = new Array();
+		for (var i = 0; i < h3Elements.length; i++) {
+			cardDeckTitleValues.push(h3Elements[i].innerHTML);
 		}
 
-		var cardDeckChildrenLength = [];
-		var constCardDeckNodes = [];
-		for (i = 0; i < constBLength; i++) {
-			const clone = b[i].cloneNode(true);
+		const cardDeckChildrenLength = new Array();
+		const constCardDeckNodes = new Array();
+		for (var i = 0; i < cardDeckElementsLength; i++) {
+			const clone = cardDeckElements[i].cloneNode(true);
 			constCardDeckNodes.push(clone);
-			var cardDeckCards = b[i].children;
+			const cardDeckCards = cardDeckElements[i].children;
 			var counter = 0;
-			for (j = 0; j < cardDeckCards.length; j++) {
+			for (var j = 0; j < cardDeckCards.length; j++) {
 				if (cardDeckCards[j].className == 'card') {
 					counter += 1;
 				}
@@ -383,15 +413,15 @@ $(window).on('load resize', function () {
 			cardDeckChildrenLength.push(counter);
 		}
 
-		for (i = 0; i < constBLength; i++) {
-			removeAllChildNodes(b[i]);
+		for (var i = 0; i < cardDeckElementsLength; i++) {
+			removeAllChildNodes(cardDeckElements[i]);
 		}
 
-		for (i = 0; i < constBLength; i++) {
-			var row = document.createElement('div');
+		for (var i = 0; i < cardDeckElementsLength; i++) {
+			const row = document.createElement('div');
 			row.setAttribute('class', 'row');
 			row.setAttribute('style', 'width: 100%');
-			var listGroupTitle = document.createElement('div');
+			const listGroupTitle = document.createElement('div');
 			//https://www.htmldog.com/guides/javascript/advanced/creatingelements/
 			listGroupTitle.setAttribute('class', 'col-12 col-sm-12 col-lg-12 col-md-12');
 
@@ -405,32 +435,77 @@ $(window).on('load resize', function () {
 				k = 0;
 			} else {
 				var priorChildLength = 0;
-				for (m = 0; m < i; m++) {
+				for (var m = 0; m < i; m++) {
 					priorChildLength += cardDeckChildrenLength[m];
 				}
 
 				k = priorChildLength;
 			}
 
-			var stoppingPoint = k + cardDeckChildrenLength[i];
-			for (k; k < stoppingPoint; k++) {
-				var listValue = document.createElement('li');
+			const stoppingPoint = k + cardDeckChildrenLength[i];
+			for (var k; k < stoppingPoint; k++) {
+				const listValue = document.createElement('li');
 				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
 				listValue.setAttribute('style', 'width:100%');
 
-				if (constCardTextValues[k]) {
-					string1 = String(constCardTitleValues[k]);
-					string2 = String(constCardTextValues[k]);
-					var listValueText = string1 + '<br>' + string2;
-					listValue.innerHTML = listValueText;
-				} else {
-					var listValueText = String(constCardTitleValues[k]);
-					listValue.innerHTML = listValueText;
-				}
+				const string1 = String(constCardTitleValues[k]);
+				const string2 = String(constCardTextValues[k]);
+				const container = document.createElement('container');
+				container.setAttribute('style', 'width:30%');
 
-				var imageParent = document.createElement('div');
+				const listValueHeader = document.createElement('h5');
+				const listValueBodyText = document.createElement('p');
+				if (constCardTextValues[k]) {
+					listValueBodyText.innerHTML = string2;
+					listValueHeader.innerHTML = string1 + '<br>';
+					container.appendChild(listValueHeader);
+					container.appendChild(listValueBodyText);
+					listValue.appendChild(container);
+				} else {
+					listValueHeader.innerHTML = string1;
+					container.appendChild(listValueHeader);
+					listValue.appendChild(container);
+				}
+				const container3 = document.createElement('div');
+				container3.setAttribute('class', 'container3');
+
+				const gridContainer = document.createElement('div');
+				gridContainer.setAttribute('class', 'grid-container');
+				gridContainer.setAttribute(
+					'style',
+					'margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;'
+				);
+
+				const button = document.createElement('button');
+				button.setAttribute('class', 'btn');
+				button.setAttribute('id', 'servingSize-2');
+				button.innerHTML = 'Customize';
+
+				const button2 = document.createElement('button');
+				button2.setAttribute('class', 'btn2');
+				button2.innerHTML = '✓';
+
+				// const button3 = document.createElement('button');
+				// button3.setAttribute('class', 'btn3');
+				// button3.innerHTML = 'Light';
+				// button3.setAttribute('id', 'servingSize-0');
+
+				// const button4 = document.createElement('button');
+				// button4.setAttribute('class', 'btn4');
+				// button4.innerHTML = 'Regular';
+				// button4.setAttribute('id', 'servingSize-1');
+
+				gridContainer.appendChild(button);
+				// gridContainer.appendChild(button4);
+				// gridContainer.appendChild(button3);
+				gridContainer.appendChild(button2);
+
+				container3.appendChild(gridContainer);
+				listValue.appendChild(container3);
+
+				const imageParent = document.createElement('div');
 				imageParent.setAttribute('class', 'image-parent');
-				var img = document.createElement('img');
+				const img = document.createElement('img');
 				img.setAttribute('src', constCardImgSrcValues[k]);
 				img.setAttribute('class', 'img-fluid');
 				imageParent.appendChild(img);
@@ -440,9 +515,21 @@ $(window).on('load resize', function () {
 			}
 
 			row.appendChild(listGroupTitle);
-			x = document.getElementsByClassName('list-group');
+			const x = document.getElementsByClassName('list-group');
 			x[i].appendChild(row);
 		}
+		$('.list-group').each(function (i) {
+			var cardDeckId = 'cardDeck-';
+			cardDeckId += String(i);
+			this.id = cardDeckId;
+			$(this)
+				.find('.list-group-item')
+				.each(function (i) {
+					var cardId = 'card-';
+					cardId += String(i);
+					this.id = cardId;
+				});
+		});
 	} else {
 		$('#crepeImg').css('margin-left', '80px');
 		$('#cardText').css('margin-left', '180px');
@@ -453,7 +540,7 @@ $(window).on('load resize', function () {
 // TODO: add sauteed onions & peppers, pesto, dill
 var cWidth = $(window).width();
 $(window).on('resize', function () {
-	var newWidth = $(window).width();
+	const newWidth = $(window).width();
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
@@ -461,4 +548,3 @@ $(window).on('resize', function () {
 		location.reload();
 	}
 });
-// TODO: add functionality to show customize card when clicked. also need to add all btn functionality

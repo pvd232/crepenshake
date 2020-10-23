@@ -1,17 +1,16 @@
 [
 	{
-		"serving_size_id": "1_scoop",
-		"flavor_id": "vanilla",
+        "serving_size": "1_scoop",
+        "flavor": "vanilla",
 		"price": 3.5
-	},
-	{
-		"serving_size_id": "2_scoops",
-		"flavor_id": "vanilla",
+	},{
+        "serving_size": "2_scoops",
+        "flavor" :"vanilla",
 		"price": 4.5
-	},
-	{
-		"serving_size_id": "3_scoops",
-		"flavor_id": "vanilla",
+    },
+    {
+		"serving_size": "3_scoops",
+		"flavor": "vanilla",
 		"price": 5.5
 	}
 ]

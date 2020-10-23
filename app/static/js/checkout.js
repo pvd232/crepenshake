@@ -5,36 +5,6 @@ import { humanize } from './shoppingCart.js';
 
 import { Order, Customer, Coffee } from './model.js';
 
-(function () {
-	//https://www.tutorialspoint.com/Why-are-parenthesis-used-to-wrap-a-JavaScript-function-call#:~:text=In%20JavaScript%2C%20the%20functions%20wrapped,decrease%20clashing%20with%20other%20libraries.
-	('use strict');
-	window.addEventListener(
-		'load',
-		function () {
-			const forms = document.getElementsByClassName('needs-validation');
-			// Loop over them and prevent submission
-			Array.prototype.filter.call(forms, function (form) {
-				//https://gomakethings.com/what-the-hell-is-the-call-method-and-when-should-you-use-it/
-				form.addEventListener(
-					'submit',
-					function (event) {
-						if (form.checkValidity() === false) {
-							event.preventDefault();
-							event.stopPropagation();
-							form.classList.add('was-validated');
-						} else {
-							event.preventDefault();
-							handleFormSubmit();
-						}
-					},
-					false
-				);
-			});
-		},
-		false
-	);
-})();
-
 const handleFormSubmit = () => {
 	const order = new Order();
 	order.fromJSON(localStorage.getItem(localStorage.key(0)));
@@ -63,8 +33,7 @@ const handleFormSubmit = () => {
 	console.log('customerData: %s', JSON.stringify(customerData));
 	const newCustomer = new Customer(customerData);
 	order.customerData = newCustomer;
-	console.log("order", order)
-	
+	console.log('order', order);
 
 	// const stringifiedOrder = JSON.stringify(order)
 	response['order'] = order;
@@ -79,7 +48,6 @@ const handleFormSubmit = () => {
 		type: 'POST',
 		contentType: 'application/json',
 		success: (response) => console.log(response),
-
 		error: (response) => console.log('console.log error', response),
 	});
 };
@@ -88,9 +56,7 @@ const buildPage = () => {
 	const orderDict = localStorage.getItem(key);
 	const order = new Order();
 	order.fromJSON(orderDict);
-	console.log("order", order)
-	
-	
+	console.log('order', order);
 
 	if (order) {
 		if (order.orderCrepe.length) {
@@ -157,8 +123,6 @@ const buildPage = () => {
 						const espressoPrice = drink.espressoPrice;
 						const espressoServingSize = drink.espressoServingSize;
 						var espressFormat;
-						var flavorSyrup = '';
-						var flavorSyrupServingSize = '';
 						var flavorSyrupPrice = '';
 
 						if (espressoServingSize === 'extra') {
@@ -170,10 +134,9 @@ const buildPage = () => {
 						}
 
 						if (drink.flavorSyrup && drink.flavorSyrupServingSize) {
-							console.log('WEE')
-							flavorSyrup = drink.flavorSyrup;
-							flavorSyrupServingSize = drink.flavorSyrupServingSize;
-							if (flavorSyrupServingSize === 'extra') {
+							console.log('drink', drink);
+
+							if (drink.flavorSyrupServingSize === 'extra') {
 								flavorSyrupPrice = 0.99;
 							} else {
 								flavorSyrupPrice = 0;
@@ -205,7 +168,11 @@ const buildPage = () => {
 								</li>
 								<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutDrinkRow${i}${j + 1}">
 									<div class="col-8" style="margin-right: 0px; ">
-										<h5 style=''>${capitalize(flavorSyrupServingSize)} ${capitalize(flavorSyrup)}</h5>
+										<h5 style=''>${
+											humanize(drink, 'flavorSyrupServingSize').flavorSyrupServingSize +
+											' ' +
+											humanize(drink, 'flavorSyrup').flavorSyrup
+										}</h5>
 									</div>
 									<div class="col-4">
 										<h4 style=''>$${flavorSyrupPrice}</h4>
@@ -241,7 +208,7 @@ const buildPage = () => {
 							).insertAfter(`#checkoutDrinkRow${i}${j}`);
 						}
 					} else {
-						console.log('poo')
+						console.log('poo');
 						var drinkName = '';
 						if (drink.drinkCategory === 'milkshake') {
 							drinkName = humanize(drink, 'name').name;
@@ -250,7 +217,9 @@ const buildPage = () => {
 							drinkName = humanize(drink, 'name').name;
 						}
 						$(
-							`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutDrinkRow${i}${j + 1}">
+							`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutDrinkRow${i}${
+								j + 1
+							}">
 								<div class="col-8" style="margin-right: 0px; ">
 									<h5 style=''>${drink.quantity + 'x' + ' ' + humanize(drink, 'name').name}</h5>
 								</div>
@@ -268,33 +237,33 @@ const buildPage = () => {
 			const orderSides = order.orderSide;
 			for (var i = 0; i < orderSides.length; i++) {
 				const sideOrder = orderSides[i].orderSide;
-				console.log("sideOrder", sideOrder)
-				
+				console.log('sideOrder', sideOrder);
+
 				$(`#checkingCartBody0`).append(
 					`<li class="list-group-item d-flex justify-content-between lh-condensed" " id="checkoutSideRow${i}0">
 								<h4 style="font-weight:bold;">Side Order #${i + 1}</h4>
 						</li>`
 				);
 				for (var j = 0; j < sideOrder.length; j++) {
-					
-					const side = sideOrder[j]
+					const side = sideOrder[j];
 					if (side.sideName === 'ice_cream_bowl') {
-								const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
+						const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 
-							$(
-								`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${
-									j + 1
-								}${k}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
+						$(
+							`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${
+								j + 1
+							}${k}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${side.quantity + 'x Scoop ' + humanize(side, 'sideName').sideName}</h5>
 									</div><div class="col-4"><h4 style=''>$${side.price.toFixed(2)}</h4></div></li>`
-							).insertAfter(`#${lastElementId}`);
+						).insertAfter(`#${lastElementId}`);
 						if (side.toppings.length) {
 							for (var k = 0; k < side.toppings.length; k++) {
 								const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 								console.log('lastElementId: %s', lastElementId);
 								const topping = side.toppings[k];
 								$(
-									`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${j + 1
+									`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${
+										j + 1
 									}${k}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${humanize(topping, 'servingSize').servingSize + ' ' + humanize(topping, 'id').id}</h5>
 									</div><div class="col-4"><h4 style=''>$${topping.price.toFixed(2)}</h4></div></li>`
@@ -305,14 +274,14 @@ const buildPage = () => {
 						const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 
 						$(
-							`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${j + 1
+							`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${
+								j + 1
 							}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${side.quantity + 'x' + ' ' + humanize(side, 'sideName').sideName}</h5>
 									</div><div class="col-4"><h4 style=''>$${side.price.toFixed(2)}</h4></div></li>`
 						).insertAfter(`#${lastElementId}`);
 					}
 				}
-	
 			}
 		}
 		$(`#checkingCartBody0`).append(
@@ -325,6 +294,26 @@ const buildPage = () => {
 		)}</h4></div>`);
 	}
 };
+const validateForm = () => {
+	const forms = document.getElementsByClassName('needs-validation');
+	// Loop over them and prevent submission
+	//https://gomakethings.com/what-the-hell-is-the-call-method-and-when-should-you-use-it/
+	Array.prototype.filter.call(forms, function (form) {
+		$('#checkoutButton')
+			.unbind('click')
+			.bind('click', function () {
+				if (form.checkValidity() === false) {
+					form.classList.add('was-validated');
+					return false;
+				} else {
+					handleFormSubmit();
+					return false;
+				}
+			});
+	});
+}
+
 $(window).ready(function () {
 	buildPage();
+	validateForm();
 });

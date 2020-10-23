@@ -193,6 +193,7 @@ class Order_Service(object):
         new_order = Order_Model(order_object=order)
         with self.session_scope() as session:
             self.order_repository.post_order(session, order=new_order)
+            return True
 
 
 class Drink_Service(object):
@@ -237,46 +238,15 @@ class Drink_Service(object):
 
             return response
 
-    def get_milkshakes(self):
+    def get_drinks(self, requested_drink_category_id):
         response = []
 
         with self.session_scope() as session:
-            for milkshake in self.drink_repository.get_milkshakes(session):
-                drink_model = Drink_Model( id = milkshake.id, drink_category_id = milkshake.drink_category_id,
-                    name=milkshake.name, price=milkshake.price)
+            for drink in self.drink_repository.get_drinks(session, requested_drink_category_id):
+                drink_model = Drink_Model( id = drink.id, drink_category_id = drink.drink_category_id,
+                    name=drink.name, price=drink.price)
                 response.append(drink_model)
-            return response
-
-    def get_bottled_drinks(self):
-        response = []
-
-        with self.session_scope() as session:
-            for bottled_drink in self.drink_repository.get_bottled_drinks(session):
-
-                drink_model = Drink_Model( id = bottled_drink.id, drink_category_id= bottled_drink.drink_category_id,
-                    name=bottled_drink.name, price=bottled_drink.price)
-                response.append(drink_model)
-            return response
-
-    def get_coffee_drinks(self):
-        response = []
-
-        with self.session_scope() as session:
-            for coffee_drink in self.drink_repository.get_coffee_drinks(session):
-                drink_model = Drink_Model(
-                    name=coffee_drink.coffee_name, drink_category_id='coffee', price=coffee_drink.price, serving_size=coffee_drink.serving_size)
-                response.append(drink_model)
-            return response
-
-    def get_non_coffee_drinks(self):
-        response = []
-
-        with self.session_scope() as session:
-            for non_coffee_drink in self.drink_repository.get_non_coffee_drinks(session):
-
-                drink_model = Drink_Model( id = non_coffee_drink.id,
-                    name=non_coffee_drink.name, drink_category_id= non_coffee_drink.drink_category_id, price=non_coffee_drink.price, serving_size=non_coffee_drink.serving_size)
-                response.append(drink_model)
+            formatted_response = [x.serialize() for x in response]
             return response
 
     def get_milk_drinks(self):
@@ -290,12 +260,22 @@ class Drink_Service(object):
                 response.append(drink_model)
             return response
 
+    def get_coffee_drinks(self):
+        response = []
+
+        with self.session_scope() as session:
+            for coffee_drink in self.drink_repository.get_coffee_drinks(session):
+                drink_model = Drink_Model(
+                    name=coffee_drink.coffee_name, drink_category_id='coffee', price=coffee_drink.price, serving_size=coffee_drink.serving_size)
+                response.append(drink_model)
+            return response
+
     def get_coffee_syrups(self):
         response = []
 
         with self.session_scope() as session:
             for coffee_syrup in self.drink_repository.get_coffee_syrups(session):
-                drink_model = Drink_Model(
+                drink_model = Coffee_Model(
                     coffee_syrup_flavor=coffee_syrup.id)
                 response.append(drink_model)
             return response
@@ -374,9 +354,9 @@ class Side_Service(object):
         response = []
         with self.session_scope() as session:
             for ice_cream in self.side_repository.get_ice_cream_bowls(session):
-                ice_cream = Side_Model(id=ice_cream.side_id, side_name_id='ice_cream_bowl',
-                                       flavor=ice_cream.flavor_id, serving_size=ice_cream.serving_size_id, price=ice_cream.price)
-                response.append(ice_cream)
+                ice_cream_model = Ice_Cream_Bowl_Model(
+                                       flavor=ice_cream.flavor_id, price=ice_cream.price, serving_size = ice_cream.serving_size_id, quantity=1, side_name_id= 'ice_cream_bowl',toppings=None,ice_cream_object=None )
+                response.append(ice_cream_model)
             return response
 
 
