@@ -2,45 +2,40 @@
 import { Order, OrderCrepe } from './model.js';
 
 var editCrepeIndex = null;
-var editCrepe = null;
+var editOrder = null;
 const menuCrepeDataArray = new Array();
 const userOrderMenuCrepe = new OrderCrepe();
 
 const stringify = (crepeOrder) => {
-	if (crepeOrder.ingredients.length || crepeOrder.menuCrepes.length) {
 		if (editCrepeIndex === null) {
 			const order = new Order();
-			if (localStorage.length > 0) {
-				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
-				order.fromJSON(localStorage.getItem(localStorage.key(0)));
-				// only one crepe order will be processed on this page at a time
-				const crepeOrderTotal = crepeOrder.orderTotal;
-				order.orderTotal += crepeOrderTotal;
-				order.orderCrepe.push(crepeOrder);
-				const stringifiedCrepeOrder = JSON.stringify(order);
-				localStorage.setItem('order', stringifiedCrepeOrder);
-			} else {
-				order.orderTotal += crepeOrder.orderTotal;
-				order.orderCrepe.push(crepeOrder);
-				const stringifiedCrepeOrder = JSON.stringify(order);
-				localStorage.setItem('order', stringifiedCrepeOrder);
-			}
-		} else {
-			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
-			var currentOrderCrepeList = currentOrder.orderCrepe;
-			var currentOrderCrepe = currentOrderCrepeList[editCrepeIndex];
-			const crepeOrderTotal = crepeOrder.orderCrepe.orderTotal;
-			currentOrder.orderTotal += crepeOrderTotal;
-			Object.assign(currentOrderCrepe, crepeOrder.orderCrepe);
-			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
-			for (var i = 0; i < currentOrderCrepeList.length; i++) {
-				if (currentOrderCrepeList[i] === {}) {
-					currentOrderCrepeList.splice(i);
+			if (crepeOrder.menuCrepes.length) {
+				if (localStorage.length > 0) {
+					order.fromJSON(localStorage.getItem(localStorage.key(0)));
+					const crepeOrderTotal = crepeOrder.orderTotal;
+					order.orderTotal += crepeOrderTotal;
+					order.orderCrepe.push(crepeOrder);
+					const stringifiedCrepeOrder = JSON.stringify(order);
+					localStorage.setItem('order', stringifiedCrepeOrder);
+				} else {
+					order.orderTotal += crepeOrder.orderTotal;
+					order.orderCrepe.push(crepeOrder);
+					const stringifiedCrepeOrder = JSON.stringify(order);
+					localStorage.setItem('order', stringifiedCrepeOrder);
 				}
 			}
-			localStorage.setItem('order', JSON.stringify(currentOrder));
+		} else {
+			if (crepeOrder.menuCrepes.length) {
+				console.log('b4', editOrder.orderCrepe[editCrepeIndex]);
+				editOrder.orderCrepe[editCrepeIndex] = crepeOrder
+				console.log('after', editOrder.orderCrepe[editCrepeIndex]);
+			localStorage.setItem('order', JSON.stringify(editOrder));
+			}
+			else {
+				editOrder.orderCrepe.splice(editCrepeIndex, 1)
+				localStorage.setItem('order', JSON.stringify(editOrder));
+			}
 		}
-	}
 	return true;
 };
 
@@ -80,7 +75,7 @@ $(window).on('load', function () {
 	$('.card-img-top').wrap('<div class="container2"></div>');
 
 	$('.card-img-top').each(function () {
-		$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
+		$('<button class="btn2" type="button">1</button>').insertAfter($(this));
 		$(`<div class="grid-container"  style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 			$(this)
@@ -89,27 +84,20 @@ $(window).on('load', function () {
 	});
 
 	if ($('.edit').length) {
-		editCrepeIndex = $('.edit').first().attr('id');
-		editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex];
-		const crepeDict = editCrepe['crepes'];
-		for (var crepeCategoryKey in crepeDict) {
-			const crepeArray = crepeDict[crepeCategoryKey];
-			for (var i = 0; i < crepeArray.length; i++) {
-				const crepe = crepeArray[i];
-				if ('name' in crepe) {
-					// i add the word milkshake to each name for formatting so i have to remove it for the html element id to be recognized
-					const crepeName = crepe['name'];
-					const crepeQuantity = crepe['quantity'];
-					const crepeServingSize = crepe['servingSize'];
-					$(`#${crepeName}`).find('.btn2').css(`--${crepeCategoryKey}`, `${crepeName}`);
-					$(`#${crepeName}`).find('.btn2').css(`--${crepeServingSize}`, 'true');
-					$(`#${crepeName}`).find('.btn2').css(`--quantity`, `${crepeQuantity}`);
-					$(`#${crepeName}`).find('.btn2').html(crepeQuantity);
-					$(`#${crepeName}`).find('.btn2').show();
-					$(`#${crepeName}`).find('.btn6').show();
-					$(`#${crepeName}`).find('.btn7').show();
-				}
-			}
+		editCrepeIndex = $('.edit').first().attr('id')
+		console.log('editCrepeIndex', editCrepeIndex);
+
+		editOrder = new Order();
+		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
+		const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex].menuCrepes;
+		userOrderMenuCrepe.menuCrepes = editOrderCrepe
+		console.log('editOrderCrepe', editOrderCrepe);
+		for (var i = 0; i < editOrderCrepe.length; i++) {
+			const crepe = editOrderCrepe[i];
+			$(`#${crepe.id}`).closest('.card').find('.btn2').html(crepe.quantity);
+			$(`#${crepe.id}`).closest('.card').find('.btn2').show();
+			$(`#${crepe.id}`).closest('.card').find('.btn6').show();
+			$(`#${crepe.id}`).closest('.card').find('.btn7').show();
 		}
 	}
 	//veggie + all other topping functionality

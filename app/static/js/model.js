@@ -52,14 +52,14 @@ export class Drink {
 		const drinkPrice = newDrink.price;
 		var drinkServingSize = newDrink.serving_size;
 		if (!drinkServingSize) {
-			drinkServingSize = '12oz'
+			drinkServingSize = '12oz';
 		}
 		this._id = drinkId;
 		this._name = drinkName;
 		this._price = drinkPrice;
 		this._drinkCategory = drinkCategory;
 		this._servingSize = drinkServingSize;
-		this._quantity = 1
+		this._quantity = 1;
 	};
 	toJSON = () => {
 		const data = {
@@ -87,13 +87,11 @@ export class Drink {
 				return;
 			} else {
 				this._quantity -= 1;
-				console.log("this._quantity", this._quantity)
-				
+				console.log('this._quantity', this._quantity);
 			}
 		} else if (value === 'increase') {
 			this._quantity += 1;
-			console.log("this._quantity", this._quantity)
-			
+			console.log('this._quantity', this._quantity);
 		}
 	};
 }
@@ -209,13 +207,13 @@ export class Coffee {
 
 	initFromHTML = (index, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray) => {
 		const coffeeName = drinkCategoryDataArray[selectedItemCategoryIndex][index].name;
-		console.log("coffeeName", coffeeName)
-		
+
 		const coffeePrice = drinkCategoryDataArray[selectedItemCategoryIndex][index].price;
 		const coffeeServingSize = drinkCategoryDataArray[selectedItemCategoryIndex][index].serving_size;
 		// UUID will be generated in the backend
 		this._name = coffeeName;
 		this._price = coffeePrice;
+		this._milkPrice = 0;
 		this._servingSize = coffeeServingSize;
 		this._espressoServingSize = espressoServingSize;
 		if (espressoServingSize === 'extra') {
@@ -227,7 +225,6 @@ export class Coffee {
 	};
 
 	toJSON = () => {
-		// if they didn't select a milk then the default is 2%
 		const data = {
 			id: this._id,
 			name: this._name,
@@ -651,12 +648,15 @@ export class OrderDrink {
 		return false;
 	};
 	changeDrinkQuantity = (index, selectedItemCategoryIndex, value, drinkCategoryDataArray, newDrinkCategories) => {
-		this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)
-		console.log("selectedItemCategoryIndex", selectedItemCategoryIndex)
-		console.log("index", index)
-		
-		console.log("this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)", this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray))
-		
+		this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray);
+		console.log('selectedItemCategoryIndex', selectedItemCategoryIndex);
+		console.log('index', index);
+
+		console.log(
+			'this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)',
+			this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)
+		);
+
 		if (!this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)) {
 			this.addDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray, newDrinkCategories);
 		} else {
@@ -666,10 +666,10 @@ export class OrderDrink {
 	findDrink = (index, selectedItemCategoryIndex, drinkCategoryDataArray) => {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-			console.log("drinkCategoryDataArray", drinkCategoryDataArray)
-			
-			console.log("selectedDrink", selectedDrink)
-			
+			console.log('drinkCategoryDataArray', drinkCategoryDataArray);
+
+			console.log('selectedDrink', selectedDrink);
+
 			if (
 				this._orderDrink[i].id === selectedDrink.id &&
 				this._orderDrink[i].servingSize === selectedDrink.serving_size
@@ -945,13 +945,13 @@ export class IceCreamBowl {
 		const iceCreamFlavor = sideCategoryDataArray[selectedItemCategoryIndex][index].flavor;
 		const iceCreamPrice = sideCategoryDataArray[selectedItemCategoryIndex][index].price;
 		const iceCreamSideName = selectedItemCategory;
-		const iceCreamServingSize = 1
+		const iceCreamServingSize = 1;
 
 		//the default quantity will persist during initialization and no toppings will be present
 		this._flavor = iceCreamFlavor;
 		this._price = iceCreamPrice;
 		this._sideName = iceCreamSideName;
-		this._servingSize = iceCreamServingSize
+		this._servingSize = iceCreamServingSize;
 	};
 
 	toJSON = () => {
@@ -1181,7 +1181,7 @@ export class OrderSide {
 				}
 			}
 		} else if (this.checkIfThisToppingSelected(index, selectedItemCategoryIndex, sideCategoryDataArray)) {
-			const topping = sideCategoryDataArray[selectedItemCategoryIndex][index]
+			const topping = sideCategoryDataArray[selectedItemCategoryIndex][index];
 			this.updateToppingServingSize(topping, servingSize);
 		}
 		return false;
@@ -1239,10 +1239,10 @@ export class OrderSide {
 						}
 					}
 					return false;
-				};
+				}
 			}
 		}
-	}
+	};
 }
 // Sweet Crepe Models
 export class Ingredient {
@@ -1494,10 +1494,9 @@ export class OrderCrepe {
 
 	toJSON = () => {
 		if (this._ingredients.length) {
-			this.priceCrepe()
-		}
-		else if (this._menuCrepes.length) {
-			this.priceCrepes()
+			this.priceCrepe();
+		} else if (this._menuCrepes.length) {
+			this.priceCrepes();
 		}
 		const data = {
 			id: this._id,
@@ -1732,8 +1731,8 @@ export class OrderCrepe {
 			return this.addCrepe(index, categoryIndex, dataArray);
 		} else {
 			selectedCrepe.updateCrepeQuantity(value);
-			console.log("selectedCrepe", selectedCrepe.quantity)
-			
+			console.log('selectedCrepe', selectedCrepe.quantity);
+
 			if (selectedCrepe.quantity === 0) {
 				this.removeCrepe(index, categoryIndex, dataArray);
 			}

@@ -2,7 +2,7 @@
 import { Order, OrderCrepe } from './model.js';
 
 var editCrepeIndex = null;
-var editCrepe = null;
+var editOrder = null;
 var ingredientServingSizes;
 var ingredientCategoryDataArray = new Array();
 var userOrderCrepe;
@@ -22,8 +22,8 @@ const displayErrorMsg = (element) => {
 };
 
 const stringify = (crepeOrder) => {
-	if (crepeOrder.ingredients.length) {
-		if (editCrepeIndex === null) {
+	if (editCrepeIndex === null) {
+		if (crepeOrder.ingredients.length) {
 			const order = new Order();
 			if (localStorage.length > 0) {
 				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
@@ -40,23 +40,17 @@ const stringify = (crepeOrder) => {
 				const stringifiedCrepeOrder = JSON.stringify(order);
 				localStorage.setItem('order', stringifiedCrepeOrder);
 			}
+		}
+	} else {
+		if (crepeOrder.ingredients.length) {
+			editOrder.orderCrepe[editCrepeIndex] = crepeOrder;
+			localStorage.setItem('order', JSON.stringify(editOrder));
 		} else {
-			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
-			var currentOrderCrepeList = currentOrder.orderCrepe;
-			var currentOrderCrepe = currentOrderCrepeList[editCrepeIndex];
-			const crepeOrderTotal = crepeOrder.orderCrepe.orderTotal;
-			currentOrder.orderTotal += crepeOrderTotal;
-			Object.assign(currentOrderCrepe, crepeOrder.orderCrepe);
-
-			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
-			for (var i = 0; i < currentOrderCrepeList.length; i++) {
-				if (currentOrderCrepeList[i] === {}) {
-					currentOrderCrepeList.splice(i);
-				}
-			}
-			localStorage.setItem('order', JSON.stringify(currentOrder));
+			editOrder.orderCrepe.splice(editCrepeIndex, 1);
+			localStorage.setItem('order', JSON.stringify(editOrder));
 		}
 	}
+
 	return true;
 };
 
@@ -114,31 +108,28 @@ $(window).on('load', function () {
 
 	if ($('.edit').length) {
 		editCrepeIndex = $('.edit').first().attr('id');
-		editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex]['crepes'][0];
-		const crepeIngredients = editCrepe['ingredients'];
-		for (var ingredientCategoryKey in crepeIngredients) {
-			const ingredientArray = crepeIngredients[ingredientCategoryKey];
-			for (var i = 0; i < ingredientArray.length; i++) {
-				const ingredient = ingredientArray[i];
-				if ('name' in ingredient) {
-					const ingredientName = ingredient['name'];
-					const ingredientQuantity = ingredient['quantity'];
-					const ingredientServingSize = ingredient['servingSize'];
-					$(`#${ingredientName}`).find('.btn2').css(`--${ingredientCategoryKey}`, `${ingredientName}`);
-					$(`#${ingredientName}`).find('.btn2').css(`--quantity`, `${ingredientQuantity}`);
-					$(`#${ingredientName}`).find('.btn2').html(ingredientQuantity);
-					$(`#${ingredientName}`).find('.btn2').show();
-					$(`#${ingredientName}`).find('.btn6').show();
-					$(`#${ingredientName}`).find('.btn7').show();
-				}
-			}
+		editOrder = new Order();
+		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
+		const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex];
+		userOrderCrepe = editOrderCrepe;
+		console.log('editOrderCrepe', editOrderCrepe);
+
+		const crepeIngredients = editOrderCrepe.ingredients;
+		for (var i = 0; i < crepeIngredients.length; i++) {
+			const ingredient = crepeIngredients[i];
+			$(`#${ingredient.id}`).closest('.card').find('.btn2').html(ingredient.quantity);
+			$(`#${ingredient.id}`).closest('.card').find('.btn2').show();
+			$(`#${ingredient.id}`).closest('.card').find('.btn6').show();
+			$(`#${ingredient.id}`).closest('.card').find('.btn7').show();
+			$(`#${ingredient.id}`).closest('.card').find('.btn').show();
+
+			console.log('ingredient', ingredient);
 		}
 	}
 
 	$('.card-img-top').each(function () {
 		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
-	userOrderCrepe = new OrderCrepe();
 	userOrderCrepe._flavor = 'savory';
 	userOrderCrepe._origination = 'custom';
 	//veggie + all other topping functionality

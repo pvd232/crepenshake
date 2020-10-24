@@ -65,6 +65,7 @@
 			{% for j in range(ingredient_prices_by_category[i].ingredients|length) %}
 				{% if ingredient_prices_by_category[i].ingredients[j].price > 0.0 %} 
 					<div class="card" id="card1">
+						<div id='{{ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredientpricesbycategory='{{ingredient_prices_by_category[i].ingredients[j]|tojson}}'></div>
 						<img src="" class="card-img-top" alt="..." />
 						<div class="card-body">
 							<h5 class="card-title">{{formatted_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
@@ -74,6 +75,7 @@
 
 				{% else %}
 					<div class="card" id="card1">
+						<div id='{{ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredientpricesbycategory='{{ingredient_prices_by_category[i].ingredients[j]|tojson}}'></div>
 						<img src="" class="card-img-top" alt="..." />
 						<div class="card-body">
 							<h5 class="card-title">{{formatted_ingredient_prices_by_category[i].ingredients[j].id}}</h5>

@@ -72,8 +72,8 @@ export const capitalize = (str) => {
 };
 
 export const humanize = (dict = null, attr = null, format = false) => {
-	var formatDict = JSON.parse(JSON.stringify(dict))
-	
+	var formatDict = JSON.parse(JSON.stringify(dict));
+
 	if (format === true) {
 		for (var i = 0; i < formatDict['ingredients'].length; i++) {
 			var str = formatDict['ingredients'][i][`${attr}`];
@@ -125,8 +125,7 @@ const doShowAll = () => {
 		if (orderDict) {
 			const order = new Order();
 			order.fromJSON(orderDict);
-			console.log("order", order)
-			
+			console.log('order', order);
 
 			// to do finish the serialization and deserialization of all the classes, then build savory crepe, then menu crepe pg, then clover pmt in backend, then mobile buttons
 			if (order) {
@@ -137,12 +136,14 @@ const doShowAll = () => {
 						if (orderCrepe.origination === 'custom') {
 							$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
 							$(`#container${k}`).append(
-								`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe Order #${
+								`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row-${k}-0"  flavor="${
+									orderCrepe.flavor
+								}" origination="${orderCrepe.origination}"><h5 style='font-weight: 700;'>Crepe Order #${
 									k + 1
 								}</h5></div>`
 							);
 							for (var j = 0; j < orderCrepe.ingredients.length; j++) {
-								$(`<div class="row" style= "margin-bottom: 20px;" id="row${k}${
+								$(`<div class="row" style= "margin-bottom: 20px;" id="row-${k}-${
 									j + 1
 								}"><div class="col-9" style="margin-right: 0px;"><h5>
 								${
@@ -151,7 +152,7 @@ const doShowAll = () => {
 									humanize(orderCrepe.ingredients[j], 'id').id
 								}</h5>
 									</div><div class="col-3" ><h4>$${orderCrepe.ingredients[j].price.toFixed(2)}</h4></div></div>`).insertAfter(
-									`#row${k}${j}`
+									`#row-${k}-${j}`
 								);
 							}
 						} // end of if block that corrals custom crepe
@@ -159,50 +160,33 @@ const doShowAll = () => {
 						else if (orderCrepe.origination === 'menu') {
 							$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
 							$(`#container${k}`).append(
-								`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row${k}0"><h5 style='font-weight: 700; '>Crepe Order #${
-									k + 1
-								}</h5></div>`
+								`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row-${k}-0" origination="${
+									orderCrepe.origination
+								}"><h5 style='font-weight: 700; '>Crepe Order #${k + 1}</h5></div>`
 							);
 							for (var j = 0; j < orderCrepe.menuCrepes.length; j++) {
 								const menuCrepe = orderCrepe.menuCrepes[j];
-								$(`<div class="row" name="menu" style= "margin-bottom: 20px;" id="row${k}${j + 1}">
+								$(`<div class="row"  style= "margin-bottom: 20px;" id="row-${k}-${j + 1}">
 									<div class="col-9" style="margin-right: 0px; " >
 										<h5>${menuCrepe.quantity + 'x' + ' ' + humanize(menuCrepe, 'name').name}</h5>
 									</div>
 									<div class="col-3">
 										<h4>$${menuCrepe.price.toFixed(2)}</h4>
 									</div>
-								</div>`).insertAfter(`#row${k}${j}`);
-
-								const itemIndex =
-									$(`#container${k}`)
-										.find('.row')
-										.first()
-										.text()
-										.replace('Order ', '')
-										.replace(' ', '-')
-										.replace('#', '')
-										.toLowerCase()
-										.split('-')[1] - 1;
+								</div>`).insertAfter(`#row-${k}-${j}`);
 							}
 						}
 
-						const itemIndex =
-							$(`#container${k}`)
-								.find('.row')
-								.first()
-								.text()
-								.replace('Order ', '')
-								.replace(' ', '-')
-								.replace('#', '')
-								.toLowerCase()
-								.split('-')[1] - 1;
-						var crepeURL;
-						var crepeProfile = $(`#container${k}`).find('.row').first().next().attr('name');
-						if (crepeProfile === 'menu') {
-							crepeURL = 'menu-crepe';
+						const itemIndex = $(`#container${k}`).find('.row').first().attr('id').split('-')[1];
+						const crepeFlavor = $(`#container${k}`).find('.row').first().attr('flavor');
+
+						var crepeURL = ''
+						if (crepeFlavor) {
+							crepeURL += 'make-your-own-';
+							crepeURL += crepeFlavor;
+							crepeURL += '-crepe';
 						} else {
-							crepeURL = 'make-your-own-' + crepeProfile + '-crepe';
+							crepeURL = 'menu-crepe';
 						}
 						$(`<div class="grid-container" id="menubuttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#container${k}`));
@@ -223,15 +207,16 @@ const doShowAll = () => {
 
 					for (var i = 0; i < drinkOrders.length; i++) {
 						$('#modalBody1').append(
-							`<div class="container" id="drinkContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="drinkRow${i}0"><h5 style='font-weight: 700; '>Drink Order #${i + 1
+							`<div class="container" id="drinkContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="drinkRow-${i}-0"><h5 style='font-weight: 700; '>Drink Order #${
+								i + 1
 							}</h5></div></div>`
 						);
 						const drinks = drinkOrders[i].orderDrink;
 
 						for (var j = 0; j < drinks.length; j++) {
 							const drink = drinks[j];
-							console.log("drink", drink)
-							
+							console.log('drink', drink);
+
 							const drinkPrice = drink.price * drink.quantity;
 							if (drink instanceof Coffee) {
 								const milkName = humanize(drink, 'milkType').milkType;
@@ -278,14 +263,16 @@ const doShowAll = () => {
 														<h4 >$${milkPrice}</h4>
 													</div>
 												</div>
-												<div class="row" style= "margin-bottom: 20px;" id='drinkRow${i}${j + 1}'>
+												<div class="row" style= "margin-bottom: 20px;" id='#drinkRow-${i}-${j + 1}'>
 													<div class="col-9" style="margin-right: 0px;">
-														<h5 >${humanize(drink, "flavorSyrupServingSize").flavorSyrupServingSize} ${humanize(drink, "flavorSyrup").flavorSyrup}</h5>
+														<h5 >${humanize(drink, 'flavorSyrupServingSize').flavorSyrupServingSize} ${
+														humanize(drink, 'flavorSyrup').flavorSyrup
+														} Syrup</h5>
 													</div>
 													<div class="col-3" style="">
 														<h4 >$${flavorSyrupPrice}</h4>
 													</div>
-												</div>`).insertAfter(`#drinkRow${i}${j}`);
+												</div>`).insertAfter(`#drinkRow-${i}-${j}`);
 								}
 								// if there is no flavor syrup selected but there is a coffee in the drink order
 								else {
@@ -305,14 +292,14 @@ const doShowAll = () => {
 												<h4 >$${espressoPrice}</h4>
 											</div>
 										</div>
-										<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${j + 1}">
+										<div class="row" style= "margin-bottom: 20px;" id="drinkRow-${i}-${j + 1}">
 											<div class="col-9" style="margin-right: 0px;">
 												<h5 >${milkName}</h5>
 											</div>
 											<div class="col-3" style="">
 												<h4 >$${milkPrice}</h4>
 											</div>
-										</div>`).insertAfter(`#drinkRow${i}${j}`);
+										</div>`).insertAfter(`#drinkRow-${i}-${j}`);
 								}
 							}
 							// if the drink is not a coffee
@@ -324,27 +311,18 @@ const doShowAll = () => {
 								} else {
 									drinkName = humanize(drink, 'name').name;
 								}
-								$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow${i}${j + 1}">
+								$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow-${i}-${j + 1}">
 											<div class="col-9" style="margin-right: 0px; " >
 												<h5 >${drink.quantity + 'x' + ' ' + drinkName}</h5>
 											</div>
 											<div class="col-3">
 												<h4 >$${drinkPrice.toFixed(2)}</h4>
 											</div>
-											</div>`).insertAfter(`#drinkRow${i}${j}`);
+											</div>`).insertAfter(`#drinkRow-${i}-${j}`);
 							} // end of non-coffee drinks else block
 						} // end of loop for drinks in drink order
 
-						const drinkItemIndex =
-							$(`#drinkContainer${i}`)
-								.find('.row')
-								.first()
-								.text()
-								.replace('Order ', '')
-								.replace(' ', '-')
-								.replace('#', '')
-								.toLowerCase()
-								.split('-')[1] - 1;
+						const drinkItemIndex = $(`#drinkContainer${i}`).find('.row').first().attr('id').split('-')[1];
 
 						$(`<div class="grid-container" id="drinkButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${i}`));
@@ -364,60 +342,58 @@ const doShowAll = () => {
 				if (order.orderSide.length) {
 					for (var i = 0; i < order.orderSide.length; i++) {
 						$('#modalBody1').append(
-							`<div class="container" id="sideContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="sideRow${i}0"><h5 style='font-weight: 700; '>Side Order #${i + 1
+							`<div class="container" id="sideContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="sideRow-${i}-0"><h5 style='font-weight: 700; '>Side Order #${
+								i + 1
 							}</h5></div></div>`
 						);
 						const sidesInOrder = order.orderSide[i].orderSide;
 						for (var j = 0; j < sidesInOrder.length; j++) {
 							const side = sidesInOrder[j];
 							if (side.toppings) {
-								$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${i}${j + 1}">
-												<div class="col-9" style="margin-right: 0px; " id="sideCol${i}${j}">
+								$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow-${i}-${j + 1}">
+												<div class="col-9" style="margin-right: 0px; " id="sideCol-${i}-${j + 1}">
 													<h5 >${humanize(side, 'sideName').sideName}</h5>
 												</div>
-												<div class="col-3" id="sideCol${i}${j + 2}">
+												<div class="col-3" id="sideCol-${i}-${j + 2}">
 													<h4 >$${side.price}</h4>
 												</div>
-										</div>`).insertAfter(`#sideRow${i}${j}`);
+										</div>`).insertAfter(`#sideRow-${i}-${j}`);
 								for (var k = 0; k < side.toppings.length; k++) {
 									const topping = side.toppings[k];
 									var toppingServingSize;
-									if (toppingServingSize === 'extra') {
+									if (topping.servingSize === 'extra') {
 										toppingServingSize = 'Double';
 									} else {
 										toppingServingSize = capitalize(topping.servingSize);
 									}
+									const lastElementId = $('#modalBody1').find('.row').last().attr('id');
+
 									$(`
-										<div class="row" style= "margin-bottom: 20px;" id="sideRow${i}${j + 2}">
+										<div class="row" style= "margin-bottom: 20px;" id="toppingRow-${i}-${j + 1}-${k}">
 											<div class="col-9" style="margin-right:0px;">
 												<h5 >${toppingServingSize + ' ' + humanize(topping, 'id').id}</h5>
 											</div>
 											<div class="col-3">
 												<h4 >$${topping.price.toFixed(2)}</h4>
 											</div>
-										</div>`).insertAfter(`#sideRow${i}${j + 1}`);
+										</div>`).insertAfter(`#${lastElementId}`);
 								}
 							} else {
-								$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow${i}${j + 1}">
-											<div class="col-9" style="margin-right: 0px; " id="sideCol${i}${j}">
-												<h5 >${side.quantity + "x" + " " + humanize(side, 'sideName').sideName}</h5>
+								const lastElementId = $('#modalBody1').find('.row').last().attr('id');
+
+								$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow-${i}-${j + 1}">
+											<div class="col-9" style="margin-right: 0px; " id="sideCol-${i}-${j + 1}">
+												<h5 >${side.quantity + 'x' + ' ' + humanize(side, 'flavor').flavor + ' ' + humanize(side, 'sideName').sideName}</h5>
 											</div>
-											<div class="col-3" id="sideCol${i}${j + 2}">
+											<div class="col-3" id="sideCol-${i}-${j + 2}">
 												<h4 >$${side.price}</h4>
 											</div>
-											</div>`).insertAfter(`#sideRow${i}${j}`);
+											</div>`).insertAfter(`#${lastElementId}`);
 							}
 						} // end of for loop iterating through side list
-						const sideItemIndex =
-							$(`#sideContainer${i}`)
-								.find('.row')
-								.first()
-								.text()
-								.replace('Order ', '')
-								.replace(' ', '-')
-								.replace('#', '')
-								.toLowerCase()
-								.split('-')[1] - 1;
+						const sideItemIndex = $(`#sideContainer${i}`).find('.row').first().attr('id').split('-')[1];
+						console.log('sideItemIndex', sideItemIndex);
+
 						$(`<div class="grid-container" id="sideButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             						grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${i}`));
 						$(`#sideButtonContainer${i}`).append(
@@ -432,7 +408,7 @@ const doShowAll = () => {
 						);
 					} // end of for loop iterating through sides in side order
 				}
-			
+
 				$(`<div class="modal-footer" id="footer" style= " border-top: 2px solid black"></div>`).insertAfter(
 					`#modalBody1`
 				);
@@ -440,8 +416,11 @@ const doShowAll = () => {
 				$(`#footer`).append(
 					`<div class="col-8" id="footerCol0"><h3 style="font-weight: bold;">Order Total</h3></div>`
 				);
-				$(`#footer`)
-					.append(`<div class="col-3" style="margin-left:21px;" id="footerCol1"><h3 style="float:right;font-weight:bold;">$${order.orderTotal.toFixed(2)}</h3></div>`);
+				$(`#footer`).append(
+					`<div class="col-3" style="margin-left:21px;" id="footerCol1"><h3 style="float:right;font-weight:bold;">$${order.orderTotal.toFixed(
+						2
+					)}</h3></div>`
+				);
 			}
 		}
 	}
@@ -454,8 +433,7 @@ $(window).ready(function () {
 		.bind('click', function () {
 			showShoppingCart();
 		});
-	for (var i = 0; i < localStorage.length; i++) {
-	}
+	for (var i = 0; i < localStorage.length; i++) {}
 	if (localStorage.getItem('reload') === 'true') {
 		showShoppingCart();
 		localStorage.setItem('reload', 'false');

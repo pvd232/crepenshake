@@ -4,7 +4,7 @@
 import { Order, OrderDrink } from './model.js';
 
 var editDrinkIndex = null;
-var editDrink = null;
+var editOrder = null;
 var drinkCategoryDataArray;
 var coffeeDrinks;
 var milkDrinks;
@@ -16,7 +16,7 @@ var drinkCategories;
 var newDrinkCategories = new Array();
 var temperatures;
 var drinkCategories = new Array();
-const userOrderDrink = new OrderDrink();
+var userOrderDrink = new OrderDrink();
 var drinkServingSizes = new Array();
 
 const jq = (myid) => {
@@ -28,7 +28,7 @@ const checkOut = (order) => {
 		for (var i = 0; i < userOrderDrink.orderDrink.length; i++) {
 			if (userOrderDrink.orderDrink[i].drinkCategory === 'coffee') {
 				if (!userOrderDrink.orderDrink[i]._milkType) {
-					userOrderDrink.orderDrink[i]._milkType = '2% Milk';
+					userOrderDrink.orderDrink[i]._milkType = 'two_percent_milk';
 				}
 			}
 		}
@@ -41,12 +41,10 @@ const checkOut = (order) => {
 };
 
 const stringify = (drinkOrder) => {
-	//check to make sure a drink was selected
-	if (drinkOrder.orderDrink.length) {
-		if (editDrinkIndex === null) {
-			const order = new Order();
+	if (editDrinkIndex === null) {
+		const order = new Order();
+		if (drinkOrder.orderDrink.length) {
 			if (localStorage.length > 0) {
-				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 				order.fromJSON(localStorage.getItem(localStorage.key(0)));
 				const drinkOrderTotal = drinkOrder.orderTotal;
 				order.orderTotal += drinkOrderTotal;
@@ -60,20 +58,14 @@ const stringify = (drinkOrder) => {
 				const stringifiedDrinkOrder = JSON.stringify(order);
 				localStorage.setItem('order', stringifiedDrinkOrder);
 			}
+		}
+	} else {
+		if (drinkOrder.orderDrink.length) {
+			editOrder.orderDrink[editDrinkIndex] = drinkOrder;
+			localStorage.setItem('order', JSON.stringify(editOrder));
 		} else {
-			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
-			var currentOrderDrinkList = currentOrder.orderDrink;
-			var currentOrderDrink = currentOrderDrinkList[editDrinkIndex];
-			const drinkOrderTotal = drinkOrder.orderDrink.orderTotal;
-			currentOrder.orderTotal += drinkOrderTotal;
-			Object.assign(currentOrderDrink, drinkOrder.orderDrink);
-			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
-			for (var i = 0; i < currentOrderDrinkList.length; i++) {
-				if (currentOrderDrinkList[i] === {}) {
-					currentOrderDrinkList.splice(i);
-				}
-			}
-			localStorage.setItem('order', JSON.stringify(currentOrder));
+			editOrder.orderDrink.splice(editDrinkIndex, 1);
+			localStorage.setItem('order', JSON.stringify(editOrder));
 		}
 	}
 	return true;
@@ -172,144 +164,142 @@ $(window).ready(function () {
 				$(this).css('opacity', '.3');
 			});
 	});
-
 	if ($('.edit').length) {
 		editDrinkIndex = $('.edit').first().attr('id');
-		editDrink = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderDrink'][editDrinkIndex];
+		console.log('editDrinkIndex', editDrinkIndex);
 
-		const drinkDict = editDrink['drinks'];
-		for (var drinkCategoryKey in drinkDict) {
-			const drinkArray = drinkDict[drinkCategoryKey];
-			if (drinkCategoryKey === 'coffee') {
-				for (var i = 0; i < drinkArray.length; i++) {
-					const drink = drinkArray[i];
-					if ('name' in drink) {
-						const drinkName = drink['name'];
-						const drinkServingSize = drink['servingSize'];
-						const drinkQuantity = drink['quantity'];
-						const milk = drink['milk'];
-						const milkName = milk['name'];
-						const milkServingSize = milk['servingSize'];
-						const espresso = drink['espresso'];
-						const espressoQuantity = espresso['quantity'];
-						//send crepe recipe to blaise
-						$(`#${drinkName}`).find('.btn2').css(`--${drinkCategoryKey}`, `${drinkName}`);
-						$(`#${drinkName}`).find('.btn2').css(`--quantity`, `${drinkQuantity}`);
-						if (espressoQuantity === 3) {
-							$(`#${drinkName}`).find('.btn2').html('3x');
-							$(`#${drinkName}`).find('.btn2').show();
-							$(`#${drinkName}`).find('.btn').show();
-							$(`#${drinkName}`).find('.btn2').css('--extra', 'true');
-						} else if (espressoQuantity === 2) {
-							$(`#${drinkName}`).find('.btn2').html('✓');
-							$(`#${drinkName}`).find('.btn2').show();
-							$(`#${drinkName}`).find('.btn').show();
-							$(`#${drinkName}`).find('.btn2').css('--regular', 'true');
-						} else if (espressoQuantity === 1) {
-							$(`#${drinkName}`).find('.btn2').html('½');
-							$(`#${drinkName}`).find('.btn2').show();
-							$(`#${drinkName}`).find('.btn').show();
-							$(`#${drinkName}`).find('.btn2').css('--half', 'true');
-						}
-						// set all the milk props
-						$(`#${jq(milkName)}`)
-							.find('.btn2')
-							.css(`--${drinkCategoryKey}`, `${milkName}`);
-						$(`#${jq(milkName)}`)
-							.find('.btn2')
-							.css(`--${milkServingSize}`, 'true');
-						$(`#${jq(milkName)}`)
-							.closest('.card')
-							.css('opacity', '1');
-						$('#errorMilk').hide();
+		editOrder = new Order();
+		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
+		console.log('editOrder', editOrder);
 
-						if (milkServingSize === 'extra') {
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.html('2x');
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.show();
-							$(`#${jq(milkName)}`)
-								.find('.btn')
-								.show();
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.css('--extra', 'true');
-						} else if (milkServingSize === 'regular') {
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.html('✓');
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.show();
-							$(`#${jq(milkName)}`)
-								.find('.btn')
-								.show();
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.css('--regular', 'true');
-						} else if (milkServingSize === 'half') {
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.html('½');
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.show();
-							$(`#${jq(milkName)}`)
-								.find('.btn')
-								.show();
+		const editOrderDrink = editOrder.orderDrink[editDrinkIndex];
+		console.log('editOrderDrink', editOrderDrink);
+		console.log('userOrderDrink', userOrderDrink);
 
-							$(`#${jq(milkName)}`)
-								.find('.btn2')
-								.css('--half', 'true');
-						}
+		userOrderDrink = editOrderDrink;
+		console.log('userOrderDrink', userOrderDrink);
+
+		for (var i = 0; i < editOrderDrink.orderDrink.length; i++) {
+			const drink = editOrderDrink.orderDrink[i];
+			console.log('drink', drink);
+
+			if (drink.drinkCategory === 'coffee') {
+				//send crepe recipe to blaise
+				if (drink.espressoServingSize === 'extra') {
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn2').html('3x');
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn2').show();
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn').show();
+				} else if (drink.espressoServingSize === 2) {
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn2').html('✓');
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn2').show();
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn').show();
+				} else if (drink.espressoServingSize === 1) {
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn2').html('½');
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn2').show();
+					$(`#${drink.name}`).closest('.card, .list-group-item').find('.btn').show();
+				}
+				if (drink.flavorSyrup) {
+					console.log('flavor');
+					if (drink.flavorSyrupServingSize === 'extra') {
+						console.log('flavor ex');
+						$(`#${drink.flavorSyrup}Syrup`).attr('id');
+						console.log(
+							"$(`#${drink.flavorSyrup}Syrup`).attr('id')",
+							$(`#${drink.flavorSyrup}Syrup`).attr('id')
+						);
+
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn2').html('2x');
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn2').show();
+
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn').show();
+					} else if (drink.flavorSyrupServingSize === 'regular') {
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn2').html('✓');
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn2').show();
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn').show();
+					} else if (drink.flavorSyrupServingSize === 'light') {
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn2').html('½');
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn2').show();
+						$(`#${drink.flavorSyrup}Syrup`).closest('.card, .list-group-item').find('.btn').show();
 					}
 				}
-				if (userOrderDrink.checkIfCoffeeSelected()) {
-					$('#cardDeck-2')
-						.find('.card')
-						.each(function () {
-							$(this).css('opacity', '1');
-						});
-					$('#errorSyrup').hide();
-					$('cardDeck-0')
-						.find('.card')
-						.each(function () {
-							var toppingCategoryAndToppingNameArray = getCSSToppingName($(this));
-							var toppingCategory = toppingCategoryAndToppingNameArray[0];
-							var toppingName = toppingCategoryAndToppingNameArray[1];
-							// make sure that you don't hide the already selected coffee
-							if ($(this).find('.btn2').css(`--${toppingCategory}`) != toppingName) {
-								$(this).css('opacity', '.3');
+				const milkName = jq(drink.milkType);
+				console.log('milkName', milkName);
+
+				$(`#${milkName}`).closest('.card, .list-group-item').find('.btn2').show();
+				if (drink.temperature) {
+					$(`#${drink.temperature}`).closest('.card, .list-group-item').find('.btn2').show();
+				}
+				$('#cardDeck-0')
+					.find('.card, .list-group-item')
+					.each(function () {
+						const selectedItemIndex = $(this).attr('id').split('-')[1];
+						const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+						// make sure that you don't hide the already selected coffee
+						if (
+							!userOrderDrink.checkIfThisDrinkSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								drinkCategoryDataArray
+							)
+						) {
+							$(this).css('opacity', '.3');
+						}
+					});
+				$('#cardDeck-1, #cardDeck-2, #cardDeck-3');
+				$(this)
+					.find('.card, .list-group-item')
+					.each(function () {
+						const selectedItemIndex = $(this).attr('id').split('-')[1];
+						const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
+						if ($(this).closest('.card-deck').attr('id') === 'cardDeck-1') {
+							if (
+								userOrderDrink.checkIfThisMilkSelected(
+									selectedItemIndex,
+									selectedItemCategoryIndex,
+									'milk',
+									drinkCategoryDataArray
+								)
+							) {
+								$(this).css('opacity', '1');
 							}
-						});
-				}
-
-				if (userOrderDrink.checkIfTempSelected()) {
-					$('#cardDeck-3')
-						.find('.card')
-						.each(function () {
-							$(this).css('opacity', '1');
-						});
-				}
+						} else if ($(this).closest('.card-deck').attr('id') === 'cardDeck-2') {
+							if (
+								userOrderDrink.checkIfThisTempSelected(
+									selectedItemIndex,
+									selectedItemCategoryIndex,
+									'temperature',
+									drinkCategoryDataArray
+								)
+							) {
+								$(this).css('opacity', '1');
+							}
+						} else if ($(this).closest('.card-deck').attr('id') === 'cardDeck-3') {
+							if (userOrderDrink.checkIfSyrupSelected()) {
+								if (
+									userOrderDrink.checkIfThisSyrupSelected(
+										selectedItemIndex,
+										selectedItemCategoryIndex,
+										'syrup',
+										drinkCategoryDataArray
+									)
+								) {
+									$(this).css('opacity', '1');
+								}
+							} else {
+								$(this).css('opacity', '1');
+							}
+						}
+					});
+				$('#errorCoffee').hide();
+				$('#errorMilk').hide();
+				$('#errorTemp').hide();
+				$('#errorSyrup').hide();
 			} else {
-				for (var i = 0; i < drinkArray.length; i++) {
-					const drink = drinkArray[i];
-					if ('name' in drink) {
-						// i add the word milkshake to each name for formatting so i have to remove it for the html element id to be recognized
-						const nonCoffeeDrinkName = drink['name'].replace('Milkshake', '');
-						const nonCoffeeDrinkQuantity = drink['quantity'];
-						const nonCoffeeDrinkServingSize = drink['servingSize'];
-						$(`#${nonCoffeeDrinkName}`).find('.btn2').css(`--${drinkCategoryKey}`, `${nonCoffeeDrinkName}`);
-						$(`#${nonCoffeeDrinkName}`).find('.btn2').css(`--${nonCoffeeDrinkServingSize}`, 'true');
-						$(`#${nonCoffeeDrinkName}`).find('.btn2').css(`--quantity`, `${nonCoffeeDrinkQuantity}`);
-						$(`#${nonCoffeeDrinkName}`).find('.btn2').html(nonCoffeeDrinkQuantity);
-						$(`#${nonCoffeeDrinkName}`).find('.btn2').show();
-						$(`#${nonCoffeeDrinkName}`).find('.btn6').show();
-						$(`#${nonCoffeeDrinkName}`).find('.btn7').show();
-					}
-				}
+				// i add the word milkshake to each name for formatting so i have to remove it for the html element id to be recognized
+				$(`#${drink.id}`).find('.btn2').html(drink.quantity);
+				$(`#${drink.id}`).find('.btn2').show();
+				$(`#${drink.id}`).find('.btn6').show();
+				$(`#${drink.id}`).find('.btn7').show();
 			}
 		}
 	}
@@ -320,8 +310,8 @@ $(window).ready(function () {
 
 	$(document)
 		.on('mouseenter', '.card, .list-group', function () {
-			console.log("$(this).attr('class')", $(this).attr('class'))
-			
+			console.log("$(this).attr('class')", $(this).attr('class'));
+
 			if ($(this).attr('class') === 'card') {
 				const selectedItemIndex = $(this).attr('id').split('-')[1];
 				const selectedItemCategoryIndex = $(this).closest('.card-deck').attr('id').split('-')[1];
@@ -362,7 +352,6 @@ $(window).ready(function () {
 					// 	make sure a milk hasn't already been selected
 					if (!userOrderDrink.checkIfMilkSelected()) {
 						$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-
 						// if a milk has been selected then we only want to highlight the card if it is that milk
 					}
 				} else if (userOrderDrink.checkIfCoffeeSelected() && selectedItemCategory === 'temperature') {
@@ -379,8 +368,7 @@ $(window).ready(function () {
 						$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
 					}
 				}
-			}
-			else if ($(this).attr('class') === 'list-group') {
+			} else if ($(this).attr('class') === 'list-group') {
 				$(this)
 					.find('.list-group-item')
 					.unbind('mouseenter')
@@ -389,7 +377,7 @@ $(window).ready(function () {
 						console.log('selectedItemIndex', selectedItemIndex);
 
 						const selectedItemCategoryIndex = $(this).closest('.list-group').attr('id').split('-')[1];
-				const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+						const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
 
 						if (
 							selectedItemCategory != 'milk' &&
@@ -460,324 +448,327 @@ $(window).ready(function () {
 					console.log('senderElement', senderElement);
 
 					if (this === senderElement) {
-					// check to see if the card is bottled or non-coffee or milkshake first because when you click on those cards, if they have already been selected you don't want to remove them
-					// these cards have counters so they will have fundamentally different logic from the rest of the cards which is why we want to evaluate them first and then apply other logical conditions after
-					// we know the selected card is not one of them
-					if (
-						selectedItemCategory === 'bottled' ||
-						selectedItemCategory === 'non-coffee' ||
-						selectedItemCategory === 'milkshake'
-					) {
-						userOrderDrink.changeDrinkQuantity(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							'increase',
-							drinkCategoryDataArray,
-							newDrinkCategories
-						);
-						$(this)
-							.closest('.card, li')
-							.find('.btn2')
-							.html(
-								userOrderDrink.findDrink(
-									selectedItemIndex,
-									selectedItemCategoryIndex,
-									drinkCategoryDataArray
-								).quantity
-							);
-						$(this).closest('.card, li').find('.btn2').show();
-						//after clicking the card show the + and - buttons
-						$(this).closest('.card, li').find('.btn6').show();
-						$(this).closest('.card, li').find('.btn7').show();
-					}
-
-					// if you click the card and it has already been selected then remove the item
-					else if (
-						userOrderDrink.checkIfThisDrinkSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							drinkCategoryDataArray
-						)
-					) {
-						userOrderDrink.removeDrink(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							drinkCategoryDataArray
-						);
-						$(this).closest('.card, li').find('.btn2').toggle();
-						// if the card you removed was a coffee card
-						if (!userOrderDrink.checkIfCoffeeSelected()) {
-							// reactivate all the coffee cards
-							$('#cardDeck-0')
-								.find('.card, .list-group-item')
-								.each(function () {
-									$(this).css('opacity', '1');
-								});
-							$('#cardDeck-1, #cardDeck-2, #cardDeck-3')
-								.find('.card, .list-group-item')
-								.each(function () {
-									$(this).css('opacity', '.3');
-									$(this).find('.btn2').hide();
-								});
-							$('#errorMilk').html('Please select a coffee first');
-							$('#errorTemp').html('Please select a coffee first');
-							$('#errorSyrup').html('Please select a coffee first');
-							$('#errorMilk').show();
-							$('#errorTemp').show();
-							$('#errorSyrup').show();
-						}
-						// if the selected item is a milk card
-					} else if (
-						userOrderDrink.checkIfThisMilkSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							selectedItemCategory,
-							drinkCategoryDataArray
-						)
-					) {
-						userOrderDrink.removeMilk();
-						// reactivate all the milk cards
-						$(this).closest('.card, li').find('.btn2').hide();
-						$('#cardDeck-1')
-							.find('.card, .list-group-item')
-							.each(function () {
-								$(this).css('opacity', '1');
-							});
-						$('#errorMilk').hide();
-					} else if (
-						userOrderDrink.checkIfThisTempSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							selectedItemCategory,
-							drinkCategoryDataArray
-						)
-					) {
-						userOrderDrink.removeTemp();
-						$(this).closest('.card, li').find('.btn2').hide();
-						// reactivate all the milk cards
-						$('#cardDeck-2')
-							.find('.card, .list-group-item')
-							.each(function () {
-								$(this).css('opacity', '1');
-							});
-						$('#errorTemp').hide();
-					} else if (
-						userOrderDrink.checkIfThisSyrupSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							selectedItemCategory,
-							drinkCategoryDataArray
-						)
-					) {
-						userOrderDrink.removeSyrup();
-						$(this).closest('.card, li').find('.btn2').hide();
-						// reactivate all the milk cards
-						$('#cardDeck-3')
-							.find('.card, .list-group-item')
-							.each(function () {
-								$(this).css('opacity', '1');
-							});
-						$('#errorSyrup').hide();
-					}
-					// if the drink/temp/milk hasn't already been selected and is not bottled non-coffee or milkshake
-					else if (
-						!userOrderDrink.checkIfThisDrinkSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							drinkCategoryDataArray
-						) &&
-						!userOrderDrink.checkIfThisTempSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							selectedItemCategory,
-							drinkCategoryDataArray
-						) &&
-						!userOrderDrink.checkIfThisSyrupSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							selectedItemCategory,
-							drinkCategoryDataArray
-						) &&
-						!userOrderDrink.checkIfThisMilkSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							selectedItemCategory,
-							drinkCategoryDataArray
-						)
-					) {
-						//this is being considered before the drink selection has been added to the order
-						// if a coffee has been selected already then milk or syrup can be selected
-						if (userOrderDrink.checkIfCoffeeSelected()) {
-							// if coffee has been selected alredy then we don't want to select another coffee!
-							if (selectedItemCategory != 'coffee') {
-								//make sure the selected card isn't milk because we want extra logic in there to make sure a milk hasn't already been selected
-								if (selectedItemCategory != 'milk') {
-									if (selectedItemCategory === 'temperature') {
-										if (!userOrderDrink.checkIfTempSelected()) {
-											userOrderDrink.addTemp(
-												selectedItemIndex,
-												selectedItemCategoryIndex,
-												drinkCategoryDataArray
-											);
-											$(this).closest('.card, li').find('.btn2').html('✓');
-											$(this).closest('.card, li').find('.btn2').toggle();
-										}
-									} else {
-										// if the selected card is coffee syrup flavor
-										if (!userOrderDrink.checkIfSyrupSelected()) {
-											const servingSize = 'regular';
-											console.log('servingSize', servingSize);
-
-											userOrderDrink.addSyrup(
-												selectedItemIndex,
-												servingSize,
-												selectedItemCategoryIndex,
-												drinkCategoryDataArray
-											);
-											$(this).closest('.card, li').find('.btn2').html('✓');
-											$(this).closest('.card, li').find('.btn2').toggle();
-										}
-									}
-								}
-								// if the selected card is milk
-								else {
-									// make sure a milk hasn't already been selected when selecting a milk card
-									if (!userOrderDrink.checkIfMilkSelected()) {
-										userOrderDrink.addMilk(
-											selectedItemIndex,
-											selectedItemCategoryIndex,
-											drinkCategoryDataArray
-										);
-										$(this).closest('.card, li').find('.btn2').html('✓');
-										$(this).closest('.card, li').find('.btn2').toggle();
-										// if a milk has been selected then we want to make sure all the other milk cards are knocked out
-										//and we want to change the milk error message to say that only one milk may be selected
-									}
-								}
-							}
-							// if a coffee has not already been selected and the card being selected isn't any of the other drink options then the card being selected should be coffee
-						} else if (selectedItemCategory === 'coffee') {
-							const espressoServingSize = 'regular';
-							userOrderDrink.addCoffee(
+						// check to see if the card is bottled or non-coffee or milkshake first because when you click on those cards, if they have already been selected you don't want to remove them
+						// these cards have counters so they will have fundamentally different logic from the rest of the cards which is why we want to evaluate them first and then apply other logical conditions after
+						// we know the selected card is not one of them
+						if (
+							selectedItemCategory === 'bottled' ||
+							selectedItemCategory === 'non-coffee' ||
+							selectedItemCategory === 'milkshake'
+						) {
+							userOrderDrink.changeDrinkQuantity(
 								selectedItemIndex,
-								espressoServingSize,
+								selectedItemCategoryIndex,
+								'increase',
+								drinkCategoryDataArray,
+								newDrinkCategories
+							);
+							$(this)
+								.closest('.card, li')
+								.find('.btn2')
+								.html(
+									userOrderDrink.findDrink(
+										selectedItemIndex,
+										selectedItemCategoryIndex,
+										drinkCategoryDataArray
+									).quantity
+								);
+							$(this).closest('.card, li').find('.btn2').show();
+							//after clicking the card show the + and - buttons
+							$(this).closest('.card, li').find('.btn6').show();
+							$(this).closest('.card, li').find('.btn7').show();
+						}
+
+						// if you click the card and it has already been selected then remove the item
+						else if (
+							userOrderDrink.checkIfThisDrinkSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								drinkCategoryDataArray
+							)
+						) {
+							userOrderDrink.removeDrink(
+								selectedItemIndex,
 								selectedItemCategoryIndex,
 								drinkCategoryDataArray
 							);
-							$(this).closest('.card, li').find('.btn2').html('✓');
 							$(this).closest('.card, li').find('.btn2').toggle();
-						}
-
-						// cleanup after the card has been selected
-
-						if (userOrderDrink.checkIfCoffeeSelected()) {
-							$('#cardDeck-0')
-								.find('.card, .list-group-item')
-								.each(function () {
-									const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
-									const selectedItemCategoryIndex = $(this)
-										.closest('.card-deck, .list-group')
-										.attr('id')
-										.split('-')[1];
-									if (
-										!userOrderDrink.checkIfThisDrinkSelected(
-											selectedItemIndex,
-											selectedItemCategoryIndex,
-											drinkCategoryDataArray
-										)
-									) {
-										$(this).css('opacity', '.3');
-									}
-								});
-							// activate the milk and temp and syrup cards after selecting coffee
-							$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
-								$(this)
+							// if the card you removed was a coffee card
+							if (!userOrderDrink.checkIfCoffeeSelected()) {
+								// reactivate all the coffee cards
+								$('#cardDeck-0')
 									.find('.card, .list-group-item')
 									.each(function () {
 										$(this).css('opacity', '1');
 									});
-								$('#errorMilk').hide();
-								$('#errorSyrup').hide();
-								$('#errorTemp').hide();
-							});
-						}
-						if (userOrderDrink.checkIfMilkSelected()) {
+								$('#cardDeck-1, #cardDeck-2, #cardDeck-3');
+								$(this)
+									.find('.card, .list-group-item')
+									.each(function () {
+										$(this).css('opacity', '.3');
+										$(this).find('.btn2').hide();
+									});
+								$('#errorMilk').html('Please select a coffee first');
+								$('#errorTemp').html('Please select a coffee first');
+								$('#errorSyrup').html('Please select a coffee first');
+								$('#errorMilk').show();
+								$('#errorTemp').show();
+								$('#errorSyrup').show();
+							}
+							// if the selected item is a milk card
+						} else if (
+							userOrderDrink.checkIfThisMilkSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								selectedItemCategory,
+								drinkCategoryDataArray
+							)
+						) {
+							userOrderDrink.removeMilk();
+							// reactivate all the milk cards
+							$(this).closest('.card, li').find('.btn2').hide();
 							$('#cardDeck-1')
 								.find('.card, .list-group-item')
 								.each(function () {
-									const selectedItemIndex = $(this).attr('id').split('-')[1];
-									const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
-
-									// make sure that you don't hide the already selected milk
-									if (
-										!userOrderDrink.checkIfThisMilkSelected(
-											selectedItemIndex,
-											selectedItemCategoryIndex,
-											selectedItemCategory,
-											drinkCategoryDataArray
-										)
-									) {
-										$(this).css('opacity', '.3');
-									}
+									$(this).css('opacity', '1');
 								});
-							$('#errorMilk').html('You may only select one milk for your coffee');
-							$('#errorMilk').show();
-						}
-
-						if (userOrderDrink.checkIfTempSelected()) {
-							// if a temp has been selected then we want to make sure all the other temp cards are knocked out
-							//and we want to change the temp error message to say that only one temp may be selected
+							$('#errorMilk').hide();
+						} else if (
+							userOrderDrink.checkIfThisTempSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								selectedItemCategory,
+								drinkCategoryDataArray
+							)
+						) {
+							userOrderDrink.removeTemp();
+							$(this).closest('.card, li').find('.btn2').hide();
+							// reactivate all the milk cards
 							$('#cardDeck-2')
 								.find('.card, .list-group-item')
 								.each(function () {
-									const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
-									const selectedItemCategoryIndex = $(this)
-										.closest('.card-deck, .list-group')
-										.attr('id')
-										.split('-')[1];
-									const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
-									if (
-										!userOrderDrink.checkIfThisTempSelected(
-											selectedItemIndex,
-											selectedItemCategoryIndex,
-											selectedItemCategory,
-											drinkCategoryDataArray
-										)
-									) {
-										$(this).css('opacity', '.3');
-									}
+									$(this).css('opacity', '1');
 								});
-							$('#errorTemp').html('You may only select one temperature for your coffee');
-							$('#errorTemp').show();
-						}
-						if (userOrderDrink.checkIfSyrupSelected()) {
-							// if a temp has been selected then we want to make sure all the other temp cards are knocked out
-							//and we want to change the temp error message to say that only one temp may be selected
+							$('#errorTemp').hide();
+						} else if (
+							userOrderDrink.checkIfThisSyrupSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								selectedItemCategory,
+								drinkCategoryDataArray
+							)
+						) {
+							userOrderDrink.removeSyrup();
+							$(this).closest('.card, li').find('.btn2').hide();
+							// reactivate all the milk cards
 							$('#cardDeck-3')
 								.find('.card, .list-group-item')
 								.each(function () {
-									const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
-									const selectedItemCategoryIndex = $(this)
-										.closest('.card-deck, li')
-										.attr('id')
-										.split('-')[1];
-									const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
-
-									if (
-										!userOrderDrink.checkIfThisSyrupSelected(
-											selectedItemIndex,
-											selectedItemCategoryIndex,
-											selectedItemCategory,
-											drinkCategoryDataArray
-										)
-									) {
-										$(this).css('opacity', '.3');
-									}
+									$(this).css('opacity', '1');
 								});
-							$('#errorSyrup').html('You may only select one syrup for your coffee');
-							$('#errorSyrup').show();
+							$('#errorSyrup').hide();
 						}
-					}
+						// if the drink/temp/milk hasn't already been selected and is not bottled non-coffee or milkshake
+						else if (
+							!userOrderDrink.checkIfThisDrinkSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								drinkCategoryDataArray
+							) &&
+							!userOrderDrink.checkIfThisTempSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								selectedItemCategory,
+								drinkCategoryDataArray
+							) &&
+							!userOrderDrink.checkIfThisSyrupSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								selectedItemCategory,
+								drinkCategoryDataArray
+							) &&
+							!userOrderDrink.checkIfThisMilkSelected(
+								selectedItemIndex,
+								selectedItemCategoryIndex,
+								selectedItemCategory,
+								drinkCategoryDataArray
+							)
+						) {
+							//this is being considered before the drink selection has been added to the order
+							// if a coffee has been selected already then milk or syrup can be selected
+							if (userOrderDrink.checkIfCoffeeSelected()) {
+								// if coffee has been selected alredy then we don't want to select another coffee!
+								if (selectedItemCategory != 'coffee') {
+									//make sure the selected card isn't milk because we want extra logic in there to make sure a milk hasn't already been selected
+									if (selectedItemCategory != 'milk') {
+										if (selectedItemCategory === 'temperature') {
+											if (!userOrderDrink.checkIfTempSelected()) {
+												userOrderDrink.addTemp(
+													selectedItemIndex,
+													selectedItemCategoryIndex,
+													drinkCategoryDataArray
+												);
+												$(this).closest('.card, li').find('.btn2').html('✓');
+												$(this).closest('.card, li').find('.btn2').toggle();
+											}
+										} else {
+											// if the selected card is coffee syrup flavor
+											if (!userOrderDrink.checkIfSyrupSelected()) {
+												const servingSize = 'regular';
+												console.log('servingSize', servingSize);
+
+												userOrderDrink.addSyrup(
+													selectedItemIndex,
+													servingSize,
+													selectedItemCategoryIndex,
+													drinkCategoryDataArray
+												);
+												$(this).closest('.card, li').find('.btn2').html('✓');
+												$(this).closest('.card, li').find('.btn2').toggle();
+											}
+										}
+									}
+									// if the selected card is milk
+									else {
+										// make sure a milk hasn't already been selected when selecting a milk card
+										if (!userOrderDrink.checkIfMilkSelected()) {
+											userOrderDrink.addMilk(
+												selectedItemIndex,
+												selectedItemCategoryIndex,
+												drinkCategoryDataArray
+											);
+											$(this).closest('.card, li').find('.btn2').html('✓');
+											$(this).closest('.card, li').find('.btn2').toggle();
+											$('#errorMilk').hide();
+
+											// if a milk has been selected then we want to make sure all the other milk cards are knocked out
+											//and we want to change the milk error message to say that only one milk may be selected
+										}
+									}
+								}
+								// if a coffee has not already been selected and the card being selected isn't any of the other drink options then the card being selected should be coffee
+							} else if (selectedItemCategory === 'coffee') {
+								const espressoServingSize = 'regular';
+								userOrderDrink.addCoffee(
+									selectedItemIndex,
+									espressoServingSize,
+									selectedItemCategoryIndex,
+									drinkCategoryDataArray
+								);
+								$(this).closest('.card, li').find('.btn2').html('✓');
+								$(this).closest('.card, li').find('.btn2').toggle();
+							}
+
+							// cleanup after the card has been selected
+
+							if (userOrderDrink.checkIfCoffeeSelected()) {
+								$('#cardDeck-0')
+									.find('.card, .list-group-item')
+									.each(function () {
+										const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
+										const selectedItemCategoryIndex = $(this)
+											.closest('.card-deck, .list-group')
+											.attr('id')
+											.split('-')[1];
+										if (
+											!userOrderDrink.checkIfThisDrinkSelected(
+												selectedItemIndex,
+												selectedItemCategoryIndex,
+												drinkCategoryDataArray
+											)
+										) {
+											$(this).css('opacity', '.3');
+										}
+									});
+								// activate the milk and temp and syrup cards after selecting coffee
+								$('#cardDeck-1, #cardDeck-2, #cardDeck-3').each(function () {
+									$(this)
+										.find('.card, .list-group-item')
+										.each(function () {
+											$(this).css('opacity', '1');
+										});
+									$('#errorMilk').hide();
+									$('#errorSyrup').hide();
+									$('#errorTemp').hide();
+								});
+							}
+							if (userOrderDrink.checkIfMilkSelected()) {
+								$('#cardDeck-1')
+									.find('.card, .list-group-item')
+									.each(function () {
+										const selectedItemIndex = $(this).attr('id').split('-')[1];
+										const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+
+										// make sure that you don't hide the already selected milk
+										if (
+											!userOrderDrink.checkIfThisMilkSelected(
+												selectedItemIndex,
+												selectedItemCategoryIndex,
+												selectedItemCategory,
+												drinkCategoryDataArray
+											)
+										) {
+											$(this).css('opacity', '.3');
+										}
+									});
+								$('#errorMilk').html('You may only select one milk for your coffee');
+								$('#errorMilk').show();
+							}
+
+							if (userOrderDrink.checkIfTempSelected()) {
+								// if a temp has been selected then we want to make sure all the other temp cards are knocked out
+								//and we want to change the temp error message to say that only one temp may be selected
+								$('#cardDeck-2')
+									.find('.card, .list-group-item')
+									.each(function () {
+										const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
+										const selectedItemCategoryIndex = $(this)
+											.closest('.card-deck, .list-group')
+											.attr('id')
+											.split('-')[1];
+										const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+										if (
+											!userOrderDrink.checkIfThisTempSelected(
+												selectedItemIndex,
+												selectedItemCategoryIndex,
+												selectedItemCategory,
+												drinkCategoryDataArray
+											)
+										) {
+											$(this).css('opacity', '.3');
+										}
+									});
+								$('#errorTemp').html('You may only select one temperature for your coffee');
+								$('#errorTemp').show();
+							}
+							if (userOrderDrink.checkIfSyrupSelected()) {
+								// if a temp has been selected then we want to make sure all the other temp cards are knocked out
+								//and we want to change the temp error message to say that only one temp may be selected
+								$('#cardDeck-3')
+									.find('.card, .list-group-item')
+									.each(function () {
+										const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
+										const selectedItemCategoryIndex = $(this)
+											.closest('.card-deck, li')
+											.attr('id')
+											.split('-')[1];
+										const selectedItemCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+
+										if (
+											!userOrderDrink.checkIfThisSyrupSelected(
+												selectedItemIndex,
+												selectedItemCategoryIndex,
+												selectedItemCategory,
+												drinkCategoryDataArray
+											)
+										) {
+											$(this).css('opacity', '.3');
+										}
+									});
+								$('#errorSyrup').html('You may only select one syrup for your coffee');
+								$('#errorSyrup').show();
+							}
+						}
 					}
 				});
 			$('.btn')
@@ -1150,7 +1141,7 @@ $(window).on('load resize', function () {
 
 			//need to move the iterator for each card deck to not get the prior deck's card titles
 			var k;
-			
+
 			if (i == 0) {
 				k = 0;
 			} else {
@@ -1163,44 +1154,41 @@ $(window).on('load resize', function () {
 			console.log('k', k);
 
 			const stoppingPoint = k + cardDeckChildrenLength[i];
-				for (var k; k < stoppingPoint; k++) {
-					const listValue = document.createElement('li');
-					listValue.setAttribute(
-						'class',
-						'list-group-item d-flex justify-content-between align-items-center'
-					);
-					listValue.setAttribute('style', 'width:100%');
+			for (var k; k < stoppingPoint; k++) {
+				const listValue = document.createElement('li');
+				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
+				listValue.setAttribute('style', 'width:100%');
 
-					const string1 = String(constCardTitleValues[k]);
-					const string2 = String(constCardTextValues[k]);
-					console.log("string2", string2)
-					
-					const container = document.createElement('container');
-					container.setAttribute('style', 'width:30%');
+				const string1 = String(constCardTitleValues[k]);
+				const string2 = String(constCardTextValues[k]);
+				console.log('string2', string2);
 
-					const listValueHeader = document.createElement('h5');
-					const listValueBodyText = document.createElement('p');
-					if (constCardTextValues[k]) {
-						listValueBodyText.innerHTML = string2;
-						listValueHeader.innerHTML = string1 + '<br>';
-						container.appendChild(listValueHeader);
-						container.appendChild(listValueBodyText);
-						listValue.appendChild(container);
-					} else {
-						listValueHeader.innerHTML = string1;
-						container.appendChild(listValueHeader);
-						listValue.appendChild(container);
-					}
-					const imageParent = document.createElement('div');
-					imageParent.setAttribute('class', 'image-parent');
-					const img = document.createElement('img');
-					img.setAttribute('src', constCardImgSrcValues[k]);
-					img.setAttribute('class', 'img-fluid');
-					imageParent.appendChild(img);
+				const container = document.createElement('container');
+				container.setAttribute('style', 'width:30%');
 
-					listValue.appendChild(imageParent);
-					listGroupTitle.append(listValue);
+				const listValueHeader = document.createElement('h5');
+				const listValueBodyText = document.createElement('p');
+				if (constCardTextValues[k]) {
+					listValueBodyText.innerHTML = string2;
+					listValueHeader.innerHTML = string1 + '<br>';
+					container.appendChild(listValueHeader);
+					container.appendChild(listValueBodyText);
+					listValue.appendChild(container);
+				} else {
+					listValueHeader.innerHTML = string1;
+					container.appendChild(listValueHeader);
+					listValue.appendChild(container);
 				}
+				const imageParent = document.createElement('div');
+				imageParent.setAttribute('class', 'image-parent');
+				const img = document.createElement('img');
+				img.setAttribute('src', constCardImgSrcValues[k]);
+				img.setAttribute('class', 'img-fluid');
+				imageParent.appendChild(img);
+
+				listValue.appendChild(imageParent);
+				listGroupTitle.append(listValue);
+			}
 
 			row.appendChild(listGroupTitle);
 			const x = document.getElementsByClassName('list-group');

@@ -2,12 +2,12 @@
 import { Order, OrderCrepe } from './model.js';
 
 var editCrepeIndex = null;
-var editCrepe = null;
-var userOrderCrepe;
+var editOrder = null;
+var userOrderCrepe = new OrderCrepe();
 
 const stringify = (crepeOrder) => {
-	if (crepeOrder.ingredients.length) {
-		if (editCrepeIndex === null) {
+	if (editCrepeIndex === null) {
+		if (crepeOrder.ingredients.length) {
 			const order = new Order();
 			if (localStorage.length > 0) {
 				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
@@ -24,23 +24,17 @@ const stringify = (crepeOrder) => {
 				const stringifiedCrepeOrder = JSON.stringify(order);
 				localStorage.setItem('order', stringifiedCrepeOrder);
 			}
+		}
+	} else {
+		if (crepeOrder.ingredients.length) {
+			editOrder.orderCrepe[editCrepeIndex] = crepeOrder;
+			localStorage.setItem('order', JSON.stringify(editOrder));
 		} else {
-			var currentOrder = JSON.parse(localStorage.getItem(localStorage.key(0)));
-			var currentOrderCrepeList = currentOrder.orderCrepe;
-			var currentOrderCrepe = currentOrderCrepeList[editCrepeIndex];
-			const crepeOrderTotal = crepeOrder.orderCrepe.orderTotal;
-			currentOrder.orderTotal += crepeOrderTotal;
-			Object.assign(currentOrderCrepe, crepeOrder.orderCrepe);
-
-			// if a previously had two proteins and then i remove one then i will have an empty object in my array that i don't want
-			for (var i = 0; i < currentOrderCrepeList.length; i++) {
-				if (currentOrderCrepeList[i] === {}) {
-					currentOrderCrepeList.splice(i);
-				}
-			}
-			localStorage.setItem('order', JSON.stringify(currentOrder));
+			editOrder.orderCrepe.splice(editCrepeIndex, 1);
+			localStorage.setItem('order', JSON.stringify(editOrder));
 		}
 	}
+
 	return true;
 };
 
@@ -96,38 +90,32 @@ $(window).on('load', function () {
 
 	if ($('.edit').length) {
 		editCrepeIndex = $('.edit').first().attr('id');
-		// const editCrepeArray = editCrepeParam.split('-');
-		//have to subtract one because the crepe index on the shopping cart is 1 higher than the array index
-		// editCrepeIndex = parseInt(editCrepeArray[editCrepeArray.length - 1]);
-		editCrepe = JSON.parse(localStorage.getItem(localStorage.key(0)))['orderCrepe'][editCrepeIndex]['crepes'][0];
-		const crepeIngredients = editCrepe['ingredients'];
-		for (var ingredientCategoryKey in crepeIngredients) {
-			const ingredientArray = crepeIngredients[ingredientCategoryKey];
-			for (var i = 0; i < ingredientArray.length; i++) {
-				const ingredient = ingredientArray[i];
-				if ('name' in ingredient) {
-					const ingredientName = ingredient['name'];
-					const ingredientQuantity = ingredient['quantity'];
-					const ingredientServingSize = ingredient['servingSize'];
-					$(`#${ingredientName}`).find('.btn2').css(`--${ingredientCategoryKey}`, `${ingredientName}`);
-					$(`#${ingredientName}`).find('.btn2').css(`--quantity`, `${ingredientQuantity}`);
-					$(`#${ingredientName}`).find('.btn2').html(ingredientQuantity);
-					$(`#${ingredientName}`).find('.btn2').show();
-					$(`#${ingredientName}`).find('.btn6').show();
-					$(`#${ingredientName}`).find('.btn7').show();
-				}
+		editOrder = new Order();
+		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
+		const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex];
+		userOrderCrepe = editOrderCrepe;
+		console.log('editOrderCrepe', editOrderCrepe);
+
+		const crepeIngredients = editOrderCrepe.ingredients;
+		for (var i = 0; i < crepeIngredients.length; i++) {
+			const ingredient = crepeIngredients[i];
+			if (ingredient.servingSize === 'extra') {
+				$(`#${ingredient.id}`).closest('.card').find('.btn2').html('2x');
+			} else if (ingredient.servingSize === 'regular') {
+				$(`#${ingredient.id}`).closest('.card').find('.btn2').html('✓');
+			} else if (ingredient.servingSize === 'light') {
+				$(`#${ingredient.id}`).closest('.card').find('.btn2').html('½');
 			}
+			$(`#${ingredient.id}`).closest('.card').find('.btn2').show();
 		}
 	}
 
 	$('.card-img-top').each(function () {
 		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
-	userOrderCrepe = new OrderCrepe();
 	userOrderCrepe._flavor = 'sweet';
 	userOrderCrepe._origination = 'custom';
 
-	//veggie + all other topping functionality
 	$(document)
 		.on('mouseenter', '.card, .list-group', function () {
 			if (

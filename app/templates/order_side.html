@@ -26,13 +26,14 @@
 {% for j in range(side_names|length) %} {% if side_names[j].side_name_id =='croissant' %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class="head3">{{side_names[j].side_name_id }}</h3>
-	<div class="card-deck" id='{{side_names[j].side_name_id}}'>
-		{% for i in formatted_croissants %}
+	<div class="card-deck">
+		{% for i in range(formatted_croissants|length) %}
 		<div class="card" id="card1">
+			<div id='{{croissants[i].id}}' data-croissants='{{croissants[i]|tojson}}'></div>
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
-				<h5 class="card-title">{{i.flavor + " " + "Croissant"}}</h5>
-				<p class="card-text">${{i.price}}</p>
+				<h5 class="card-title">{{formatted_croissants[i].flavor + " " + "Croissant"}}</h5>
+				<p class="card-text">${{formatted_croissants[i].price}}</p>
 			</div>
 		</div>
 		{% endfor %}
@@ -47,8 +48,9 @@
 {% if side_names[j].side_name_id == 'ice_cream_bowl' %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class="head3">{{formatted_side_names[j].side_name_id }}</h3>
-	<div class="card-deck" id='{{side_names[j].side_name_id}}'>
+	<div class="card-deck">
 		<div class="card" id="card1">
+			<div id='{{ice_cream_bowls[0].flavor}}' data-icecreambowls='{{ice_cream_bowls[0]|tojson}}'></div>
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{formatted_ice_cream_bowls[0].flavor + " " + "Ice Cream Bowl"}}</h5>
@@ -66,12 +68,13 @@
 		<h5 id="errorTopping" style="color: #f20000; margin-left: 20px">*Please select an ice cream first</h5>
 	</div>
 	<div class="card-deck" id="toppings">
-		{% for i in formatted_toppings %}
+		{% for i in range(formatted_toppings|length) %}
 		<div class="card" id="card1">
+			<div id='{{toppings[i].id}}' data-toppings='{{toppings[i]|tojson}}'></div>
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
-				<h5 class="card-title">{{i.id}}</h5>
-				<p class="card-text">${{i.price}}</p>
+				<h5 class="card-title">{{formatted_toppings[i].id}}</h5>
+				<p class="card-text">${{formatted_toppings[i].price}}</p>
 			</div>
 		</div>
 		{% endfor %}

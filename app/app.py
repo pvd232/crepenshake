@@ -106,7 +106,7 @@ def make_your_own_savory_crepe(editOrder=None):
 @app.route('/order/make-your-own-sweet-crepe')
 def make_your_own_sweet_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
-    sweet_ingredients = ingredient_service.get_sweet_ingredient_prices()
+    sweet_ingredients = [x.serialize() for x in ingredient_service.get_sweet_ingredient_prices()]
     formatted_sweet_ingredients = [humanize(x, 'id') for x in ingredient_service.get_sweet_ingredient_prices()]
     ingredient_serving_sizes = [
         x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
@@ -203,6 +203,9 @@ def order_side(editOrder=None):
     croissants = [x.serialize() for x in side_service.get_croissants()]
     formatted_croissants = [humanize(x, 'flavor')
                             for x in side_service.get_croissants()]
+
+    for x in croissants:
+        print(x)
     side_names = [x.serialize() for x in side_service.get_side_names()]
     formatted_side_names = [humanize(x, 'side_name_id')
                             for x in side_service.get_side_names()]
@@ -228,13 +231,16 @@ def order_menu_crepe(editOrder=None):
     menu_crepe_service = Menu_Crepe_Service()
     sweet_menu_crepes = [x.serialize()
                          for x in menu_crepe_service.get_sweet_menu_crepes()]
+    for x in sweet_menu_crepes:
+        print(x)
     formatted_sweet_menu_crepes = [humanize(x, 'name').serialize()
                          for x in menu_crepe_service.get_sweet_menu_crepes()]
     savory_menu_crepes = [x.serialize() for x in menu_crepe_service.get_savory_menu_crepes()]
     formatted_savory_menu_crepes = [humanize(x, 'name').serialize()
                           for x in menu_crepe_service.get_savory_menu_crepes()]
+   
     editOrder = request.args.get('editOrder')
-    return render_template('order_menu_crepe.html', savory_menu_crepes=savory_menu_crepes, formatted_savory_menu_crepes = formatted_savory_menu_crepes, sweet_menu_crepes=sweet_menu_crepes, formatted_sweet_menu_crepes = formatted_sweet_menu_crepes, editOrder=editOrder)
+    return render_template('order_menu_crepe.html', savory_menu_crepes=savory_menu_crepes, formatted_savory_menu_crepes = formatted_savory_menu_crepes, sweet_menu_crepes=sweet_menu_crepes, formatted_sweet_menu_crepes = formatted_sweet_menu_crepes,  editOrder=editOrder)
 
 
 @app.route('/checkout', methods=['POST', 'GET'])

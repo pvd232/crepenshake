@@ -72,25 +72,18 @@
 	<div class="row">
 		<h3 class="head3">{{formatted_sweet_ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
 	</div>
-	<div class="card-deck" id="{{sweet_ingredient_categories[j].id}}">
-		{% for i in formatted_sweet_ingredients %} {% if i.ingredient_category_id == sweet_ingredient_categories[j].id %} {% if
-		i.price > 0 %}
-		<div class="card" id="card1">
+	<div class="card-deck">
+		{% for i in range(formatted_sweet_ingredients|length) %} {% if formatted_sweet_ingredients[i].ingredient_category_id == sweet_ingredient_categories[j].id %}
+		<div class="card">
+			<div id='{{sweet_ingredients[i].id}}' data-sweetingredients='{{sweet_ingredients[i]|tojson}}'></div>
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
-				<h5 class="card-title">{{i.id}}</h5>
-			</div>
-		</div>
+				<h5 class="card-title">{{formatted_sweet_ingredients[i].id}}</h5>
+				<p class="card-text">{{formatted_sweet_ingredients[i].price}}</p>
 
-		{% else %}
-		<div class="card" id="card1">
-			<img src="" class="card-img-top" alt="..." />
-			<div class="card-body">
-				<h5 class="card-title">{{i.id}}</h5>
-				<p class="card-text"></p>
 			</div>
 		</div>
-		{% endif %} {% endif %} {% endfor %}
+ 		{% endif %} {% endfor %}
 	</div>
 </div>
 {% endfor %}
