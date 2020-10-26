@@ -7,46 +7,45 @@ const menuCrepeDataArray = new Array();
 const userOrderMenuCrepe = new OrderCrepe();
 
 const stringify = (crepeOrder) => {
-		if (editCrepeIndex === null) {
-			const order = new Order();
-			if (crepeOrder.menuCrepes.length) {
-				if (localStorage.length > 0) {
-					order.fromJSON(localStorage.getItem(localStorage.key(0)));
-					const crepeOrderTotal = crepeOrder.orderTotal;
-					order.orderTotal += crepeOrderTotal;
-					order.orderCrepe.push(crepeOrder);
-					const stringifiedCrepeOrder = JSON.stringify(order);
-					localStorage.setItem('order', stringifiedCrepeOrder);
-				} else {
-					order.orderTotal += crepeOrder.orderTotal;
-					order.orderCrepe.push(crepeOrder);
-					const stringifiedCrepeOrder = JSON.stringify(order);
-					localStorage.setItem('order', stringifiedCrepeOrder);
-				}
-			}
-		} else {
-			if (crepeOrder.menuCrepes.length) {
-				console.log('b4', editOrder.orderCrepe[editCrepeIndex]);
-				editOrder.orderCrepe[editCrepeIndex] = crepeOrder
-				console.log('after', editOrder.orderCrepe[editCrepeIndex]);
-			localStorage.setItem('order', JSON.stringify(editOrder));
-			}
-			else {
-				editOrder.orderCrepe.splice(editCrepeIndex, 1)
-				localStorage.setItem('order', JSON.stringify(editOrder));
+	if (editCrepeIndex === null) {
+		const order = new Order();
+		if (crepeOrder.menuCrepes.length) {
+			if (localStorage.length > 0) {
+				order.fromJSON(localStorage.getItem(localStorage.key(0)));
+				const crepeOrderTotal = crepeOrder.orderTotal;
+				order.orderTotal += crepeOrderTotal;
+				order.orderCrepe.push(crepeOrder);
+				const stringifiedCrepeOrder = JSON.stringify(order);
+				localStorage.setItem('order', stringifiedCrepeOrder);
+			} else {
+				order.orderTotal += crepeOrder.orderTotal;
+				order.orderCrepe.push(crepeOrder);
+				const stringifiedCrepeOrder = JSON.stringify(order);
+				localStorage.setItem('order', stringifiedCrepeOrder);
 			}
 		}
+	} else {
+		if (crepeOrder.menuCrepes.length) {
+			console.log('b4', editOrder.orderCrepe[editCrepeIndex]);
+			editOrder.orderCrepe[editCrepeIndex] = crepeOrder;
+			console.log('after', editOrder.orderCrepe[editCrepeIndex]);
+			localStorage.setItem('order', JSON.stringify(editOrder));
+		} else {
+			editOrder.orderCrepe.splice(editCrepeIndex, 1);
+			localStorage.setItem('order', JSON.stringify(editOrder));
+		}
+	}
 	return true;
 };
 
 const checkOut = (orderCrepe) => {
 	orderCrepe._origination = 'menu';
 	if (editCrepeIndex != null) {
-		stringify(orderCrepe);
-		// $.when(stringify(orderCrepe)).then(location.assign('/order?userOrder=true'));
+		// stringify(orderCrepe);
+		$.when(stringify(orderCrepe)).then(location.assign('/order?userOrder=true'));
 	} else {
-		stringify(orderCrepe);
-		// $.when(stringify(orderCrepe)).then(location.assign('/order/side'));
+		// stringify(orderCrepe);
+		$.when(stringify(orderCrepe)).then(location.assign('/order/drink'));
 	}
 };
 
@@ -56,41 +55,15 @@ const removeAllChildNodes = (parent) => {
 	}
 };
 
-//format the document
-$(window).on('load', function () {
-	$('.card-deck').each(function (i) {
-		var cardDeckId = 'cardDeck-';
-		cardDeckId += String(i);
-		this.id = cardDeckId;
-		$(this)
-			.find('.card')
-			.each(function (i) {
-				var cardId = 'card-';
-				cardId += String(i);
-				this.id = cardId;
-			});
-	});
-
-	//https://api.jquery.com/wrap/
-	$('.card-img-top').wrap('<div class="container2"></div>');
-
-	$('.card-img-top').each(function () {
-		$('<button class="btn2" type="button">1</button>').insertAfter($(this));
-		$(`<div class="grid-container"  style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
-            grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
-			$(this)
-		);
-		this.src = '../static/images/vanilla_ice_cream.jpg';
-	});
-
+const modifyOrder = () => {
 	if ($('.edit').length) {
-		editCrepeIndex = $('.edit').first().attr('id')
+		editCrepeIndex = $('.edit').first().attr('id');
 		console.log('editCrepeIndex', editCrepeIndex);
 
 		editOrder = new Order();
 		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
 		const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex].menuCrepes;
-		userOrderMenuCrepe.menuCrepes = editOrderCrepe
+		userOrderMenuCrepe.menuCrepes = editOrderCrepe;
 		console.log('editOrderCrepe', editOrderCrepe);
 		for (var i = 0; i < editOrderCrepe.length; i++) {
 			const crepe = editOrderCrepe[i];
@@ -100,40 +73,20 @@ $(window).on('load', function () {
 			$(`#${crepe.id}`).closest('.card').find('.btn7').show();
 		}
 	}
-	//veggie + all other topping functionality
-	const savoryMenuCrepes = $('#savoryMenuCrepes').data('savorymenucrepes');
-	const sweetMenuCrepes = $('#sweetMenuCrepes').data('sweetmenucrepes');
-	menuCrepeDataArray.push(savoryMenuCrepes);
-	menuCrepeDataArray.push(sweetMenuCrepes);
+};
 
-	$('#menuCrepeCheckout')
-		.unbind('click')
-		.bind('click', function () {
-			checkOut(userOrderMenuCrepe);
-		});
+const pageLogic = () => {
+	$('.card, .list-group')
+		.on('mouseenter', function () {
+			if ($(this).attr('class') === 'card') {
+				const json = JSON.parse($(this).attr('data-menucrepes'));
 
-	$(document)
-		.on('mouseenter', '.card, .list-group', function () {
-			if (
-				$(this).find('.card-body').attr('id') != 'cardBody' &&
-				$(this).closest('.card-deck').attr('id') != 'toppings'
-			) {
 				$(this).find('.card-body').css('opacity', '.3');
 				$(this).find('.card-img-top').css('opacity', '.3');
 
 				if ($(this).attr('class') === 'list-group') {
 					$(document).on('mouseenter', '.list-group-item', function () {
-						const selectedItemIndex = $(this).attr('id').split('-')[1];
-						console.log('selectedItemIndex', selectedItemIndex);
-
-						const selectedItemCategoryIndex = $(this).closest('.list-group').attr('id').split('-')[1];
-						if (
-							!userOrderMenuCrepe.findCrepe(
-								selectedItemIndex,
-								selectedItemCategoryIndex,
-								menuCrepeDataArray
-							)
-						) {
+						if (!userOrderMenuCrepe.findCrepe(json)) {
 							$(this).css('opacity', '.3');
 						}
 					});
@@ -146,28 +99,14 @@ $(window).on('load', function () {
 				.bind('click', function (event) {
 					const senderElement = event.target;
 					if (this === senderElement) {
-						const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
-						const selectedItemCategoryIndex = $(this)
-							.closest('.card-deck, .list-group')
-							.attr('id')
-							.split('-')[1];
-						console.log('selectedItemCategoryIndex', selectedItemCategoryIndex);
+						const json = JSON.parse($(this).closest('.card, li').attr('data-menucrepes'));
 
-						const selectedCrepe = userOrderMenuCrepe.findCrepe(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							menuCrepeDataArray
-						);
+						const selectedCrepe = userOrderMenuCrepe.findCrepe(json);
 						console.log('selectedCrepe', selectedCrepe);
 
 						// if you click the card and it hasn't been selected
 						if (!selectedCrepe) {
-							const addedMenuCrepe = userOrderMenuCrepe.changeCrepeQuantity(
-								selectedItemIndex,
-								selectedItemCategoryIndex,
-								'increase',
-								menuCrepeDataArray
-							);
+							const addedMenuCrepe = userOrderMenuCrepe.changeCrepeQuantity(json, 'increase');
 							$(this).closest('.card, .list-group-item').find('.btn2').html(addedMenuCrepe.quantity);
 							$(this).closest('.card, .list-group-item').find('.btn2').show();
 							//after clicking the card show the + and - buttons
@@ -179,34 +118,12 @@ $(window).on('load', function () {
 				});
 			$('.btn6')
 				.unbind('click')
-				.bind('click', function (event) {
-					const selectedItemIndex = $(this).closest('.card, .list-group-item').attr('id').split('-')[1];
-					const selectedItemCategoryIndex = $(this)
-						.closest('.card-deck, .list-group')
-						.attr('id')
-						.split('-')[1];
-					const selectedCrepe = userOrderMenuCrepe.findCrepe(
-						selectedItemIndex,
-						selectedItemCategoryIndex,
-						menuCrepeDataArray
-					);
-					userOrderMenuCrepe.changeCrepeQuantity(
-						selectedItemIndex,
-						selectedItemCategoryIndex,
-						'decrease',
-						menuCrepeDataArray
-					);
-					console.log(
-						'userOrderMenuCrepe.findCrepe(selectedItemIndex, selectedItemCategoryIndex, menuCrepeDataArray)',
-						userOrderMenuCrepe.findCrepe(selectedItemIndex, selectedItemCategoryIndex, menuCrepeDataArray)
-					);
-
-					if (
-						!userOrderMenuCrepe.findCrepe(selectedItemIndex, selectedItemCategoryIndex, menuCrepeDataArray)
-					) {
+				.bind('click', function () {
+					const json = JSON.parse($(this).closest('.card, .list-group-item').attr('data-menucrepes'));
+					const selectedCrepe = userOrderMenuCrepe.findCrepe(json);
+					userOrderMenuCrepe.changeCrepeQuantity(json, 'decrease');
+					if (!userOrderMenuCrepe.findCrepe(json)) {
 						console.log('removed');
-						console.log("$(this).closest('.card')", $(this).closest('.card, .list-group-item').attr('id'));
-
 						$(this).closest('.card, .list-group-item').find('.btn2').hide();
 						$(this).closest('.card, .list-group-item').find('.btn2').html(0);
 						$(this).hide();
@@ -220,71 +137,61 @@ $(window).on('load', function () {
 
 			$('.btn7')
 				.unbind('click')
-				.bind('click', function (event) {
-					console.log('btn7 clicked');
-					event.stopPropagation();
+				.bind('click', function () {
+					const json = JSON.parse($(this).closest('.card, .list-group-item').attr('data-menucrepes'));
 
-					const selectedItemIndex = $(this).closest('.card, .list-group-item').attr('id').split('-')[1];
-					const selectedItemCategoryIndex = $(this)
-						.closest('.card-deck, .list-group')
-						.attr('id')
-						.split('-')[1];
-					const selectedCrepe = userOrderMenuCrepe.findCrepe(
-						selectedItemIndex,
-						selectedItemCategoryIndex,
-						menuCrepeDataArray
-					);
-					userOrderMenuCrepe.changeCrepeQuantity(
-						selectedItemIndex,
-						selectedItemCategoryIndex,
-						'increase',
-						menuCrepeDataArray
-					);
+					const selectedCrepe = userOrderMenuCrepe.findCrepe(json);
+					userOrderMenuCrepe.changeCrepeQuantity(json, 'increase');
 					$(this).closest('.card, .list-group-item').find('.btn2').html(`${selectedCrepe.quantity}`);
 					$(this).closest('.card, .list-group-item').find('.btn2').show();
 				});
 		})
-		.on('mouseleave', '.card, .list-group-item', function () {
-			console.log('$(this)', $(this));
-			const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
-			console.log('mouse leave selectedItemIndex', selectedItemIndex);
+		.on('mouseleave', function () {
+			if ($(this).attr('class') === 'card') {
+				const json = JSON.parse($(this).attr('data-menucrepes'));
 
-			const selectedItemCategoryIndex = $(this).closest('.card-deck, .list-group').attr('id').split('-')[1];
-			console.log('mouse leave selectedItemCategoryIndex', selectedItemCategoryIndex);
+				const selectedCrepe = userOrderMenuCrepe.findCrepe(json);
+				console.log('selectedCrepe mouseleave', selectedCrepe);
 
-			const selectedCrepe = userOrderMenuCrepe.findCrepe(
-				selectedItemIndex,
-				selectedItemCategoryIndex,
-				menuCrepeDataArray
-			);
-			selectedCrepe;
-			console.log('selectedCrepe mouseleave', selectedCrepe);
+				// if you click the card and it hasn't been selected
+				if (!selectedCrepe) {
+					$(this).find('.btn').hide();
+					$(this).find('.btn3').hide();
+					$(this).find('.btn4').hide();
+				} else {
+					$(this).find('.btn3').hide();
+					$(this).find('.btn4').hide();
+				}
 
-			// if you click the card and it hasn't been selected
-			if (!selectedCrepe) {
-				console.log('hey');
-				$(this).find('.btn').hide();
-				$(this).find('.btn3').hide();
-				$(this).find('.btn4').hide();
-			} else {
-				$(this).find('.btn3').hide();
-				$(this).find('.btn4').hide();
-			}
-
-			$(this).find('img').css('opacity', '1');
-			$(this).find('.card-body').css('opacity', '1');
-			if ($(this).closest('.list-group')) {
-				$(this).css('opacity', '1');
+				$(this).find('img').css('opacity', '1');
+				$(this).find('.card-body').css('opacity', '1');
+				if ($(this).closest('.list-group')) {
+					$(this).css('opacity', '1');
+				}
 			}
 		});
-});
+};
 
-// all this code changes display for smaller screen sizes
-//https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 var cWidth = $(window).width();
-//https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
 $(window).on('load resize', function () {
 	const newWidth = $(window).width();
+
+	$('.card-img-top').wrap('<div class="container2"></div>');
+
+	$('.card-img-top').each(function () {
+		$('<button class="btn2" type="button">1</button>').insertAfter($(this));
+		$(`<div class="grid-container"  style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
+            grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
+			$(this)
+		);
+		this.src = '../static/images/vanilla_ice_cream.jpg';
+	});
+
+	$('#menuCrepeCheckout')
+		.unbind('click')
+		.bind('click', function () {
+			checkOut(userOrderMenuCrepe);
+		});
 
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
@@ -296,6 +203,7 @@ $(window).on('load resize', function () {
 		const cardTextElements = document.getElementsByClassName('card-text');
 		const cardImgTopElements = document.getElementsByClassName('card-img-top');
 		const h3Elements = document.getElementsByClassName('h3');
+		const cardData = document.getElementsByClassName('card');
 
 		$('#crepeImg').css('margin-left', '0px');
 		$('#cardText').css('margin-left', '0px');
@@ -327,6 +235,13 @@ $(window).on('load resize', function () {
 			cardDeckTitleValues.push(h3Elements[i].innerHTML);
 		}
 
+		const constCardData = new Array();
+
+		for (var i = 0; i < cardData.length; i++) {
+			const clone = cardData[i].cloneNode(true);
+			constCardData.push(clone);
+		}
+
 		const cardDeckChildrenLength = new Array();
 		const constCardDeckNodes = new Array();
 		for (var i = 0; i < cardDeckElementsLength; i++) {
@@ -345,11 +260,13 @@ $(window).on('load resize', function () {
 		for (var i = 0; i < cardDeckElementsLength; i++) {
 			removeAllChildNodes(cardDeckElements[i]);
 		}
+		var counter = 0;
 
 		for (var i = 0; i < cardDeckElementsLength; i++) {
 			const row = document.createElement('div');
 			row.setAttribute('class', 'row');
 			row.setAttribute('style', 'width: 100%');
+
 			const listGroupTitle = document.createElement('div');
 			//https://www.htmldog.com/guides/javascript/advanced/creatingelements/
 			listGroupTitle.setAttribute('class', 'col-12 col-sm-12 col-lg-12 col-md-12');
@@ -376,6 +293,10 @@ $(window).on('load resize', function () {
 				const listValue = document.createElement('li');
 				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
 				listValue.setAttribute('style', 'width:100%');
+				const jsonData = constCardData[counter].getAttribute('data-menucrepes');
+				const data = JSON.parse(constCardData[counter].getAttribute('data-menucrepes'));
+				listValue.setAttribute('id', data.id);
+				listValue.setAttribute('data-menucrepes', jsonData);
 
 				if (constCardTextValues[k]) {
 					const string1 = String(constCardTitleValues[k]);
@@ -437,24 +358,9 @@ $(window).on('load resize', function () {
 			const x = document.getElementsByClassName('list-group');
 			x[i].appendChild(row);
 		}
-		$('.list-group').each(function (i) {
-			var cardDeckId = 'cardDeck-';
-			cardDeckId += String(i);
-			this.id = cardDeckId;
-			$(this)
-				.find('.list-group-item')
-				.each(function (i) {
-					var cardId = 'listItem-';
-					cardId += String(i);
-					this.id = cardId;
-				});
-		});
-	} else {
-		$('#crepeImg').css('margin-left', '80px');
-		$('#cardText').css('margin-left', '180px');
-		$('#cardText').css('margin-right', '50px');
-		$('#cardBody').css('margin-left', '170px');
 	}
+	pageLogic();
+	modifyOrder();
 });
 // TODO: add sauteed onions & peppers, pesto, dill
 var cWidth = $(window).width();

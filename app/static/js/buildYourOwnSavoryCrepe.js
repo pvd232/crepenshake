@@ -5,7 +5,7 @@ var editCrepeIndex = null;
 var editOrder = null;
 var ingredientServingSizes;
 var ingredientCategoryDataArray = new Array();
-var userOrderCrepe;
+var userOrderCrepe = new OrderCrepe();
 
 const displayErrorMsg = (element) => {
 	const selector = `#${element.closest('.card, .list-group-item').attr('id') + 'error'}`;
@@ -56,11 +56,11 @@ const stringify = (crepeOrder) => {
 
 const checkOut = (order) => {
 	if (editCrepeIndex != null) {
-		stringify(order);
-		// $.when(stringify(order)).then(location.assign('/order?userOrder=true'));
+		// stringify(order);
+		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		stringify(order);
-		// $.when(stringify(order)).then(location.assign('/order/side'));
+		// stringify(order);
+		$.when(stringify(order)).then(location.assign('/order/drink'));
 	}
 };
 
@@ -107,6 +107,7 @@ $(window).on('load', function () {
 		});
 
 	if ($('.edit').length) {
+		console.log('edit')
 		editCrepeIndex = $('.edit').first().attr('id');
 		editOrder = new Order();
 		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
@@ -130,8 +131,10 @@ $(window).on('load', function () {
 	$('.card-img-top').each(function () {
 		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
-	userOrderCrepe._flavor = 'savory';
-	userOrderCrepe._origination = 'custom';
+	console.log('userOrderCrepe', userOrderCrepe);
+
+	userOrderCrepe.flavor = 'savory';	
+	userOrderCrepe.origination = 'custom';
 	//veggie + all other topping functionality
 	$(document)
 		.on('mouseenter', '.card, .list-group', function () {

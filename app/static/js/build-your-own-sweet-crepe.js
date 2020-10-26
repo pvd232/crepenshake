@@ -40,11 +40,11 @@ const stringify = (crepeOrder) => {
 
 const checkOut = (order) => {
 	if (editCrepeIndex != null) {
-		stringify(order);
-		// $.when(stringify(order)).then(location.assign('/order?userOrder=true'));
+		// stringify(order);
+		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		stringify(order);
-		// $.when(stringify(order)).then(location.assign('/order/side'));
+		// stringify(order);
+		$.when(stringify(order)).then(location.assign('/order/drink'));
 	}
 };
 
@@ -113,8 +113,8 @@ $(window).on('load', function () {
 	$('.card-img-top').each(function () {
 		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
-	userOrderCrepe._flavor = 'sweet';
-	userOrderCrepe._origination = 'custom';
+	userOrderCrepe.flavor = 'sweet';
+	userOrderCrepe.origination = 'custom';
 
 	$(document)
 		.on('mouseenter', '.card, .list-group', function () {

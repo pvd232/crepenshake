@@ -1,3 +1,47 @@
+export const capitalize = (str) => {
+	return str.replace(/^./, function (str) {
+		return str.toUpperCase();
+	});
+};
+
+export const humanize = (dict = null, attr = null, format = false) => {
+	// this is providing a deep copy of the object so we don't mutate the original order
+	var formatDict = JSON.parse(JSON.stringify(dict));
+
+	if (format === true) {
+		for (var i = 0; i < formatDict['ingredients'].length; i++) {
+			var str = formatDict['ingredients'][i][`${attr}`];
+			const frags = str.split('_');
+			if (frags.length < 2) {
+				str = capitalize(str);
+				formatDict['ingredients'][i][`${attr}`] = str;
+			}
+			var newFrags = new Array();
+			for (var frag in frags) {
+				frag = capitalize(frag);
+				newFrags.push(frag);
+			}
+			newFrags = newFrags.join(' ');
+			formatDict['ingredients'][i][`${attr}`] = newFrags;
+		}
+		return formatDict;
+	}
+	var str = formatDict[`${attr}`];
+	var frags = str.split('_');
+	if (frags.length < 2) {
+		str = capitalize(str);
+		formatDict[`${attr}`] = str;
+		return formatDict;
+	}
+	var newFrags = new Array();
+	for (var i in frags) {
+		const capitalFrag = capitalize(frags[i]);
+		newFrags.push(capitalFrag);
+	}
+	newFrags = newFrags.join(' ');
+	formatDict[`${attr}`] = newFrags;
+	return formatDict;
+};
 // Drinks Models
 export class Drink {
 	constructor(id = null, name = null, price = 0, quantity = 1, servingSize = '12oz', drinkCategory = null) {
@@ -44,23 +88,23 @@ export class Drink {
 	set drinkCategory(value) {
 		this._drinkCategory = value;
 	}
-	initFromHTML = (index, selectedItemCategoryIndex, drinkCategoryDataArray, newDrinkCategories) => {
-		const newDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-		const drinkCategory = newDrinkCategories[selectedItemCategoryIndex].id;
-		const drinkId = newDrink.id;
-		const drinkName = newDrink.name;
-		const drinkPrice = newDrink.price;
-		var drinkServingSize = newDrink.serving_size;
-		if (!drinkServingSize) {
-			drinkServingSize = '12oz';
-		}
-		this._id = drinkId;
-		this._name = drinkName;
-		this._price = drinkPrice;
-		this._drinkCategory = drinkCategory;
-		this._servingSize = drinkServingSize;
-		this._quantity = 1;
-	};
+	// initFromHTML = (index, selectedItemCategoryIndex, drinkCategoryDataArray, newDrinkCategories) => {
+	// 	const newDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+	// 	const drinkCategory = newDrinkCategories[selectedItemCategoryIndex].id;
+	// 	const drinkId = newDrink.id;
+	// 	const drinkName = newDrink.name;
+	// 	const drinkPrice = newDrink.price;
+	// 	var drinkServingSize = newDrink.serving_size;
+	// 	if (!drinkServingSize) {
+	// 		drinkServingSize = '12oz';
+	// 	}
+	// 	this._id = drinkId;
+	// 	this._name = drinkName;
+	// 	this._price = drinkPrice;
+	// 	this._drinkCategory = drinkCategory;
+	// 	this._servingSize = drinkServingSize;
+	// 	this._quantity = 1;
+	// };
 	toJSON = () => {
 		const data = {
 			id: this._id,
@@ -74,12 +118,24 @@ export class Drink {
 	};
 	fromJSON = (json) => {
 		const data = json;
+		data.id;
+		
 		this._id = data.id;
 		this._name = data.name;
 		this._price = data.price;
-		this._quantity = data.quantity;
-		this.servingSize = data.servingSize;
-		this._drinkCategory = data.drinkCategory;
+		if (data.quantity) {
+			this._quantity = data.quantity;
+		}
+		if (data.drink_category_id) {
+			this._drinkCategory = data.drink_category_id;
+		} else if (data.drinkCategory) {
+			this._drinkCategory = data.drinkCategory;
+		}
+		if (data.servingSize) {
+			this._servingSize = data.servingSize;
+		} else if (data.serving_ize) {
+			this._servingSize = data.serving_size;
+		}
 	};
 	updateDrinkQuantity = (value) => {
 		if (value === 'decrease') {
@@ -87,11 +143,9 @@ export class Drink {
 				return;
 			} else {
 				this._quantity -= 1;
-				console.log('this._quantity', this._quantity);
 			}
 		} else if (value === 'increase') {
 			this._quantity += 1;
-			console.log('this._quantity', this._quantity);
 		}
 	};
 }
@@ -205,24 +259,24 @@ export class Coffee {
 		this._quantity = value;
 	}
 
-	initFromHTML = (index, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray) => {
-		const coffeeName = drinkCategoryDataArray[selectedItemCategoryIndex][index].name;
+	// initFromHTML = (index, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray) => {
+	// 	const coffeeName = drinkCategoryDataArray[selectedItemCategoryIndex][index].name;
 
-		const coffeePrice = drinkCategoryDataArray[selectedItemCategoryIndex][index].price;
-		const coffeeServingSize = drinkCategoryDataArray[selectedItemCategoryIndex][index].serving_size;
-		// UUID will be generated in the backend
-		this._name = coffeeName;
-		this._price = coffeePrice;
-		this._milkPrice = 0;
-		this._servingSize = coffeeServingSize;
-		this._espressoServingSize = espressoServingSize;
-		if (espressoServingSize === 'extra') {
-			this._espressoPrice = 2;
-		} else {
-			this._espressoPrice = 0;
-		}
-		this._drinkCategory = 'coffee';
-	};
+	// 	const coffeePrice = drinkCategoryDataArray[selectedItemCategoryIndex][index].price;
+	// 	const coffeeServingSize = drinkCategoryDataArray[selectedItemCategoryIndex][index].serving_size;
+	// 	// UUID will be generated in the backend
+	// 	this._name = coffeeName;
+	// 	this._price = coffeePrice;
+	// 	this._milkPrice = 0;
+	// 	this._servingSize = coffeeServingSize;
+	// 	this._espressoServingSize = espressoServingSize;
+	// 	if (espressoServingSize === 'extra') {
+	// 		this._espressoPrice = 2;
+	// 	} else {
+	// 		this._espressoPrice = 0;
+	// 	}
+	// 	this._drinkCategory = 'coffee';
+	// };
 
 	toJSON = () => {
 		const data = {
@@ -246,17 +300,41 @@ export class Coffee {
 		const data = json;
 		this._id = data.id;
 		this._name = data.name;
-		this._servingSize = data.servingSize;
-		this._temperature = data.temperature;
-		this._flavorSyrup = data.flavorSyrup;
-		this._flavorSyrupServingSize = data.flavorSyrupServingSize;
-		this._espressoServingSize = data.espressoServingSize;
-		this._espressoPrice = data.espressoPrice;
-		this._milkType = data.milkType;
-		this._milkPrice = data.milkPrice;
+		if (data.servingSize) {
+			this._servingSize = data.servingSize;
+		} else if (data.serving_size) {
+			this._servingSize = data.serving_size;
+		}
+		if (data.temperature) {
+			this._temperature = data.temperature;
+		}
+		if (data.flavorSyrup) {
+			this._flavorSyrup = data.flavorSyrup;
+		}
+		if (data.flavorSyrupServingSize) {
+			this._flavorSyrupServingSize = data.flavorSyrupServingSize;
+		}
+		if (data.espressoServingSize) {
+			this._espressoServingSize = data.espressoServingSize;
+		}
+		if (data.espressoPrice) {
+			this._espressoPrice = data.espressoPrice;
+		}
+		if (data.milkType) {
+			this._milkType = data.milkType;
+		}
+		if (data.milkPrice) {
+			this._milkPrice = data.milkPrice;
+		}
 		this._price = data.price;
-		this._quantity = data.quantity;
-		this._drinkCategory = data.drinkCategory;
+		if (data.quantity) {
+			this._quantity = data.quantity;
+		}
+		if (data.drinkCategory) {
+			this._drinkCategory = data.drinkCategory;
+		} else if (data.drink_category_id) {
+			this._drinkCategory = data.drink_category_id;
+		}
 	};
 }
 
@@ -560,6 +638,7 @@ export class OrderDrink {
 	};
 	checkIfCoffeeSelected = () => {
 		for (var i = 0; i < this._orderDrink.length; i++) {
+			console.log("this._orderDrink[i]", this._orderDrink[i])
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				return true;
 			}
@@ -567,18 +646,26 @@ export class OrderDrink {
 		return false;
 	};
 	checkIfTempSelected = () => {
+		console.log('hi')
+		console.log('this._orderDrink', this._orderDrink);
+
 		for (var i = 0; i < this._orderDrink.length; i++) {
+			
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
+				console.log("this._orderDrink[i]", this._orderDrink[i])
+				
 				if (this._orderDrink[i].temperature) {
+					console.log("this._orderDrink[i].temperature", this._orderDrink[i].temperature)
+					
 					return true;
 				}
 			}
 		}
 		return false;
 	};
-	checkIfThisTempSelected = (index, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray) => {
-		const temp = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-		if (selectedItemCategory === 'temperature') {
+
+	checkIfThisTempSelected = (json) => {
+		const temp = json;
 			for (var i = 0; i < this._orderDrink.length; i++) {
 				if (this._orderDrink[i].drinkCategory === 'coffee') {
 					if (this._orderDrink[i].temperature === temp.id) {
@@ -586,7 +673,6 @@ export class OrderDrink {
 					}
 				}
 			}
-		}
 		return false;
 	};
 	checkIfMilkSelected = () => {
@@ -599,9 +685,8 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfThisMilkSelected = (index, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray) => {
-		if (selectedItemCategory === 'milk') {
-			const milk = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+	checkIfThisMilkSelected = (json) => {
+			const milk = json;
 			for (var i = 0; i < this._orderDrink.length; i++) {
 				if (this._orderDrink[i].drinkCategory === 'coffee') {
 					if (this._orderDrink[i].milkType === milk.id) {
@@ -609,7 +694,6 @@ export class OrderDrink {
 					}
 				}
 			}
-		}
 		return false;
 	};
 	checkIfSyrupSelected = () => {
@@ -622,75 +706,77 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfThisSyrupSelected = (index, selectedItemCategoryIndex, selectedItemCategory, drinkCategoryDataArray) => {
-		if (selectedItemCategory === 'syrup') {
-			const syrup = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+	checkIfThisSyrupSelected = (json) => {
+			const syrup = json
+			console.log("check if syrup selected syrup", syrup)
+			
 			for (var i = 0; i < this._orderDrink.length; i++) {
 				if (this._orderDrink[i].drinkCategory === 'coffee') {
+					console.log("syrup this._orderDrink[i]", this._orderDrink[i])
+					
 					if (this._orderDrink[i].flavorSyrup === syrup.coffee_syrup_flavor) {
 						return true;
 					}
 				}
 			}
-		}
 		return false;
 	};
-	checkIfThisDrinkSelected = (index, selectedItemCategoryIndex, drinkCategoryDataArray) => {
-		for (var i = 0; i < this._orderDrink.length; i++) {
-			const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-			if (
-				this._orderDrink[i].name === selectedDrink.name &&
-				this._orderDrink[i].servingSize === selectedDrink.serving_size
-			) {
-				return true;
-			}
-		}
-		return false;
-	};
-	changeDrinkQuantity = (index, selectedItemCategoryIndex, value, drinkCategoryDataArray, newDrinkCategories) => {
-		this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray);
-		console.log('selectedItemCategoryIndex', selectedItemCategoryIndex);
-		console.log('index', index);
-
-		console.log(
-			'this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)',
-			this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)
-		);
-
-		if (!this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)) {
-			this.addDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray, newDrinkCategories);
+	changeDrinkQuantity = (json, value) => {
+		const selectedDrink = this.findDrink(json);
+		console.log("selectedDrink", selectedDrink)
+		
+		if (!selectedDrink) {
+			return this.addDrink(json);
+			
 		} else {
-			this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray).updateDrinkQuantity(value);
+			selectedDrink.updateDrinkQuantity(value);
 		}
 	};
-	findDrink = (index, selectedItemCategoryIndex, drinkCategoryDataArray) => {
+	findDrink = (json) => {
 		for (var i = 0; i < this._orderDrink.length; i++) {
-			const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-			console.log('drinkCategoryDataArray', drinkCategoryDataArray);
-
+			if (json.drink_category_id != 'coffee') {
+					const selectedDrink = new Drink();
+				selectedDrink.fromJSON(json);
+			console.log('selectedDrink', selectedDrink);
+				
+				if (
+					this._orderDrink[i].id === selectedDrink.id &&
+					this._orderDrink[i].servingSize === selectedDrink.servingSize
+				) {
+					return this._orderDrink[i];
+				}
+			} else {
+				const selectedDrink = new Coffee();
+				selectedDrink.fromJSON(json);
 			console.log('selectedDrink', selectedDrink);
 
-			if (
-				this._orderDrink[i].id === selectedDrink.id &&
-				this._orderDrink[i].servingSize === selectedDrink.serving_size
-			) {
-				return this._orderDrink[i];
+				if (
+					this._orderDrink[i].name === selectedDrink.name &&
+					this._orderDrink[i].servingSize === selectedDrink.servingSize
+				) {
+					return this._orderDrink[i];
+				}
 			}
 		}
+	
 		return false;
 	};
-	addDrink = (index, selectedItemCategoryIndex, drinkCategoryDataArray, newDrinkCategories) => {
-		if (!this.findDrink(index, selectedItemCategoryIndex, drinkCategoryDataArray)) {
-			const drink = new Drink();
-			drink.initFromHTML(index, selectedItemCategoryIndex, drinkCategoryDataArray, newDrinkCategories);
-			this._orderDrink.push(drink);
+	addDrink = (json) => {
+		if (!this.findDrink(json)) {
+						const selectedDrink = new Drink();
+
+			selectedDrink.fromJSON(json);
+			console.log('drink', selectedDrink);
+			
+			this._orderDrink.push(selectedDrink);
 			this.priceDrinks();
+			return selectedDrink;
 		}
 	};
-	removeDrink = (index, selectedItemCategoryIndex, drinkCategoryDataArray) => {
+	removeDrink = (json) => {
 		for (var i = 0; i < this._orderDrink.length; i++) {
-			const selectedDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-
+			const selectedDrink = new Drink();
+			selectedDrink.fromJSON(json);
 			if (selectedDrink.name === this._orderDrink[i].name) {
 				this._orderDrink.splice(i, 1);
 				this.priceDrinks();
@@ -699,20 +785,26 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	addCoffee = (index, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray) => {
+	addCoffee = (json, espressoServingSize) => {
 		const coffee = new Coffee();
-		coffee.initFromHTML(index, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray);
+		coffee.fromJSON(json);
+		coffee.espressoServingSize = espressoServingSize;
 		this._orderDrink.push(coffee);
 		this.priceDrinks();
 	};
-	addTemp = (index, selectedItemCategoryIndex, drinkCategoryDataArray) => {
-		const temp = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+	addTemp = (json) => {
+		const temp = json;
+		console.log("temp", temp)
+		
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
+				
 				this._orderDrink[i].temperature = temp.id;
 				return true;
 			}
 		}
+				console.log('this._orderDrink[i]', this._orderDrink[i]);
+
 		return false;
 	};
 	removeTemp = () => {
@@ -724,8 +816,8 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	addMilk = (index, selectedItemCategoryIndex, drinkCategoryDataArray) => {
-		const milk = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+	addMilk = (json) => {
+		const milk = json
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				this._orderDrink[i].milkType = milk.id;
@@ -747,16 +839,23 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	addSyrup = (index, servingSize, selectedItemCategoryIndex, drinkCategoryDataArray) => {
-		const syrup = drinkCategoryDataArray[selectedItemCategoryIndex][index];
+	addSyrup = (json, servingSize) => {
+		const syrup = json;
+		console.log("syrup", syrup)
+		
+		console.log('b4', this._orderDrink)
+
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				this._orderDrink[i].flavorSyrup = syrup.coffee_syrup_flavor;
 				this._orderDrink[i].flavorSyrupServingSize = servingSize;
+		console.log('after', this._orderDrink);
+				
 				this.priceDrinks();
 				return true;
 			}
 		}
+
 		return false;
 	};
 	removeSyrup = () => {
@@ -836,19 +935,6 @@ export class Croissant {
 	set sideName(value) {
 		this._sideName = value;
 	}
-
-	initFromHTML = (index, selectedItemCategoryIndex, selectedItemCategory, sideCategoryDataArray) => {
-		const newCroissant = sideCategoryDataArray[selectedItemCategoryIndex][index];
-		const croissantId = newCroissant.id;
-		const croissantPrice = newCroissant.price;
-		const croissantFlavor = newCroissant.flavor;
-		const croissantSideName = selectedItemCategory;
-
-		this._id = croissantId;
-		this._flavor = croissantFlavor;
-		this._price = croissantPrice;
-		this._sideName = croissantSideName;
-	};
 	toJSON = () => {
 		const data = {
 			id: this._id,
@@ -864,8 +950,14 @@ export class Croissant {
 		this._id = data.id;
 		this._flavor = data.flavor;
 		this._price = data.price;
-		this._quantity = data.quantity;
-		this._sideName = data.sideName;
+		if (data.quantity) {
+			this._quantity = data.quantity;
+		}
+		if (data.side_name_id) {
+			this._sideName = data.side_name_id;
+		} else if (data.sideName) {
+			this._sideName = data.sideName;
+		}
 	};
 	updateCroissantQuantity = (value) => {
 		if (value === 'decrease') {
@@ -941,19 +1033,6 @@ export class IceCreamBowl {
 		this._toppings = value;
 	}
 
-	initFromHTML = (index, selectedItemCategoryIndex, selectedItemCategory, sideCategoryDataArray) => {
-		const iceCreamFlavor = sideCategoryDataArray[selectedItemCategoryIndex][index].flavor;
-		const iceCreamPrice = sideCategoryDataArray[selectedItemCategoryIndex][index].price;
-		const iceCreamSideName = selectedItemCategory;
-		const iceCreamServingSize = 1;
-
-		//the default quantity will persist during initialization and no toppings will be present
-		this._flavor = iceCreamFlavor;
-		this._price = iceCreamPrice;
-		this._sideName = iceCreamSideName;
-		this._servingSize = iceCreamServingSize;
-	};
-
 	toJSON = () => {
 		this.updateServingSize();
 		const data = {
@@ -974,11 +1053,17 @@ export class IceCreamBowl {
 		this._price = data.price;
 		this._servingSize = data.servingSize;
 		this._quantity = data.quantity;
-		this._sideName = data.sideName;
-		for (var i = 0; i < data.toppings.length; i++) {
-			const newTopping = new Ingredient();
-			newTopping.fromJSON(data.toppings[i]);
-			this._toppings.push(newTopping);
+		if (data.side_name_id) {
+			this._sideName = data.side_name_id;
+		} else if (data.sideName) {
+			this._sideName = data.sideName;
+		}
+		if (data.toppings) {
+			for (var i = 0; i < data.toppings.length; i++) {
+				const newTopping = new Ingredient();
+				newTopping.fromJSON(data.toppings[i]);
+				this._toppings.push(newTopping);
+			}
 		}
 	};
 	updateIceCreamBowlQuantity = (value) => {
@@ -1050,15 +1135,17 @@ export class OrderSide {
 	};
 	checkIfIceCreamSelected = () => {
 		for (var i = 0; i < this._orderSide.length; i++) {
-			this._orderSide[i];
+			console.log('this._orderSide[i]', this._orderSide[i]);
+
 			if (this._orderSide[i].sideName === 'ice_cream_bowl') {
 				return true;
 			}
 		}
 		return false;
 	};
-	checkIfThisToppingSelected = (index, selectedItemCategoryIndex, sideCategoryDataArray) => {
-		const topping = sideCategoryDataArray[selectedItemCategoryIndex][index];
+	checkIfThisToppingSelected = (json) => {
+		const topping = new Ingredient();
+		topping.fromJSON(json);
 		for (var i = 0; i < this._orderSide.length; i++) {
 			if (this._orderSide[i].sideName === 'ice_cream_bowl') {
 				if (this._orderSide[i].toppings.length) {
@@ -1072,122 +1159,124 @@ export class OrderSide {
 		}
 		return false;
 	};
-	changeSideQuantity = (index, selectedItemCategoryIndex, value, selectedItemCategory, sideCategoryDataArray) => {
-		if (selectedItemCategory != 'topping') {
-			const selectedSide = this.findSide(
-				index,
-				selectedItemCategoryIndex,
-				selectedItemCategory,
-				sideCategoryDataArray
-			);
-			if (!selectedSide && value === 'increase') {
-				const addedSide = this.addSide(
-					index,
-					selectedItemCategoryIndex,
-					selectedItemCategory,
-					sideCategoryDataArray
-				);
-				if (this.checkIfIceCreamSelected()) {
-					$('#cardDeck-2')
-						.find('.card')
-						.each(function () {
-							$(this).css('opacity', '1');
-						});
+	changeSideQuantity = (json, value) => {
+		const selectedItemCategory = json.side_name_id;
+		const selectedSide = this.findSide(json);
+		console.log('selectedSide', selectedSide);
+
+		if (!selectedSide && value === 'increase') {
+			const addedSide = this.addSide(json);
+			console.log('addedSide', addedSide);
+
+			return addedSide;
+		} else {
+			if (selectedItemCategory === 'croissant') {
+				selectedSide.updateCroissantQuantity(value);
+
+				if (selectedSide.quantity === 0) {
+					this.removeSide(json);
+					return 0;
 				} else {
-					$('#cardDeck-2')
-						.find('.card')
-						.each(function () {
-							$(this).css('opacity', '.3');
-						});
+					return selectedSide;
 				}
-				return addedSide;
-			} else {
-				if (selectedItemCategory === 'croissant') {
-					selectedSide.updateCroissantQuantity(value);
-					if (selectedSide.quantity === 0) {
-						this.removeSide(index, selectedItemCategoryIndex, sideCategoryDataArray);
-						return 0;
-					} else {
-						return selectedSide;
-					}
-				} else if (selectedItemCategory === 'ice_cream_bowl') {
-					selectedSide.updateIceCreamBowlQuantity(value);
-					if (selectedSide.quantity === 0) {
-						this.removeSide(index, selectedItemCategoryIndex, sideCategoryDataArray);
-						return 0;
-					} else {
-						return selectedSide;
-					}
+			} else if (selectedItemCategory === 'ice_cream_bowl') {
+				selectedSide.updateIceCreamBowlQuantity(value);
+				if (selectedSide.quantity === 0) {
+					this.removeSide(json);
+					return 0;
+				} else {
+					return selectedSide;
 				}
 			}
 		}
 	};
-	findSide = (index, selectedItemCategoryIndex, selectedItemCategory, sideCategoryDataArray) => {
-		const selectedSide = sideCategoryDataArray[selectedItemCategoryIndex][index];
-		if (selectedItemCategory != 'topping') {
+	findSide = (json) => {
+		const selectedItemCategory = json.side_name_id;
+
+		if (selectedItemCategory === 'croissant') {
+			const selectedSide = new Croissant();
+			selectedSide.fromJSON(json);
 			for (var i = 0; i < this._orderSide.length; i++) {
 				if (this._orderSide[i].id === selectedSide.id) {
+					return this._orderSide[i];
+				}
+			}
+		} else if (selectedItemCategory === 'ice_cream_bowl') {
+			const selectedSide = new IceCreamBowl();
+			selectedSide.fromJSON(json);
+			for (var i = 0; i < this._orderSide.length; i++) {
+				if (this._orderSide[i].flavor === selectedSide.flavor) {
 					return this._orderSide[i];
 				}
 			}
 		}
 		return false;
 	};
-	addSide = (index, selectedItemCategoryIndex, selectedItemCategory, sideCategoryDataArray) => {
-		if (!this.findSide(index, selectedItemCategoryIndex, selectedItemCategory, sideCategoryDataArray)) {
+	addSide = (json) => {
+		const selectedItemCategory = json.side_name_id;
+		if (!this.findSide(json)) {
 			if (selectedItemCategory === 'ice_cream_bowl') {
 				const newIceCreamBowl = new IceCreamBowl();
-				newIceCreamBowl.initFromHTML(
-					index,
-					selectedItemCategoryIndex,
-					selectedItemCategory,
-					sideCategoryDataArray
-				);
+				newIceCreamBowl.fromJSON(json);
 				this._orderSide.push(newIceCreamBowl);
 				this.priceSides();
 				return newIceCreamBowl;
 			} else if (selectedItemCategory === 'croissant') {
 				const croissant = new Croissant();
-				croissant.initFromHTML(index, selectedItemCategoryIndex, selectedItemCategory, sideCategoryDataArray);
+				croissant.fromJSON(json);
 				this._orderSide.push(croissant);
 				this.priceSides();
 				return croissant;
 			}
 		}
 	};
-	removeSide = (index, selectedItemCategoryIndex, sideCategoryDataArray) => {
-		for (var i = 0; i < this._orderSide.length; i++) {
-			const selectedSide = sideCategoryDataArray[selectedItemCategoryIndex][index];
-			if (selectedSide.id === this._orderSide[i].id) {
-				this._orderSide.splice(i, 1);
-				this.priceSides();
-				return true;
-			}
-		}
-		return false;
-	};
-	addTopping = (index, selectedItemCategoryIndex, sideCategoryDataArray, servingSize) => {
-		if (!this.checkIfThisToppingSelected(index, selectedItemCategoryIndex, sideCategoryDataArray)) {
-			const newTopping = new Ingredient();
-			newTopping.initFromHTML(index, selectedItemCategoryIndex, sideCategoryDataArray, servingSize);
-			console.log('newTopping', newTopping);
+	removeSide = (json) => {
+		const selectedItemCategory = json['side_name_id'];
+		if (selectedItemCategory === 'ice_cream_bowl') {
+			const selectedItem = new IceCreamBowl();
+			selectedItem.fromJSON(json);
 			for (var i = 0; i < this._orderSide.length; i++) {
-				if (this._orderSide[i].sideName === 'ice_cream_bowl') {
-					this._orderSide[i].toppings.push(newTopping);
-					console.log('this._orderSide[i].toppings', this._orderSide[i].toppings);
-
+				if (selectedItem.flavor === this._orderSide[i].flavor) {
+					this._orderSide.splice(i, 1);
 					this.priceSides();
-					return newTopping;
+					return true;
 				}
 			}
-		} else if (this.checkIfThisToppingSelected(index, selectedItemCategoryIndex, sideCategoryDataArray)) {
-			const topping = sideCategoryDataArray[selectedItemCategoryIndex][index];
-			this.updateToppingServingSize(topping, servingSize);
+		} else if (selectedItemCategory === 'croissant') {
+			for (var i = 0; i < this._orderSide.length; i++) {
+				const selectedItem = new Croissant();
+				selectedItem.fromJSON(json);
+				if (selectedItem.id === this._orderSide[i].id) {
+					this._orderSide.splice(i, 1);
+					this.priceSides();
+					return true;
+				}
+			}
+		}
+
+		return false;
+	};
+	addTopping = (json, servingSize) => {
+		const selectedItem = new Ingredient();
+		selectedItem.fromJSON(json);
+		if (!this.checkIfThisToppingSelected(json)) {
+			selectedItem.servingSize = servingSize;
+			for (var i = 0; i < this._orderSide.length; i++) {
+				if (this._orderSide[i].sideName === 'ice_cream_bowl') {
+					this._orderSide[i].toppings.push(selectedItem);
+					this.priceSides();
+					return selectedItem;
+				}
+			}
+		} else if (this.checkIfThisToppingSelected(json)) {
+			this.updateToppingServingSize(selectedItem, servingSize);
+			return true;
 		}
 		return false;
 	};
-	removeTopping = (index, selectedItemCategoryIndex, sideCategoryDataArray) => {
-		const selectedTopping = sideCategoryDataArray[selectedItemCategoryIndex][index];
+	removeTopping = (json) => {
+		const selectedTopping = new Ingredient();
+		selectedTopping.fromJSON(json);
 		for (var i = 0; i < this._orderSide.length; i++) {
 			if (this._orderSide[i].sideName === 'ice_cream_bowl') {
 				if (this._orderSide[i].toppings.length) {
@@ -1283,17 +1372,6 @@ export class Ingredient {
 	set quantity(value) {
 		this._quantity = value;
 	}
-
-	initFromHTML = (index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize = 'regular') => {
-		const newIngredient = ingredientCategoryDataArray[selectedItemCategoryIndex][index];
-		const ingredientId = newIngredient.id;
-		const ingredientPrice = newIngredient.price;
-		const ingredientCategory = newIngredient.ingredient_category_id;
-		this._id = ingredientId;
-		this._servingSize = servingSize;
-		this._price = ingredientPrice;
-		this._category = ingredientCategory;
-	};
 	toJSON = () => {
 		const data = {
 			id: this._id,
@@ -1310,6 +1388,8 @@ export class Ingredient {
 		this._servingSize = data.servingSize;
 		this._price = data.price;
 		this._category = data.category;
+		if (data.quantity) {
+		}
 		this._quantity = data.quantity;
 	};
 	updateQuantity = (value) => {
@@ -1370,20 +1450,6 @@ export class MenuCrepe {
 		this._price = value;
 	}
 
-	initFromHTML = (index, selectedItemCategoryIndex, dataArray) => {
-		const crepeId = dataArray[selectedItemCategoryIndex][index].crepe_id;
-		const crepeName = dataArray[selectedItemCategoryIndex][index].name;
-		const crepeFlavor = dataArray[selectedItemCategoryIndex][index].flavor_profile_id;
-		const crepePrice = dataArray[selectedItemCategoryIndex][index].price;
-		const crepeOrigination = dataArray[selectedItemCategoryIndex][index].origination_id;
-
-		this._id = crepeId;
-		this._name = crepeName;
-		this._flavor = crepeFlavor;
-		this._price = crepePrice;
-		this._origination = crepeOrigination;
-	};
-
 	toJSON = () => {
 		const data = {
 			id: this._id,
@@ -1397,11 +1463,25 @@ export class MenuCrepe {
 	};
 	fromJSON = (json) => {
 		const data = json;
-		this._id = data.id;
+		if (data.crepe_id) {
+			this._id = data.crepe_id;
+		} else if (data.id) {
+			this._id = data.id;
+		}
 		this._name = data.name;
-		this._flavor = data.flavor;
-		this._quantity = data.quantity;
-		this._origination = data.origination;
+		if (data.flavor) {
+			this._flavor = data.flavor;
+		} else if (data.flavor_profile_id) {
+			this._flavor = data.flavor_profile_id;
+		}
+		if (data.quantity) {
+			this._quantity = data.quantity;
+		}
+		if (data.origination) {
+			this._origination = data.origination;
+		} else if (data.origination_id) {
+			this._origination = data.origination_id;
+		}
 		this._price = data.price;
 	};
 	updateCrepeQuantity = (value) => {
@@ -1519,8 +1599,6 @@ export class OrderCrepe {
 		this._origination = data.origination;
 		this._orderTotal = data.orderTotal;
 
-		// data.orderCrepe[i].ingredients is a list of objects that have sweetIngredientCategory as one key and the list of ingredients from that category in another key called ingredients
-		// i realize this is confusing but basically data.orderCrepe[i].ingredients is a list of individual ingredient categories with associated ingredients
 		if (data.ingredients) {
 			for (var i = 0; i < data.ingredients.length; i++) {
 				const newIngredient = new Ingredient();
@@ -1698,26 +1776,32 @@ export class OrderCrepe {
 			return response;
 		}
 	};
-	findCrepe = (index, categoryIndex, dataArray) => {
-		const selectedCrepe = dataArray[categoryIndex][index];
+	findCrepe = (json) => {
+		const selectedCrepe = new MenuCrepe();
+		selectedCrepe.fromJSON(json);
+		console.log('selectedCrepe', selectedCrepe);
+
 		for (var i = 0; i < this._menuCrepes.length; i++) {
-			if (this._menuCrepes[i].id === selectedCrepe.crepe_id) {
+			if (this._menuCrepes[i].id === selectedCrepe.id) {
 				return this._menuCrepes[i];
 			}
 		}
 		return false;
 	};
-	addCrepe = (index, categoryIndex, dataArray) => {
+	addCrepe = (json) => {
 		const crepeToAdd = new MenuCrepe();
-		crepeToAdd.initFromHTML(index, categoryIndex, dataArray);
+		crepeToAdd.fromJSON(json);
+		console.log('crepeToAdd', crepeToAdd);
+
 		this._menuCrepes.push(crepeToAdd);
 		this.priceCrepes();
 		return crepeToAdd;
 	};
-	removeCrepe = (index, categoryIndex, dataArray) => {
-		const selectedCrepe = dataArray[categoryIndex][index];
+	removeCrepe = (json) => {
+		const selectedCrepe = new MenuCrepe();
+		selectedCrepe.fromJSON(json);
 		for (var i = 0; i < this._menuCrepes.length; i++) {
-			if (selectedCrepe.crepe_id === this._menuCrepes[i].id) {
+			if (selectedCrepe.id === this._menuCrepes[i].id) {
 				this._menuCrepes.splice(i, 1);
 				this.priceCrepes();
 				return true;
@@ -1725,16 +1809,14 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	changeCrepeQuantity = (index, categoryIndex, value, dataArray) => {
-		const selectedCrepe = this.findCrepe(index, categoryIndex, dataArray);
+	changeCrepeQuantity = (json, value) => {
+		const selectedCrepe = this.findCrepe(json);
 		if (!selectedCrepe) {
-			return this.addCrepe(index, categoryIndex, dataArray);
+			return this.addCrepe(json);
 		} else {
 			selectedCrepe.updateCrepeQuantity(value);
-			console.log('selectedCrepe', selectedCrepe.quantity);
-
 			if (selectedCrepe.quantity === 0) {
-				this.removeCrepe(index, categoryIndex, dataArray);
+				this.removeCrepe(json);
 			}
 		}
 	};

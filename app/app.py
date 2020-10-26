@@ -143,10 +143,27 @@ def order_drink(editOrder=None):
     
     formatted_bottled_drinks = [humanize(x, "name").serialize()
                                 for x in drink_service.get_drinks('bottled')]
-
+    for x in formatted_bottled_drinks:
+        print('b', x)
     drink_categories = [x.serialize()
                         for x in drink_service.get_drink_categories()]
+    # front_end_drink_categories = drink_categories
+    
+    # milk_category = {}
+    # milk_category['id'] = 'milk'
 
+    # temperature_category = {}
+    # temperature_category['id'] = 'temperature'
+
+    # syrup_category = {}
+    # syrup_category['id'] = 'syrup'
+
+    # drink_categories.insert(1, milk_category)
+    # drink_categories.insert(2, temperature_category)
+    # drink_categories.insert(3, syrup_category)
+
+    for drink in drink_categories:
+        print('category', drink)
     coffee_syrups = [x.serialize() for x in drink_service.get_coffee_syrups()]
     
     formatted_coffee_syrups = [humanize(x, "coffee_syrup_flavor").serialize()
@@ -167,7 +184,6 @@ def order_drink(editOrder=None):
     non_coffee_drinks = regular_non_coffee_drinks
     for x in large_non_coffee_drinks:
         non_coffee_drinks.append(x)
-    print("non_coffee_drinks", non_coffee_drinks)
         
     regular_formatted_non_coffee_drinks = [humanize(x, "name").serialize()
                                    for x in drink_service.get_drinks('non-coffee')]
@@ -178,10 +194,6 @@ def order_drink(editOrder=None):
     for x in large_formatted_non_coffee_drinks:
         x['serving_size'] = '16oz'
     formatted_non_coffee_drinks = regular_formatted_non_coffee_drinks
-    
-    for x in large_formatted_non_coffee_drinks:
-        regular_formatted_non_coffee_drinks.append(x)
-    print("formatted_non_coffee_drinks", formatted_non_coffee_drinks)
 
     milk_drinks = [x.serialize() for x in drink_service.get_milk_drinks()]
     formatted_milk_drinks = [humanize(x, "id").serialize()
@@ -204,22 +216,27 @@ def order_side(editOrder=None):
     formatted_croissants = [humanize(x, 'flavor')
                             for x in side_service.get_croissants()]
 
-    for x in croissants:
-        print(x)
     side_names = [x.serialize() for x in side_service.get_side_names()]
+    new_side_name = {}
+    new_side_name['side_name_id'] = 'toppings'
+    side_names.append(new_side_name)
+    for name in side_names:
+        print()
+        print('name', name)
+        print()
+
     formatted_side_names = [humanize(x, 'side_name_id')
                             for x in side_service.get_side_names()]
     side_types = [x.serialize() for x in side_service.get_side_types()]
     ice_cream_bowls = [x.serialize()
                        for x in side_service.get_ice_cream_bowls()]
-    print()
-    for x in ice_cream_bowls:
-        print('ice',x)
     topping_serving_sizes = [
         x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
     formatted_ice_cream_bowls = [humanize(x, 'flavor')
                                  for x in side_service.get_ice_cream_bowls()]
     toppings = [x.serialize() for x in ingredient_service.get_sweet_ingredient_prices()]
+    for topping in toppings:
+        topping['side_name_id'] = 'toppings'
     formatted_toppings = [humanize(x, 'id')
                           for x in ingredient_service.get_sweet_ingredient_prices()]
     editOrder = request.args.get('editOrder')

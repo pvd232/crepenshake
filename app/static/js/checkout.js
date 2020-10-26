@@ -1,7 +1,7 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 //https://www.codeply.com/p?starter=Bootstrap&ex=Sh3KmpOVTc
 ('use strict');
-import { humanize } from './shoppingCart.js';
+import { humanize } from './model.js';
 
 import { Order, Customer, Coffee } from './model.js';
 
@@ -47,7 +47,7 @@ const handleFormSubmit = () => {
 		dataType: 'json',
 		type: 'POST',
 		contentType: 'application/json',
-		success: (response) => console.log(response),
+		success: () => location.assign('/order/confirmation'),
 		error: (response) => console.log('console.log error', response),
 	});
 };
