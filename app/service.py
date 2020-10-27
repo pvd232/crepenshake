@@ -7,6 +7,9 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from contextlib import contextmanager
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 def change_case(str):
@@ -105,13 +108,6 @@ class Ingredient_Service(object):
     
 
     def get_ingredient_prices_by_category(self):
-        # response = []
-        # with self.session_scope() as session:
-        #     for ingredient in self.ingredient_repository.get_ingredient_prices(session):
-                # ingredient_model = Ingredient_Model(
-                #     id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
-        #         response.append(ingredient_model)
-        #     return response
         response = []
         ingredient_categories = self.get_ingredient_categories()
         with self.session_scope() as session:
@@ -189,11 +185,38 @@ class Order_Service(object):
             self.session.close()
         # now all calls to Session() will create a thread-local session
 
+    def send_confirmation_email(self, customer_email):
+        mail_content = "Hello, we need you at the office ASAP. It is extremely urgent."
+        #The mail addresses and password
+        sender_address = 'patardriscoll@gmail.com'
+        sender_pass = 'Iqopaogh23!'
+        #Setup the MIME
+        message = MIMEMultipart()
+        message['From'] = sender_address
+        message['To'] = customer_email
+        message['Subject'] = 'Urgent Strategy& Task'   #The subject line
+        #The body and the attachments for the mail
+        message.attach(MIMEText(mail_content, 'plain'))
+        #Create SMTP session for sending the mail
+        session = smtplib.SMTP('smtp.gmail.com', 587) #use gmail with port
+        session.starttls() #enable security
+        session.login(sender_address, sender_pass) #login with mail_id and password
+        text = message.as_string()
+        session.sendmail(sender_address, customer_email, text)
+        session.quit()
+        print('Mail Sent')
+
     def create_order(self, order):
         new_order = Order_Model(order_object=order)
-        with self.session_scope() as session:
-            self.order_repository.post_order(session, order=new_order)
-            return True
+        print("new_order.customer.id", new_order.customer.id)
+        customer_email = new_order.customer.id
+        self.send_confirmation_email(customer_email)
+        # with self.session_scope() as session:
+        #     self.order_repository.post_order(session, order=new_order)
+        #     return True
+    
+
+            
 
 
 class Drink_Service(object):

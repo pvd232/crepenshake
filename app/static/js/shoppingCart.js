@@ -72,27 +72,49 @@ const doShowAll = () => {
 					for (var k = 0; k < orderCrepes.length; k++) {
 						const orderCrepe = orderCrepes[k];
 						if (orderCrepe.origination === 'custom') {
-							$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
-							$(`#container${k}`).append(
-								`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row-${k}-0"  flavor="${
-									orderCrepe.flavor
-								}" origination="${orderCrepe.origination}"><h5 style='font-weight: 700;'>Crepe Order #${
-									k + 1
-								}</h5></div>`
-							);
-							for (var j = 0; j < orderCrepe.ingredients.length; j++) {
-								$(`<div class="row" style= "margin-bottom: 20px;" id="row-${k}-${
-									j + 1
-								}"><div class="col-9" style="margin-right: 0px;"><h5>
+							if (orderCrepe.flavor === 'savory') {
+								$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
+								$(`#container${k}`).append(
+									`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row-${k}-0"  flavor="${
+										orderCrepe.flavor
+									}" origination="${
+										orderCrepe.origination
+									}"><h5 style='font-weight: 700;'>Crepe Order #${k + 1}</h5></div>`
+								);
+								for (var j = 0; j < orderCrepe.ingredients.length; j++) {
+									$(`<div class="row" style= "margin-bottom: 20px;" id="row-${k}-${
+										j + 1
+									}"><div class="col-9" style="margin-right: 0px;"><h5>
 								${
 									humanize(orderCrepe.ingredients[j], 'servingSize').servingSize +
 									' ' +
 									humanize(orderCrepe.ingredients[j], 'id').id
 								}</h5>
 									</div><div class="col-3" ><h4>$${orderCrepe.ingredients[j].price.toFixed(2)}</h4></div></div>`).insertAfter(
-									`#row-${k}-${j}`
-								);
+										`#row-${k}-${j}`
+									);
+								}
 							}
+							else if (orderCrepe.flavor === 'sweet') {
+										$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
+										$(`#container${k}`).append(
+											`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row-${k}-0"  flavor="${
+												orderCrepe.flavor
+											}" origination="${
+												orderCrepe.origination
+											}"><h5 style='font-weight: 700;'>Crepe Order #${k + 1}</h5></div>`
+										);
+										for (var j = 0; j < orderCrepe.ingredients.length; j++) {
+											$(`<div class="row" style= "margin-bottom: 20px;" id="row-${k}-${
+												j + 1
+											}"><div class="col-9" style="margin-right: 0px;"><h5>
+								${orderCrepe.ingredients[j].quantity + 'x' + ' ' + humanize(orderCrepe.ingredients[j], 'id').id}</h5>
+									</div><div class="col-3" ><h4>$${
+										orderCrepe.ingredients[j].price.toFixed(2) * orderCrepe.ingredients[j]
+									.quantity}</h4></div></div>`).insertAfter(`#row-${k}-${j}`);
+										}
+							}
+							
 						} // end of if block that corrals custom crepe
 						// iterate through each menu crepe in the order
 						else if (orderCrepe.origination === 'menu') {

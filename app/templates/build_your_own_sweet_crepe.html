@@ -8,22 +8,6 @@
 <div id="{{editOrder}}" class="edit"></div>
 {% endif %}
 
-{% if sweetness_ingredients %}
-<div id="sweetnessIngredients" data-sweetnessingredients='{{ sweetness_ingredients|tojson }}'></div>
-{% endif %}
-
-{% if fruit_ingredients %}
-<div id="fruitIngredients" data-fruitingredients='{{ fruit_ingredients|tojson }}'></div>
-{% endif %}
-
-{% if sweet_ingredient_categories %}
-<div id="sweetIngredientCategories" data-sweetingredientcategories='{{ sweet_ingredient_categories|tojson }}'></div>
-{% endif %}
-
-{% if ingredient_serving_sizes %}
-<div id="ingredientServingSizes" data-ingredientservingsizes='{{ ingredient_serving_sizes|tojson }}'></div>
-{% endif %}
-
 <div class="container1">
 	<div
 		class="card"
@@ -68,14 +52,13 @@
 </div>
 {% for j in range(sweet_ingredient_categories|length) %}
 
-<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-	<div class="row">
+<div class="container0sweetCrepe" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+	<div class="row" style="margin-right:10px">
 		<h3 class="head3">{{formatted_sweet_ingredient_categories[j].id +" " + rules_for_each_category[j]}}</h3>
 	</div>
-	<div class="card-deck">
+	<div class="card-deck" id='{{sweet_ingredient_categories[j].id}}'>
 		{% for i in range(formatted_sweet_ingredients|length) %} {% if formatted_sweet_ingredients[i].ingredient_category_id == sweet_ingredient_categories[j].id %}
-		<div class="card">
-			<div id='{{sweet_ingredients[i].id}}' data-sweetingredients='{{sweet_ingredients[i]|tojson}}'></div>
+		<div class="card" id='{{sweet_ingredients[i].id}}' data-ingredients='{{sweet_ingredients[i]|tojson}}'>
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{formatted_sweet_ingredients[i].id}}</h5>

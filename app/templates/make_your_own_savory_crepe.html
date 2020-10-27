@@ -2,14 +2,6 @@
 <link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
 {% endblock %} {% block content %}
 
-{% if ingredient_prices_by_category %}
-<div id="ingredientPricesByCategory" data-ingredientpricesbycategory='{{ ingredient_prices_by_category|tojson }}'></div>
-{% endif %}
-
-{% if ingredient_serving_sizes %}
-<div id="ingredientServingSizes" data-ingredientservingsizes='{{ ingredient_serving_sizes|tojson }}'></div>
-{% endif %}
-
 <div class="container1">
 	<div
 		class="card"
@@ -57,15 +49,14 @@
 <div id="{{editOrder}}" class="edit"></div>
 {% endif %} {% for i in range(ingredient_prices_by_category|length) %}
 
-<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+<div class="container0" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<div class="row">
 		<h3 class="head3">{{formatted_ingredient_prices_by_category[i].ingredient_category}}</h3>
 	</div>
 	<div class="card-deck" id="{{ingredient_prices_by_category[i].ingredient_category}}">
 			{% for j in range(ingredient_prices_by_category[i].ingredients|length) %}
 				{% if ingredient_prices_by_category[i].ingredients[j].price > 0.0 %} 
-					<div class="card" id="card1">
-						<div id='{{ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredientpricesbycategory='{{ingredient_prices_by_category[i].ingredients[j]|tojson}}'></div>
+					<div class="card" id='{{ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredients='{{ingredient_prices_by_category[i].ingredients[j]|tojson}}'>
 						<img src="" class="card-img-top" alt="..." />
 						<div class="card-body">
 							<h5 class="card-title">{{formatted_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
@@ -74,8 +65,7 @@
 					</div>
 
 				{% else %}
-					<div class="card" id="card1">
-						<div id='{{ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredientpricesbycategory='{{ingredient_prices_by_category[i].ingredients[j]|tojson}}'></div>
+					<div class="card" id='{{ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredients='{{ingredient_prices_by_category[i].ingredients[j]|tojson}}'>
 						<img src="" class="card-img-top" alt="..." />
 						<div class="card-body">
 							<h5 class="card-title">{{formatted_ingredient_prices_by_category[i].ingredients[j].id}}</h5>

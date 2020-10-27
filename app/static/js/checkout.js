@@ -47,7 +47,8 @@ const handleFormSubmit = () => {
 		dataType: 'json',
 		type: 'POST',
 		contentType: 'application/json',
-		success: () => location.assign('/order/confirmation'),
+		success: (response) => console.log('console.log success', response),
+		// success: () => location.assign('/order/confirmation'),
 		error: (response) => console.log('console.log error', response),
 	});
 };

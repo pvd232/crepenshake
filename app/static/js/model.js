@@ -88,23 +88,6 @@ export class Drink {
 	set drinkCategory(value) {
 		this._drinkCategory = value;
 	}
-	// initFromHTML = (index, selectedItemCategoryIndex, drinkCategoryDataArray, newDrinkCategories) => {
-	// 	const newDrink = drinkCategoryDataArray[selectedItemCategoryIndex][index];
-	// 	const drinkCategory = newDrinkCategories[selectedItemCategoryIndex].id;
-	// 	const drinkId = newDrink.id;
-	// 	const drinkName = newDrink.name;
-	// 	const drinkPrice = newDrink.price;
-	// 	var drinkServingSize = newDrink.serving_size;
-	// 	if (!drinkServingSize) {
-	// 		drinkServingSize = '12oz';
-	// 	}
-	// 	this._id = drinkId;
-	// 	this._name = drinkName;
-	// 	this._price = drinkPrice;
-	// 	this._drinkCategory = drinkCategory;
-	// 	this._servingSize = drinkServingSize;
-	// 	this._quantity = 1;
-	// };
 	toJSON = () => {
 		const data = {
 			id: this._id,
@@ -119,7 +102,7 @@ export class Drink {
 	fromJSON = (json) => {
 		const data = json;
 		data.id;
-		
+
 		this._id = data.id;
 		this._name = data.name;
 		this._price = data.price;
@@ -258,25 +241,6 @@ export class Coffee {
 	set quantity(value) {
 		this._quantity = value;
 	}
-
-	// initFromHTML = (index, espressoServingSize, selectedItemCategoryIndex, drinkCategoryDataArray) => {
-	// 	const coffeeName = drinkCategoryDataArray[selectedItemCategoryIndex][index].name;
-
-	// 	const coffeePrice = drinkCategoryDataArray[selectedItemCategoryIndex][index].price;
-	// 	const coffeeServingSize = drinkCategoryDataArray[selectedItemCategoryIndex][index].serving_size;
-	// 	// UUID will be generated in the backend
-	// 	this._name = coffeeName;
-	// 	this._price = coffeePrice;
-	// 	this._milkPrice = 0;
-	// 	this._servingSize = coffeeServingSize;
-	// 	this._espressoServingSize = espressoServingSize;
-	// 	if (espressoServingSize === 'extra') {
-	// 		this._espressoPrice = 2;
-	// 	} else {
-	// 		this._espressoPrice = 0;
-	// 	}
-	// 	this._drinkCategory = 'coffee';
-	// };
 
 	toJSON = () => {
 		const data = {
@@ -638,7 +602,6 @@ export class OrderDrink {
 	};
 	checkIfCoffeeSelected = () => {
 		for (var i = 0; i < this._orderDrink.length; i++) {
-			console.log("this._orderDrink[i]", this._orderDrink[i])
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				return true;
 			}
@@ -646,17 +609,9 @@ export class OrderDrink {
 		return false;
 	};
 	checkIfTempSelected = () => {
-		console.log('hi')
-		console.log('this._orderDrink', this._orderDrink);
-
 		for (var i = 0; i < this._orderDrink.length; i++) {
-			
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
-				console.log("this._orderDrink[i]", this._orderDrink[i])
-				
 				if (this._orderDrink[i].temperature) {
-					console.log("this._orderDrink[i].temperature", this._orderDrink[i].temperature)
-					
 					return true;
 				}
 			}
@@ -666,13 +621,13 @@ export class OrderDrink {
 
 	checkIfThisTempSelected = (json) => {
 		const temp = json;
-			for (var i = 0; i < this._orderDrink.length; i++) {
-				if (this._orderDrink[i].drinkCategory === 'coffee') {
-					if (this._orderDrink[i].temperature === temp.id) {
-						return true;
-					}
+		for (var i = 0; i < this._orderDrink.length; i++) {
+			if (this._orderDrink[i].drinkCategory === 'coffee') {
+				if (this._orderDrink[i].temperature === temp.id) {
+					return true;
 				}
 			}
+		}
 		return false;
 	};
 	checkIfMilkSelected = () => {
@@ -686,14 +641,14 @@ export class OrderDrink {
 		return false;
 	};
 	checkIfThisMilkSelected = (json) => {
-			const milk = json;
-			for (var i = 0; i < this._orderDrink.length; i++) {
-				if (this._orderDrink[i].drinkCategory === 'coffee') {
-					if (this._orderDrink[i].milkType === milk.id) {
-						return true;
-					}
+		const milk = json;
+		for (var i = 0; i < this._orderDrink.length; i++) {
+			if (this._orderDrink[i].drinkCategory === 'coffee') {
+				if (this._orderDrink[i].milkType === milk.id) {
+					return true;
 				}
 			}
+		}
 		return false;
 	};
 	checkIfSyrupSelected = () => {
@@ -707,48 +662,56 @@ export class OrderDrink {
 		return false;
 	};
 	checkIfThisSyrupSelected = (json) => {
-			const syrup = json
-			console.log("check if syrup selected syrup", syrup)
-			
-			for (var i = 0; i < this._orderDrink.length; i++) {
-				if (this._orderDrink[i].drinkCategory === 'coffee') {
-					console.log("syrup this._orderDrink[i]", this._orderDrink[i])
-					
-					if (this._orderDrink[i].flavorSyrup === syrup.coffee_syrup_flavor) {
-						return true;
-					}
+		const syrup = json;
+		console.log('json', json);
+
+		for (var i = 0; i < this._orderDrink.length; i++) {
+			console.log('chekc syrup this._orderDrink', this._orderDrink[i]);
+
+			if (this._orderDrink[i].drinkCategory === 'coffee') {
+				if (this._orderDrink[i].flavorSyrup === syrup.coffee_syrup_flavor) {
+					console.log('syrup.coffee_syrup_flavor', syrup.coffee_syrup_flavor);
+
+					console.log('this._orderDrink[i].flavorSyrup', this._orderDrink[i].flavorSyrup);
+
+					return true;
 				}
 			}
+		}
 		return false;
 	};
 	changeDrinkQuantity = (json, value) => {
 		const selectedDrink = this.findDrink(json);
-		console.log("selectedDrink", selectedDrink)
-		
 		if (!selectedDrink) {
 			return this.addDrink(json);
-			
 		} else {
 			selectedDrink.updateDrinkQuantity(value);
 		}
 	};
 	findDrink = (json) => {
 		for (var i = 0; i < this._orderDrink.length; i++) {
-			if (json.drink_category_id != 'coffee') {
-					const selectedDrink = new Drink();
+			const selectedDrinkCategory = json.drink_category_id;
+			console.log('selectedDrinkCategory', selectedDrinkCategory);
+
+			if (
+				selectedDrinkCategory === 'bottled' ||
+				selectedDrinkCategory === 'milkshake' ||
+				selectedDrinkCategory === 'non-coffee'
+			) {
+				const selectedDrink = new Drink();
 				selectedDrink.fromJSON(json);
-			console.log('selectedDrink', selectedDrink);
-				
+
 				if (
 					this._orderDrink[i].id === selectedDrink.id &&
 					this._orderDrink[i].servingSize === selectedDrink.servingSize
 				) {
 					return this._orderDrink[i];
 				}
-			} else {
+			} else if (selectedDrinkCategory === 'coffee') {
 				const selectedDrink = new Coffee();
 				selectedDrink.fromJSON(json);
-			console.log('selectedDrink', selectedDrink);
+				console.trace('find drink selectedDrink', selectedDrink);
+				console.log('this._orderDrink[i]', this._orderDrink[i]);
 
 				if (
 					this._orderDrink[i].name === selectedDrink.name &&
@@ -758,16 +721,16 @@ export class OrderDrink {
 				}
 			}
 		}
-	
+
 		return false;
 	};
 	addDrink = (json) => {
 		if (!this.findDrink(json)) {
-						const selectedDrink = new Drink();
+			const selectedDrink = new Drink();
 
 			selectedDrink.fromJSON(json);
 			console.log('drink', selectedDrink);
-			
+
 			this._orderDrink.push(selectedDrink);
 			this.priceDrinks();
 			return selectedDrink;
@@ -789,22 +752,20 @@ export class OrderDrink {
 		const coffee = new Coffee();
 		coffee.fromJSON(json);
 		coffee.espressoServingSize = espressoServingSize;
+		console.log('coffee', coffee);
+
 		this._orderDrink.push(coffee);
 		this.priceDrinks();
 	};
 	addTemp = (json) => {
 		const temp = json;
-		console.log("temp", temp)
-		
+
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
-				
 				this._orderDrink[i].temperature = temp.id;
 				return true;
 			}
 		}
-				console.log('this._orderDrink[i]', this._orderDrink[i]);
-
 		return false;
 	};
 	removeTemp = () => {
@@ -817,7 +778,7 @@ export class OrderDrink {
 		return false;
 	};
 	addMilk = (json) => {
-		const milk = json
+		const milk = json;
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				this._orderDrink[i].milkType = milk.id;
@@ -841,16 +802,10 @@ export class OrderDrink {
 	};
 	addSyrup = (json, servingSize) => {
 		const syrup = json;
-		console.log("syrup", syrup)
-		
-		console.log('b4', this._orderDrink)
-
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				this._orderDrink[i].flavorSyrup = syrup.coffee_syrup_flavor;
 				this._orderDrink[i].flavorSyrupServingSize = servingSize;
-		console.log('after', this._orderDrink);
-				
 				this.priceDrinks();
 				return true;
 			}
@@ -1387,10 +1342,15 @@ export class Ingredient {
 		this._id = data.id;
 		this._servingSize = data.servingSize;
 		this._price = data.price;
-		this._category = data.category;
-		if (data.quantity) {
+		if (data.category) {
+			this._category = data.category;
 		}
+		else if (data.ingredient_category_id) {
+			this._category = data.ingredient_category_id;
+		}
+		if (data.quantity) {
 		this._quantity = data.quantity;
+		}
 	};
 	updateQuantity = (value) => {
 		if (value === 'decrease') {
@@ -1614,19 +1574,10 @@ export class OrderCrepe {
 			}
 		}
 	};
-	checkIfThisIngredientSelected = (index, selectedItemCategoryIndex, ingredientCategoryDataArray) => {
-		const ingredient = ingredientCategoryDataArray[selectedItemCategoryIndex][index];
-		if (this._ingredients.length) {
-			for (var i = 0; i < this._ingredients.length; i++) {
-				if (this._ingredients[i].id === ingredient.id) {
-					return true;
-				}
-			}
-		}
-		return false;
-	};
-	findIngredient = (index, selectedItemCategoryIndex, ingredientCategoryDataArray) => {
-		const selectedIngredient = ingredientCategoryDataArray[selectedItemCategoryIndex][index];
+
+	findIngredient = (json) => {
+		const selectedIngredient = new Ingredient();
+		selectedIngredient.fromJSON(json);
 		if (this._ingredients.length) {
 			for (var i = 0; i < this._ingredients.length; i++) {
 				if (this._ingredients[i].id === selectedIngredient.id) {
@@ -1636,15 +1587,19 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	addIngredient = (index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize = null) => {
+	addIngredient = (json, servingSize = null) => {
 		const newIngredient = new Ingredient();
-		newIngredient.initFromHTML(index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize);
+		newIngredient.fromJSON(json);
+		newIngredient.servingSize = servingSize;
+		console.log("newIngredient", newIngredient)
+		
 		this._ingredients.push(newIngredient);
 		this.priceCrepe();
 		return newIngredient;
 	};
-	removeIngredient = (index, selectedItemCategoryIndex, ingredientCategoryDataArray) => {
-		const selectedIngredient = ingredientCategoryDataArray[selectedItemCategoryIndex][index];
+	removeIngredient = (json) => {
+		const selectedIngredient = new Ingredient();
+		selectedIngredient.fromJSON(json);
 		if (this._ingredients.length) {
 			for (var i = 0; i < this._ingredients.length; i++) {
 				if (this._ingredients[i].id === selectedIngredient.id) {
@@ -1656,38 +1611,34 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	changeIngredientQuantity = (index, selectedItemCategoryIndex, value, ingredientCategoryDataArray) => {
-		const selectedIngredient = this.findIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray);
+	changeIngredientQuantity = (json, value) => {
+		const selectedIngredient = this.findIngredient(json);
 		if (!selectedIngredient) {
-			const addedIngredient = this.addIngredient(
-				index,
-				selectedItemCategoryIndex,
-				ingredientCategoryDataArray,
-				'regular'
-			);
+			const addedIngredient = this.addIngredient(json, 'regular');
 			this.priceCrepe();
 			return addedIngredient;
 		} else {
 			selectedIngredient.updateQuantity(value);
 			if (selectedIngredient.quantity === 0) {
-				this.removeIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray);
+				this.removeIngredient(json);
 			}
 			this.priceCrepe();
 			return selectedIngredient;
 		}
 	};
-	changeSavoryIngredientQuantity = (index, selectedItemCategoryIndex, ingredientCategoryDataArray, servingSize) => {
-		const selectedIngredient = this.findIngredient(index, selectedItemCategoryIndex, ingredientCategoryDataArray);
-		const ingredientCategory = ingredientCategoryDataArray[selectedItemCategoryIndex][index].ingredient_category_id;
+	changeSavoryIngredientQuantity = (json, servingSize) => {
+		const selectedIngredient = this.findIngredient(json);
+		console.log("selectedIngredient", selectedIngredient)
+		
+		const ingredientCategory = json.ingredient_category_id;
+		console.log("ingredientCategory", ingredientCategory)
+		
 		const proteinStatus = this.checkIfProteinSelected();
+		console.log("proteinStatus", proteinStatus)
+		
 		if (!selectedIngredient) {
 			if (ingredientCategory != 'protein') {
-				const addedIngredient = this.addIngredient(
-					index,
-					selectedItemCategoryIndex,
-					ingredientCategoryDataArray,
-					servingSize
-				);
+				const addedIngredient = this.addIngredient(json, servingSize);
 				return addedIngredient;
 			} else {
 				// if a protein has alread been selected then we want to add this protein as either a regular quantity if the other is extra, or a light quantity if the other is regular
@@ -1698,43 +1649,23 @@ export class OrderCrepe {
 					const servingSizeOfSelectedProtein = proteinIngredient.servingSize;
 					if (servingSizeOfSelectedProtein === 'regular') {
 						const servingSizeOfNewIngredient = 'light';
-						const addedIngredient = this.addIngredient(
-							index,
-							selectedItemCategoryIndex,
-							ingredientCategoryDataArray,
-							servingSizeOfNewIngredient
-						);
+						const addedIngredient = this.addIngredient(json, servingSizeOfNewIngredient);
 						this.updateIngredientServingSize(proteinIngredient, 'light');
 						return addedIngredient;
 					} else if (servingSizeOfSelectedProtein === 'extra') {
 						const servingSizeOfNewIngredient = 'regular';
-						const addedIngredient = this.addIngredient(
-							index,
-							selectedItemCategoryIndex,
-							ingredientCategoryDataArray,
-							servingSizeOfNewIngredient
-						);
+						const addedIngredient = this.addIngredient(json, servingSizeOfNewIngredient);
 						this.updateIngredientServingSize(proteinIngredient, 'regular');
 						return addedIngredient;
 					} else if (servingSizeOfSelectedProtein === 'light') {
 						const servingSizeOfNewIngredient = 'light';
-						const addedIngredient = this.addIngredient(
-							index,
-							selectedItemCategoryIndex,
-							ingredientCategoryDataArray,
-							servingSizeOfNewIngredient
-						);
+						const addedIngredient = this.addIngredient(json, servingSizeOfNewIngredient);
 						return addedIngredient;
 					}
 				} else if (proteinStatus === true) {
-					const addedIngredient = this.addIngredient(
-						index,
-						selectedItemCategoryIndex,
-						ingredientCategoryDataArray,
-						servingSize
-					);
+					const addedIngredient = this.addIngredient(json, servingSize);
 					return addedIngredient;
-				} else if (proteinStatus === false) return proteinStatus;
+				} else if (proteinStatus === false) { return proteinStatus };
 			}
 		} else {
 			return this.updateIngredientServingSize(selectedIngredient, servingSize);
@@ -1744,6 +1675,8 @@ export class OrderCrepe {
 		for (var i = 0; i < this._ingredients.length; i++) {
 			if (this._ingredients[i].id === ingredient.id) {
 				this._ingredients[i].servingSize = servingSize;
+				console.log("change serving size this._ingredients[i].servingSize", this._ingredients[i].servingSize)
+				
 				this.priceCrepe();
 				return true;
 			}

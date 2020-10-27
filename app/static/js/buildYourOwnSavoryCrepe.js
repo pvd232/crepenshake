@@ -3,8 +3,6 @@ import { Order, OrderCrepe } from './model.js';
 
 var editCrepeIndex = null;
 var editOrder = null;
-var ingredientServingSizes;
-var ingredientCategoryDataArray = new Array();
 var userOrderCrepe = new OrderCrepe();
 
 const displayErrorMsg = (element) => {
@@ -13,10 +11,17 @@ const displayErrorMsg = (element) => {
 	if ($(selector).length) {
 		$(selector).fadeIn('slow').delay(4000).fadeOut('slow'); //https://stackoverflow.com/questions/15686598/jquery-delay-before-fadeout
 	} else {
-		$(
-			`<div class="alert-danger" role="alert" id="${id}" style="font-size: 20px; font-weight: 600; vertical-align: middle; text-align: center; padding: 5px; display: none; line-height: 40px; color:black; height: 100px; top: 100px; position: absolute;">You may only select 2 proteins.</div>`
-		).insertAfter($(element).closest('.card, .list-group-item').find('img'));
-		$(selector).fadeIn('slow').delay(4000).fadeOut('slow');
+		if ($(element).attr('class') === 'card') {
+			$(
+				`<div class="alert-danger" role="alert" id="${id}" style="font-size: 20px; font-weight: 600; vertical-align: middle; text-align: center; padding: 5px; display: none; line-height: 40px; color:black; height: 100px; top: 100px; position: absolute;">You may only select 2 proteins.</div>`
+			).insertAfter($(element).closest('.card, .list-group-item').find('img'));
+			$(selector).fadeIn('slow').delay(4000).fadeOut('slow');
+		} else if ($(element).attr('class') === 'list-group-item d-flex justify-content-between align-items-center') {
+			$(
+				`<div class="alert-danger" role="alert" id="${id}" style="font-size: 20px; font-weight: 600; vertical-align: middle; text-align: center; padding: 5px; display: none; line-height: 40px; color:black; height: 85px; top: 20px; position: absolute;">You may only select 2 proteins.</div>`
+			).insertAfter($(element).find('container'));
+			$(selector).fadeIn('slow').delay(4000).fadeOut('slow');
+		}
 	}
 	return false;
 };
@@ -55,6 +60,8 @@ const stringify = (crepeOrder) => {
 };
 
 const checkOut = (order) => {
+	userOrderCrepe.flavor = 'savory';
+	userOrderCrepe.origination = 'custom';
 	if (editCrepeIndex != null) {
 		// stringify(order);
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
@@ -69,45 +76,9 @@ function removeAllChildNodes(parent) {
 		parent.removeChild(parent.firstChild);
 	}
 }
-//format the document
-$(window).on('load', function () {
-	$('.card-deck').each(function (i) {
-		var cardDeckId = 'cardDeck-';
-		cardDeckId += String(i);
-		this.id = cardDeckId;
-		$(this)
-			.find('.card')
-			.each(function (i) {
-				var cardId = 'card-';
-				cardId += String(i);
-				this.id = cardId;
-			});
-	});
-	ingredientServingSizes = $('#ingredientServingSizes').data('ingredientservingsizes');
-	// had to reformat this data to match what the orderCrepe model is expecting. index the ingredient category with its associated ingredients in a list
-	const unformattedIngredientCategoryDataArray = $('#ingredientPricesByCategory').data('ingredientpricesbycategory');
-	for (var i = 0; i < unformattedIngredientCategoryDataArray.length; i++) {
-		const ingredients = [...unformattedIngredientCategoryDataArray[i].ingredients];
-		ingredientCategoryDataArray.push(ingredients);
-	}
-	$('.card-img-top').wrap('<div class="container2"></div>');
-
-	$('.card-img-top').each(function () {
-		//https://stackoverflow.com/questions/21556874/display-an-alert-in-jquery-for-a-few-seconds-then-fade-it-out
-		$('<button class="btn" id="servingSize-2" type="button">Customize</button>').insertAfter($(this));
-		$('<button class="btn4" id="servingSize-1" type="button">Regular</button>').insertAfter($(this));
-		$('<button class="btn3" id="servingSize-0" type="button">Light</button>').insertAfter($(this));
-		$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-	});
-
-	$('#savoryCrepeCheckOut')
-		.unbind('click')
-		.bind('click', function () {
-			checkOut(userOrderCrepe);
-		});
-
+const modifyOrder = () => {
 	if ($('.edit').length) {
-		console.log('edit')
+		console.log('edit');
 		editCrepeIndex = $('.edit').first().attr('id');
 		editOrder = new Order();
 		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
@@ -118,112 +89,74 @@ $(window).on('load', function () {
 		const crepeIngredients = editOrderCrepe.ingredients;
 		for (var i = 0; i < crepeIngredients.length; i++) {
 			const ingredient = crepeIngredients[i];
-			$(`#${ingredient.id}`).closest('.card').find('.btn2').html(ingredient.quantity);
-			$(`#${ingredient.id}`).closest('.card').find('.btn2').show();
-			$(`#${ingredient.id}`).closest('.card').find('.btn6').show();
-			$(`#${ingredient.id}`).closest('.card').find('.btn7').show();
-			$(`#${ingredient.id}`).closest('.card').find('.btn').show();
+			if (ingredient.servingSize === 'light') {
+				$(`#${ingredient.id}`).find('.btn2').html('½');
+			} else if (userOrderCrepe.ingredients[i].servingSize === 'regular') {
+				$(`#${ingredient.id}`).find('.btn2').html('✓');
+			} else if (userOrderCrepe.ingredients[i].servingSize === 'extra') {
+				$(`#${ingredient.id}`).find('.btn2').html('2x');
+			}
+			$(`#${ingredient.id}`).find('.btn2').show();
+			$(`#${ingredient.id}`).find('.btn').show();
 
 			console.log('ingredient', ingredient);
 		}
 	}
-
-	$('.card-img-top').each(function () {
-		this.src = '../static/images/vanilla_ice_cream.jpg';
-	});
 	console.log('userOrderCrepe', userOrderCrepe);
-
-	userOrderCrepe.flavor = 'savory';	
-	userOrderCrepe.origination = 'custom';
-	//veggie + all other topping functionality
-	$(document)
-		.on('mouseenter', '.card, .list-group', function () {
-			if ($(this).find('.card-body').attr('id') != 'cardBody' && $(this).attr('class') != 'list-group') {
-				$(this).find('.card-body').css('opacity', '.3');
-				$(this).find('.card-img-top').css('opacity', '.3');
+};
+const pageLogic = () => {
+	$('.card, .list-group-item')
+		.on('mouseenter', function () {
+			if ($(this).find('.card-body').attr('id') != 'cardBody') {
+				$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
 				$(this).find('.btn').show();
-			}
-			if ($(this).attr('class') === 'list-group') {
-				$(this)
-					.find('.list-group-item')
-					.unbind('mouseenter')
-					.bind('mouseenter', function () {
-						const selectedItemIndex = $(this).attr('id').split('-')[1];
-						console.log('selectedItemIndex', selectedItemIndex);
-
-						const selectedItemCategoryIndex = $(this).closest('.list-group').attr('id').split('-')[1];
-						if (
-							!userOrderCrepe.checkIfThisIngredientSelected(
-								selectedItemIndex,
-								selectedItemCategoryIndex,
-								ingredientCategoryDataArray
-							)
-						) {
-							$(this).find('img, h5, p').css('opacity', '.3');
-							$(this).find('.btn').show();
-						}
-					});
 			}
 
 			//click the card somewhere
 			$(this)
-				.find('.card-text, .card-title, .card-body, .card-img-top, .list-group-item')
 				.unbind('click')
 				.bind('click', function (event) {
-					const senderElement = event.target;
-					if (this === senderElement) {
-						const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
-						const selectedItemCategoryIndex = $(this)
-							.closest('.card-deck, .list-group')
-							.attr('id')
-							.split('-')[1];
+					const senderElementClass = event.target.getAttribute('class');
+					console.log('senderElement', senderElementClass);
+
+					if (
+						senderElementClass === 'list-group-item d-flex justify-content-between align-items-center' ||
+						senderElementClass === 'card-text' ||
+						senderElementClass === 'card-title' ||
+						senderElementClass === 'card-body' ||
+						senderElementClass === 'card-img-top'
+					) {
+						const json = JSON.parse($(this).attr('data-ingredients'));
+
 						// if you click the card and it hasn't been selected
-						const selectedIngredient = userOrderCrepe.checkIfThisIngredientSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							ingredientCategoryDataArray
-						);
+						const selectedIngredient = userOrderCrepe.findIngredient(json);
 						if (!selectedIngredient) {
 							const servingSize = 'regular';
-							const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
-								selectedItemIndex,
-								selectedItemCategoryIndex,
-								ingredientCategoryDataArray,
-								servingSize
-							);
+							const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(json, servingSize);
 							if (!addedIngredient) {
 								displayErrorMsg($(this));
 							} else {
 								if (addedIngredient.servingSize === 'light') {
-									$(this).closest('.card, .list-group-item').find('.btn2').html('½');
-									$(this).closest('.card, .list-group-item').find('.btn2').show();
+									$(this).find('.btn2').html('½');
+									$(this).find('.btn2').show();
 								} else if (addedIngredient.servingSize === 'regular') {
-									$(this).closest('.card, .list-group-item').find('.btn2').html('✓');
-									$(this).closest('.card, .list-group-item').find('.btn2').show();
+									$(this).find('.btn2').html('✓');
+									$(this).find('.btn2').show();
 								}
 							}
 						} else {
-							userOrderCrepe.removeIngredient(
-								selectedItemIndex,
-								selectedItemCategoryIndex,
-								ingredientCategoryDataArray
-							);
-							$(this).closest('.card, .list-group-item').find('.btn2').hide();
+							userOrderCrepe.removeIngredient(json);
+							$(this).find('.btn2').hide();
 						}
 						for (var i = 0; i < userOrderCrepe.ingredients.length; i++) {
-							if (userOrderCrepe.ingredients[i].category === 'protein') {
-								for (var j = 0; j < ingredientCategoryDataArray[0].length; j++) {
-									if (ingredientCategoryDataArray[0][j].id === userOrderCrepe.ingredients[i].id) {
-										var selector = '#card-';
-										selector += String(j);
-										if (userOrderCrepe.ingredients[i].servingSize === 'light') {
-											$('#cardDeck-0').find(selector).find('.btn2').html('½');
-										} else if (userOrderCrepe.ingredients[i].servingSize === 'regular') {
-											$('#cardDeck-0').find(selector).find('.btn2').html('✓');
-										} else if (userOrderCrepe.ingredients[i].servingSize === 'extra') {
-											$('#cardDeck-0').find(selector).find('.btn2').html('2x');
-										}
-									}
+							const ingredient = userOrderCrepe.ingredients[i];
+							if (ingredient.category === 'protein') {
+								if (ingredient.servingSize === 'light') {
+									$(`#${ingredient.id}`).find('.btn2').html('½');
+								} else if (userOrderCrepe.ingredients[i].servingSize === 'regular') {
+									$(`#${ingredient.id}`).find('.btn2').html('✓');
+								} else if (userOrderCrepe.ingredients[i].servingSize === 'extra') {
+									$(`#${ingredient.id}`).find('.btn2').html('2x');
 								}
 							}
 						}
@@ -232,11 +165,8 @@ $(window).on('load', function () {
 			$('.btn')
 				.unbind('click')
 				.bind('click', function () {
-					const selectedItemIndex = $(this).closest('.card, .list-group-item').attr('id').split('-')[1];
-					const selectedItemCategoryIndex = $(this)
-						.closest('.card-deck, .list-group')
-						.attr('id')
-						.split('-')[1];
+					const json = JSON.parse($(this).closest('.card, .list-group-item').attr('data-ingredients'));
+
 					if ($(this).html() === 'Customize') {
 						// if they select the customize button for the first time
 						//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
@@ -245,19 +175,11 @@ $(window).on('load', function () {
 						$(this).closest('.card, .list-group-item').find('.btn3').show();
 						$(this).closest('.card, .list-group-item').find('.btn4').show();
 					} else {
-						const servingSizeIndex = $(this).attr('id').split('-')[1];
-						const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
+						const ingredientServingSize = 'extra';
 						// if they select the customize button for the second time then they have selected the extra meat button
-						const selectedIngredient = userOrderCrepe.checkIfThisIngredientSelected(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							ingredientCategoryDataArray
-						);
 						// check if this ingredient is being modified
 						const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
-							selectedItemIndex,
-							selectedItemCategoryIndex,
-							ingredientCategoryDataArray,
+							json,
 							ingredientServingSize
 						);
 						if (!addedIngredient) {
@@ -273,19 +195,10 @@ $(window).on('load', function () {
 			$('.btn3')
 				.unbind('click')
 				.bind('click', function () {
-					const selectedItemIndex = $(this).closest('.card, .list-group-item').attr('id').split('-')[1];
-					const selectedItemCategoryIndex = $(this)
-						.closest('.card-deck, .list-group')
-						.attr('id')
-						.split('-')[1];
-					const servingSizeIndex = $(this).attr('id').split('-')[1];
-					const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
-					const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
-						selectedItemIndex,
-						selectedItemCategoryIndex,
-						ingredientCategoryDataArray,
-						ingredientServingSize
-					);
+					const json = JSON.parse($(this).closest('.card, .list-group-item').attr('data-ingredients'));
+
+					const ingredientServingSize = 'light';
+					const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(json, ingredientServingSize);
 					if (!addedIngredient) {
 						displayErrorMsg($(this));
 					} else {
@@ -296,19 +209,10 @@ $(window).on('load', function () {
 			$('.btn4')
 				.unbind('click')
 				.bind('click', function () {
-					const selectedItemIndex = $(this).closest('.card, .list-group-item').attr('id').split('-')[1];
-					const selectedItemCategoryIndex = $(this)
-						.closest('.card-deck, .list-group')
-						.attr('id')
-						.split('-')[1];
-					const servingSizeIndex = $(this).attr('id').split('-')[1];
-					const ingredientServingSize = ingredientServingSizes[servingSizeIndex].serving_size;
-					const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(
-						selectedItemIndex,
-						selectedItemCategoryIndex,
-						ingredientCategoryDataArray,
-						ingredientServingSize
-					);
+					const json = JSON.parse($(this).closest('.card, .list-group-item').attr('data-ingredients'));
+
+					const ingredientServingSize = 'regular';
+					const addedIngredient = userOrderCrepe.changeSavoryIngredientQuantity(json, ingredientServingSize);
 					if (!addedIngredient) {
 						displayErrorMsg($(this));
 					} else {
@@ -317,22 +221,15 @@ $(window).on('load', function () {
 					}
 				});
 		})
-		.on('mouseleave', '.card, .list-group-item', function () {
+		.on('mouseleave', function () {
 			if ($(this).find('.card-body').attr('id') != 'cardBody') {
+				const json = JSON.parse($(this).attr('data-ingredients'));
+
 				$(this).find('img, h5, p').css('opacity', '1');
 
 				$(this).find('.card-body').css('opacity', '1');
 				$(this).find('.btn').html('Customize');
-
-				const selectedItemIndex = $(this).closest('.card, li').attr('id').split('-')[1];
-				const selectedItemCategoryIndex = $(this).closest('.card-deck, .list-group').attr('id').split('-')[1];
-				if (
-					!userOrderCrepe.checkIfThisIngredientSelected(
-						selectedItemIndex,
-						selectedItemCategoryIndex,
-						ingredientCategoryDataArray
-					)
-				) {
+				if (!userOrderCrepe.findIngredient(json)) {
 					$(this).find('.btn').hide();
 					$(this).find('.btn3').hide();
 					$(this).find('.btn4').hide();
@@ -342,25 +239,37 @@ $(window).on('load', function () {
 				}
 			}
 		});
-});
+};
 
 // all this code changes display for smaller screen sizes
-//https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 var cWidth = $(window).width();
-//https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
 $(window).on('load resize', function () {
+	$('.card-img-top').each(function () {
+		$(this).wrap('<div class="container2"></div>');
+		$('<button class="btn" id="servingSize-2" type="button">Customize</button>').insertAfter($(this));
+		$('<button class="btn4" id="servingSize-1" type="button">Regular</button>').insertAfter($(this));
+		$('<button class="btn3" id="servingSize-0" type="button">Light</button>').insertAfter($(this));
+		$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
+		this.src = '../static/images/vanilla_ice_cream.jpg';
+	});
+
+	$('#savoryCrepeCheckOut')
+		.unbind('click')
+		.bind('click', function () {
+			checkOut(userOrderCrepe);
+		});
 	const newWidth = $(window).width();
 
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
 
-	if ($(window).width() < 767) {
+	if ($(window).width() < 576) {
 		const cardDeckElements = document.getElementsByClassName('card-deck');
 		const cardTitleElements = document.getElementsByClassName('card-title');
 		const cardTextElements = document.getElementsByClassName('card-text');
 		const cardImgTopElements = document.getElementsByClassName('card-img-top');
-		const h3Elements = document.getElementsByClassName('h3');
+		const cardData = document.getElementsByClassName('card');
 
 		$('#crepeImg').css('margin-left', '0px');
 		$('#cardText').css('margin-left', '0px');
@@ -387,9 +296,13 @@ $(window).on('load resize', function () {
 
 		const constCardImgSrcValues = [...cardImgSrcValues];
 		const cardDeckElementsLength = cardDeckElements.length;
-		var cardDeckTitleValues = new Array();
-		for (var i = 0; i < h3Elements.length; i++) {
-			cardDeckTitleValues.push(h3Elements[i].innerHTML);
+
+		const constCardData = new Array();
+		for (var i = 0; i < cardData.length; i++) {
+			const clone = cardData[i].cloneNode(true);
+			console.log('clone', clone);
+
+			constCardData.push(clone);
 		}
 
 		const cardDeckChildrenLength = new Array();
@@ -410,7 +323,8 @@ $(window).on('load resize', function () {
 		for (var i = 0; i < cardDeckElementsLength; i++) {
 			removeAllChildNodes(cardDeckElements[i]);
 		}
-
+		// set this to one because the first card on the page is a decorative card without a value
+		var counter = 1;
 		for (var i = 0; i < cardDeckElementsLength; i++) {
 			const row = document.createElement('div');
 			row.setAttribute('class', 'row');
@@ -441,14 +355,29 @@ $(window).on('load resize', function () {
 				const listValue = document.createElement('li');
 				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
 				listValue.setAttribute('style', 'width:100%');
+				const jsonData = constCardData[counter].getAttribute('data-ingredients');
+
+				console.log('constCardData', constCardData);
+				console.log('jsonData', jsonData);
+
+				const data = JSON.parse(constCardData[counter].getAttribute('data-ingredients'));
+				console.log('data', data);
+
+				listValue.setAttribute('id', data.id);
+				listValue.setAttribute('data-ingredients', jsonData);
 
 				const string1 = String(constCardTitleValues[k]);
 				const string2 = String(constCardTextValues[k]);
 				const container = document.createElement('container');
-				container.setAttribute('style', 'width:30%');
+				container.setAttribute('style', 'max-width:25%');
+				container.setAttribute('class', 'container5');
 
-				const listValueHeader = document.createElement('h5');
+				const listValueHeader = document.createElement('h2');
+				listValueHeader.setAttribute('style', 'font-size: 110%');
+
 				const listValueBodyText = document.createElement('p');
+				listValueBodyText.setAttribute('style', 'font-size: 110%');
+
 				if (constCardTextValues[k]) {
 					listValueBodyText.innerHTML = string2;
 					listValueHeader.innerHTML = string1 + '<br>';
@@ -479,19 +408,7 @@ $(window).on('load resize', function () {
 				button2.setAttribute('class', 'btn2');
 				button2.innerHTML = '✓';
 
-				// const button3 = document.createElement('button');
-				// button3.setAttribute('class', 'btn3');
-				// button3.innerHTML = 'Light';
-				// button3.setAttribute('id', 'servingSize-0');
-
-				// const button4 = document.createElement('button');
-				// button4.setAttribute('class', 'btn4');
-				// button4.innerHTML = 'Regular';
-				// button4.setAttribute('id', 'servingSize-1');
-
 				gridContainer.appendChild(button);
-				// gridContainer.appendChild(button4);
-				// gridContainer.appendChild(button3);
 				gridContainer.appendChild(button2);
 
 				container3.appendChild(gridContainer);
@@ -506,30 +423,24 @@ $(window).on('load resize', function () {
 
 				listValue.appendChild(imageParent);
 				listGroupTitle.append(listValue);
+
+				counter += 1;
 			}
 
 			row.appendChild(listGroupTitle);
 			const x = document.getElementsByClassName('list-group');
 			x[i].appendChild(row);
+			
 		}
-		$('.list-group').each(function (i) {
-			var cardDeckId = 'cardDeck-';
-			cardDeckId += String(i);
-			this.id = cardDeckId;
-			$(this)
-				.find('.list-group-item')
-				.each(function (i) {
-					var cardId = 'card-';
-					cardId += String(i);
-					this.id = cardId;
-				});
-		});
 	} else {
-		$('#crepeImg').css('margin-left', '80px');
-		$('#cardText').css('margin-left', '180px');
-		$('#cardText').css('margin-right', '50px');
-		$('#cardBody').css('margin-left', '170px');
+		$('.container0').each(function () {
+			$(this).addClass('container');
+			$(this).removeClass('container0');
+		});
 	}
+	pageLogic();
+	modifyOrder();
+	
 });
 // TODO: add sauteed onions & peppers, pesto, dill
 var cWidth = $(window).width();
@@ -538,7 +449,7 @@ $(window).on('resize', function () {
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
-	if ($(window).width() > 767) {
+	if ($(window).width() > 576) {
 		location.reload();
 	}
 });
