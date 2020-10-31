@@ -10,7 +10,6 @@ import os
 import datetime
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
-from dataclasses import dataclass
 
 # https://stackoverflow.com/questions/38678336/sqlalchemy-how-to-implement-drop-table-cascade
 @compiles(DropTable, "postgresql")
