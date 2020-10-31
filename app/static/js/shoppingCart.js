@@ -151,7 +151,7 @@ const doShowAll = () => {
 						$(`<div class="grid-container" id="menubuttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#container${k}`));
 						$(`#menubuttoncontainer${k}`).append(
-							`<div ><button class="btn8" itemIndex="${itemIndex}" itemType="crepe" operation="copy" style="margin-left:40px;">Duplicate</button></div>`
+							`<div ><button class="btn8" itemIndex="${itemIndex}" itemType="crepe" operation="copy" >Duplicate</button></div>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#menubuttoncontainer${k}`).append(
@@ -287,7 +287,7 @@ const doShowAll = () => {
 						$(`<div class="grid-container" id="drinkButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${i}`));
 						$(`#drinkButtonContainer${i}`).append(
-							`<div ><button class="btn8" itemIndex="${drinkItemIndex}" itemType="drink" operation="copy" style="margin-left:40px;">Duplicate</button></div>`
+							`<div ><button class="btn8" itemIndex="${drinkItemIndex}" itemType="drink" operation="copy" >Duplicate</button></div>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#drinkButtonContainer${i}`).append(
@@ -357,19 +357,19 @@ const doShowAll = () => {
 						$(`<div class="grid-container" id="sideButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
             						grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${i}`));
 						$(`#sideButtonContainer${i}`).append(
-							`<div><button class="btn8" itemIndex="${sideItemIndex}" itemType="side" operation="copy" style="margin-left:40px;">Duplicate</button></div>`
+							`<button class="btn8" itemIndex="${sideItemIndex}" itemType="side" operation="copy" >Duplicate</button>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#sideButtonContainer${i}`).append(
-							`<div  ><button class= "btn10" style="margin-top:.5px;" onclick="location.assign('/order/side?editOrder=${sideItemIndex}')">Edit</button></div>`
+							`<button class= "btn10" style="margin-top:.5px;" onclick="location.assign('/order/side?editOrder=${sideItemIndex}')">Edit</button>`
 						);
 						$(`#sideButtonContainer${i}`).append(
-							`<div><button class="btn8" itemIndex="${sideItemIndex}" itemType="side" operation="remove">Remove</button></div>`
+							`<button class="btn8" itemIndex="${sideItemIndex}" itemType="side" operation="remove">Remove</button>`
 						);
 					} // end of for loop iterating through sides in side order
 				}
 
-				$(`<div class="modal-footer" style= " border-top: 2px solid black"></div>`).insertAfter(`#modalBody1`);
+				$(`<div class="modal-footer" id="footer" style= " border-top: 2px solid black"></div>`).insertAfter(`#modalBody1`);
 
 				$(`#footer`).append(`<div class="col-8" ><h3 style="font-weight: bold;">Order Total</h3></div>`);
 				$(`#footer`).append(

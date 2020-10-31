@@ -7,7 +7,7 @@
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<meta name="msapplication-TileColor" content="#da532c" />
 		<meta name="theme-color" content="#ffffff" />
-			<link rel="stylesheet"  type="text/css" href="../static/css/styles.css" />
+		<link rel="stylesheet"  type="text/css" href="../static/css/styles.css" />
 		<link rel="stylesheet"  type="text/css" href="../static/css/modal.css" />
 				<link
 			rel="stylesheet"
@@ -30,9 +30,7 @@
 		{% block navbar %}
 		
 		<nav
-			class="header-navbar navbar-dark navbar-expand-lg"
-			style="background-color: black; margin-bottom: 30px"
-			
+			class="header-navbar navbar-dark navbar-expand-lg"	
 		>
 			{% endblock %}
 			<a class="navbar-centered" style="background-color: black;" href='{{url_for("home")}}'>
@@ -95,6 +93,8 @@
 					</div>
 					<div class="modal-body" id="modalBody1"></div>
 					<div class="modal-footer">
+						<div class="grid-container"  style="align-content:space-evenly; grid-template-columns: auto auto auto;
+            				grid-gap: 5px; display:grid;">
 						<button
 							type="button"
 							class="btn9 mr-auto ml-auto"
@@ -106,6 +106,7 @@
 						<button type="button" class="btn9 mr-auto ml-auto" onclick="location.assign('/checkout')">
 							Proceed to Checkout
 						</button>
+						</div>
 					</div>
 				</div>
 			</div>

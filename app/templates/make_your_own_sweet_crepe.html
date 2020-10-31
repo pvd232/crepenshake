@@ -20,35 +20,39 @@
 			float: none;
 		"
 	>
-		<div class="d-flex align-items-center" style="margin-left: 30px; margin-right: 30px"></div>
-		<div class="row no-gutters">
-			<div class="col-md-4">
-				<div class="d-flex align-items-center" style="margin-top: 50px; margin-bottom: 30px">
-					<img
-						src="../static/images/crepe.jpg"
-						class="card-img"
-						alt="..."
-						style="vertical-align: middle; margin-left: 80px"
-						id="crepeImg"
-					/>
-				</div>
-			</div>
-			<div class="col-md-8">
-				<div class="card-body" style="margin-left: 150px" id="cardBody">
-					<div class="d-flex align-items-center" style="margin-bottom: 0px; margin-top: 0px">
-						<h2 class="card-title head2" style="margin-bottom: 10px">Build Your</h2>
-					</div>
-					<div class="d-flex align-items-center" style="margin-bottom: 10px; margin-top: 0px">
-						<h3 class="card-title head3">CREPE</h3>
+		<div class="d-flex align-items-center" style="margin-left: 30px; margin-right: 30px">
+			<div class="row no-gutters" style="display: table-row;">
+				<div class="col" style="display:table-cell; vertical-align:middle; width:33%">
+
+					<div class="d-flex align-items-center" style="margin-top: 50px; margin-bottom: 30px">
+						<img
+							src="../static/images/crepe.jpg"
+							class="card-img"
+							alt="..."
+							style="vertical-align: middle; margin-left: 80px"
+							id="sweetCrepeImg"
+						/>
 					</div>
 				</div>
-				<p class="card-text" style="margin-left: 170px; margin-right: 50px; margin-bottom: 0px" id="cardText">
-					Craft your designer crepe with your choice of freshly grilled meat or tofu wrapped in a thin crepe with your choice of cheese and herbs topped off with a gourmet sauce.
-				</p>
+				<div class="col" style="display:table-cell; vertical-align:middle; width:66%">
+					<div class="card-body" style="margin-left: 100px" id="cardBody">
+						<div class="d-flex align-items-center" style="margin-bottom: 0px; margin-top: 0px; vertical-align:middle;">
+							<h2 class="card-title head3" style="margin-bottom: 10px">Build Your Own</h2>
+						</div>
+						<div class="d-flex align-items-center" style="margin-bottom: 10px; margin-top: 0px">
+							<h3 class="card-title head3">SWEET CREPE</h3>
+						</div>
+					
+					<p class="card-text" style="margin-left: 170px; margin-right: 50px; margin-bottom: 0px" id="cardText">
+						A sweet twist on our build your own savory crepe. Indulge yourself in our fresh fruits and rich, sweetness toppings.
+					</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
 {% for j in range(sweet_ingredient_categories|length) %}
 
 <div class="container0sweetCrepe" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">

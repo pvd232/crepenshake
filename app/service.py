@@ -85,6 +85,9 @@ class Menu_Service(object):
         ice_cream_bowls = [x.serialize() for x in self.side_service.get_ice_cream_bowls()]
         response['ice_cream_bowls'] = ice_cream_bowls
 
+        toppings = [x.serialize()
+                    for x in self.ingredient_service.get_sweet_ingredient_prices()]
+        response['toppings'] = toppings
 
         coffee_drinks = [x.serialize() for x in self.drink_service.get_coffee_drinks()]
         response['coffee_drinks'] = coffee_drinks

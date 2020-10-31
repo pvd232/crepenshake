@@ -11,9 +11,13 @@ https://stackoverflow.com/questions/33404154/bootstrap-change-the-navbar-font-si
 body {
 	visibility: hidden;
 }
+.non-modal{
+	margin-bottom: 100px;
+	margin-top: 50px;
+}
 .navbar-centered {
 	min-height: auto;
-	margin-bottom: 50px;
+	margin-bottom: auto;
 	height: 100px;
 	margin-top: auto;
 	position:relative; 
@@ -37,6 +41,7 @@ body {
 	margin-bottom: auto;
 	margin-top: auto;
 	text-align:center;
+	background-color: black;
 
 }
 .navbar.navbar-dark.navbar-expand-lg {
@@ -46,14 +51,6 @@ body {
 	margin-top: auto;
 
 }
-/* .collapse.navbar-collapse{
-	min-width: auto;
-	min-height: auto;
-	align-items: center;
-	align-self: center;
-	align-content: center;
-	text-align: center;
-} */
 
 .fas.fa-shopping-cart:hover {
 	opacity: 0.5;

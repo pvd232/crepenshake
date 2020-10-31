@@ -1,10 +1,15 @@
+export const removeAllChildNodes = (parent) => {
+	while (parent.firstChild) {
+		parent.removeChild(parent.firstChild);
+	}
+};
 export const capitalize = (str) => {
 	return str.replace(/^./, function (str) {
 		return str.toUpperCase();
 	});
 };
 
-export const humanize = (dict = null, attr = null, format = false) => {
+export const humanize = (dict = null, attr = null, format = false, word = null) => {
 	// this is providing a deep copy of the object so we don't mutate the original order
 	var formatDict = JSON.parse(JSON.stringify(dict));
 
@@ -26,21 +31,38 @@ export const humanize = (dict = null, attr = null, format = false) => {
 		}
 		return formatDict;
 	}
-	var str = formatDict[`${attr}`];
-	var frags = str.split('_');
-	if (frags.length < 2) {
-		str = capitalize(str);
-		formatDict[`${attr}`] = str;
-		return formatDict;
+	if (formatDict) {
+		var str = formatDict[`${attr}`];
+		var frags = str.split('_');
+		if (frags.length < 2) {
+			str = capitalize(str);
+			formatDict[`${attr}`] = str;
+			return formatDict;
+		}
+		var newFrags = new Array();
+		for (var i in frags) {
+			const capitalFrag = capitalize(frags[i]);
+			newFrags.push(capitalFrag);
+		}
+		newFrags = newFrags.join(' ');
+		formatDict[`${attr}`] = newFrags;
+		return formatDict;	
 	}
-	var newFrags = new Array();
-	for (var i in frags) {
-		const capitalFrag = capitalize(frags[i]);
-		newFrags.push(capitalFrag);
+	else if (word) {
+		var frags = word.split('_');
+		if (frags.length < 2) {
+			word = capitalize(word);			
+			return word;
+		}
+		var newFrags = new Array();
+		for (var i in frags) {
+			const capitalFrag = capitalize(frags[i]);
+			newFrags.push(capitalFrag);
+		}
+		newFrags = newFrags.join(' ');
+		return newFrags;	
 	}
-	newFrags = newFrags.join(' ');
-	formatDict[`${attr}`] = newFrags;
-	return formatDict;
+	
 };
 // Drinks Models
 export class Drink {

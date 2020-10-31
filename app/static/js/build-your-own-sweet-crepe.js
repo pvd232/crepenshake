@@ -1,5 +1,5 @@
 ('use strict');
-import { Order, OrderCrepe } from './model.js';
+import { Order, OrderCrepe, removeAllChildNodes } from './model.js';
 
 var editCrepeIndex = null;
 var editOrder = null;
@@ -50,11 +50,7 @@ const checkOut = (order) => {
 	}
 };
 
-function removeAllChildNodes(parent) {
-	while (parent.firstChild) {
-		parent.removeChild(parent.firstChild);
-	}
-}
+
 const modifyOrder = () => {
 	if ($('.edit').length) {
 		editCrepeIndex = $('.edit').first().attr('id');
@@ -346,6 +342,8 @@ $(window).on('load resize', function () {
 			console.log('x', x);
 			x[i].appendChild(row);
 		}
+		$('#sweetCrepeImg').closest('.row').find('.col').next().css('width:100%');
+		$('#sweetCrepeImg').closest('.row').find('.col').first().remove();
 	} else {
 		$('.container0sweetCrepe').each(function () {
 			$(this).addClass('container');

@@ -19,7 +19,7 @@
 
 .non-modal .card-img-top {
 	width: 100% !important;
-	height: 250px !important;
+	max-height: 190px !important;
 	object-fit: cover;
 }
 
@@ -116,7 +116,7 @@
 .non-modal .card-deck .card {
 	max-width: 220px !important;
 	min-width: 190px !important;
-	min-height: 360px !important;
+	max-height: 310px !important;
 	margin-bottom: 40px !important;
 }
 

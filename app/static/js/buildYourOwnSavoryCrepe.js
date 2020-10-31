@@ -432,11 +432,16 @@ $(window).on('load resize', function () {
 			x[i].appendChild(row);
 			
 		}
+		$('#savoryCrepeImg').closest('.row').find('.col').next().css('width:100%')
+		$('#savoryCrepeImg').closest('.row').find('.col').first().remove();
+
 	} else {
-		$('.container0').each(function () {
+		$('.container0').each(function () {	
 			$(this).addClass('container');
 			$(this).removeClass('container0');
 		});
+		console.log('smoll')
+		console.log("$('#savoryCrepeImg')", $('#savoryCrepeImg').attr('class'))	
 	}
 	pageLogic();
 	modifyOrder();
