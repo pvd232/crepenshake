@@ -396,7 +396,8 @@ export class PaymentInformation {
 		this.paymentMethod = paymentObject.paymentMethod;
 		this.creditCardName = paymentObject['cc-name'];
 		this.creditCardNumber = paymentObject['cc-number'];
-		this.creditCardExpiration = paymentObject['cc-expiration'];
+		this.creditCardExpirationMonth = paymentObject['cc-expiration'].split('/')[0];
+		this.creditCardExpirationYear = paymentObject['cc-expiration'].split('/')[1];
 		this.creditCardCVV = paymentObject['cc-cvv'];
 	}
 
@@ -409,8 +410,10 @@ export class PaymentInformation {
 	get creditCardNumber() {
 		return this._creditCardNumber;
 	}
-	get creditCardExpiration() {
-		return this._creditCardExpiration;
+	get creditCardExpirationMonth() {
+		return this._creditCardExpirationMonth;
+	}get creditCardExpirationYear() {
+		return this._creditCardExpirationYear;
 	}
 	get creditCardCVV() {
 		return this._creditCardCVV;
@@ -424,8 +427,11 @@ export class PaymentInformation {
 	set creditCardNumber(value) {
 		this._creditCardNumber = value;
 	}
-	set creditCardExpiration(value) {
-		this._creditCardExpiration = value;
+	set creditCardExpirationMonth(value) {
+		this._creditCardExpirationMonth = value;
+	}
+	set creditCardExpirationYear(value) {
+		this._creditCardExpirationYear = value;
 	}
 	set creditCardCVV(value) {
 		this._creditCardCVV = value;
@@ -435,7 +441,8 @@ export class PaymentInformation {
 			paymentMethod: this._paymentMethod,
 			creditCardName: this._creditCardName,
 			creditCardNumber: this._creditCardNumber,
-			creditCardExpiration: this._creditCardExpiration,
+			creditCardExpirationMonth: this._creditCardExpirationMonth,
+			creditCardExpirationYear: this._creditCardExpirationYear,
 			creditCardCVV: this._creditCardCVV,
 		};
 		return data;
@@ -445,7 +452,8 @@ export class PaymentInformation {
 		this._paymentMethod = data.paymentMethod;
 		this._creditCardName = data.creditCardName;
 		this._creditCardNumber = data.creditCardNumber;
-		this._creditCardExpiration = data.creditCardExpiration;
+		this._creditCardExpirationMonth = data.creditCardExpirationMonth;
+		this._creditCardExpirationYear = data.creditCardExpirationYear;
 		this._creditCardCVV = data.creditCardCVV;
 	};
 }

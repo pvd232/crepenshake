@@ -296,6 +296,28 @@ const buildPage = () => {
 	}
 };
 const validateForm = () => {
+	function luhnChecksum(code) {
+		var len = code.length;
+		var parity = len % 2;
+		var sum = 0;
+		for (var i = len - 1; i >= 0; i--) {
+			var d = parseInt(code.charAt(i));
+			if (i % 2 == parity) {
+				d *= 2;
+			}
+			if (d > 9) {
+				d -= 9;
+			}
+			sum += d;
+		}
+		return sum % 10;
+	}
+	/* luhn_validate
+	 * Return true if specified code (with check digit) is valid.
+	 */
+	function luhnValidate(fullcode) {
+		return luhnChecksum(fullcode) == 0;
+	}
 	const forms = document.getElementsByClassName('needs-validation');
 	// Loop over them and prevent submission
 	//https://gomakethings.com/what-the-hell-is-the-call-method-and-when-should-you-use-it/
@@ -303,16 +325,42 @@ const validateForm = () => {
 		$('#checkoutButton')
 			.unbind('click')
 			.bind('click', function () {
+				const creditCardExpirationElement = $('#cc-expiration')[0];
+				const creditCardNumElement = $('#cc-number')[0];
+				const creditCardCVV = $('#cc-cvv')[0];
+				creditCardExpirationElement.setCustomValidity('');
+				creditCardNumElement.setCustomValidity('');
+				creditCardCVV.setCustomValidity('');
+				
 				if (form.checkValidity() === false) {
 					form.classList.add('was-validated');
 					return false;
 				} else {
-					handleFormSubmit();
-					return false;
+					if (!luhnValidate($('#cc-number').val())) {
+						creditCardNumElement.setCustomValidity('false');
+						$('#cc-number').next().html('Please enter a valid credit card number');
+						form.classList.add('was-validated');
+						return false;
+					}
+					else if (!$('#cc-expiration').val().includes('/')) {
+						creditCardExpirationElement.setCustomValidity('false');
+						$('#cc-expiration').next().html('Please enter a valid expiration date');
+						form.classList.add('was-validated');
+						return false;
+					} else if ($('#cc-cvv').val().length < 3 || isNaN($('#cc-cvv').val())) {
+						creditCardCVV.setCustomValidity('false');
+						$('#cc-cvv').next().html('Please enter a valid credit card cvv number');
+						form.classList.add('was-validated');
+						return false;
+					} else {
+						form.classList.add('was-validated');
+						handleFormSubmit();	
+						return false;
+					}
 				}
 			});
 	});
-}
+};
 
 $(window).ready(function () {
 	buildPage();

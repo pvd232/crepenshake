@@ -16,7 +16,7 @@ class Ingredient_Repository(object):
                                             {"param": "regular"})
         return ingredient_prices
 
-    def get_ingredient_categories(self, session):
+    def get_savory_ingredient_categories(self, session):
         ingredient_categories = session.query(
             Ingredient_Category.id).filter(Ingredient_Category.id != 'fruit').filter(Ingredient_Category.id != 'sweetness')
         return ingredient_categories

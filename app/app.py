@@ -2,7 +2,7 @@ import os
 import json
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
-from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service
+from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service
 from models import Ingredient_Category
 from repository import Ingredient_Repository
 
@@ -64,7 +64,11 @@ def about():
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html')
+    menu_service = Menu_Service()
+    menu_items = menu_service.get_menu_items()
+    rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
+                               "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
+    return render_template('menu.html', menu_items=menu_items, rules_for_each_category=rules_for_each_category)
 
 
 @app.route('/order')
@@ -76,31 +80,27 @@ def order():
 def make_your_own_savory_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
     
-    ingredient_prices_by_category = ingredient_service.get_ingredient_prices_by_category()
+    savory_ingredient_prices_by_category = ingredient_service.get_savory_ingredient_prices_by_category()
     new_ingredient_prices_by_category = []
-    for x in ingredient_prices_by_category:
+    for x in savory_ingredient_prices_by_category:
         new_ingredient_category_dict = {}
         new_ingredient_category_dict['ingredient_category'] = x['ingredient_category']
         new_ingredient_category_dict['ingredients'] = []
         for y in x['ingredients']:
             new_ingredient_category_dict['ingredients'].append(y.serialize())
         new_ingredient_prices_by_category.append(new_ingredient_category_dict)
-        
-    print('ingredient_prices_by_category', ingredient_prices_by_category)
-    print()
-    print("new_ingredient_prices_by_category: %s", new_ingredient_prices_by_category)
 
-    formatted_ingredient_prices_by_category = [humanize(x, 'id', True)
-                         for x in ingredient_service.get_ingredient_prices_by_category()]
-    for x in formatted_ingredient_prices_by_category:
-        print('format', x)
-    ingredient_categories = ingredient_service.get_ingredient_categories()
-    formatted_ingredient_categories = [humanize(x, 'id') for x in ingredient_service.get_ingredient_categories()]
+    formatted_savory_ingredient_prices_by_category = [humanize(x, 'id', True)
+                         for x in ingredient_service.get_savory_ingredient_prices_by_category()]
+    print("formatted_savory_ingredient_prices_by_category", formatted_savory_ingredient_prices_by_category)
+
+    savory_ingredient_categories = ingredient_service.get_savory_ingredient_categories()
+    formatted_savory_ingredient_categories = [humanize(x, 'id') for x in ingredient_service.get_savory_ingredient_categories()]
     ingredient_serving_sizes = [x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
     rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
                                "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
     editOrder = request.args.get('editOrder')
-    return render_template('make_your_own_savory_crepe.html', formatted_ingredient_prices_by_category = formatted_ingredient_prices_by_category, ingredient_prices_by_category = new_ingredient_prices_by_category, ingredient_categories=ingredient_categories, formatted_ingredient_categories=formatted_ingredient_categories, ingredient_serving_sizes=ingredient_serving_sizes, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
+    return render_template('make_your_own_savory_crepe.html', formatted_savory_ingredient_prices_by_category = formatted_savory_ingredient_prices_by_category, savory_ingredient_prices_by_category = new_ingredient_prices_by_category, savory_ingredient_categories=savory_ingredient_categories, formatted_savory_ingredient_categories=formatted_savory_ingredient_categories, ingredient_serving_sizes=ingredient_serving_sizes, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
 
 
 @app.route('/order/make-your-own-sweet-crepe')
@@ -122,7 +122,7 @@ def make_your_own_sweet_crepe(editOrder=None):
     rules_for_each_category = ["(2 Fruit Servings Included, +$0.99 per additional serving)",
                                "(1 Servings Included, +$0.99 per additional serving)"]
     editOrder = request.args.get('editOrder')
-    return render_template('build_your_own_sweet_crepe.html', ingredient_serving_sizes=ingredient_serving_sizes, sweet_ingredients = sweet_ingredients, formatted_sweet_ingredients = formatted_sweet_ingredients, sweetness_ingredients = sweetness_ingredients, fruit_ingredients = fruit_ingredients, sweet_ingredient_categories=sweet_ingredient_categories, formatted_sweet_ingredient_categories = formatted_sweet_ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
+    return render_template('make_your_own_sweet_crepe.html', ingredient_serving_sizes=ingredient_serving_sizes, sweet_ingredients = sweet_ingredients, formatted_sweet_ingredients = formatted_sweet_ingredients, sweetness_ingredients = sweetness_ingredients, fruit_ingredients = fruit_ingredients, sweet_ingredient_categories=sweet_ingredient_categories, formatted_sweet_ingredient_categories = formatted_sweet_ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
 
 
 @app.route('/order/drink')
@@ -143,24 +143,8 @@ def order_drink(editOrder=None):
     
     formatted_bottled_drinks = [humanize(x, "name").serialize()
                                 for x in drink_service.get_drinks('bottled')]
-    for x in formatted_bottled_drinks:
-        print('b', x)
     drink_categories = [x.serialize()
                         for x in drink_service.get_drink_categories()]
-    # front_end_drink_categories = drink_categories
-    
-    # milk_category = {}
-    # milk_category['id'] = 'milk'
-
-    # temperature_category = {}
-    # temperature_category['id'] = 'temperature'
-
-    # syrup_category = {}
-    # syrup_category['id'] = 'syrup'
-
-    # drink_categories.insert(1, milk_category)
-    # drink_categories.insert(2, temperature_category)
-    # drink_categories.insert(3, syrup_category)
 
     for drink in drink_categories:
         print('category', drink)
@@ -220,10 +204,6 @@ def order_side(editOrder=None):
     new_side_name = {}
     new_side_name['side_name_id'] = 'toppings'
     side_names.append(new_side_name)
-    for name in side_names:
-        print()
-        print('name', name)
-        print()
 
     formatted_side_names = [humanize(x, 'side_name_id')
                             for x in side_service.get_side_names()]

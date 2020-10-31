@@ -2,7 +2,7 @@
 
 .non-modal .head3 {
 	color: rgb(0, 32, 120) !important;
-	font-size: 34px !important;
+	font-size: 34px; 
 	font-weight: 700 !important;
 	font-variant: small-caps;
 	margin-bottom: 15px !important;

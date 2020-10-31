@@ -23,8 +23,10 @@
 		</div>
 		{% endfor %}
 	</div>
+</div>
+
 	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-		<div class="container" style="display: inline-block; display: flex; align-items: center; justify-content: left">
+		<div class="container" style=" display: flex; align-items: center; justify-content: left; padding-left:0px">
 			<h3 class="head3" style="float: left">Select a Milk for Your Coffee</h3>
 			<h5 id="errorMilk" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
 		</div>
@@ -46,7 +48,7 @@
 	</div>
 
 	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-		<div class="container" style="display: inline-block; display: flex; align-items: center; justify-content: left">
+		<div class="container" style="display: flex; align-items: center; justify-content:left; padding-left:0px;">
 			<h3 class="head3" style="float: left">Hot or Iced Coffee?</h3>
 			<h5 id="errorTemp" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
 		</div>
@@ -65,8 +67,8 @@
 	</div>
 
 	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
-		<div class="container" style="display: inline-block; display: flex; align-items: center; justify-content: left">
-			<h3 class="head3" style="float: left">add extra syrup ($0.99 extra)</h3>
+		<div class="container" style="display: flex; align-items: center; justify-content:left; padding-left:0px;">
+			<h3 class="head3" style="float: left">Add Extra Syrup ($0.99 extra)</h3>
 			<h5 id="errorSyrup" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
 		</div>
 		<div class="card-deck" id="syrup">
@@ -82,7 +84,6 @@
 			{% endfor %}
 		</div>
 	</div>
-</div>
 {% elif drink_categories[j].id == 'milkshake' %}
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class="head3">Gourmet {{drink_categories[j].id }}s</h3>

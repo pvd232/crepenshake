@@ -1,18 +1,197 @@
-{% extends "template_page.html" %} {% block style %}
-<link rel="stylesheet" href="../static/css/contact.css" />
-{% endblock %} {% block content %}
-<title>Menu</title>
-<div class = "center">
-    <h1>Menu</h1>
-</div>
-<div class= "left">
-	<h4>Contact Us</h4>
-	<ul>
-  	<li>Phone: 856-428-2141</li>
-  	<li>Email: crepenshake427@yahoo.com</li>
-  	<li>Address: 427 North Haddon Avenue, Haddonfield, NJ 08033</li>	
-	</ul>
-	<h4>Hours</h4>
-	<p>We are open Tuesday - Sunday from 8:00 AM - 8:00 PM.</p>
+{% extends "template_page.html" %} 
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
+{% endblock %} 
+
+{% block content %}
+	<div class="container-fluid" style="width: 100%;text-align:center"><h1 class="head3" style="margin-top: 120px; font-size:56px">··· Menu ···</h1></div>
+	<div class="container-fluid" style="width: 100%;text-align:center"><h1 class="head3" style="margin-top: 120px;font-size:42px;">Savory Crepe Ingredient Options</h1></div>
+	{% for i in range(menu_items.savory_ingredient_prices_by_category|length) %}
+		<div class="container" style="margin-top: 40px;">
+		{% if menu_items.savory_ingredient_prices_by_category[i].ingredient_category == 'protein' %}
+		<h3 class="head3"> Choose 1 {{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}</h3>
+		{% elif menu_items.savory_ingredient_prices_by_category[i].ingredient_category == 'cheese' %}
+		<h3 class="head3"> Add a {{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}</h3>
+		{% elif menu_items.savory_ingredient_prices_by_category[i].ingredient_category == 'veggie' %}
+		<h3 class="head3"> Choose up to 4 {{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}s</h3>
+		{% elif menu_items.savory_ingredient_prices_by_category[i].ingredient_category == 'sauce' %}
+		<h3 class="head3"> Top it off with a {{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}</h3>
+		{% endif %}
+		<div class="card-deck" style="border-bottom: 1px solid #dee1e3;" id='{{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}'>
+		{% for j in range(menu_items.savory_ingredient_prices_by_category[i].ingredients|length) %}
+			{% if menu_items.savory_ingredient_prices_by_category[i].ingredients[j].price > 0.0 %} 
+				<div class="card" id='{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j]}}'>
+					<img src="" class="card-img-top" alt="..." />
+					<div class="card-body">
+						<h5 class="card-title">{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
+						<p class="card-text">${{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].price}}</p>
+					</div>
+				</div>
+
+			{% else %}
+				<div class="card" id='{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}'>
+					<img src="" class="card-img-top" alt="..." />
+					<div class="card-body">
+						<h5 class="card-title">{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
+						<p class="card-text"></p>
+					</div>
+				</div>
+			{% endif %} 
+		{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+
+	<div class="container-fluid" style="width: 100%;text-align:center"><h1 class="head3" style="margin-top: 120px;font-size:42px">Drinks</h1></div>
+	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+		<h3 class="head3">{{ menu_items.coffee_drinks[0].drink_category_id }}</h3>
+		<div class="card-deck" id='{{menu_items.coffee_drinks[0].drink_category_id}}'>
+		{% for i in range(menu_items.coffee_drinks|length) %}
+			<div class="card" id='{{menu_items.coffee_drinks[i].id}}'>
+				<img src="" class="card-img-top" alt="..." />
+				<div class="card-body">
+					<h5 class="card-title">{{menu_items.coffee_drinks[i].serving_size + " " + menu_items.coffee_drinks[i].name}}</h5>
+					<p class="card-text">${{menu_items.coffee_drinks[i].price}}</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+		<div class="container" style="display: flex; align-items: center; justify-content:left; padding-left:0px;">
+			<h3 class="head3" style="float: left">Select a Milk for Your Coffee</h3>
+			<h5 id="errorMilk" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
+		</div>
+		<div class="card-deck" id="milk">
+			{% for i in range(menu_items.milks|length) %}
+			<div class="card" id='{{menu_items.milks[i].id}}'>
+				<img src="" class="card-img-top" alt="..." />
+				<div class="card-body">
+					<h5 class="card-title">{{menu_items.milks[i].id}}</h5>
+					{% if menu_items.milks[i].id == 'almond_milk' %}
+					<p class="card-text">${{menu_items.milks[i].price}} extra</p>
+					{% else %}
+					<p class="card-text"></p>
+					{% endif %}
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+		<div class="container" style="display: flex; align-items: center; justify-content:left; padding-left:0px;">
+			<h3 class="head3" style="float: left">Hot or Iced Coffee?</h3>
+			<h5 id="errorTemp" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
+		</div>
+		<div class="card-deck" id="temperature">
+			{% for i in range(menu_items.temperatures|length) %}
+			<div class="card" id='{{menu_items.temperatures[i].id}}'>
+				<img src="" class="card-img-top" alt="..." />
+				<div class="card-body">
+					<h5 class="card-title">{{menu_items.temperatures[i].id}}</h5>
+					<p class="card-text"></p>
+
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+		<div class="container" style="display: flex; align-items: center; justify-content:left; padding-left:0px;">
+			<h3 class="head3" style="float: left">add extra syrup ($0.99 extra)</h3>
+			<h5 id="errorSyrup" style="color: #f20000; margin-left: 20px">*Please select a coffee first</h5>
+		</div>
+		<div class="card-deck" id="syrup">
+			{% for i in range(menu_items.syrups|length) %}
+			<div class="card" id='{{menu_items.syrups[i].coffee_syrup_flavor}}'>
+				<img src="" class="card-img-top" alt="..." />
+				<div class="card-body">
+					<h5 class="card-title">{{menu_items.syrups[i].coffee_syrup_flavor}}</h5>
+					<p class="card-text"></p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+		<h3 class="head3">{{menu_items.milkshakes[0].drink_category_id}}s</h3>
+		<div class="card-deck" id='{{menu_items.milkshakes[0].drink_category_id}}'>
+			{% for i in range(menu_items.milkshakes|length) %}
+			<div class="card" id='{{menu_items.milkshakes[i].id}}' >
+				<img src="" class="card-img-top" alt="..." />
+				<div class="card-body">
+					<h5 class="card-title">{{menu_items.milkshakes[i].name}}</h5>
+					<p class="card-text">${{menu_items.milkshakes[i].price}}</p>
+				</div>
+			</div>
+	{% endfor %}
+		</div>
+	</div>
+
+	
+		<div class="container0sweetCrepe" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+			<div class="row" style="margin-right:10px">
+				<h3 class="head3">{{menu_items.fruit_ingredients[0].ingredient_category_id + " " + rules_for_each_category[0]}}</h3>
+			</div>
+			<div class="card-deck" id='{{menu_items.fruit_ingredients[0].ingredient_category_id}}'>
+				{% for i in range(menu_items.fruit_ingredients|length) %}
+
+					<div class="card" id='{{menu_items.fruit_ingredients[i].id}}'>
+						<img src="" class="card-img-top" alt="..." />
+						<div class="card-body">
+							<h5 class="card-title">{{menu_items.fruit_ingredients[i].id}}</h5>
+							<p class="card-text">{{menu_items.fruit_ingredients[i].price}}</p>
+						</div>
+					</div>
+			{% endfor %}
+				</div>
+			</div>
+	
+		<div class="container0sweetCrepe" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
+			<div class="row" style="margin-right:10px">
+				<h3 class="head3">{{menu_items.sweetness_ingredients[0].ingredient_category_id + " " + rules_for_each_category[1]}}</h3>
+			</div>
+			{% for i in range(menu_items.sweetness_ingredients|length) %}
+				<div class="card-deck" id='{{menu_items.sweetness_ingredients[i].ingredient_category_id}}'>
+					<div class="card" id='{{menu_items.sweetness_ingredients[i].id}}'>
+						<img src="" class="card-img-top" alt="..." />
+						<div class="card-body">
+							<h5 class="card-title">{{menu_items.sweetness_ingredients[i].id}}</h5>
+							<p class="card-text">{{menu_items.sweetness_ingredients[i].price}}</p>
+						</div>
+					</div>
+			{% endfor %}
+				</div>
+		</div>
+<div class="row" style="margin-bottom: 140px"></div>
+
+<!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
+<div class="footer d-flex align-items-center">
+	<button class="btn5" id="drinkcheckout">Add to Cart</button>
+		<div
+		class="alert-danger"
+		role="alert"
+		id="errorCoffee"
+		style="
+			font-size: 30px;
+			display: none;
+			font-weight: 500;
+			position: fixed;
+			margin-bottom: 60px;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			text-align: center;
+		"
+	>
+		Please select a temperature for your coffee.
+	</div>
 </div>
 {% endblock %}
+
+{% block script %}
+<script type="module" src="../static/js/order-drink.js"></script>
+{% endblock %} 

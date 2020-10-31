@@ -156,7 +156,7 @@ class Order_Model(object):
             self.id = uuid.uuid4()
             self.customer = Customer_Model(
                 customer_object=order_object['customerData'])
-            self.cost = order_object['orderTotal']
+            self.cost = float(order_object['orderTotal'])
             self.date = date
             if len(order_object['orderCrepe']) > 0:
                 self.order_crepe = Order_Crepe_Model(order_id=self.id,
@@ -224,10 +224,13 @@ class Customer_Model(object):
 
 class Payment_Information_Model(object):
     def __init__(self, payment_object):
+        print("payment_object", payment_object)
+        
         self.payment_method = payment_object["paymentMethod"]
         self.credit_card_name = payment_object["creditCardName"]
         self.credit_card_number = payment_object["creditCardNumber"]
-        self.credit_card_expiration = payment_object["creditCardExpiration"]
+        self.credit_card_expiration_month = payment_object["creditCardExpirationMonth"]
+        self.credit_card_expiration_year = payment_object["creditCardExpirationYear"]
         self.credit_card_cvv = payment_object["creditCardCVV"]
 
 
