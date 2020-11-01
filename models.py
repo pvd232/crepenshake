@@ -715,7 +715,10 @@ class Ice_Cream_Serving_Size(db.Model):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
-
+try:
+    db.create_all()
+except Exception:
+    pass
 # 2000-12-31
 # db.drop_all()
 # db.create_all()
