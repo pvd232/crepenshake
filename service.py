@@ -1,4 +1,5 @@
 import json
+import os
 from base64 import b64encode
 import requests
 from Crypto.PublicKey import RSA
@@ -45,7 +46,7 @@ class Menu_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.drink_engine = create_engine(self.connection_string)
+        self.drink_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.drink_engine)
@@ -140,7 +141,7 @@ class Ingredient_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.drink_engine = create_engine(self.connection_string)
+        self.drink_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.drink_engine)
@@ -268,7 +269,7 @@ class Order_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.drink_engine = create_engine(self.connection_string)
+        self.drink_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.drink_engine)
@@ -423,7 +424,7 @@ class Drink_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.drink_engine = create_engine(self.connection_string)
+        self.drink_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.drink_engine)
@@ -518,7 +519,7 @@ class Side_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.side_engine = create_engine(self.connection_string)
+        self.side_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.side_engine)
@@ -588,7 +589,7 @@ class Menu_Crepe_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.menu_crepe_engine = create_engine(self.connection_string)
+        self.menu_crepe_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.menu_crepe_engine)
