@@ -1,8 +1,7 @@
 from models import *
-#db, Customer, Order, Order_Drink, Order_Crepe, Order_Side, Crepe_Origination, Crepe_Flavor_Profile, Crepe, Custom_Crepe, Menu_Crepe, Ingredient_Category, Ingredient, Ingredient_Serving_Price, Drink_Type, Drink, Coffee, Milk, Milkshake, Side, Side_Type, Croissant, Ice_Cream, Ice_Cream_Price
 import json
 from datetime import date
-
+from pathlib import Path
 # https://stackoverflow.com/questions/52939176/json-encoder-different-results-for-json-dump-and-json-dumps
 # https://stackoverflow.com/questions/12664385/sqlalchemy-metaclass-confusion
 # https://www.w3schools.com/python/ref_func_isinstance.asp
@@ -20,9 +19,8 @@ def load_json(filename):
 
 
 def create_ingredient_category():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\ingredient_category.json")
+    file_path = Path('static/json/ingredient_category.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -38,9 +36,8 @@ def create_ingredient_category():
 
 
 def create_ingredient():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\ingredient.json")
+    file_path = Path('static/json/ingredient/json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -59,11 +56,10 @@ def create_ingredient():
 
 
 def create_ingredient_serving_size():
+    file_path = Path('static/json/ingredient_serving_size.json')
+    json_items = load_json(file_path)
 
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\ingredient_serving_size.json")
-
-    for item in json_items:
+    for item in json_items
 
         id = item['id']
 
@@ -78,12 +74,11 @@ def create_ingredient_serving_size():
 
 
 def create_ingredient_serving_size_price():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\ingredient_serving_size_price.json")
+    file_path = Path('static/json/ingredient_serving_sise_price')
+    json_items = load_json(file_path)
 
     for item in json_items:
-        ingredient_id = item['ingredient_id']
+        ingredient_id =item['ingredient_id']
         serving_size = item['serving_size']
         price = item['price']
 
@@ -99,9 +94,8 @@ def create_ingredient_serving_size_price():
 
 
 def create_crepe_flavor_profile():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\crepe_flavor_profile.json")
+    file_path = Path('static/json/crepe_flavor_profile.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -116,8 +110,8 @@ def create_crepe_flavor_profile():
 
 
 def create_menu_crepe():
-    test_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\menu_crepe.json")
+    file_path = Path('static/json/menu_crepe.json')
+    test_items = load_json(file_path)
 
     for i in range(len(test_items)):
         if test_items[i]['name'] == 'happy_crepe':
@@ -130,9 +124,6 @@ def create_menu_crepe():
         db.session.add(new_crepe)
     db.session.commit()
     db.session.remove()
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\menu_crepe.json")
     crepes = db.session.query(Crepe)
     serialized_crepes = [x.serialize for x in crepes]
     for i in range(len(json_items)):
