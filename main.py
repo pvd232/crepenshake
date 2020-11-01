@@ -6,7 +6,6 @@ from service import Ingredient_Service, Order_Service, Drink_Service, Side_Servi
 from models import Ingredient_Category
 from repository import Ingredient_Repository
 from create_db import db
-from pathlib import Path
 
 
 application = Flask(__name__)
