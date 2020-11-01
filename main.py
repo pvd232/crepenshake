@@ -3,12 +3,7 @@ import json
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
 from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service
-
-
-application = Flask(__name__)
-
-app = application
-
+from models import *
 
 def humanize(dict = None, attr = None, format = False):
     if format == True:
@@ -42,6 +37,8 @@ def humanize(dict = None, attr = None, format = False):
 
 @app.route("/")
 def home():
+    instantiate_db_connection()
+    print('trying')
     return render_template('index.html')
 
 

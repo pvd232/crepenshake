@@ -32,7 +32,7 @@ class Menu_Service(object):
         self.username = "postgres"
         self.password = "Iqopaogh23!"
         self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshake"
+        self.connection_string_end = "@localhost:5432/crepenshakedb"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
 
@@ -130,7 +130,7 @@ class Ingredient_Service(object):
         self.username = "postgres"
         self.password = "Iqopaogh23!"
         self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshake"
+        self.connection_string_end = "@localhost:5432/crepenshakedb"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
 
@@ -259,7 +259,7 @@ class Order_Service(object):
         self.username = "postgres"
         self.password = "Iqopaogh23!"
         self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshake"
+        self.connection_string_end = "@localhost:5432/crepenshakedb"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
         self.order_repository = Order_Repository()
@@ -414,7 +414,7 @@ class Drink_Service(object):
         self.username = "postgres"
         self.password = "Iqopaogh23!"
         self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshake"
+        self.connection_string_end = "@localhost:5432/crepenshakedb"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
         self.drink_repository = Drink_Repository()
@@ -509,7 +509,7 @@ class Side_Service(object):
         self.username = "postgres"
         self.password = "Iqopaogh23!"
         self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshake"
+        self.connection_string_end = "@localhost:5432/crepenshakedb"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
         self.side_repository = Side_Repository()
@@ -578,7 +578,7 @@ class Menu_Crepe_Service(object):
         self.username = "postgres"
         self.password = "Iqopaogh23!"
         self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshake"
+        self.connection_string_end = "@localhost:5432/crepenshakedb"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
         
