@@ -5,6 +5,7 @@ from flask import request, Response, Flask, render_template, jsonify, send_file,
 from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service
 from models import Ingredient_Category
 from repository import Ingredient_Repository
+import db from create_db
 
 
 application = Flask(__name__)
