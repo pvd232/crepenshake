@@ -93,7 +93,6 @@ def make_your_own_savory_crepe(editOrder=None):
 
     formatted_savory_ingredient_prices_by_category = [humanize(x, 'id', True)
                          for x in ingredient_service.get_savory_ingredient_prices_by_category()]
-    print("formatted_savory_ingredient_prices_by_category", formatted_savory_ingredient_prices_by_category)
 
     savory_ingredient_categories = ingredient_service.get_savory_ingredient_categories()
     formatted_savory_ingredient_categories = [humanize(x, 'id') for x in ingredient_service.get_savory_ingredient_categories()]
@@ -147,8 +146,6 @@ def order_drink(editOrder=None):
     drink_categories = [x.serialize()
                         for x in drink_service.get_drink_categories()]
 
-    for drink in drink_categories:
-        print('category', drink)
     coffee_syrups = [x.serialize() for x in drink_service.get_coffee_syrups()]
     
     formatted_coffee_syrups = [humanize(x, "coffee_syrup_flavor").serialize()
@@ -229,8 +226,6 @@ def order_menu_crepe(editOrder=None):
     menu_crepe_service = Menu_Crepe_Service()
     sweet_menu_crepes = [x.serialize()
                          for x in menu_crepe_service.get_sweet_menu_crepes()]
-    for x in sweet_menu_crepes:
-        print(x)
     formatted_sweet_menu_crepes = [humanize(x, 'name').serialize()
                          for x in menu_crepe_service.get_sweet_menu_crepes()]
     savory_menu_crepes = [x.serialize() for x in menu_crepe_service.get_savory_menu_crepes()]
@@ -247,14 +242,7 @@ def checkout():
         return render_template('checkout.html')
     elif request.method == 'POST':
         new_order = request.json
-        print("new_order", new_order)
-        
         new_order_value = new_order['order']
-        print()
-
-        print("new_order_value", new_order_value)
-        print()
-
         order_service = Order_Service()
         order_service.create_order(new_order_value)
         return jsonify(200)

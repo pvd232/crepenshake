@@ -7,6 +7,7 @@ from pathlib import Path
 # https://www.w3schools.com/python/ref_func_isinstance.asp
 # https://stackoverflow.com/questions/5022066/how-to-serialize-sqlalchemy-result-to-json/7032311
 
+cwd = os.getcwd()
 
 def load_json(filename):
 
@@ -19,7 +20,9 @@ def load_json(filename):
 
 
 def create_ingredient_category():
-    file_path = Path('static/json/ingredient_category.json')
+    
+    
+    file_path = Path(cwd+'/static/json/ingredient_category.json')
     json_items = load_json(file_path)
 
     for item in json_items:
@@ -36,7 +39,8 @@ def create_ingredient_category():
 
 
 def create_ingredient():
-    file_path = Path('static/json/ingredient/json')
+    cwd = os.getcwd()
+    file_path = Path(cwd+'/static/json/ingredient.json')
     json_items = load_json(file_path)
 
     for item in json_items:
@@ -56,11 +60,10 @@ def create_ingredient():
 
 
 def create_ingredient_serving_size():
-    file_path = Path('static/json/ingredient_serving_size.json')
+    file_path = Path(cwd+'/static/json/ingredient_serving_size.json')
     json_items = load_json(file_path)
 
-    for item in json_items
-
+    for item in json_items:
         id = item['id']
 
         new_ingredient_serving_size_price = Ingredient_Serving_Size(id=id)
@@ -74,7 +77,7 @@ def create_ingredient_serving_size():
 
 
 def create_ingredient_serving_size_price():
-    file_path = Path('static/json/ingredient_serving_sise_price')
+    file_path = Path(cwd+'/static/json/ingredient_serving_size_price.json')
     json_items = load_json(file_path)
 
     for item in json_items:
@@ -94,7 +97,7 @@ def create_ingredient_serving_size_price():
 
 
 def create_crepe_flavor_profile():
-    file_path = Path('static/json/crepe_flavor_profile.json')
+    file_path = Path(cwd+'/static/json/crepe_flavor_profile.json')
     json_items = load_json(file_path)
 
     for item in json_items:
@@ -110,7 +113,7 @@ def create_crepe_flavor_profile():
 
 
 def create_menu_crepe():
-    file_path = Path('static/json/menu_crepe.json')
+    file_path = Path(cwd+'/static/json/menu_crepe.json')
     test_items = load_json(file_path)
 
     for i in range(len(test_items)):
@@ -126,8 +129,8 @@ def create_menu_crepe():
     db.session.remove()
     crepes = db.session.query(Crepe)
     serialized_crepes = [x.serialize for x in crepes]
-    for i in range(len(json_items)):
-        item = json_items[i]
+    for i in range(len(test_items)):
+        item = test_items[i]
         crepe_id = serialized_crepes[i]['id']
         name = item['name']
         price = item['price']
@@ -143,8 +146,8 @@ def create_menu_crepe():
 
 
 def create_milk():
-    test_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\milk.json")
+    file_path = Path(cwd+'/static/json/milk.json')
+    test_items = load_json(file_path)
 
     for item in test_items:
         id = item['id']
@@ -160,11 +163,13 @@ def create_milk():
 
 
 def create_sides():
+    croissant_file_path = Path(cwd+'/static/json/croissant.json')
+    ice_cream_bowl_file_path = Path(cwd+'/static/json/ice_cream.json')
 
     croissant_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\croissant.json")
+        croissant_file_path)
     ice_cream_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\ice_cream.json")
+        ice_cream_bowl_file_path)
 
     for i in range(len(croissant_items)):
         side_type_id = 'pastry'
@@ -213,10 +218,8 @@ def create_sides():
 
 
 def create_crepe_origination():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\crepe_origination.json")
-
+    file_path = Path(cwd+'/static/json/crepe_origination.json')
+    json_items = load_json(file_path)
     for item in json_items:
         id = item['id']
         new_crepe_origination = Crepe_Origination(id=id)
@@ -230,9 +233,10 @@ def create_crepe_origination():
 
 
 def create_drink_category():
+    file_path = Path(cwd+'/static/json/drink_category.json')
 
     json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\drink_category.json")
+        file_path)
 
     for item in json_items:
         id = item['id']
@@ -247,9 +251,9 @@ def create_drink_category():
 
 
 def create_drink_serving_size():
+    file_path = Path(cwd+'/static/json/drink_serving_size.json')
 
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\drink_serving_size.json")
+    json_items = load_json(file_path)
 
     for item in json_items:
 
@@ -266,9 +270,8 @@ def create_drink_serving_size():
 
 
 def create_coffee_name():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\coffee_name.json")
+    file_path = Path(cwd+'/static/json/coffee_name.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -284,10 +287,8 @@ def create_coffee_name():
 
 
 def create_coffee_name_serving_size_price():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\coffee_name_serving_size_price.json")
-
+    file_path = Path(cwd+'/static/json/coffee_name_serving_size_price.json')
+    json_items = load_json(file_path)
     for item in json_items:
         coffee_name = item['coffee_name']
         serving_size = item['serving_size']
@@ -304,15 +305,11 @@ def create_coffee_name_serving_size_price():
 
 
 def create_coffee_temperature():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\coffee_temperature.json")
-
+    file_path = Path(cwd+'/static/json/coffee_temperature.json')
+    json_items = load_json(file_path)
     for item in json_items:
         id = item['id']
-
         new_coffee_temperature = Coffee_Temperature(id=id)
-
         # After I create the ingredient, I can then add it to my session.
         db.session.add(new_coffee_temperature)
 
@@ -322,26 +319,22 @@ def create_coffee_temperature():
 
 
 def create_coffee_flavor_syrup():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\coffee_flavor_syrup.json")
+    file_path = Path(cwd+'/static/json/coffee_flavor_syrup.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
         new_coffee_flavor_syrup = Coffee_Flavor_Syrup(id=id)
-
         # After I create the ingredient, I can then add it to my session.
         db.session.add(new_coffee_flavor_syrup)
-
     # commit the session to my DB.
     db.session.commit()
     db.session.remove()
 
 
 def create_coffee_flavor_syrup_serving_size():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\coffee_flavor_syrup_serving_size.json")
+    file_path = Path(cwd+'/static/json/coffee_flavor_syrup_serving_size.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -356,9 +349,8 @@ def create_coffee_flavor_syrup_serving_size():
 
 
 def create_coffee_flavor_syrup_serving_size_price():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\coffee_flavor_syrup_serving_size_price.json")
+    file_path = Path(cwd+'/static/json/coffee_flavor_syrup_serving_size_price.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         coffee_flavor_syrup_id = item['coffee_flavor_syrup_id']
@@ -376,15 +368,14 @@ def create_coffee_flavor_syrup_serving_size_price():
 
 
 def create_drinks():
+    milkshake_file_path = Path(cwd+'/static/json/milkshake.json')
+    milkshake_items = load_json(milkshake_file_path)
 
-    milkshake_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\milkshake.json")
+    non_coffee_drinks_file_path = Path(cwd+'/static/json/non_coffee_drinks.json')
+    non_coffee_items = load_json(non_coffee_drinks_file_path)
 
-    non_coffee_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\non_coffee_drinks.json")
-
-    bottled_drink_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\bottled_drinks.json")
+    bottled_drinks_file_path = Path(cwd+'/static/json/bottled_drinks.json')
+    bottled_drink_items = load_json(bottled_drinks_file_path)
 
     for item in milkshake_items:
         name = item['name']
@@ -412,61 +403,9 @@ def create_drinks():
     db.session.commit()
     db.session.remove()
 
-    # drinks = db.session.query(Drink)
-    # serialized_drinks = [x.serialize for x in drinks]
-#     for i in range(len(milkshake_items)):
-#         item = milkshake_items[i]
-#         if serialized_drinks[i]["drink_category_id"] == 'milkshake':
-#             drink_id = serialized_drinks[i]['id']
-#             name = item['name']
-#             price = item['price']
-#             new_milkshake = Milkshake(
-#                 drink_id=drink_id, name=name, price=price)
-
-#             # After I create the ingredient, I can then add it to my session.
-#             db.session.add(new_milkshake)
-
-#     # commit the session to my DB.
-
-#     drinks = db.session.query(Drink)
-#     serialized_drinks = [x.serialize for x in drinks]
-#     for i in range(len(milkshake_items), len(milkshake_items) + len(non_coffee_items)):
-#         coffeeIndex = i - len(milkshake_items)
-#         item = non_coffee_items[coffeeIndex]
-#         if serialized_drinks[i]["drink_category_id"] == 'non-coffee':
-#             drink_id = serialized_drinks[i]['id']
-#             name = item['name']
-#             price = item['price']
-#             serving_size = item['serving_size']
-#             new_non_coffee_item = Non_Coffee_Drink(
-#                 drink_id=drink_id, name=name, serving_size=serving_size, price=price)
-
-#             # After I create the ingredient, I can then add it to my session.
-#             db.session.add(new_non_coffee_item)
-
-#     drinks = db.session.query(Drink)
-#     serialized_drinks = [x.serialize for x in drinks]
-#     for i in range(len(milkshake_items) + len(non_coffee_items), len(serialized_drinks)):
-#         bottled_drink_index = i - len(milkshake_items) - len(non_coffee_items)
-#         item = bottled_drink_items[bottled_drink_index]
-#         if serialized_drinks[i]["drink_category_id"] == 'bottled':
-#             drink_id = serialized_drinks[i]['id']
-#             name = item['name']
-#             price = item['price']
-#             new_bottled_drink = Bottled_Drink(
-#                 drink_id=drink_id, name=name, price=price)
-
-#             # After I create the ingredient, I can then add it to my session.
-#             db.session.add(new_bottled_drink)
-#     # commit the session to my DB.
-#     db.session.commit()
-#     db.session.remove()
-
-
 def create_side_type():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\side_type.json")
+    file_path = Path(cwd+'/static/json/side_type.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -481,9 +420,8 @@ def create_side_type():
 
 
 def create_side_name():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\side_name.json")
+    file_path = Path(cwd+'/static/json/side_name.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -498,9 +436,8 @@ def create_side_name():
 
 
 def create_ice_cream_serving_size():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\ice_cream_serving_size.json")
+    file_path = Path(cwd+'/static/json/ice_cream_serving_size.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
 
@@ -517,9 +454,8 @@ def create_ice_cream_serving_size():
 
 
 def create_ice_cream_flavor():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\ice_cream_flavor.json")
+    file_path = Path(cwd+'/static/json/ice_cream_flavor.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -534,9 +470,8 @@ def create_ice_cream_flavor():
 
 
 def create_coffee_flavor_syrup():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\coffee_flavor_syrup.json")
+    file_path = Path(cwd+'/static/json/coffee_flavor_syrup.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         id = item['id']
@@ -551,9 +486,8 @@ def create_coffee_flavor_syrup():
 
 
 def create_espresso():
-
-    json_items = load_json(
-        r"C:\Users\Peter\VscodeProjects\CrepeNShake\app\static\json\espresso.json")
+    file_path = Path(cwd+'/static/json/espresso.json')
+    json_items = load_json(file_path)
 
     for item in json_items:
         serving_size = item['serving_size']
@@ -593,5 +527,7 @@ def create_everything():
     create_sides()
     create_menu_crepe()
 
-
-create_everything()
+try:
+    create_everything()
+except Exception:
+    pass
