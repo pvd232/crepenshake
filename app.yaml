@@ -21,7 +21,7 @@ env_variables:
 # Replace project and instance with the values obtained  when configuring your
 # Cloud SQL instance.
 beta_settings:
-    cloud_sql_instances: covidproject2:us-central1:project2
+    cloud_sql_instances: crepenshake:us-east4:crepenshake
 
 automatic_scaling:
   cpu_utilization:
