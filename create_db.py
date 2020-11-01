@@ -526,8 +526,3 @@ def create_everything():
     create_ice_cream_flavor()
     create_sides()
     create_menu_crepe()
-
-try:
-    create_everything()
-except Exception:
-    pass

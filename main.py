@@ -3,9 +3,6 @@ import json
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
 from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service
-from models import Ingredient_Category
-from repository import Ingredient_Repository
-from create_db import db
 
 
 application = Flask(__name__)

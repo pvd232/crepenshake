@@ -10,6 +10,8 @@ import os
 import datetime
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
+from create_db import create_everything
+
 
 # https://stackoverflow.com/questions/38678336/sqlalchemy-how-to-implement-drop-table-cascade
 @compiles(DropTable, "postgresql")
@@ -717,6 +719,7 @@ class Ice_Cream_Serving_Size(db.Model):
         return serialized_attributes
 try:
     db.create_all()
+    create_everything()
 except Exception:
     pass
 # 2000-12-31
