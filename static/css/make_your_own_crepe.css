@@ -72,8 +72,8 @@
 	color: white;
 	outline: none;
 	display: none;
-	width: 45px;
-	height: 45px;
+	width: 45px !important;
+	height: 45px !important;
 	border-radius: 22.5px;
 	padding-bottom: 6px;
 	background-color: rgba(251, 35, 49, 1);
@@ -94,8 +94,8 @@
 	color: white;
 	outline: none;
 	display: none;
-	width: 45px;
-	height: 45px;
+	width: 45px !important;
+	height: 45px !important;
 	border-radius: 22.5px;
 	padding-bottom: 8px;
 	background-color: rgba(251, 35, 49, 1);

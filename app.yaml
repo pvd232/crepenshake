@@ -25,7 +25,7 @@ beta_settings:
 
 automatic_scaling:
   cpu_utilization:
-    target_utilization: 0.8
+    target_utilization: 0.9
 resources:
   cpu: 1
   memory_gb: 0.6
