@@ -174,7 +174,7 @@ $(window).on('load resize', function () {
 		cWidth = newWidth;
 	}
 
-	if ($(window).width() < 576) {
+	if (cWidth <= 576) {
 		const cardDeckElements = document.getElementsByClassName('card-deck');
 		const cardTitleElements = document.getElementsByClassName('card-title');
 		const cardTextElements = document.getElementsByClassName('card-text');
@@ -360,7 +360,7 @@ $(window).on('resize', function () {
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
-	if ($(window).width() > 576) {
+	if (cWidth > 576) {
 		location.reload();
 	}
 });

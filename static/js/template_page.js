@@ -10,7 +10,7 @@ $(window).on('load resize', function () {
 		cWidth = newWidth;
 	}
 
-	if ($(window).width() < 767) { 
+	if (cWidth <= 576) { 
 		$('#crepeButtonImage').remove();
 	}
 });

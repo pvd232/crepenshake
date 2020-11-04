@@ -371,7 +371,7 @@ $(window).on('load resize', function () {
 		cWidth = newWidth;
 	}
 
-	if ($(window).width() < 767) {
+	if (cWidth <= 576) {
 
 		const cardDeckElements = document.getElementsByClassName('card-deck');
 		const cardTitleElements = document.getElementsByClassName('card-title');
@@ -457,7 +457,7 @@ $(window).on('load resize', function () {
 			}
 
 			const stoppingPoint = k + cardDeckChildrenLength[i];
-			for (var k; k < stoppingPoint; k++) {
+			for (k; k < stoppingPoint; k++) {
 				const listValue = document.createElement('li');
 				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
 				listValue.setAttribute('style', 'width:100%');
@@ -539,7 +539,7 @@ $(window).on('resize', function () {
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
-	if ($(window).width() > 767) {
+	if ($(window).width() > 576) {
 		location.reload();
 	}
 });
