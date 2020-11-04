@@ -1238,12 +1238,13 @@ def create_everything():
 
 def instantiate_db_connection():
     print('instantiate')
-    try:
+    test = db.session.query(Ingredient).first()
+    if not test:
         db.create_all()
         create_everything()
         print('working')
-    except Exception as e:
-        print("Exception", str(e))
+        # except Exception as e:
+        #     print("Exception", str(e))
 
 
 # instantiate_db_connection()

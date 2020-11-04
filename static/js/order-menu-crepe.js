@@ -175,7 +175,9 @@ const pageLogic = () => {
 var cWidth = $(window).width();
 $(window).on('load resize', function () {
 	const newWidth = $(window).width();
-
+		if (localStorage.getItem('visited') != 'true') {
+			localStorage.setItem('visited', 'true');
+		}
 	$('.card-img-top').wrap('<div class="container2"></div>');
 
 	$('.card-img-top').each(function () {
