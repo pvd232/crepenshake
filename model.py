@@ -190,9 +190,10 @@ class Order_Model(object):
 
 
 class Customer_Model(object):
-    def __init__(self, id=None, first_name=None, last_name=None, street=None, city=None, state=None, zipcode=None, country=None, customer_object=None):
+    def __init__(self, id=None, first_name=None, last_name=None, street=None, city=None, state=None, zipcode=None, country=None, customer_object=None, stripe_id=None):
         if customer_object:
             self.id = customer_object["id"]
+            self.stripe_id = customer_object["stripeId"]
             self.first_name = customer_object["firstName"]
             self.last_name = customer_object["lastName"]
             self.street = customer_object["street"]
@@ -200,11 +201,12 @@ class Customer_Model(object):
             self.state = customer_object["state"]
             self.zipcode = customer_object["zipcode"]
             self.country = customer_object["country"]
-            self.payment_information = Payment_Information_Model(
-                payment_object=customer_object['paymentInformation'])
-
+            # self.payment_information = Payment_Information_Model(
+            #     payment_object=customer_object['paymentInformation'])
+        
         else:
             self.id = id
+            self.stripe_id = stripe_id
             self.first_name = first_name
             self.last_name = last_name
             self.street = street
@@ -222,16 +224,16 @@ class Customer_Model(object):
         return serialized_attributes
 
 
-class Payment_Information_Model(object):
-    def __init__(self, payment_object):
-        print("payment_object", payment_object)
+# class Payment_Information_Model(object):
+#     def __init__(self, payment_object):
+#         print("payment_object", payment_object)
         
-        self.payment_method = payment_object["paymentMethod"]
-        self.credit_card_name = payment_object["creditCardName"]
-        self.credit_card_number = payment_object["creditCardNumber"]
-        self.credit_card_expiration_month = payment_object["creditCardExpirationMonth"]
-        self.credit_card_expiration_year = payment_object["creditCardExpirationYear"]
-        self.credit_card_cvv = payment_object["creditCardCVV"]
+#         self.payment_method = payment_object["paymentMethod"]
+#         self.credit_card_name = payment_object["creditCardName"]
+#         self.credit_card_number = payment_object["creditCardNumber"]
+#         self.credit_card_expiration_month = payment_object["creditCardExpirationMonth"]
+#         self.credit_card_expiration_year = payment_object["creditCardExpirationYear"]
+#         self.credit_card_cvv = payment_object["creditCardCVV"]
 
 
 class Menu_Crepe_Model(object):

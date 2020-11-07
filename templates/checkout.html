@@ -124,71 +124,43 @@
 						</div>
 						<hr class="mb-4" />
 						<h4 class="mb-3">Payment</h4>
-						<div class="d-block my-3">
-							<div class="custom-control custom-radio">
-								<input
-									id="credit"
-									name="paymentMethod"
-									type="radio"
-									class="custom-control-input"
-									checked=""
-									required=""
-								/>
-								<label class="custom-control-label" for="credit">Credit card</label>
-							</div>
-							<div class="custom-control custom-radio">
-								<input
-									id="debit"
-									name="paymentMethod"
-									type="radio"
-									class="custom-control-input"
-									required=""
-								/>
-								<label class="custom-control-label" for="debit">Debit card</label>
-							</div>
-							<div class="custom-control custom-radio">
-								<input
-									id="paypal"
-									name="paymentMethod"
-									type="radio"
-									class="custom-control-input"
-									required=""
-								/>
-								<label class="custom-control-label" for="paypal">PayPal</label>
-							</div>
-						</div>
 						<div class="row">
-							<div class="col-md-6 mb-3">
+							<!-- <div class="col-md-6 mb-3">
 								<label for="cc-name">Name on card</label>
-								<input type="text" class="form-control" id="cc-name" placeholder="" required="" />
+								<div type="text" class="form-control" id="cc-name" placeholder="" required=""></div>
 								<small class="text-muted">Full name as displayed on card</small>
 								<div class="invalid-feedback">Name on card is required</div>
-							</div>
+							</div> -->
 							<div class="col-md-6 mb-3">
-								<label for="cc-number">Credit card number</label>
-								<input type="text" class="form-control" id="cc-number" placeholder="" required="" />
-								<div class="invalid-feedback">Credit card number is required</div>
+								<label for="cc-card">Credit Card Information</label>
+								<div type="text" class="form-control" id="cc-card" placeholder="" required=""></div>
+								<div class="invalid-feedback" id ="cardError"></div>
 							</div>
 						</div>
-						<div class="row">
+						<!-- <div class="row">
 							<div class="col-md-3 mb-3">
 								<label for="cc-expiration">Expiration</label>
-								<input type="text" class="form-control" id="cc-expiration" placeholder="" required="" />
+								<div type="text" class="form-control" id="cc-expiration" placeholder="" required=""></div>
 								<div class="invalid-feedback">Expiration date required</div>
 							</div>
 							<div class="col-md-3 mb-3">
-								<label for="cc-cvv">CVV</label>
-								<input type="text" class="form-control" id="cc-cvv" placeholder="" required="" />
+								<label for="cc-cvc">CVC</label>
+								<div type="text" class="form-control" id="cc-cvv" placeholder="" required=""></div>
 								<div class="invalid-feedback">Security code required</div>
 							</div>
-						</div>
+						</div> -->
 						<hr class="mb-4" />
 						<button
 							class="btn btn-primary btn-lg btn-block"
 							id="checkoutButton"
 						>
-							Continue to checkout
+						<span id="button-text">Pay</span>
+						<div class="spinner hidden" id="spinner"></div>
 						</button>
+						<p class="result-message" id = "success" style="visibility: hidden;">
+							Payment succeeded, see the result in your
+							<a href="" target="_blank">Stripe dashboard.</a> Refresh the page to pay again.
+						</p>
 					</form>
 				</div>
 			</div>
@@ -204,4 +176,5 @@
 {% endblock %}
 {% block script %}
 	<script type='module' src="../static/js/checkout.js"></script>
+	<script src="https://js.stripe.com/v3/"></script>
 {% endblock %} 

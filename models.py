@@ -138,6 +138,8 @@ class Menu_Crepe(db.Model):
 class Customer(db.Model):
     id = db.Column(db.String(80), primary_key=True,  # this will be the customer's email
                    unique=True, nullable=False)
+    stripe_id = db.Column(db.String(80), db.ForeignKey('stripe.id'), primary_key=True,
+                        nullable=False)
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
     street = db.Column(db.String(80), nullable=False)
@@ -156,7 +158,20 @@ class Customer(db.Model):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
-
+class Stripe(db.Model):
+    id = db.Column(db.String(80), primary_key=True,  # this will be the customer's email
+                   unique=True, nullable=False)
+    customer = relationship('Customer', lazy=True)
+    
+    @property
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
+                   
 class Order(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True,
                    unique=True, nullable=False)

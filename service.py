@@ -403,12 +403,17 @@ class Order_Service(object):
         new_order = Order_Model(order_object=order)
         print("new_order.customer.id", new_order.customer.id)
         customer_email = new_order.customer.id
-        self.send_confirmation_email(customer_email)
-        self.developer_pay(new_order)
+        # self.send_confirmation_email(customer_email)
+        # self.developer_pay(new_order)
         with self.session_scope() as session:
             self.order_repository.post_order(session, order=new_order)
             return True
-            
+    
+    def stripe_pay(self, order):
+        with self.session_scope() as session:
+            return self.order_repository.post_stripe_order(session, order=order)
+        
+
 
 class Drink_Service(object):
     def __init__(self):

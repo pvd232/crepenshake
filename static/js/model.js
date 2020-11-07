@@ -413,79 +413,77 @@ export class Order {
 		}
 	};
 }
-export class PaymentInformation {
-	constructor(paymentObject) {
-		this.paymentMethod = paymentObject.paymentMethod;
-		this.creditCardName = paymentObject['cc-name'];
-		this.creditCardNumber = paymentObject['cc-number'];
-		this.creditCardExpirationMonth = paymentObject['cc-expiration'].split('/')[0];
-		this.creditCardExpirationYear = paymentObject['cc-expiration'].split('/')[1];
-		this.creditCardCVV = paymentObject['cc-cvv'];
-	}
+// export class PaymentInformation {
+// 	constructor(paymentObject) {
+// 		this.paymentMethod = paymentObject.paymentMethod;
+// 		this.creditCardName = paymentObject['cc-name'];
+// 		this.creditCardNumber = paymentObject['cc-number'];
+// 		this.creditCardExpirationMonth = paymentObject['cc-expiration'].split('/')[0];
+// 		this.creditCardExpirationYear = paymentObject['cc-expiration'].split('/')[1];
+// 		this.creditCardCVV = paymentObject['cc-cvv'];
+// 	}
 
-	get paymentMethod() {
-		return this._paymentMethod;
-	}
-	get creditCardName() {
-		return this._creditCardName;
-	}
-	get creditCardNumber() {
-		return this._creditCardNumber;
-	}
-	get creditCardExpirationMonth() {
-		return this._creditCardExpirationMonth;
-	}get creditCardExpirationYear() {
-		return this._creditCardExpirationYear;
-	}
-	get creditCardCVV() {
-		return this._creditCardCVV;
-	}
-	set paymentMethod(value) {
-		this._paymentMethod = value;
-	}
-	set creditCardName(value) {
-		this._creditCardName = value;
-	}
-	set creditCardNumber(value) {
-		this._creditCardNumber = value;
-	}
-	set creditCardExpirationMonth(value) {
-		this._creditCardExpirationMonth = value;
-	}
-	set creditCardExpirationYear(value) {
-		this._creditCardExpirationYear = value;
-	}
-	set creditCardCVV(value) {
-		this._creditCardCVV = value;
-	}
-	toJSON = () => {
-		const data = {
-			paymentMethod: this._paymentMethod,
-			creditCardName: this._creditCardName,
-			creditCardNumber: this._creditCardNumber,
-			creditCardExpirationMonth: this._creditCardExpirationMonth,
-			creditCardExpirationYear: this._creditCardExpirationYear,
-			creditCardCVV: this._creditCardCVV,
-		};
-		return data;
-	};
-	fromJSON = (json) => {
-		const data = json;
-		this._paymentMethod = data.paymentMethod;
-		this._creditCardName = data.creditCardName;
-		this._creditCardNumber = data.creditCardNumber;
-		this._creditCardExpirationMonth = data.creditCardExpirationMonth;
-		this._creditCardExpirationYear = data.creditCardExpirationYear;
-		this._creditCardCVV = data.creditCardCVV;
-	};
-}
+// 	get paymentMethod() {
+// 		return this._paymentMethod;
+// 	}
+// 	get creditCardName() {
+// 		return this._creditCardName;
+// 	}
+// 	get creditCardNumber() {
+// 		return this._creditCardNumber;
+// 	}
+// 	get creditCardExpirationMonth() {
+// 		return this._creditCardExpirationMonth;
+// 	}get creditCardExpirationYear() {
+// 		return this._creditCardExpirationYear;
+// 	}
+// 	get creditCardCVV() {
+// 		return this._creditCardCVV;
+// 	}
+// 	set paymentMethod(value) {
+// 		this._paymentMethod = value;
+// 	}
+// 	set creditCardName(value) {
+// 		this._creditCardName = value;
+// 	}
+// 	set creditCardNumber(value) {
+// 		this._creditCardNumber = value;
+// 	}
+// 	set creditCardExpirationMonth(value) {
+// 		this._creditCardExpirationMonth = value;
+// 	}
+// 	set creditCardExpirationYear(value) {
+// 		this._creditCardExpirationYear = value;
+// 	}
+// 	set creditCardCVV(value) {
+// 		this._creditCardCVV = value;
+// 	}
+// 	toJSON = () => {
+// 		const data = {
+// 			paymentMethod: this._paymentMethod,
+// 			creditCardName: this._creditCardName,
+// 			creditCardNumber: this._creditCardNumber,
+// 			creditCardExpirationMonth: this._creditCardExpirationMonth,
+// 			creditCardExpirationYear: this._creditCardExpirationYear,
+// 			creditCardCVV: this._creditCardCVV,
+// 		};
+// 		return data;
+// 	};
+// 	fromJSON = (json) => {
+// 		const data = json;
+// 		this._paymentMethod = data.paymentMethod;
+// 		this._creditCardName = data.creditCardName;
+// 		this._creditCardNumber = data.creditCardNumber;
+// 		this._creditCardExpirationMonth = data.creditCardExpirationMonth;
+// 		this._creditCardExpirationYear = data.creditCardExpirationYear;
+// 		this._creditCardCVV = data.creditCardCVV;
+// 	};
+// }
 export class Customer {
-	constructor(customerObject = null) {
+	constructor(customerObject = null, stripeId = null) {
 		if (customerObject) {
-			console.log('customerObject', customerObject);
-			console.log('customerObject', JSON.stringify(customerObject));
-
 			this.id = customerObject.email;
+			this.stripeId = customerObject.stripeId;
 			this.firstName = customerObject.firstName;
 			this.lastName = customerObject.lastName;
 			this.street = customerObject.address;
@@ -493,10 +491,13 @@ export class Customer {
 			this.state = customerObject.state;
 			this.zipcode = customerObject.zip;
 			this.country = customerObject.country;
-			this.paymentInformation = new PaymentInformation(customerObject.paymentInformation);
-		} else {
-			console.log('no cust object');
+			// this.paymentInformation = new PaymentInformation(customerObject.paymentInformation);
+		} else if (stripeId) {
+			this._stripeId = stripeId
+		}
+		else {
 			this.id = null;
+			this.stripeId = null;
 			this.firstName = null;
 			this.lastName = null;
 			this.street = null;
@@ -504,12 +505,15 @@ export class Customer {
 			this.state = null;
 			this.zipcode = null;
 			this.country = null;
-			this.paymentInformation = null;
+			// this.paymentInformation = null;
 		}
 	}
 
 	get id() {
 		return this._id;
+	}
+	get stripeId() {
+		return this._stripeId;
 	}
 	get firstName() {
 		return this._firstName;
@@ -532,11 +536,14 @@ export class Customer {
 	get country() {
 		return this._country;
 	}
-	get paymentInformation() {
-		return this._paymentInformation;
-	}
+	// get paymentInformation() {
+	// 	return this._paymentInformation;
+	// }
 	set id(value) {
 		this._id = value;
+	}
+	set stripeId(value) {
+		this._stripeId = value;
 	}
 	set firstName(value) {
 		this._firstName = value;
@@ -559,12 +566,13 @@ export class Customer {
 	set country(value) {
 		this._country = value;
 	}
-	set paymentInformation(value) {
-		this._paymentInformation = value;
-	}
+	// set paymentInformation(value) {
+	// 	this._paymentInformation = value;
+	// }
 	toJSON = () => {
 		const data = {
 			id: this._id,
+			stripeId : this._stripeId,
 			firstName: this._firstName,
 			lastName: this._lastName,
 			street: this._street,
@@ -572,20 +580,21 @@ export class Customer {
 			state: this._state,
 			zipcode: this._zipcode,
 			country: this._country,
-			paymentInformation: this._paymentInformation,
+			// paymentInformation: this._paymentInformation,
 		};
 		return data;
 	};
 	fromJSON = (json) => {
 		const data = json;
 		this._id = data.id;
+		this.stripeId = data.stripeId;
 		this._firstName = data.firstName;
 		this._lastName = data.lastName;
 		this._street = data.street;
 		this._city = data.city;
 		this._state = data.state;
 		this._country = data.country;
-		this._paymentInformation = new PaymentInformation(data.paymentInformation);
+		// this._paymentInformation = new PaymentInformation(data.paymentInformation);
 	};
 }
 export class OrderDrink {

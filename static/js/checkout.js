@@ -5,53 +5,6 @@ import { humanize } from './model.js';
 
 import { Order, Customer, Coffee } from './model.js';
 
-const handleFormSubmit = () => {
-	const order = new Order();
-	order.fromJSON(localStorage.getItem(localStorage.key(0)));
-	const response = {};
-	const customerData = {};
-	const paymentInfo = {};
-	$('input, select', $('#checkoutForm')).each(function () {
-		console.log('thisVal', $(this).val());
-		console.log('thisKey', $(this).attr('id'));
-		console.log('thisSer', $(this).serialize());
-
-		if ($(this).serialize() == 'paymentMethod=on') {
-			paymentInfo['paymentMethod'] = $(this).attr('id');
-		} else if (
-			$(this).attr('id') === 'cc-name' ||
-			$(this).attr('id') === 'cc-number' ||
-			$(this).attr('id') === 'cc-expiration' ||
-			$(this).attr('id') === 'cc-cvv'
-		) {
-			paymentInfo[$(this).attr('id')] = $(this).val();
-		} else if ($(this).val() != '' && $(this).val() != 'on') {
-			customerData[$(this).attr('id')] = $(this).val();
-		}
-	});
-	customerData['paymentInformation'] = paymentInfo;
-	console.log('customerData: %s', JSON.stringify(customerData));
-	const newCustomer = new Customer(customerData);
-	order.customerData = newCustomer;
-	console.log('order', order);
-
-	// const stringifiedOrder = JSON.stringify(order)
-	response['order'] = order;
-	const JSONResponse = JSON.stringify(response);
-	console.log('jsonValue', JSONResponse);
-	console.log('response', response);
-
-	$.ajax({
-		url: '/checkout',
-		data: JSONResponse,
-		dataType: 'json',
-		type: 'POST',
-		contentType: 'application/json',
-		success: (response) => console.log('console.log success', response),
-		// success: () => location.assign('/order/confirmation'),
-		error: (response) => console.log('console.log error', response),
-	});
-};
 const buildPage = () => {
 	const key = localStorage.key(0);
 	const orderDict = localStorage.getItem(key);
@@ -295,71 +248,235 @@ const buildPage = () => {
 		)}</h4></div>`);
 	}
 };
-const validateForm = () => {
-	function luhnChecksum(code) {
-		var len = code.length;
-		var parity = len % 2;
-		var sum = 0;
-		for (var i = len - 1; i >= 0; i--) {
-			var d = parseInt(code.charAt(i));
-			if (i % 2 == parity) {
-				d *= 2;
-			}
-			if (d > 9) {
-				d -= 9;
-			}
-			sum += d;
+const handleFormSubmit = (stripe, card, data) => {
+	const order = new Order();
+	order.fromJSON(localStorage.getItem(localStorage.key(0)));
+	const response = {};
+	const customerData = {};
+	$('input, select', $('#checkoutForm')).each(function () {
+		if ($(this).val() != '' && $(this).val() != 'on') {
+			customerData[$(this).attr('id')] = $(this).val();
 		}
-		return sum % 10;
+	});
+	console.log("data", data)
+	console.log("data.customer", data.customer)
+	
+	customerData["stripeId"]= data.customer
+	console.log('customerData: %s', JSON.stringify(customerData));
+	const newCustomer = new Customer(customerData);
+	order.customerData = newCustomer;
+
+	console.log('order', order);
+	response['order'] = order;
+	const JSONResponse = JSON.stringify(response);
+	console.log('jsonValue', JSONResponse);
+	console.log('response', response);
+	// payWithCard(stripe, card, data.clientSecret, newCustomer);
+	loading(true);
+	stripe
+		.confirmCardPayment(data.clientSecret, {
+			payment_method: {
+				card: card,
+				billing_details: {
+					name: newCustomer.firstName + ' ' + newCustomer.lastName,
+					receiptEmail: newCustomer.email,
+				},
+			},
+		})
+		.then(function (result) {
+			console.log('result', result);
+			if (result.error) {
+				// Show error to your customer
+				showError(result.error.message);
+				return false;
+			} else {
+				// The payment succeeded!
+				console.log('result.paymentIntent.id', result.paymentIntent.id);
+				$.ajax({
+					url: '/checkout',
+					data: JSONResponse,
+					dataType: 'json',
+					type: 'POST',
+					contentType: 'application/json',
+					success: (response) => localStorage.setItem('stripeId', newCustomer.stripeId),
+					// success: () => location.assign('/order/confirmation'),
+					error: (response) => console.log('console.log error', response),
+				});
+				orderComplete(result.paymentIntent.id);
+				// return result;
+			}
+		});
+	// console.log('result', result);
+		
+};
+// Show the customer the error from Stripe if their card fails to charge
+const showError = (errorMsgText) => {
+	loading(false);
+	var errorMsg = document.querySelector('#cardError');
+	errorMsg.textContent = errorMsgText;
+	setTimeout(function () {
+		errorMsg.textContent = '';
+	}, 4000);
+};
+// Show a spinner on payment submission
+const loading = (isLoading) => {
+	if (isLoading) {
+		// Disable the button and show a spinner
+		document.querySelector('button').disabled = true;
+		document.querySelector('#spinner').classList.remove('hidden');
+		document.querySelector('#button-text').classList.add('hidden');
+	} else {
+		document.querySelector('button').disabled = false;
+		document.querySelector('#spinner').classList.add('hidden');
+		document.querySelector('#button-text').classList.remove('hidden');
 	}
-	/* luhn_validate
-	 * Return true if specified code (with check digit) is valid.
-	 */
-	function luhnValidate(fullcode) {
-		return luhnChecksum(fullcode) == 0;
+};
+// Calls stripe.confirmCardPayment
+// If the card requires authentication Stripe shows a pop-up modal to
+// prompt the user to enter authentication details without leaving your page.
+const payWithCard = (stripe, card, clientSecret, customer) => {
+	console.log("clientSecret", clientSecret)
+	
+	console.log("card", card)
+	
+	console.log("stripe", stripe)
+	
+	console.log("customer", customer)
+	
+
+};
+const orderComplete = (paymentIntentId) => {
+	loading(false);
+	const url = 'https://dashboard.stripe.com/test/payments/' + paymentIntentId;
+	$('#success').find('a').attr('href' , url)
+	$('#success').css('visibility', 'visible');
+	document.querySelector('button').disabled = true;
+};
+const validateForm = () => {
+	// function luhnChecksum(code) {
+	// 	var len = code.length;
+	// 	var parity = len % 2;
+	// 	var sum = 0;
+	// 	for (var i = len - 1; i >= 0; i--) {
+	// 		var d = parseInt(code.charAt(i));
+	// 		if (i % 2 == parity) {
+	// 			d *= 2;
+	// 		}
+	// 		if (d > 9) {
+	// 			d -= 9;
+	// 		}
+	// 		sum += d;
+	// 	}
+	// 	return sum % 10;
+	// }
+	// /* luhn_validate
+	//  * Return true if specified code (with check digit) is valid.
+	//  */
+	// function luhnValidate(fullcode) {
+	// 	return luhnChecksum(fullcode) == 0;
+	// }
+	console.log("localStorage.getItem('stripeId')", localStorage.getItem('stripeId'))
+	
+	const order = new Order();
+	order.fromJSON(localStorage.getItem(localStorage.key(0)));
+	if (localStorage.getItem('stripeId')) {
+		const newCustomer = new Customer(null, localStorage.getItem('stripeId'));
+		console.log("newCustomer", newCustomer)
+		order.customerData = newCustomer
 	}
 	const forms = document.getElementsByClassName('needs-validation');
-	// Loop over them and prevent submission
-	//https://gomakethings.com/what-the-hell-is-the-call-method-and-when-should-you-use-it/
-	Array.prototype.filter.call(forms, function (form) {
-		$('#checkoutButton')
-			.unbind('click')
-			.bind('click', function () {
-				const creditCardExpirationElement = $('#cc-expiration')[0];
-				const creditCardNumElement = $('#cc-number')[0];
-				const creditCardCVV = $('#cc-cvv')[0];
-				creditCardExpirationElement.setCustomValidity('');
-				creditCardNumElement.setCustomValidity('');
-				creditCardCVV.setCustomValidity('');
-				
-				if (form.checkValidity() === false) {
-					form.classList.add('was-validated');
-					return false;
-				} else {
-					if (!luhnValidate($('#cc-number').val())) {
-						creditCardNumElement.setCustomValidity('false');
-						$('#cc-number').next().html('Please enter a valid credit card number');
-						form.classList.add('was-validated');
-						return false;
-					}
-					else if (!$('#cc-expiration').val().includes('/')) {
-						creditCardExpirationElement.setCustomValidity('false');
-						$('#cc-expiration').next().html('Please enter a valid expiration date');
-						form.classList.add('was-validated');
-						return false;
-					} else if ($('#cc-cvv').val().length < 3 || isNaN($('#cc-cvv').val())) {
-						creditCardCVV.setCustomValidity('false');
-						$('#cc-cvv').next().html('Please enter a valid credit card cvv number');
-						form.classList.add('was-validated');
-						return false;
-					} else {
-						form.classList.add('was-validated');
-						handleFormSubmit();	
-						return false;
-					}
+	const stripe = Stripe(
+		'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+	);
+	document.querySelector('button').disabled = true;
+	fetch('/create-payment-intent', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(order),
+	})
+		.then(function (result) {
+			return result.json();
+		})
+		.then(function (data) {
+			console.log("data", data)
+			
+			
+			const elements = stripe.elements();
+			// var style = {
+			// 	base: {
+			// 		color: '#32325d',
+			// 		fontFamily: 'Arial, sans-serif',
+			// 		fontSmoothing: 'antialiased',
+			// 		fontSize: '16px',
+			// 		'::placeholder': {
+			// 			color: '#32325d',
+			// 		},
+			// 	},
+			// 	invalid: {
+			// 		fontFamily: 'Arial, sans-serif',
+			// 		color: '#fa755a',
+			// 		iconColor: '#fa755a',
+			// 	},
+			// };
+			const card = elements.create('card');
+			// Stripe injects an iframe into the DOM
+			card.mount('#cc-card');
+			card.on('change', function (event) {
+				console.log('event', event);
+				// Disable the Pay button if there are no card details in the Element
+				document.querySelector('#checkoutButton').disabled = event.empty;
+				if (event.error) {
+					document.querySelector('#checkoutButton').disabled = true;
+					document.querySelector('#cardError').textContent = event.error ? event.error.message : '';
+					$('#cardError').show();
+				} else if (!event.complete) {
+					document.querySelector('#cardError').textContent = 'Please enter a valid card date';
+				}
+				else {
+					document.querySelector('#checkoutButton').disabled = false;
+					document.querySelector('#cardError').textContent = ''
+					$('#cardError').hide();
 				}
 			});
-	});
+			card.on('ready', function (event) {
+				// Disable the Pay button if there are no card details in the Element
+				if (!event.empty) {
+					document.querySelector('#cardError').textContent = 'Please enter a valid card number';
+				} else if (!event.complete) {
+					document.querySelector('#cardError').textContent = 'Please complete the required card information';
+				}
+			});
+			// Loop over them and prevent submission
+			//https://gomakethings.com/what-the-hell-is-the-call-method-and-when-should-you-use-it/
+			Array.prototype.filter.call(forms, function (form) {
+				$('#checkoutButton')
+					.unbind('click')
+					.bind('click', function (event) {
+						if (form.checkValidity() === false) {
+							form.classList.add('was-validated');
+							return false;
+						} else {
+							if (document.querySelector('#cardError').textContent) {
+								$('#cardError').show();
+								return false;
+							}
+							else {
+								// const hiddenInput = document.createElement('input');
+								// hiddenInput.setAttribute('type', 'hidden');
+								// hiddenInput.setAttribute('name', 'stripeToken');
+								// hiddenInput.setAttribute('value', token.id);
+								// form.appendChild(hiddenInput);
+								form.classList.add('was-validated');
+								handleFormSubmit(stripe, card, data);
+								return false;
+							}
+							
+						}
+					});
+			});
+		});
 };
 
 $(window).ready(function () {

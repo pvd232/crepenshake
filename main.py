@@ -1,9 +1,12 @@
 import os
 import json
+import stripe
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
 from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service
 from models import *
+
+stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
 
 def humanize(dict = None, attr = None, format = False):
     if format == True:
@@ -230,6 +233,14 @@ def order_menu_crepe(editOrder=None):
     return render_template('order_menu_crepe.html', savory_menu_crepes=savory_menu_crepes, formatted_savory_menu_crepes = formatted_savory_menu_crepes, sweet_menu_crepes=sweet_menu_crepes, formatted_sweet_menu_crepes = formatted_sweet_menu_crepes,  editOrder=editOrder)
 
 
+@app.route('/create-payment-intent', methods=['POST'])
+def create_payment():
+   order = json.loads(request.data)
+   print("order", order)
+   
+   order_service = Order_Service()
+   return jsonify(order_service.stripe_pay(order))
+
 @app.route('/checkout', methods=['POST', 'GET'])
 def checkout():
     if request.method == 'GET':
@@ -255,4 +266,5 @@ def favicon():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=create_coffee_temperature)
+

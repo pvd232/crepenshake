@@ -1,5 +1,6 @@
 
 from models import *
+import stripe
 from datetime import date
 from sqlalchemy import or_
 from sqlalchemy.orm import load_only
@@ -37,13 +38,52 @@ class Ingredient_Repository(object):
 
 
 class Order_Repository(object):
+    def post_stripe_order(self, session, order):
+        new_customer = order['customerData']
+        if not new_customer:
+            new_customer = stripe.Customer.create()
+            print("new_customer", new_customer)
+            
+            new_stripe_id = Stripe(id=new_customer.id)
+            session.add(new_stripe_id)
+            session.commit()
+            try:
+                amount = int(order['orderTotal'] * 100)
+                print("amount", amount)            
+                intent = stripe.PaymentIntent.create(
+                    amount=amount,
+                    customer=new_customer.id,
+                    setup_future_usage='off_session',
+                    currency='usd'
+                )
+                return {'clientSecret': intent['client_secret'], 'customer': new_customer.id}
+            except Exception as e:
+                return e
+        else:
+            try:
+                amount = int(order['orderTotal'] * 100)
+                print("amount", amount)            
+                intent = stripe.PaymentIntent.create(
+                    amount=amount,
+                    customer=new_customer['stripeId'],
+                    setup_future_usage='off_session',
+                    currency='usd'
+                )
+                return {'clientSecret': intent['client_secret'], 'customer': new_customer['stripeId']}
+            except Exception as e:
+                return e
+
     def post_order(self, session, order):
+        print("order", order.serialize())
+        
         new_customer = order.customer
+        print("new_customer", new_customer.serialize())
+        
         user = session.query(Customer).filter(
-            Customer.id == new_customer.id).first()
+            Customer.stripe_id == new_customer.stripe_id).first()
         # check to make sure the customer doesn't already exist in the database
         if not user:
-            new_customer = Customer(id=new_customer.id, first_name=new_customer.first_name, last_name=new_customer.last_name,
+            new_customer = Customer(id=new_customer.id, stripe_id = new_customer.stripe_id, first_name=new_customer.first_name, last_name=new_customer.last_name,
                                     street=new_customer.street, city=new_customer.city, state=new_customer.state, zipcode=new_customer.zipcode, country=new_customer.country)
             session.add(new_customer)
             new_order = Order(id=order.id, customer_id=new_customer.id,
