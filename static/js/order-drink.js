@@ -33,7 +33,7 @@ const stringify = (drinkOrder) => {
 		const order = new Order();
 		if (drinkOrder.orderDrink.length) {
 			if (localStorage.length > 0) {
-				order.fromJSON(localStorage.getItem(localStorage.key(0)));
+				order.fromJSON(localStorage.getItem('order'));
 				const drinkOrderTotal = drinkOrder.orderTotal;
 				order.orderTotal += drinkOrderTotal;
 				order.orderDrink.push(drinkOrder);
@@ -71,7 +71,7 @@ const modifyOrder = () => {
 		console.log('editDrinkIndex', editDrinkIndex);
 
 		editOrder = new Order();
-		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
+		editOrder.fromJSON(localStorage.getItem('order'));
 		console.log('editOrder', editOrder);
 
 		const editOrderDrink = editOrder.orderDrink[editDrinkIndex];

@@ -32,7 +32,7 @@ const stringify = (crepeOrder) => {
 			const order = new Order();
 			if (localStorage.length > 0) {
 				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
-				order.fromJSON(localStorage.getItem(localStorage.key(0)));
+				order.fromJSON(localStorage.getItem('order'));
 				// only one crepe order will be processed on this page at a time
 				const crepeOrderTotal = crepeOrder.orderTotal;
 				order.orderTotal += crepeOrderTotal;
@@ -81,7 +81,7 @@ const modifyOrder = () => {
 		console.log('edit');
 		editCrepeIndex = $('.edit').first().attr('id');
 		editOrder = new Order();
-		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
+		editOrder.fromJSON(localStorage.getItem('order'));
 		const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex];
 		userOrderCrepe = editOrderCrepe;
 		console.log('editOrderCrepe', editOrderCrepe);

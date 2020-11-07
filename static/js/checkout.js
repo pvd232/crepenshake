@@ -6,7 +6,7 @@ import { humanize } from './model.js';
 import { Order, Customer, Coffee } from './model.js';
 
 const buildPage = () => {
-	const key = localStorage.key(0);
+	const key = 'order';
 	const orderDict = localStorage.getItem(key);
 	const order = new Order();
 	order.fromJSON(orderDict);
@@ -250,7 +250,7 @@ const buildPage = () => {
 };
 const handleFormSubmit = (stripe, card, data) => {
 	const order = new Order();
-	order.fromJSON(localStorage.getItem(localStorage.key(0)));
+	order.fromJSON(localStorage.getItem('order'));
 	const response = {};
 	const customerData = {};
 	$('input, select', $('#checkoutForm')).each(function () {
@@ -378,7 +378,7 @@ const validateForm = () => {
 	console.log("localStorage.getItem('stripeId')", localStorage.getItem('stripeId'))
 	
 	const order = new Order();
-	order.fromJSON(localStorage.getItem(localStorage.key(0)));
+	order.fromJSON(localStorage.getItem('order'));
 	if (localStorage.getItem('stripeId')) {
 		const newCustomer = new Customer(null, localStorage.getItem('stripeId'));
 		console.log("newCustomer", newCustomer)

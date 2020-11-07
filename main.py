@@ -236,8 +236,6 @@ def order_menu_crepe(editOrder=None):
 @app.route('/create-payment-intent', methods=['POST'])
 def create_payment():
    order = json.loads(request.data)
-   print("order", order)
-   
    order_service = Order_Service()
    return jsonify(order_service.stripe_pay(order))
 
@@ -266,5 +264,5 @@ def favicon():
 
 
 if __name__ == "__main__":
-    app.run(debug=create_coffee_temperature)
+    app.run(debug=True)
 

@@ -1,24 +1,6 @@
 .modal.fade .container {
 	text-align: center;
 }
-/* .modal.fade .container-fluid button {
-	vertical-align: middle;
-	display: inline-block;
-	margin-top: 60px;
-	margin-right: 40px;
-	margin-left: 40px;
-	background-color: rgba(251, 35, 49, 1);
-	color: white;
-	font-size: 28px;
-	font-weight: 650;
-	text-align: center;
-	padding: 0px 24px;
-	border: none;
-	cursor: pointer;
-	border-radius: 5px;
-	width: 260px;
-	height: 110px;
-} */
 
 .modal.fade .center {
 	position: absolute;
@@ -30,12 +12,15 @@
 .modal.fade .btn8 {
 	background-color: rgba(251, 35, 49, 1);
 	color: white;
-	font-size: 16px;
+	font-size: 90%;
 	border-radius: 5px;
 	border: none;
 	cursor: pointer;
 	font-weight: 500;
 	padding: 6px 12px;
+	max-width: 90%;
+	display:flex;
+	align-self:center;
 }
 
 .modal.fade .btn9 {
@@ -58,6 +43,8 @@
 	cursor: pointer;
 	font-weight: 500;
 	padding: 6px 6px 6px 6px;
+	max-width: 50%;
+
 }
 
 /* https://stackoverflow.com/questions/11738870/adding-background-color-and-padding-to-row-in-twitter-bootstrap */

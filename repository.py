@@ -42,43 +42,46 @@ class Order_Repository(object):
         new_customer = order['customerData']
         if not new_customer:
             new_customer = stripe.Customer.create()
-            print("new_customer", new_customer)
-            
             new_stripe_id = Stripe(id=new_customer.id)
             session.add(new_stripe_id)
             session.commit()
-            try:
-                amount = int(order['orderTotal'] * 100)
-                print("amount", amount)            
-                intent = stripe.PaymentIntent.create(
+            amount = int(order['orderTotal'] * 100)
+            intent = stripe.PaymentIntent.create(
                     amount=amount,
                     customer=new_customer.id,
                     setup_future_usage='off_session',
                     currency='usd'
                 )
-                return {'clientSecret': intent['client_secret'], 'customer': new_customer.id}
-            except Exception as e:
-                return e
-        else:
-            try:
-                amount = int(order['orderTotal'] * 100)
-                print("amount", amount)            
-                intent = stripe.PaymentIntent.create(
-                    amount=amount,
-                    customer=new_customer['stripeId'],
-                    setup_future_usage='off_session',
-                    currency='usd'
-                )
-                return {'clientSecret': intent['client_secret'], 'customer': new_customer['stripeId']}
-            except Exception as e:
-                return e
-
+            return {'clientSecret': intent['client_secret'], 'customer': new_customer.id}
+        else:    
+            amount = int(order['orderTotal'] * 100)
+            
+            # Lookup the saved card (you can store multiple PaymentMethods on a Customer)
+            payment_methods = stripe.PaymentMethod.list(
+                customer=new_customer['stripeId'],
+                type='card'
+            )
+            # Charge the customer and payment method immediately
+            payment_intent = stripe.PaymentIntent.create(
+                amount=2000,
+                currency='usd',
+                customer=new_customer['stripeId'],
+                payment_method=payment_methods.data[0].id,
+                off_session=True,
+                confirm=True
+            )
+            if payment_intent.status == 'succeeded':
+                print('Successfully charged card off session')
+            # intent = stripe.PaymentIntent.create(
+            #     amount=amount,
+            #     customer=new_customer['stripeId'],
+            #     setup_future_usage='off_session',
+            #     currency='usd'
+            # )
+            return {'clientSecret': intent['client_secret'], 'customer': new_customer['stripeId']}
+    
     def post_order(self, session, order):
-        print("order", order.serialize())
-        
         new_customer = order.customer
-        print("new_customer", new_customer.serialize())
-        
         user = session.query(Customer).filter(
             Customer.stripe_id == new_customer.stripe_id).first()
         # check to make sure the customer doesn't already exist in the database
@@ -94,7 +97,6 @@ class Order_Repository(object):
                               cost=order.cost, date=order.date)
             session.add(new_order)
         session.commit()
-        print('new order repo', new_order.serialize)
         if order.order_crepe:
             for i in range(len(order.order_crepe.order_crepe)):
                 crepe_to_add = order.order_crepe.order_crepe[i]

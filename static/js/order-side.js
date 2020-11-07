@@ -32,7 +32,7 @@ const stringify = (sideOrder) => {
 		const order = new Order();
 		if (sideOrder.orderSide.length) {
 			if (localStorage.length > 0) {
-				order.fromJSON(localStorage.getItem(localStorage.key(0)));
+				order.fromJSON(localStorage.getItem('order'));
 				const sideOrderTotal = sideOrder.orderTotal;
 				order.orderTotal += sideOrderTotal;
 				order.orderSide.push(sideOrder);
@@ -71,7 +71,7 @@ const modifyOrder = () => {
 	if ($('.edit').length) {
 		editSideIndex = $('.edit').first().attr('id');
 		editOrder = new Order();
-		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
+		editOrder.fromJSON(localStorage.getItem('order'));
 		const editOrderSide = editOrder.orderSide[editSideIndex];
 		userOrderSide = editOrderSide;
 		for (var i = 0; i < editOrderSide.orderSide.length; i++) {

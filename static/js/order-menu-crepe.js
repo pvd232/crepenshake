@@ -11,7 +11,7 @@ const stringify = (crepeOrder) => {
 		const order = new Order();
 		if (crepeOrder.menuCrepes.length) {
 			if (localStorage.length > 0) {
-				order.fromJSON(localStorage.getItem(localStorage.key(0)));
+				order.fromJSON(localStorage.getItem('order'));
 				const crepeOrderTotal = crepeOrder.orderTotal;
 				order.orderTotal += crepeOrderTotal;
 				order.orderCrepe.push(crepeOrder);
@@ -61,7 +61,7 @@ const modifyOrder = () => {
 		console.log('editCrepeIndex', editCrepeIndex);
 
 		editOrder = new Order();
-		editOrder.fromJSON(localStorage.getItem(localStorage.key(0)));
+		editOrder.fromJSON(localStorage.getItem('order'));
 		const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex].menuCrepes;
 		userOrderMenuCrepe.menuCrepes = editOrderCrepe;
 		console.log('editOrderCrepe', editOrderCrepe);

@@ -387,23 +387,19 @@ class Order_Service(object):
             "last4": cardNumber[-4:],
             "first6": cardNumber[0:6]
         }
-        # json_post_data = json.dumps(post_data)
-
         posturl = target_env + merchantID + '/pay'
         postresponse = requests.post( 
             posturl,
             headers=headers,
             data=post_data
         ).json()
-        print("postresponse", postresponse)
-
-        # print(json.dumps(postresponse))
 
     def create_order(self, order):
         new_order = Order_Model(order_object=order)
-        print("new_order.customer.id", new_order.customer.id)
-        customer_email = new_order.customer.id
+        # customer_email = new_order.customer.id
+        email = 'crepenshake427@gmail.com'
         # self.send_confirmation_email(customer_email)
+        self.send_confirmation_email(email)
         # self.developer_pay(new_order)
         with self.session_scope() as session:
             self.order_repository.post_order(session, order=new_order)

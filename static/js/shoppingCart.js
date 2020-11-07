@@ -21,7 +21,7 @@ const doShowAll = () => {
 	if (checkBrowser()) {
 		const modifyItem = (index, itemType, operation) => {
 			const order = new Order();
-			order.fromJSON(localStorage.getItem(localStorage.key(0)));
+			order.fromJSON(localStorage.getItem('order'));
 			if (operation === 'copy') {
 				if (itemType === 'crepe') {
 					const crepeToBeCopied = order.orderCrepe[index];
@@ -56,8 +56,8 @@ const doShowAll = () => {
 			}
 			localStorage.setItem('reload', 'true');
 		};
-		const key = localStorage.key(0);
-		const orderDict = localStorage.getItem(key);
+		
+		const orderDict = localStorage.getItem('order');
 		console.log("orderDict", orderDict)
 		
 		if (orderDict) {
@@ -148,17 +148,17 @@ const doShowAll = () => {
 						} else {
 							crepeURL = 'menu-crepe';
 						}
-						$(`<div class="grid-container" id="menubuttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
-            				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#container${k}`));
+						$(`<div class="grid-container" id="menubuttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; grid-template-columns: 1fr 1fr 1fr;
+            				grid-gap: 5px; display:grid; justify-items: center;"></div>`).insertAfter($(`#container${k}`));
 						$(`#menubuttoncontainer${k}`).append(
-							`<div ><button class="btn8" itemIndex="${itemIndex}" itemType="crepe" operation="copy" >Duplicate</button></div>`
+							`<button class="btn8" itemIndex="${itemIndex}" itemType="crepe" operation="copy" >Duplicate</button>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#menubuttoncontainer${k}`).append(
-							`<div><button class= "btn10" style="margin-top:.5px;" onclick="location.assign('/order/${crepeURL}?editOrder=${itemIndex}')">Edit</button></div>`
+							`<button class= "btn10" style="margin-top:.5px;" onclick="location.assign('/order/${crepeURL}?editOrder=${itemIndex}')">Edit</button>`
 						);
 						$(`#menubuttoncontainer${k}`).append(
-							`<div ><button class="btn8" itemIndex="${itemIndex}" itemType="crepe" operation="remove" >Remove</button></div>`
+							`<button class="btn8" itemIndex="${itemIndex}" itemType="crepe" operation="remove" >Remove</button>`
 						);
 					} // end of the loop iterating through crepe orders
 				} // end of for loop confirming orderCrepe existence
@@ -167,7 +167,7 @@ const doShowAll = () => {
 
 					for (var i = 0; i < drinkOrders.length; i++) {
 						$('#modalBody1').append(
-							`<div class="container" id="drinkContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="drinkRow-${i}-0"><h5 style='font-weight: 700; '>Drink Order #${
+							`<div class="container" id="drinkContainer${i}"><div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px; " id="drinkRow-${i}-0"><h5 style='font-weight: 700; '>Drink Order #${
 								i + 1
 							}</h5></div></div>`
 						);
@@ -272,7 +272,7 @@ const doShowAll = () => {
 									drinkName = humanize(drink, 'name').name;
 								}
 								$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow-${i}-${j + 1}">
-											<div class="col-9" style="margin-right: 0px; " >
+											<div class="col-9" style="margin-right: 0px;" >
 												<h5 >${drink.quantity + 'x' + ' ' + drinkName}</h5>
 											</div>
 											<div class="col-3">
@@ -284,17 +284,19 @@ const doShowAll = () => {
 
 						const drinkItemIndex = $(`#drinkContainer${i}`).find('.row').first().attr('id').split('-')[1];
 
-						$(`<div class="grid-container" id="drinkButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
-            				grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#drinkContainer${i}`));
+						$(`<div class="grid-container" id="drinkButtonContainer${i}" style="grid-template-columns: 1fr 1fr 1fr;
+            				display:grid; grid-gap: 5px; width:80%; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
+							$(`#drinkContainer${i}`)
+						);
 						$(`#drinkButtonContainer${i}`).append(
-							`<div ><button class="btn8" itemIndex="${drinkItemIndex}" itemType="drink" operation="copy" >Duplicate</button></div>`
+							`<button class="btn8" itemIndex="${drinkItemIndex}" itemType="drink" operation="copy" style="display:flex; align-self:center;">Duplicate</button>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#drinkButtonContainer${i}`).append(
-							`<div   ><button class= "btn10" style="margin-top:.5px;" onclick="location.assign('/order/drink?editOrder=${drinkItemIndex}')">Edit</button></div>`
+							`<button class= "btn10" style="margin-top:.5px;" onclick="location.assign('/order/drink?editOrder=${drinkItemIndex}')">Edit</button>`
 						);
 						$(`#drinkButtonContainer${i}`).append(
-							`<div ><button class="btn8" itemIndex="${drinkItemIndex}" itemType="drink" operation="remove" >Remove</button></div>`
+							`<button class="btn8" itemIndex="${drinkItemIndex}" itemType="drink" operation="remove" >Remove</button>`
 						);
 					}
 				} // end of for loop confirming orderDrink length
@@ -315,7 +317,7 @@ const doShowAll = () => {
 													<h5 >${humanize(side, 'sideName').sideName}</h5>
 												</div>
 												<div class="col-3" id="sideCol-${i}-${j + 2}">
-													<h4 >$${side.price}</h4>
+													<h4 >$${side.price.toFixed(2)}</h4>
 												</div>
 										</div>`).insertAfter(`#sideRow-${i}-${j}`);
 								for (var k = 0; k < side.toppings.length; k++) {
@@ -346,7 +348,7 @@ const doShowAll = () => {
 												<h5 >${side.quantity + 'x' + ' ' + humanize(side, 'flavor').flavor + ' ' + humanize(side, 'sideName').sideName}</h5>
 											</div>
 											<div class="col-3" id="sideCol-${i}-${j + 2}">
-												<h4 >$${side.price}</h4>
+												<h4 >$${side.price.toFixed(2)}</h4>
 											</div>
 											</div>`).insertAfter(`#${lastElementId}`);
 							}
@@ -354,10 +356,10 @@ const doShowAll = () => {
 						const sideItemIndex = $(`#sideContainer${i}`).find('.row').first().attr('id').split('-')[1];
 						console.log('sideItemIndex', sideItemIndex);
 
-						$(`<div class="grid-container" id="sideButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; align-content:space-evenly; grid-template-columns: auto auto auto;
+						$(`<div class="grid-container" id="sideButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; grid-template-columns: 1fr 1fr 1fr; justify-items: center;
             						grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${i}`));
 						$(`#sideButtonContainer${i}`).append(
-							`<button class="btn8" itemIndex="${sideItemIndex}" itemType="side" operation="copy" >Duplicate</button>`
+							`<button class="btn8" itemIndex="${sideItemIndex}" itemType="side" operation="copy">Duplicate</button>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#sideButtonContainer${i}`).append(
@@ -424,7 +426,3 @@ $(window).on('load', function () {
 	});
 	doShowAll();
 });
-
-// send mitra an updated resume
-// send mitra an unofficial transcript
-// prepare a statement of purpose that explains what in my background makes me a good candidate for the masters program

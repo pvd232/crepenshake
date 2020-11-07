@@ -399,6 +399,7 @@ export class Order {
 		}
 		this._orderTotal = data.orderTotal;
 		this._customerData = data.customerData;
+		this.priceOrder()
 	};
 	priceOrder = () => {
 		this._orderTotal = 0;
@@ -409,6 +410,7 @@ export class Order {
 			this._orderTotal += this._orderDrink[i].orderTotal;
 		}
 		for (var i in this._orderSide) {
+			this._orderSide[i];
 			this._orderTotal += this._orderSide[i].orderTotal;
 		}
 	};
@@ -1126,6 +1128,7 @@ export class OrderSide {
 				this._orderSide.push(newIceCreamBowl);
 			}
 		}
+		this.priceSides()
 	};
 	checkIfIceCreamSelected = () => {
 		for (var i = 0; i < this._orderSide.length; i++) {
