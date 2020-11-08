@@ -148,8 +148,10 @@ const doShowAll = () => {
 						} else {
 							crepeURL = 'menu-crepe';
 						}
-						$(`<div class="grid-container" id="menubuttoncontainer${k}" style="margin-top: 30px; margin-bottom:40px; grid-template-columns: 1fr 1fr 1fr;
-            				grid-gap: 5px; display:grid; justify-items: center;"></div>`).insertAfter($(`#container${k}`));
+						$(`<div class="grid-container" id="menubuttoncontainer${k}" style="grid-template-columns: 1fr 1fr 1fr;
+            				display:grid; grid-gap: 5px; width:80%; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
+							$(`#container${k}`)
+						);
 						$(`#menubuttoncontainer${k}`).append(
 							`<button class="btn8" itemIndex="${itemIndex}" itemType="crepe" operation="copy" >Duplicate</button>`
 						);
@@ -356,8 +358,10 @@ const doShowAll = () => {
 						const sideItemIndex = $(`#sideContainer${i}`).find('.row').first().attr('id').split('-')[1];
 						console.log('sideItemIndex', sideItemIndex);
 
-						$(`<div class="grid-container" id="sideButtonContainer${i}" style="margin-top: 30px; margin-bottom:40px; grid-template-columns: 1fr 1fr 1fr; justify-items: center;
-            						grid-gap: 5px; display:grid;"></div>`).insertAfter($(`#sideContainer${i}`));
+						$(`<div class="grid-container" id="sideButtonContainer${i}" style="grid-template-columns: 1fr 1fr 1fr;
+            				display:grid; grid-gap: 5px; width:80%; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
+							$(`#sideContainer${i}`)
+						);
 						$(`#sideButtonContainer${i}`).append(
 							`<button class="btn8" itemIndex="${sideItemIndex}" itemType="side" operation="copy">Duplicate</button>`
 						);

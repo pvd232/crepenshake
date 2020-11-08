@@ -107,7 +107,10 @@ const modifyOrder = () => {
 const pageLogic = () => {
 	$('.card, .list-group-item')
 		.on('mouseenter', function () {
-			if ($(this).find('.card-body').attr('id') != 'cardBody') {
+			if (
+				$(this).find('.card-body').attr('id') != 'cardBody' &&
+				$(this).attr('class') != 'list-group-item d-flex justify-content-between align-items-center'
+			) {
 				$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
 				$(this).find('.btn').show();
 			}
@@ -116,7 +119,12 @@ const pageLogic = () => {
 			$(this)
 				.unbind('click')
 				.bind('click', function (event) {
+					console.log("event.target", event.target)
+					
 					const senderElementClass = event.target.getAttribute('class');
+					const senderElementType = event.target.tagName
+					console.log("senderElementType", senderElementType)
+					
 					console.log('senderElement', senderElementClass);
 
 					if (
@@ -124,7 +132,12 @@ const pageLogic = () => {
 						senderElementClass === 'card-text' ||
 						senderElementClass === 'card-title' ||
 						senderElementClass === 'card-body' ||
-						senderElementClass === 'card-img-top'
+						senderElementClass === 'card-img-top' ||
+						senderElementClass === 'container5' ||
+						senderElementType === 'P' ||
+						senderElementType === 'IMG' ||
+						senderElementType === 'H2' 
+
 					) {
 						const json = JSON.parse($(this).attr('data-ingredients'));
 
@@ -139,14 +152,17 @@ const pageLogic = () => {
 								if (addedIngredient.servingSize === 'light') {
 									$(this).find('.btn2').html('½');
 									$(this).find('.btn2').show();
+									$(this).find('.btn').show();
 								} else if (addedIngredient.servingSize === 'regular') {
 									$(this).find('.btn2').html('✓');
 									$(this).find('.btn2').show();
+									$(this).find('.btn').show();
 								}
 							}
 						} else {
 							userOrderCrepe.removeIngredient(json);
 							$(this).find('.btn2').hide();
+							$(this).find('.btn').hide();
 						}
 						for (var i = 0; i < userOrderCrepe.ingredients.length; i++) {
 							const ingredient = userOrderCrepe.ingredients[i];
@@ -222,7 +238,10 @@ const pageLogic = () => {
 				});
 		})
 		.on('mouseleave', function () {
-			if ($(this).find('.card-body').attr('id') != 'cardBody') {
+			if (
+				$(this).find('.card-body').attr('id') != 'cardBody' &&
+				$(this).attr('class') != 'list-group-item d-flex justify-content-between align-items-center'
+			) {
 				const json = JSON.parse($(this).attr('data-ingredients'));
 
 				$(this).find('img, h5, p').css('opacity', '1');
