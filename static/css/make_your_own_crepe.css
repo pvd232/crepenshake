@@ -247,6 +247,7 @@
 }
 
 .non-modal .container4 .btn7 {
+	-webkit-appearance: none;
 	color: white;
 	outline: none;
 	display: none;
@@ -269,6 +270,7 @@
 }
 
 .non-modal .container4 .btn6 {
+	-webkit-appearance: none;
 	color: white;
 	outline: none;
 	display: none;

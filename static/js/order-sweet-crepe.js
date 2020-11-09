@@ -97,7 +97,7 @@ const pageLogic = () => {
 						senderElementClass === 'card-title' ||
 						senderElementClass === 'card-body' ||
 						senderElementClass === 'card-img-top' ||
-						senderElementClass === 'container5' ||
+						senderElementClass === 'container4' ||
 						senderElementType === 'P' ||
 						senderElementType === 'IMG' ||
 						senderElementType === 'H2' 
@@ -147,8 +147,7 @@ const pageLogic = () => {
 				});
 		})
 		.on('mouseleave', function () {
-			console.log('leave');
-			$(this).find('.card-body, .card-img-top, .card-text, .card-title, p, h2, img').css('opacity', '1');
+			$(this).find('.card-body, .card-img-top, .card-text, .card-title').css('opacity', '1');
 		});
 };
 
@@ -317,7 +316,7 @@ $(window).on('load resize', function () {
 				gridContainer.setAttribute('class', 'grid-container');
 				gridContainer.setAttribute(
 					'style',
-					'margin-top: 0px; margin-bottom:0px; align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;'
+					'grid-template-columns: 1fr 1fr 1fr; display:grid; grid-gap: 5px; justify-items: center;'
 				);
 
 				const button6 = document.createElement('button');
