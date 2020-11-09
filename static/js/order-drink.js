@@ -834,7 +834,7 @@ $(window).on('load resize', function () {
 			const selectedItemCategory = $(this).closest('.list-group').attr('id');
 			if (selectedItemCategory === 'syrup' || selectedItemCategory === 'coffee') {
 				$(`<div class='container3'>
-						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;'>
+						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px; align-items:center; grid-template-columns: auto auto auto; align-self: center;  grid-gap: 2px; display:grid;'>
 							<button class='btn' id='servingSize-2' style='display: none;'>Customize</button>
 							<button class='btn2'>✓</button>
 						</div>
@@ -845,11 +845,11 @@ $(window).on('load resize', function () {
 				selectedItemCategory === 'non-coffee'
 			) {
 				$(
-					`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
+					`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
 				).insertAfter($(this).find('container'));
 			} else if (selectedItemCategory === 'temperature' || selectedItemCategory === 'milk') {
 				$(`<div class='container3'>
-						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;'>
+						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;'>
 							<button class='btn2'>✓</button>
 						</div>
 					</div>`).insertAfter($(this).find('container'));

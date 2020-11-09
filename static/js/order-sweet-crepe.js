@@ -317,7 +317,7 @@ $(window).on('load resize', function () {
 				gridContainer.setAttribute('class', 'grid-container');
 				gridContainer.setAttribute(
 					'style',
-					'margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;'
+					'margin-top: 0px; margin-bottom:0px; align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;'
 				);
 
 				const button6 = document.createElement('button');
