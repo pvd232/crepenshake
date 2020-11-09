@@ -12,6 +12,7 @@ import uuid
 import os
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
+from sqlalchemy import inspect, create_engine
 
 
 @compiles(DropTable, "postgresql")
@@ -1252,12 +1253,17 @@ def create_everything():
 
 
 def instantiate_db_connection():
-    print('instantiate')
-    test = db.session.query(Ingredient).first()
-    if not test:
-        db.create_all()
-        create_everything()
-        print('working')
+    db.create_all()
+    create_everything()
+#     print('instantiate')
+#     ins = inspect(db)
+    # for _t in ins.get_table_names():
+    #     print(_t)
+    # test = db.session.query(Ingredient).first()
+    # if not test:
+        # db.create_all()
+        # create_everything()
+    #     print('working')
         # except Exception as e:
         #     print("Exception", str(e))
 

@@ -3,8 +3,8 @@ import json
 import stripe
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
-from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service
-from models import *
+from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service, Test_Service
+from models import app
 
 stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
 
@@ -40,8 +40,8 @@ def humanize(dict = None, attr = None, format = False):
 
 @app.route("/")
 def home():
-    instantiate_db_connection()
-    print('trying')
+    test_service = Test_Service()
+    test_service.test_connection()
     return render_template('index.html')
 
 

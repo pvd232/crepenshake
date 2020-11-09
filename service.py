@@ -5,13 +5,13 @@ import requests
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 from model import *
-from repository import Ingredient_Repository,  Order_Repository, Drink_Repository, Side_Repository, Menu_Crepe_Repository
-
+from models import instantiate_db_connection
+from repository import Ingredient_Repository,  Order_Repository, Drink_Repository, Side_Repository, Menu_Crepe_Repository, db
 from datetime import date
 import uuid
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy import inspect, create_engine
 from contextlib import contextmanager
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -624,3 +624,19 @@ class Menu_Crepe_Service(object):
                     crepe_id=menu_crepe.crepe_id, name=menu_crepe.name, price=menu_crepe.price, flavor_profile_id=menu_crepe.flavor_profile_id, origination_id=menu_crepe.origination_id)
                 response.append(crepe_model)
             return response
+
+class Test_Service(object):
+    def __init__(self):
+        self.username = "postgres"
+        self.password = "Iqopaogh23!"
+        self.connection_string_beginning = "postgres://"
+        self.connection_string_end = "@localhost:5432/crepenshakedb"
+        self.connection_string = self.connection_string_beginning + \
+            self.username + ":" + self.password + self.connection_string_end
+        self.test_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
+
+    def test_connection(self):
+        inspector = inspect(self.test_engine)
+        if len(inspector.get_table_names()) == 0:
+            print('instantiating')
+            instantiate_db_connection()
