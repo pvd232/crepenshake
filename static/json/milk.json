@@ -12,19 +12,23 @@
 		"price": 0.5
 	},
 	{
+		"id": "oat_milk",
+		"price": 0.5
+	},
+	{
 		"id": "quarter_moon_milk",
-		"price": 0
+		"price": 0.75
 	},
 	{
 		"id": "half_moon_milk",
-		"price": 0
+		"price": 0.99
 	},
 	{
 		"id": "three_quarter_moon_milk",
-		"price": 0
+		"price": 1.25
 	},
 	{
 		"id": "full_moon_milk",
-		"price": 0
+		"price": 1.50
 	}
 ]

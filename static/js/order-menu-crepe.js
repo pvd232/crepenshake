@@ -175,9 +175,6 @@ const pageLogic = () => {
 var cWidth = $(window).width();
 $(window).on('load resize', function () {
 	const newWidth = $(window).width();
-		if (localStorage.getItem('visited') != 'true') {
-			localStorage.setItem('visited', 'true');
-		}
 	$('.card-img-top').wrap('<div class="container2"></div>');
 
 	$('.card-img-top').each(function () {
@@ -188,7 +185,12 @@ $(window).on('load resize', function () {
 		);
 		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
-
+	$('.card-title, .head3').each(function () {
+		$(this).html(humanize(null, null, $(this).html()));
+	});
+	$('.head3').each(function () {
+		$(this).html($(this).html().toLowerCase());
+	});
 	$('#menuCrepeCheckout')
 		.unbind('click')
 		.bind('click', function () {

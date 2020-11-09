@@ -79,9 +79,6 @@ class Menu_Service(object):
                 new_ingredient_category_dict['ingredients'].append(y.serialize())
             new_ingredient_prices_by_category.append(new_ingredient_category_dict)
         response['savory_ingredient_prices_by_category'] = savory_ingredient_prices_by_category
-        
-        croissants = [x.serialize() for x in self.side_service.get_croissants()]
-        response['croissants'] = croissants
 
         ice_cream_bowls = [x.serialize() for x in self.side_service.get_ice_cream_bowls()]
         response['ice_cream_bowls'] = ice_cream_bowls
@@ -90,7 +87,7 @@ class Menu_Service(object):
                     for x in self.ingredient_service.get_sweet_ingredient_prices()]
         response['toppings'] = toppings
 
-        coffee_drinks = [x.serialize() for x in self.drink_service.get_coffee_drinks()]
+        coffee_drinks = [x.serialize() for x in self.drink_service.get_drinks('coffee')]
         response['coffee_drinks'] = coffee_drinks
         
 
@@ -458,10 +455,9 @@ class Drink_Service(object):
 
         with self.session_scope() as session:
             for drink in self.drink_repository.get_drinks(session, requested_drink_category_id):
-                drink_model = Drink_Model( id = drink.id, drink_category_id = drink.drink_category_id,
+                drink_model = Drink_Model( id = drink.id, drink_category_id = drink.drink_category_id, serving_size = drink.serving_size,
                     name=drink.name, price=drink.price)
                 response.append(drink_model)
-            formatted_response = [x.serialize() for x in response]
             return response
 
     def get_milk_drinks(self):
@@ -472,16 +468,6 @@ class Drink_Service(object):
 
                 drink_model = Drink_Model(
                     id=milk_drink.id, price=milk_drink.price)
-                response.append(drink_model)
-            return response
-
-    def get_coffee_drinks(self):
-        response = []
-
-        with self.session_scope() as session:
-            for coffee_drink in self.drink_repository.get_coffee_drinks(session):
-                drink_model = Drink_Model(
-                    name=coffee_drink.coffee_name, drink_category_id='coffee', price=coffee_drink.price, serving_size=coffee_drink.serving_size)
                 response.append(drink_model)
             return response
 
@@ -536,17 +522,7 @@ class Side_Service(object):
         finally:
             self.session.close()
         # now all calls to Session() will create a thread-local session
-
-    def get_croissants(self):
-        response = []
-        with self.session_scope() as session:
-            for croissant in self.side_repository.get_croissants(session):
-                # the front end needs the side_name prop
-                croissant_model = Side_Model(id=croissant.side_id, side_name_id='croissant',
-                                             flavor=croissant.flavor_id, price=croissant.price)
-                response.append(croissant_model)
-            return response
-
+   
     def get_side_types(self):
         response = []
 
@@ -637,6 +613,8 @@ class Test_Service(object):
 
     def test_connection(self):
         inspector = inspect(self.test_engine)
+        print("len(inspector.get_table_names())", len(inspector.get_table_names()))
+        
         if len(inspector.get_table_names()) == 0:
             print('instantiating')
             instantiate_db_connection()

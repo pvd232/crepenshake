@@ -1,15 +1,15 @@
-import {humanize, removeAllChildNodes} from './model.js'
+import { humanize, removeAllChildNodes } from './model.js';
 var cWidth = $(window).width();
 $(window).on('load resize', function () {
-        $('.card-img-top').each(function () {
-			this.src = '../static/images/vanilla_ice_cream.jpg';
-		});
-		$('.card-title, .head3').each(function () {
-			$(this).html(humanize(null, null, false, $(this).html()));
-        });
-    	$('.head3').each(function () {
-			$(this).html($(this).html().toLowerCase());
-		});
+	$('.card-img-top').each(function () {
+		this.src = '../static/images/vanilla_ice_cream.jpg';
+	});
+	$('.card-title, .head3').each(function () {
+		$(this).html(humanize(null, null, $(this).html()));
+	});
+	$('.head3').each(function () {
+		$(this).html($(this).html().toLowerCase());
+	});
 	const newWidth = $(window).width();
 
 	if (cWidth < newWidth) {
@@ -47,7 +47,6 @@ $(window).on('load resize', function () {
 
 		const constCardImgSrcValues = [...cardImgSrcValues];
 		const cardDeckElementsLength = cardDeckElements.length;
-
 
 		const cardDeckChildrenLength = new Array();
 		const constCardDeckNodes = new Array();
@@ -170,6 +169,10 @@ $(window).on('load resize', function () {
 			$(this).addClass('container');
 			$(this).removeClass('container0');
 		});
+		$('.container0sweetCrepe').each(function () {
+			$(this).addClass('container');
+			$(this).removeClass('container0sweetCrepe');
+		});
 	}
 });
 // TODO: add sauteed onions & peppers, pesto, dill
@@ -183,4 +186,3 @@ $(window).on('resize', function () {
 		location.reload();
 	}
 });
-

@@ -150,10 +150,6 @@ class Order_Repository(object):
                         for topping in side_to_add.toppings:
                             new_ice_cream_bowl = Order_Ice_Cream(side_id=side_to_add.id, order_id=new_order.id, flavor=side_to_add.flavor, serving_size_id=side_to_add.serving_size, topping=topping.id, topping_serving_size=topping.serving_size, quantity=1)
                             session.add(new_ice_cream_bowl)
-                else:
-                    new_croissant_order_side = Order_Side(
-                    order_id=new_order.id, side_id=side_to_add.id, quantity=side_to_add.quantity)
-                    session.add(new_croissant_order_side)
             session.commit()
         return True
 
@@ -165,14 +161,10 @@ class Order_Repository(object):
 class Drink_Repository(object):
 
     def get_drinks(self, session, requested_drink_category_id):
-        drinks = session.query(Drink).filter(
-            Drink.drink_category_id == requested_drink_category_id)
+        drinks = session.query(Drink_Name_Serving_Size_Price).filter(
+            Drink_Name_Serving_Size_Price.drink_category_id == requested_drink_category_id)
         return drinks
     
-    def get_coffee_drinks(self, session):
-        coffee = session.execute(
-        "SELECT * FROM coffee_name_serving_size_price JOIN drink_category d ON d.id = 'coffee'")
-        return coffee
 
     def get_milk_drinks(self, session):
         milk_drinks = session.execute("SELECT id, price FROM milk")
@@ -195,9 +187,6 @@ class Drink_Repository(object):
 
 
 class Side_Repository(object):
-    def get_croissants(self, session):
-        croissants = session.query(Croissant)
-        return croissants
 
     def get_side_types(self, session):
         side_types = session.query(Side_Type)

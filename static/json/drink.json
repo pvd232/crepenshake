@@ -1,146 +1,126 @@
 [
 	{
-		"id": "latte",
-		"drink_type_id": "coffee"
+		"name": "latte",
+		"drink_category_id": "coffee"
 	},
 	{
-		"id": "vanilla_latte",
-		"drink_type_id": "coffee"
+		"name": "caramel_macchiato",
+		"drink_category_id": "coffee"
 	},
 	{
-		"id": "chocolate_mocha",
-		"drink_type_id": "coffee"
+		"name": "cafe_mocha",
+		"drink_category_id": "coffee"
 	},
 	{
-		"id": "caramel_macchiato",
-		"drink_type_id": "coffee"
+		"name": "nutella_dream_latte",
+		"drink_category_id": "coffee"
 	},
 	{
-		"id": "white_chocolate_mocha",
-		"drink_type_id": "coffee"
+		"name": "red_eye",
+		"drink_category_id": "coffee"
 	},
 	{
-		"id": "cappuccino",
-		"drink_type_id": "coffee"
+		"name": "cappuccino",
+		"drink_category_id": "coffee"
 	},
 	{
-		"id": "chocolate_chip_fudge_frappuccino",
-		"drink_type_id": "non-coffee"
+		"name": "hot_chocolate",
+		"drink_category_id": "non-coffee"
 	},
 	{
-		"id": "vanilla_bean_frappuccino",
-		"drink_type_id": "non-coffee"
+		"name": "white_hot_chocolate",
+		"drink_category_id": "non-coffee"
 	},
 	{
-		"id": "strawberries_&_crème_frappuccino",
-		"drink_type_id": "non-coffee"
+		"name": "hot_vanilla_bean_tea",
+		"drink_category_id": "non-coffee"
 	},
 	{
-		"id": "hot_chocolate",
-		"drink_type_id": "non-coffee"
+		"name": "hot_passion_tea",
+		"drink_category_id": "non-coffee"
 	},
 	{
-		"id": "hot_white_chocolate",
-		"drink_type_id": "non-coffee"
+		"name": "hot_peach_tea",
+		"drink_category_id": "non-coffee"
 	},
 	{
-		"id": "hot_vanilla_bean_tea",
-		"drink_type_id": "non-coffee"
+		"name": "bottled_water",
+		"drink_category_id": "bottled"
 	},
 	{
-		"id": "hot_passion_tea",
-		"drink_type_id": "non-coffee"
+		"name": "raspberry_lime_spindrift",
+		"drink_category_id": "bottled"
 	},
 	{
-		"id": "hot_peach_tea",
-		"drink_type_id": "non-coffee"
+		"name": "lemon_lime_spindrift",
+		"drink_category_id": "bottled"
 	},
 	{
-		"id": "bottled_water",
-		"drink_type_id": "non-coffee"
+		"name": "grapefruit_spindrift",
+		"drink_category_id": "bottled"
 	},
 	{
-		"id": "raspberry_lime_spindrift",
-		"drink_type_id": "non-coffee"
+		"name": "coke",
+		"drink_category_id": "bottled"
 	},
 	{
-		"id": "lemon_spindrift",
-		"drink_type_id": "non-coffee"
+		"name": "sprite",
+		"drink_category_id": "bottled"
 	},
 	{
-		"id": "grape_fuit_spindrift",
-		"drink_type_id": "non-coffee"
+		"name": "milk",
+		"drink_category_id": "bottled"
 	},
 	{
-		"id": "coke",
-		"drink_type_id": "non-coffee"
+		"name": "moon_milk",
+		"drink_category_id": "bottled"
 	},
 	{
-		"id": "sprite",
-		"drink_type_id": "non-coffee"
+		"name": "cookie_monster",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "milk",
-		"drink_type_id": "non-coffee"
+		"name": "cake_shake",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "moon_milk",
-		"drink_type_id": "non-coffee"
+		"name": "almond_joy",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "cookie_monster",
-		"drink_type_id": "milkshake"
+		"name": "chocolate_joy",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "cake_shake",
-		"drink_type_id": "milkshake"
+		"name": "mudslide",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "almond_joy",
-		"drink_type_id": "milkshake"
+		"name": "the_milky_panda",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "death_by_chocolate",
-		"drink_type_id": "milkshake"
+		"name": "ms._nutella",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "mudslide",
-		"drink_type_id": "milkshake"
+		"name": "vanilla",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "the_milky_panda",
-		"drink_type_id": "milkshake"
+		"name": "chocolate",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "vanilla_milkshake",
-		"drink_type_id": "milkshake"
+		"name": "strawberry",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "chocolate_milkshake",
-		"drink_type_id": "milkshake"
+		"name": "cookies_&_cream",
+		"drink_category_id": "milkshake"
 	},
 	{
-		"id": "strawberry_milkshake",
-		"drink_type_id": "milkshake"
-	},
-	{
-		"id": "cookies_&_creme_milkshake",
-		"drink_type_id": "milkshake"
-	},
-	{
-		"id": "salted_caramel_milkshake",
-		"drink_type_id": "milkshake"
-	},
-	{
-		"id": "nutella_pretzel_milkshake",
-		"drink_type_id": "milkshake"
-	},
-	{
-		"id": "white_chocolate_milkshake",
-		"drink_type_id": "milkshake"
-	},
-	{
-		"id": "cake_batter_milkshake",
-		"drink_type_id": "milkshake"
+		"name": "cake_batter",
+		"drink_category_id": "milkshake"
 	}
 ]

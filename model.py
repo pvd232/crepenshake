@@ -98,15 +98,6 @@ class Order_Side_Model(object):
                         new_ice_cream_bowl = Ice_Cream_Bowl_Model(
                             ice_cream_object=side)
                         self.order_side.append(new_ice_cream_bowl)
-                    else:
-                        new_croissant = Side_Model(side_object=side)
-                        side_bool = False
-                        for side in self.order_side:
-                            if side.id == new_croissant.id:
-                                side.quantity += 1
-                                side_bool = True
-                        if not side_bool:
-                            self.order_side.append(new_croissant)
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())

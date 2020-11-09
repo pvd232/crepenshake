@@ -9,28 +9,9 @@ export const capitalize = (str) => {
 	});
 };
 
-export const humanize = (dict = null, attr = null, format = false, word = null) => {
+export const humanize = (dict = null, attr = null, word = null) => {
 	// this is providing a deep copy of the object so we don't mutate the original order
 	var formatDict = JSON.parse(JSON.stringify(dict));
-
-	if (format === true) {
-		for (var i = 0; i < formatDict['ingredients'].length; i++) {
-			var str = formatDict['ingredients'][i][`${attr}`];
-			const frags = str.split('_');
-			if (frags.length < 2) {
-				str = capitalize(str);
-				formatDict['ingredients'][i][`${attr}`] = str;
-			}
-			var newFrags = new Array();
-			for (var frag in frags) {
-				frag = capitalize(frag);
-				newFrags.push(frag);
-			}
-			newFrags = newFrags.join(' ');
-			formatDict['ingredients'][i][`${attr}`] = newFrags;
-		}
-		return formatDict;
-	}
 	if (formatDict) {
 		var str = formatDict[`${attr}`];
 		var frags = str.split('_');
@@ -49,6 +30,11 @@ export const humanize = (dict = null, attr = null, format = false, word = null) 
 		return formatDict;	
 	}
 	else if (word) {
+		var servingSize = null
+		if (word.split(' ').length > 1 && word.includes('oz')) {
+			servingSize = word.split(' ')[0];
+			word = word.split(' ')[1]
+		}
 		var frags = word.split('_');
 		if (frags.length < 2) {
 			word = capitalize(word);			
@@ -60,6 +46,9 @@ export const humanize = (dict = null, attr = null, format = false, word = null) 
 			newFrags.push(capitalFrag);
 		}
 		newFrags = newFrags.join(' ');
+		if (servingSize) {
+			newFrags = servingSize + " " + newFrags
+		}
 		return newFrags;	
 	}
 	
@@ -893,81 +882,6 @@ export class OrderDrink {
 
 // Side Models
 
-export class Croissant {
-	constructor(id = null, flavor = null, price = null, quantity = 1, sideName = null) {
-		this.id = id;
-		this.flavor = flavor;
-		this.price = price;
-		this.quantity = quantity;
-		this.sideName = sideName;
-	}
-	get id() {
-		return this._id;
-	}
-	get flavor() {
-		return this._flavor;
-	}
-	get price() {
-		return this._price;
-	}
-	get quantity() {
-		return this._quantity;
-	}
-	get sideName() {
-		return this._sideName;
-	}
-	set id(value) {
-		this._id = value;
-	}
-	set flavor(value) {
-		this._flavor = value;
-	}
-	set price(value) {
-		this._price = value;
-	}
-	set quantity(value) {
-		this._quantity = value;
-	}
-	set sideName(value) {
-		this._sideName = value;
-	}
-	toJSON = () => {
-		const data = {
-			id: this._id,
-			flavor: this._flavor,
-			price: this._price,
-			quantity: this._quantity,
-			sideName: this._sideName,
-		};
-		return data;
-	};
-	fromJSON = (json) => {
-		const data = json;
-		this._id = data.id;
-		this._flavor = data.flavor;
-		this._price = data.price;
-		if (data.quantity) {
-			this._quantity = data.quantity;
-		}
-		if (data.side_name_id) {
-			this._sideName = data.side_name_id;
-		} else if (data.sideName) {
-			this._sideName = data.sideName;
-		}
-	};
-	updateCroissantQuantity = (value) => {
-		if (value === 'decrease') {
-			if (this._quantity === 0) {
-				return;
-			} else {
-				this._quantity -= 1;
-			}
-		} else if (value === 'increase') {
-			this._quantity += 1;
-		}
-	};
-}
-
 export class IceCreamBowl {
 	constructor(
 		id = null,
@@ -1118,11 +1032,7 @@ export class OrderSide {
 		const data = json;
 		for (var i = 0; i < data.orderSide.length; i++) {
 			const sideCategory = data.orderSide[i].sideName;
-			if (sideCategory === 'croissant') {
-				const newCroissant = new Croissant();
-				newCroissant.fromJSON(data.orderSide[i]);
-				this._orderSide.push(newCroissant);
-			} else if (sideCategory === 'ice_cream_bowl') {
+			 if (sideCategory === 'ice_cream_bowl') {
 				const newIceCreamBowl = new IceCreamBowl();
 				newIceCreamBowl.fromJSON(data.orderSide[i]);
 				this._orderSide.push(newIceCreamBowl);
@@ -1167,16 +1077,7 @@ export class OrderSide {
 
 			return addedSide;
 		} else {
-			if (selectedItemCategory === 'croissant') {
-				selectedSide.updateCroissantQuantity(value);
-
-				if (selectedSide.quantity === 0) {
-					this.removeSide(json);
-					return 0;
-				} else {
-					return selectedSide;
-				}
-			} else if (selectedItemCategory === 'ice_cream_bowl') {
+			 if (selectedItemCategory === 'ice_cream_bowl') {
 				selectedSide.updateIceCreamBowlQuantity(value);
 				if (selectedSide.quantity === 0) {
 					this.removeSide(json);
@@ -1190,15 +1091,7 @@ export class OrderSide {
 	findSide = (json) => {
 		const selectedItemCategory = json.side_name_id;
 
-		if (selectedItemCategory === 'croissant') {
-			const selectedSide = new Croissant();
-			selectedSide.fromJSON(json);
-			for (var i = 0; i < this._orderSide.length; i++) {
-				if (this._orderSide[i].id === selectedSide.id) {
-					return this._orderSide[i];
-				}
-			}
-		} else if (selectedItemCategory === 'ice_cream_bowl') {
+		 if (selectedItemCategory === 'ice_cream_bowl') {
 			const selectedSide = new IceCreamBowl();
 			selectedSide.fromJSON(json);
 			for (var i = 0; i < this._orderSide.length; i++) {
@@ -1218,12 +1111,6 @@ export class OrderSide {
 				this._orderSide.push(newIceCreamBowl);
 				this.priceSides();
 				return newIceCreamBowl;
-			} else if (selectedItemCategory === 'croissant') {
-				const croissant = new Croissant();
-				croissant.fromJSON(json);
-				this._orderSide.push(croissant);
-				this.priceSides();
-				return croissant;
 			}
 		}
 	};
@@ -1234,16 +1121,6 @@ export class OrderSide {
 			selectedItem.fromJSON(json);
 			for (var i = 0; i < this._orderSide.length; i++) {
 				if (selectedItem.flavor === this._orderSide[i].flavor) {
-					this._orderSide.splice(i, 1);
-					this.priceSides();
-					return true;
-				}
-			}
-		} else if (selectedItemCategory === 'croissant') {
-			for (var i = 0; i < this._orderSide.length; i++) {
-				const selectedItem = new Croissant();
-				selectedItem.fromJSON(json);
-				if (selectedItem.id === this._orderSide[i].id) {
 					this._orderSide.splice(i, 1);
 					this.priceSides();
 					return true;

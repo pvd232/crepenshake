@@ -2,56 +2,73 @@
 	{
 		"id": "",
 		"name": "cookie_monster",
-		"price": 9.95
+		"serving_size": "16oz",
+		"price": 10.95
 	},
 	{
 		"id": "",
-		"name": "cakeshake",
-		"price": 12.95
+		"name": "cake_shake",
+		"serving_size": "16oz",
+		"price": 13.95
 	},
 	{
 		"id": "",
 		"name": "almond_joy",
+		"serving_size": "16oz",
 		"price": 9.95
 	},
 	{
 		"id": "",
-		"name": "death_by_chocolate",
-		"price": 9.95
+		"name": "ms._nutella",
+		"serving_size": "16oz",
+		"price": 10.95
+	},
+	{
+		"id": "",
+		"name": "chocolate_joy",
+		"serving_size": "16oz",
+		"price": 10.95
 	},
 	{
 		"id": "",
 		"name": "mudslide",
+		"serving_size": "16oz",
 		"price": 10.95
 	},
 	{
 		"id": "",
 		"name": "the_milky_panda",
-		"price": 9.95
+		"serving_size": "16oz",
+		"price": 10.95
 	},
 	{
 		"id": "",
 		"name": "vanilla",
-		"price": 6.95
+		"serving_size": "16oz",
+		"price": 7.95
 	},
 	{
 		"id": "",
 		"name": "chocolate",
-		"price": 6.95
+		"serving_size": "16oz",
+		"price": 7.95
 	},
 	{
 		"id": "",
 		"name": "strawberry",
-		"price": 6.95
+		"serving_size": "16oz",
+		"price": 7.95
 	},
 	{
 		"id": "",
-		"name": "cookies_and_cream",
-		"price": 6.95
+		"name": "cookies_&_cream",
+		"serving_size": "16oz",
+		"price": 7.95
 	},
 	{
 		"id": "",
-		"name": "blueberry",
-		"price": 6.95
+		"name": "cake_batter",
+		"serving_size": "16oz",
+		"price": 7.95
 	}
 ]

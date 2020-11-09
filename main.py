@@ -88,23 +88,18 @@ def make_your_own_savory_crepe(editOrder=None):
             new_ingredient_category_dict['ingredients'].append(y.serialize())
         new_ingredient_prices_by_category.append(new_ingredient_category_dict)
 
-    formatted_savory_ingredient_prices_by_category = [humanize(x, 'id', True)
-                         for x in ingredient_service.get_savory_ingredient_prices_by_category()]
-
     savory_ingredient_categories = ingredient_service.get_savory_ingredient_categories()
-    formatted_savory_ingredient_categories = [humanize(x, 'id') for x in ingredient_service.get_savory_ingredient_categories()]
     ingredient_serving_sizes = [x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
     rules_for_each_category = ["(2 Servings Max)", "(4 Servings Included, +$0.50 per additional serving)",
                                "(1 Serving Included, Each Extra Serving is +$0.99)", "($0.99 Per Serving)", "($0.50 Per Serving)"]
     editOrder = request.args.get('editOrder')
-    return render_template('make_your_own_savory_crepe.html', formatted_savory_ingredient_prices_by_category = formatted_savory_ingredient_prices_by_category, savory_ingredient_prices_by_category = new_ingredient_prices_by_category, savory_ingredient_categories=savory_ingredient_categories, formatted_savory_ingredient_categories=formatted_savory_ingredient_categories, ingredient_serving_sizes=ingredient_serving_sizes, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
+    return render_template('order_savory_crepe.html', savory_ingredient_prices_by_category = new_ingredient_prices_by_category, savory_ingredient_categories=savory_ingredient_categories, ingredient_serving_sizes=ingredient_serving_sizes, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
 
 
 @app.route('/order/make-your-own-sweet-crepe')
 def make_your_own_sweet_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
     sweet_ingredients = [x.serialize() for x in ingredient_service.get_sweet_ingredient_prices()]
-    formatted_sweet_ingredients = [humanize(x, 'id') for x in ingredient_service.get_sweet_ingredient_prices()]
     ingredient_serving_sizes = [
         x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
     sweetness_ingredients = [
@@ -113,13 +108,10 @@ def make_your_own_sweet_crepe(editOrder=None):
                          for x in ingredient_service.get_fruit_ingredients()]
     sweet_ingredient_categories = [
        x.serialize() for x in ingredient_service.get_sweet_ingredient_categories()]
-    formatted_sweet_ingredient_categories = [
-        humanize(x, 'id') for x in ingredient_service.get_sweet_ingredient_categories()]
-    
     rules_for_each_category = ["(2 Fruit Servings Included, +$0.99 per additional serving)",
                                "(1 Servings Included, +$0.99 per additional serving)"]
     editOrder = request.args.get('editOrder')
-    return render_template('make_your_own_sweet_crepe.html', ingredient_serving_sizes=ingredient_serving_sizes, sweet_ingredients = sweet_ingredients, formatted_sweet_ingredients = formatted_sweet_ingredients, sweetness_ingredients = sweetness_ingredients, fruit_ingredients = fruit_ingredients, sweet_ingredient_categories=sweet_ingredient_categories, formatted_sweet_ingredient_categories = formatted_sweet_ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
+    return render_template('order_sweet_crepe.html', ingredient_serving_sizes=ingredient_serving_sizes, sweet_ingredients = sweet_ingredients, sweetness_ingredients = sweetness_ingredients, fruit_ingredients = fruit_ingredients, sweet_ingredient_categories=sweet_ingredient_categories, rules_for_each_category=rules_for_each_category, editOrder=editOrder)
 
 
 @app.route('/order/drink')
@@ -128,94 +120,51 @@ def order_drink(editOrder=None):
     ingredient_service = Ingredient_Service()
 
     milkshakes = [x.serialize() for x in drink_service.get_drinks('milkshake')]
-    for x in milkshakes:
-        x['serving_size'] = '16oz'
-    formatted_milkshakes = [humanize(x, "name").serialize()
-                            for x in drink_service.get_drinks('milkshake')]
-
     bottled_drinks = [x.serialize() for x in drink_service.get_drinks('bottled')]
-    for x in bottled_drinks:
-            x['serving_size'] = '12oz'
     
-    
-    formatted_bottled_drinks = [humanize(x, "name").serialize()
-                                for x in drink_service.get_drinks('bottled')]
     drink_categories = [x.serialize()
                         for x in drink_service.get_drink_categories()]
 
     coffee_syrups = [x.serialize() for x in drink_service.get_coffee_syrups()]
     
-    formatted_coffee_syrups = [humanize(x, "coffee_syrup_flavor").serialize()
-                     for x in drink_service.get_coffee_syrups()]
-
-    coffee_drinks = [x.serialize() for x in drink_service.get_coffee_drinks()]
-    formatted_coffee_drinks = [humanize(x, "name").serialize()
-                               for x in drink_service.get_coffee_drinks()]
-
-    regular_non_coffee_drinks = [x.serialize()
+    coffee_drinks = [x.serialize()
+                     for x in drink_service.get_drinks('coffee')]
+    non_coffee_drinks = [x.serialize()
                          for x in drink_service.get_drinks('non-coffee')]
-    for x in regular_non_coffee_drinks:
-        x["serving_size"] = '12oz'
-    large_non_coffee_drinks = [x.serialize()
-                         for x in drink_service.get_drinks('non-coffee')]
-    for x in large_non_coffee_drinks:
-        x["serving_size"] = '16oz'
-    non_coffee_drinks = regular_non_coffee_drinks
-    for x in large_non_coffee_drinks:
-        non_coffee_drinks.append(x)
-        
-    regular_formatted_non_coffee_drinks = [humanize(x, "name").serialize()
-                                   for x in drink_service.get_drinks('non-coffee')]
-    for x in regular_formatted_non_coffee_drinks:
-        x["serving_size"] = '12oz'
-    large_formatted_non_coffee_drinks = [humanize(x, "name").serialize()
-                                           for x in drink_service.get_drinks('non-coffee')]
-    for x in large_formatted_non_coffee_drinks:
-        x['serving_size'] = '16oz'
-    formatted_non_coffee_drinks = regular_formatted_non_coffee_drinks
-
+    for x in non_coffee_drinks:
+        print('x', x)
     milk_drinks = [x.serialize() for x in drink_service.get_milk_drinks()]
-    formatted_milk_drinks = [humanize(x, "id").serialize()
-                   for x in drink_service.get_milk_drinks()]
 
     coffee_temperatures = [x.serialize() for x in drink_service.get_coffee_temperature()]
-    formatted_coffee_temperatures = [humanize(x, "id").serialize()
-                           for x in drink_service.get_coffee_temperature()]
     serving_sizes = [x.serialize()
                      for x in ingredient_service.get_ingredient_serving_sizes()]
     editOrder = request.args.get('editOrder')
-    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, formatted_bottled_drinks = formatted_bottled_drinks, milkshakes=milkshakes, formatted_milkshakes = formatted_milkshakes, coffee_drinks=coffee_drinks, formatted_coffee_drinks = formatted_coffee_drinks, non_coffee_drinks = non_coffee_drinks, formatted_non_coffee_drinks = formatted_non_coffee_drinks, milk_drinks=milk_drinks, formatted_milk_drinks = formatted_milk_drinks, coffee_syrups=coffee_syrups, formatted_coffee_syrups = formatted_coffee_syrups, coffee_temperatures=coffee_temperatures, formatted_coffee_temperatures = formatted_coffee_temperatures, serving_sizes = serving_sizes, editOrder=editOrder)
+    return render_template('order_drink.html', drink_categories=drink_categories, bottled_drinks=bottled_drinks, milkshakes=milkshakes, coffee_drinks=coffee_drinks, non_coffee_drinks = non_coffee_drinks, milk_drinks=milk_drinks, coffee_syrups=coffee_syrups, coffee_temperatures=coffee_temperatures, serving_sizes = serving_sizes, editOrder=editOrder)
 
 
 @app.route('/order/side')
 def order_side(editOrder=None):
     side_service = Side_Service()
     ingredient_service = Ingredient_Service()
-    croissants = [x.serialize() for x in side_service.get_croissants()]
-    formatted_croissants = [humanize(x, 'flavor')
-                            for x in side_service.get_croissants()]
+
 
     side_names = [x.serialize() for x in side_service.get_side_names()]
     new_side_name = {}
     new_side_name['side_name_id'] = 'toppings'
     side_names.append(new_side_name)
 
-    formatted_side_names = [humanize(x, 'side_name_id')
-                            for x in side_service.get_side_names()]
     side_types = [x.serialize() for x in side_service.get_side_types()]
     ice_cream_bowls = [x.serialize()
                        for x in side_service.get_ice_cream_bowls()]
     topping_serving_sizes = [
         x.serialize() for x in ingredient_service.get_ingredient_serving_sizes()]
-    formatted_ice_cream_bowls = [humanize(x, 'flavor')
-                                 for x in side_service.get_ice_cream_bowls()]
+  
     toppings = [x.serialize() for x in ingredient_service.get_sweet_ingredient_prices()]
     for topping in toppings:
         topping['side_name_id'] = 'toppings'
-    formatted_toppings = [humanize(x, 'id')
-                          for x in ingredient_service.get_sweet_ingredient_prices()]
+ 
     editOrder = request.args.get('editOrder')
-    return render_template('order_side.html', croissants=croissants, formatted_croissants=formatted_croissants, side_names=side_names, formatted_side_names=formatted_side_names, side_types=side_types, ice_cream_bowls=ice_cream_bowls, formatted_ice_cream_bowls=formatted_ice_cream_bowls, toppings=toppings, formatted_toppings=formatted_toppings, topping_serving_sizes=topping_serving_sizes, editOrder=editOrder)
+    return render_template('order_side.html', side_names=side_names, side_types=side_types, ice_cream_bowls=ice_cream_bowls, toppings=toppings, topping_serving_sizes=topping_serving_sizes, editOrder=editOrder)
 
 
 @app.route('/order/menu-crepe')
@@ -223,14 +172,11 @@ def order_menu_crepe(editOrder=None):
     menu_crepe_service = Menu_Crepe_Service()
     sweet_menu_crepes = [x.serialize()
                          for x in menu_crepe_service.get_sweet_menu_crepes()]
-    formatted_sweet_menu_crepes = [humanize(x, 'name').serialize()
-                         for x in menu_crepe_service.get_sweet_menu_crepes()]
+
     savory_menu_crepes = [x.serialize() for x in menu_crepe_service.get_savory_menu_crepes()]
-    formatted_savory_menu_crepes = [humanize(x, 'name').serialize()
-                          for x in menu_crepe_service.get_savory_menu_crepes()]
    
     editOrder = request.args.get('editOrder')
-    return render_template('order_menu_crepe.html', savory_menu_crepes=savory_menu_crepes, formatted_savory_menu_crepes = formatted_savory_menu_crepes, sweet_menu_crepes=sweet_menu_crepes, formatted_sweet_menu_crepes = formatted_sweet_menu_crepes,  editOrder=editOrder)
+    return render_template('order_menu_crepe.html', savory_menu_crepes=savory_menu_crepes, sweet_menu_crepes=sweet_menu_crepes, editOrder=editOrder)
 
 
 @app.route('/create-payment-intent', methods=['POST'])

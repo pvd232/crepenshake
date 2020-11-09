@@ -1,42 +1,62 @@
 [
 	{
 		"id": "",
-		"name": "chocolate_chip_fudge_frappuccino",
-		"price": 4.0
-	},
-	{
-		"id": "",
-		"name": "vanilla_bean_frappuccino",
-		"price": 4.0
-	},
-	{
-		"id": "",
-		"name": "strawberries_and_creme_frappucino",
-		"price": 4.0
-	},
-	{
-		"id": "",
 		"name": "hot_chocolate",
-		"price": 3.5
+		"serving_size": "12oz",
+		"price": 4.0
 	},
 	{
 		"id": "",
 		"name": "white_hot_chocolate",
+		"serving_size": "12oz",
+		"price": 4.0
+	},
+	{
+		"id": "",
+		"name": "hot_vanilla_bean_tea",
+		"serving_size": "12oz",
+		"price": 3.0
+	},
+	{
+		"id": "",
+		"name": "hot_passion_tea",
+		"serving_size": "12oz",
+		"price": 3.0
+	},
+	{
+		"id": "",
+		"name": "hot_peach_tea",
+		"serving_size": "12oz",
+		"price": 3.0
+	},
+	{
+		"id": "",
+		"name": "hot_chocolate",
+		"serving_size": "16oz",
+		"price": 4.5
+	},
+	{
+		"id": "",
+		"name": "white_hot_chocolate",
+		"serving_size": "16oz",
+		"price": 4.5
+	},
+	{
+		"id": "",
+		"name": "hot_vanilla_bean_tea",
+		"serving_size": "16oz",
 		"price": 3.5
 	},
 	{
 		"id": "",
-		"name": "vanilla_bean_tea",
+		"name": "hot_passion_tea",
+		"serving_size": "16oz",
 		"price": 3.5
 	},
 	{
 		"id": "",
-		"name": "passion_tea",
-		"price": 3.5
-	},
-	{
-		"id": "",
-		"name": "peach_tea",
+		"name": "hot_peach_tea",
+		"serving_size": "16oz",
 		"price": 3.5
 	}
 ]

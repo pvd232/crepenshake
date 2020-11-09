@@ -1,70 +1,62 @@
 [
 	{
-		"coffee_name": "latte",
-		"price": 4.5,
-		"serving_size": "12oz"
-	},
-	{
-		"coffee_name": "vanilla_latte",
+		"name": "latte",
 		"price": 4.75,
 		"serving_size": "12oz"
 	},
 	{
-		"coffee_name": "chocolate_mocha",
+		"name": "caramel_macchiato",
+		"price": 5.50,
+		"serving_size": "12oz"
+	},
+	{
+		"name": "cafe_mocha",
 		"price": 4.75,
 		"serving_size": "12oz"
 	},
 	{
-		"coffee_name": "white_chocolate_mocha",
+		"name": "nutella_dream_latte",
 		"price": 4.75,
 		"serving_size": "12oz"
 	},
-
 	{
-		"coffee_name": "caramel_macchiato",
-		"price": 4.75,
+		"name": "red_eye",
+		"price": 4.00,
 		"serving_size": "12oz"
 	},
-
 	{
-		"coffee_name": "drip_coffee",
-		"price": 2.71,
+		"name": "cappuccino",
+		"price": 4.25,
 		"serving_size": "12oz"
 	},
-
 	{
-		"coffee_name": "latte",
+		"name": "latte",
+		"price": 5.50,
+		"serving_size": "16oz"
+	},
+	{
+		"name": "caramel_macchiato",
+		"price": 6.25,
+		"serving_size": "16oz"
+	},
+	{
+		"name": "cafe_mocha",
+		"price": 5.50,
+		"serving_size": "16oz"
+	},
+	{
+		"name": "nutella_dream_latte",
+		"price": 5.50,
+		"serving_size": "16oz"
+	},
+	{
+		"name": "red_eye",
+		"price": 5.00,
+		"serving_size": "16oz"
+	},
+	{
+		"name": "cappuccino",
 		"price": 5.25,
 		"serving_size": "16oz"
-	},
-	{
-		"coffee_name": "vanilla_latte",
-		"price": 5.5,
-		"serving_size": "16oz"
-	},
-	{
-		"coffee_name": "chocolate_mocha",
-		"price": 5.5,
-		"serving_size": "16oz"
-	},
-	{
-		"coffee_name": "caramel_macchiato",
-		"price": 5.5,
-		"serving_size": "16oz"
-	},
-	{
-		"coffee_name": "white_chocolate_mocha",
-		"price": 5.5,
-		"serving_size": "16oz"
-	},
-	{
-		"coffee_name": "drip_coffee",
-		"price": 2.98,
-		"serving_size": "16oz"
-	},
-	{
-		"coffee_name": "cappuccino",
-		"price": 4.75,
-		"serving_size": "6oz"
 	}
 ]

@@ -2,7 +2,7 @@
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 //https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
 ('use strict');
-import { Order, OrderSide } from './model.js';
+import { Order, OrderSide, humanize } from './model.js';
 
 var userOrderSide = new OrderSide();
 var editSideIndex = null;
@@ -76,12 +76,7 @@ const modifyOrder = () => {
 		userOrderSide = editOrderSide;
 		for (var i = 0; i < editOrderSide.orderSide.length; i++) {
 			const side = editOrderSide.orderSide[i];
-			if (side.sideName === 'croissant') {
-				$(`#${side.id}`).closest('.card, .list-group-item').find('.btn2').html(side.quantity);
-				$(`#${side.id}`).closest('.card, .list-group-item').find('.btn2').show();
-				$(`#${side.id}`).closest('.card, .list-group-item').find('.btn6').show();
-				$(`#${side.id}`).closest('.card, .list-group-item').find('.btn7').show();
-			} else if (side.sideName === 'ice_cream_bowl') {
+			if (side.sideName === 'ice_cream_bowl') {
 				$(`#${side.flavor}`).closest('.card, .list-group-item').find('.btn2').html(side.quantity);
 				$(`#${side.flavor}`).closest('.card, .list-group-item').find('.btn2').show();
 				$(`#${side.flavor}`).closest('.card, .list-group-item').find('.btn6').show();
@@ -131,12 +126,6 @@ const pageLogic = () => {
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 				$(this)
 			);
-		} else if (selectedItemCategory == 'croissant') {
-			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-			$(`<div class="grid-container" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
-            grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
-				$(this)
-			);
 		} else if (selectedItemCategory == 'toppings') {
 			$('<button class="btn" id="servingSize-2" type="button">Customize</button>').insertAfter($(this));
 			$('<button class="btn4" id="servingSize-1" type="button">Regular</button>').insertAfter($(this));
@@ -144,7 +133,6 @@ const pageLogic = () => {
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 		}
 	});
-
 	$('.card, .list-group')
 		.on('mouseenter', function () {
 			if ($(this).attr('class') === 'card') {
@@ -173,11 +161,11 @@ const pageLogic = () => {
 					if (this === senderElement) {
 						const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
 						const json = JSON.parse($(this).closest('.card, li').attr('data-sides'));
-						// logic for toppings is the most complex and should be evaluated last. de facto the non-topping cards are ice cream and croissant which have counters
+						// logic for toppings is the most complex and should be evaluated last. de facto the non-topping cards are ice cream which have counters
 						userOrderSide.checkIfThisToppingSelected(json);
 
 						if (selectedItemCategory != 'toppings') {
-							// the side will be a croissant or ice cream bowl and it will only be added by clicking the card if it is not currently selected
+							// the side will be an ice cream bowl and it will only be added by clicking the card if it is not currently selected
 							userOrderSide.findSide(json);
 							if (!userOrderSide.findSide(json)) {
 								const updatedSide = userOrderSide.changeSideQuantity(json, 'increase');
@@ -365,6 +353,12 @@ $(window).on('load resize', function () {
 		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
 	$('.card-img-top').wrap('<div class="container2"></div>');
+	$('.card-title, .head3').each(function () {
+		$(this).html(humanize(null, null, $(this).html()));
+	});
+	$('.head3').each(function () {
+		$(this).html($(this).html().toLowerCase());
+	});
 	const newWidth = $(window).width();
 
 	if (cWidth < newWidth) {
@@ -372,7 +366,6 @@ $(window).on('load resize', function () {
 	}
 
 	if (cWidth <= 576) {
-
 		const cardDeckElements = document.getElementsByClassName('card-deck');
 		const cardTitleElements = document.getElementsByClassName('card-title');
 		const cardTextElements = document.getElementsByClassName('card-text');
@@ -515,7 +508,7 @@ $(window).on('load resize', function () {
 							<button class='btn2'>✓</button>
 						</div>
 					</div>`).insertAfter($(this).find('container'));
-			} else if (selectedItemCategory === 'ice_cream_bowl' || selectedItemCategory === 'croissant') {
+			} else if (selectedItemCategory === 'ice_cream_bowl') {
 				$(
 					`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
 				).insertAfter($(this).find('container'));
@@ -525,10 +518,9 @@ $(window).on('load resize', function () {
 			console.log($(this));
 			$(this).css('margin-left', '20px');
 			$(this).css('margin-right', '20px');
-
 		});
 	}
-			
+
 	pageLogic();
 	modifyOrder();
 });

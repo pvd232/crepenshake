@@ -30,63 +30,123 @@
 		"price": 0.99
 	},
 	{
+		"coffee_flavor_syrup_id": "white_mocha",
+		"coffee_flavor_syrup_serving_size_id": ".5_pumps",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "mocha",
+		"coffee_flavor_syrup_serving_size_id": ".5_pumps",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "caramel_apple_butter",
+		"coffee_flavor_syrup_serving_size_id": ".5_pumps",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "coconut",
+		"coffee_flavor_syrup_serving_size_id": ".5_pumps",
+		"price": 0.99
+	},
+	{
 		"coffee_flavor_syrup_id": "vanilla",
 		"coffee_flavor_syrup_serving_size_id": "1_pump",
-		"price": 1.98
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "sugar-free_vanilla",
 		"coffee_flavor_syrup_serving_size_id": "1_pump",
-		"price": 1.98
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "hazel_nut",
 		"coffee_flavor_syrup_serving_size_id": "1_pump",
-		"price": 1.98
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "peppermint",
 		"coffee_flavor_syrup_serving_size_id": "1_pump",
-		"price": 1.98
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "irish_cream",
 		"coffee_flavor_syrup_serving_size_id": "1_pump",
-		"price": 1.98
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "pumpkin_spice",
 		"coffee_flavor_syrup_serving_size_id": "1_pump",
-		"price": 1.98
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "white_mocha",
+		"coffee_flavor_syrup_serving_size_id": "1_pump",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "mocha",
+		"coffee_flavor_syrup_serving_size_id": "1_pump",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "caramel_apple_butter",
+		"coffee_flavor_syrup_serving_size_id": "1_pump",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "coconut",
+		"coffee_flavor_syrup_serving_size_id": "1_pump",
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "vanilla",
 		"coffee_flavor_syrup_serving_size_id": "2_pumps",
-		"price": 2.97
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "sugar-free_vanilla",
 		"coffee_flavor_syrup_serving_size_id": "2_pumps",
-		"price": 2.97
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "hazel_nut",
 		"coffee_flavor_syrup_serving_size_id": "2_pumps",
-		"price": 2.97
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "peppermint",
 		"coffee_flavor_syrup_serving_size_id": "2_pumps",
-		"price": 2.97
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "irish_cream",
 		"coffee_flavor_syrup_serving_size_id": "2_pumps",
-		"price": 2.97
+		"price": 0.99
 	},
 	{
 		"coffee_flavor_syrup_id": "pumpkin_spice",
 		"coffee_flavor_syrup_serving_size_id": "2_pumps",
-		"price": 2.97
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "white_mocha",
+		"coffee_flavor_syrup_serving_size_id": "2_pumps",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "mocha",
+		"coffee_flavor_syrup_serving_size_id": "2_pumps",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "caramel_apple_butter",
+		"coffee_flavor_syrup_serving_size_id": "2_pumps",
+		"price": 0.99
+	},
+	{
+		"coffee_flavor_syrup_id": "coconut",
+		"coffee_flavor_syrup_serving_size_id": "2_pumps",
+		"price": 0.99
 	}
 ]

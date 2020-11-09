@@ -10,16 +10,6 @@
 		"price": 8.5
 	},
 	{
-		"ingredient_id": "buffalo_chicken",
-		"serving_size": "regular",
-		"price": 7.95
-	},
-	{
-		"ingredient_id": "honey_turkey",
-		"serving_size": "regular",
-		"price": 7.95
-	},
-	{
 		"ingredient_id": "blackened_tofu",
 		"serving_size": "regular",
 		"price": 7.95
@@ -30,21 +20,10 @@
 		"price": 7.95
 	},
 	{
-		"ingredient_id": "artichoke_heart",
+		"ingredient_id": "artichoke_hearts",
 		"serving_size": "regular",
 		"price": 0.0
 	},
-	{
-		"ingredient_id": "cheesy_grits",
-		"serving_size": "regular",
-		"price": 0.0
-	},
-	{
-		"ingredient_id": "cilantro",
-		"serving_size": "regular",
-		"price": 0.0
-	},
-
 	{
 		"ingredient_id": "mushrooms",
 		"serving_size": "regular",
@@ -56,12 +35,17 @@
 		"price": 0.0
 	},
 	{
-		"ingredient_id": "sauteed_minced_garlic",
+		"ingredient_id": "sauteed_garlic",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
-		"ingredient_id": "sauteed_spinach",
+		"ingredient_id": "cooked_spinach",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "raw_spinach",
 		"serving_size": "regular",
 		"price": 0.0
 	},
@@ -71,12 +55,17 @@
 		"price": 0.0
 	},
 	{
+		"ingredient_id": "cooked_broccoli",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
 		"ingredient_id": "blue_cheese_crumbles",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
-		"ingredient_id": "gourmet_cheese",
+		"ingredient_id": "gourmet_herb_cheese",
 		"serving_size": "regular",
 		"price": 0.0
 	},
@@ -86,22 +75,17 @@
 		"price": 0.0
 	},
 	{
-		"ingredient_id": "cheddar",
-		"serving_size": "regular",
-		"price": 0.0
-	},
-	{
-		"ingredient_id": "cream_cheese",
-		"serving_size": "regular",
-		"price": 0.0
-	},
-	{
-		"ingredient_id": "lemon_ricotta",
+		"ingredient_id": "sharp_cheddar",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "swiss",
+		"serving_size": "regular",
+		"price": 0.0
+	},
+	{
+		"ingredient_id": "smoked_gouda",
 		"serving_size": "regular",
 		"price": 0.0
 	},
@@ -116,17 +100,7 @@
 		"price": 0.99
 	},
 	{
-		"ingredient_id": "creamy_lemon",
-		"serving_size": "regular",
-		"price": 0.99
-	},
-	{
-		"ingredient_id": "diane",
-		"serving_size": "regular",
-		"price": 0.99
-	},
-	{
-		"ingredient_id": "mango_salsa",
+		"ingredient_id": "steak_diane",
 		"serving_size": "regular",
 		"price": 0.99
 	},
@@ -139,21 +113,6 @@
 		"ingredient_id": "chimichurri",
 		"serving_size": "regular",
 		"price": 0.99
-	},
-	{
-		"ingredient_id": "basil",
-		"serving_size": "regular",
-		"price": 0.5
-	},
-	{
-		"ingredient_id": "oregano",
-		"serving_size": "regular",
-		"price": 0.5
-	},
-	{
-		"ingredient_id": "fresh_chives",
-		"serving_size": "regular",
-		"price": 0.5
 	},
 	{
 		"ingredient_id": "rasberries",
@@ -191,7 +150,7 @@
 		"price": 0.99
 	},
 	{
-		"ingredient_id": "dark_chocolate",
+		"ingredient_id": "cookies_&_cream",
 		"serving_size": "regular",
 		"price": 0.99
 	},
@@ -209,10 +168,5 @@
 		"ingredient_id": "caramel",
 		"serving_size": "regular",
 		"price": 0.99
-	},
-	{
-		"ingredient_id": "fresh_parsley",
-		"serving_size": "regular",
-		"price": 0.5
 	}
-	]
+]

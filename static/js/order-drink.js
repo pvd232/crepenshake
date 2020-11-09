@@ -1,7 +1,7 @@
 //https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
 //https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 ('use strict');
-import { Order, OrderDrink } from './model.js';
+import { Order, OrderDrink, humanize } from './model.js';
 
 var editDrinkIndex = null;
 var editOrder = null;
@@ -184,56 +184,54 @@ const pageLogic = () => {
 	$('.card, .list-group-item')
 		.on('mouseenter', function () {
 			// if ($(this).attr('class') === 'card') {
-				const json = JSON.parse($(this).attr('data-drinks'));
-				const selectedItemCategory = $(this).closest('.card-deck, .list-group-item').attr('id');
+			const json = JSON.parse($(this).attr('data-drinks'));
+			const selectedItemCategory = $(this).closest('.card-deck, .list-group-item').attr('id');
 
-				// if the card isn't milk or temperature
-				if (
-					selectedItemCategory != 'milk' &&
-					selectedItemCategory != 'temperature' &&
-					selectedItemCategory != 'syrup'
-				) {
-					// if the card also isn't coffee then fade it out
-					if (selectedItemCategory != 'coffee') {
-						$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-						// $(this).find('.btn').show();
-						// if the card is coffee but a coffee has not been previously selected
-					} else if (!userOrderDrink.checkIfCoffeeSelected()) {
-						$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-						$(this).find('.btn').show();
-					}
-					// if you hover over a selected coffee card it will fade out otherwise it won't but it will already be faded out
-					// else if (userOrderDrink.findDrink(json)) {
-					// 	$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-					// }
-					// if the hover card is syrup and a coffee has been selected then fade it out
-				} else if (selectedItemCategory === 'syrup' && userOrderDrink.checkIfCoffeeSelected()) {
+			// if the card isn't milk or temperature
+			if (
+				selectedItemCategory != 'milk' &&
+				selectedItemCategory != 'temperature' &&
+				selectedItemCategory != 'syrup'
+			) {
+				// if the card also isn't coffee then fade it out
+				if (selectedItemCategory != 'coffee') {
 					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-
+					// $(this).find('.btn').show();
+					// if the card is coffee but a coffee has not been previously selected
+				} else if (!userOrderDrink.checkIfCoffeeSelected()) {
+					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
 					$(this).find('.btn').show();
-					// if the hover card is milk and a coffee has been selected then fade it out
-				} else if (selectedItemCategory === 'milk' && userOrderDrink.checkIfCoffeeSelected()) {
-					// 	make sure a milk hasn't already been selected
-					if (!userOrderDrink.checkIfMilkSelected()) {
-						$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-						// if a milk has been selected then we only want to highlight the card if it is that milk
-					}
-				} else if (selectedItemCategory === 'temperature' && userOrderDrink.checkIfCoffeeSelected()) {
-					if (!userOrderDrink.checkIfTempSelected()) {
-						$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-					} else if (userOrderDrink.checkIfThisTempSelected(json)) {
-						$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-					}
 				}
+				// if you hover over a selected coffee card it will fade out otherwise it won't but it will already be faded out
+				// else if (userOrderDrink.findDrink(json)) {
+				// 	$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
+				// }
+				// if the hover card is syrup and a coffee has been selected then fade it out
+			} else if (selectedItemCategory === 'syrup' && userOrderDrink.checkIfCoffeeSelected()) {
+				$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
+
+				$(this).find('.btn').show();
+				// if the hover card is milk and a coffee has been selected then fade it out
+			} else if (selectedItemCategory === 'milk' && userOrderDrink.checkIfCoffeeSelected()) {
+				// 	make sure a milk hasn't already been selected
+				if (!userOrderDrink.checkIfMilkSelected()) {
+					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
+					// if a milk has been selected then we only want to highlight the card if it is that milk
+				}
+			} else if (selectedItemCategory === 'temperature' && userOrderDrink.checkIfCoffeeSelected()) {
+				if (!userOrderDrink.checkIfTempSelected()) {
+					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
+				} else if (userOrderDrink.checkIfThisTempSelected(json)) {
+					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
+				}
+			}
 
 			//click the card somewhere
 			$(this)
-				
 				.unbind('click')
 				.bind('click', function (event) {
 					const senderElementClass = event.target.getAttribute('class');
-					console.log("senderElement", senderElementClass)
-					
+					console.log('senderElement', senderElementClass);
 
 					if (
 						senderElementClass === 'list-group-item d-flex justify-content-between align-items-center' ||
@@ -243,12 +241,11 @@ const pageLogic = () => {
 						senderElementClass === 'card-img-top'
 					) {
 						const json = JSON.parse($(this).closest('.card, li').attr('data-drinks'));
-						console.log("json", json)
-						
+						console.log('json', json);
 
 						const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
-						console.log("selectedItemCategory", selectedItemCategory)
-						
+						console.log('selectedItemCategory', selectedItemCategory);
+
 						// check to see if the card is bottled or non-coffee or milkshake first because when you click on those cards, if they have already been selected you don't want to remove them
 						// these cards have counters so they will have fundamentally different logic from the rest of the cards which is why we want to evaluate them first and then apply other logical conditions after
 						// if you're clicking the card and it is a bottled drink or milkshake or non-coffee drink then by default you are adding the drink
@@ -588,27 +585,27 @@ const pageLogic = () => {
 			var json;
 			var selectedItemCategory;
 			// if ($(this).attr('class') === 'card') {
-				selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
-				console.log("selectedItemCategory", selectedItemCategory)
-				
-				json = JSON.parse($(this).attr('data-drinks'));
+			selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
+			console.log('selectedItemCategory', selectedItemCategory);
 
-				if (selectedItemCategory != 'syrup' && !userOrderDrink.findDrink(json)) {
-					$(this).find('.btn').hide();
-					$(this).find('.btn3').hide();
-					$(this).find('.btn4').hide();
-				} else if (selectedItemCategory === 'syrup' && !userOrderDrink.checkIfThisSyrupSelected(json)) {
-					console.log('hiding syrup');
-					$(this).find('.btn').hide();
-					$(this).find('.btn3').hide();
-					$(this).find('.btn4').hide();
-				} else {
-					console.log('leave button');
-					$(this).find('.btn3').hide();
-					$(this).find('.btn4').hide();
-				}
-				$(this).find('.btn').html('Customize');
-				$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '1');
+			json = JSON.parse($(this).attr('data-drinks'));
+
+			if (selectedItemCategory != 'syrup' && !userOrderDrink.findDrink(json)) {
+				$(this).find('.btn').hide();
+				$(this).find('.btn3').hide();
+				$(this).find('.btn4').hide();
+			} else if (selectedItemCategory === 'syrup' && !userOrderDrink.checkIfThisSyrupSelected(json)) {
+				console.log('hiding syrup');
+				$(this).find('.btn').hide();
+				$(this).find('.btn3').hide();
+				$(this).find('.btn4').hide();
+			} else {
+				console.log('leave button');
+				$(this).find('.btn3').hide();
+				$(this).find('.btn4').hide();
+			}
+			$(this).find('.btn').html('Customize');
+			$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '1');
 		});
 };
 
@@ -658,6 +655,12 @@ $(window).on('load resize', function () {
 
 	$('.card-img-top').each(function () {
 		this.src = '../static/images/steak.jpg';
+	});
+	$('.card-title, .head3').each(function () {
+		$(this).html(humanize(null, null, $(this).html()));
+	});
+	$('.head3').each(function () {
+		$(this).html($(this).html().toLowerCase());
 	});
 
 	$('#milk, #temperature, #syrup').each(function () {
@@ -802,7 +805,7 @@ $(window).on('load resize', function () {
 
 				listValue.appendChild(imageParent);
 				listGroupTitle.append(listValue);
-				
+
 				counter += 1;
 			}
 

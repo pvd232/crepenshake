@@ -120,7 +120,7 @@ class Custom_Crepe(db.Model):
 class Menu_Crepe(db.Model):
     __tablename__ = 'menu_crepe'
     crepe_id = db.Column(UUID(as_uuid=True), db.ForeignKey('crepe.id'), primary_key=True,
-                        nullable=False)
+                         nullable=False)
 
     name = db.Column(db.String(80), nullable=False)
 
@@ -140,7 +140,7 @@ class Customer(db.Model):
     id = db.Column(db.String(80), primary_key=True,  # this will be the customer's email
                    unique=True, nullable=False)
     stripe_id = db.Column(db.String(80), db.ForeignKey('stripe.id'), primary_key=True,
-                        nullable=False)
+                          nullable=False)
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
     street = db.Column(db.String(80), nullable=False)
@@ -159,11 +159,12 @@ class Customer(db.Model):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+
 class Stripe(db.Model):
     id = db.Column(db.String(80), primary_key=True,  # this will be the customer's email
                    unique=True, nullable=False)
     customer = relationship('Customer', lazy=True)
-    
+
     @property
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -172,7 +173,8 @@ class Stripe(db.Model):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
-                   
+
+
 class Order(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True,
                    unique=True, nullable=False)
@@ -199,7 +201,7 @@ class Order_Drink(db.Model):
     order_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'order.id'), nullable=False, primary_key=True)
     drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
-                          nullable=False)
+                         nullable=False)
     serving_size = db.Column(
         db.String(80), db.ForeignKey('drink_serving_size.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
@@ -336,6 +338,8 @@ class Drink_Category(db.Model):
     id = db.Column(db.String(80), primary_key=True,  # this will be a natural key, coffee, milkshake, or regular drink
                    unique=True, nullable=False)
     drink = relationship('Drink', lazy=True)
+    drink_name_serving_size_price = relationship(
+        'Drink_Name_Serving_Size_Price', lazy=True)
 
     @property
     def serialize(self):
@@ -350,14 +354,9 @@ class Drink_Category(db.Model):
 class Drink(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True,  # https://stackoverflow.com/questions/55917056/how-to-prevent-uuid-primary-key-for-new-sqlalchemy-objects-being-created-with-th
                    unique=True, nullable=False)
-
-    name = db.Column(db.String(80), nullable = False)
-    price = db.Column(db.Float(), nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
     drink_category_id = db.Column(db.String(80), db.ForeignKey(
         'drink_category.id'), nullable=False)
-    # milkshake = relationship('Milkshake', lazy=True)
-    # non_coffee_drink = relationship('Non_Coffee_Drink', lazy=True)
-    # bottled_drink = relationship('Bottled_Drink', lazy=True)
     coffee = relationship('Coffee', lazy=True)
     order_drink = relationship('Order_Drink', lazy=True)
 
@@ -371,14 +370,18 @@ class Drink(db.Model):
         return serialized_attributes
 
 
-class Coffee_Name_Serving_Size_Price(db.Model):
-    __tablename__ = 'coffee_name_serving_size_price'
+class Drink_Name_Serving_Size_Price(db.Model):
+    __tablename__ = 'drink_name_serving_size_price'
+    id = db.Column(UUID(as_uuid=True),  db.ForeignKey(
+        'drink.id'), primary_key=True,
+        nullable=False)
+    name = db.Column(db.String(80), db.ForeignKey(
+        "drink.name"), primary_key=True, nullable=False)
+    drink_category_id = db.Column(db.String(80), db.ForeignKey(
+        'drink_category.id'), nullable=False)
     serving_size = db.Column(db.String(80), db.ForeignKey(
         "drink_serving_size.id"), primary_key=True, nullable=False)
-    coffee_name = db.Column(db.String(80), db.ForeignKey(
-        "coffee_name.id"), primary_key=True, nullable=False)
     price = db.Column(db.Float(), nullable=False)
-
     @property
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -411,8 +414,6 @@ class Coffee_Name(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the coffee
                    nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
-    coffee_name_serving_size_price = relationship(
-        'Coffee_Name_Serving_Size_Price', lazy=True)
 
     @property
     def serialize(self):
@@ -429,8 +430,8 @@ class Drink_Serving_Size(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the milk
                    nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
-    coffee_name_serving_size_price = relationship(
-        'Coffee_Name_Serving_Size_Price', lazy=True)
+    drink_name_serving_size_price = relationship(
+        'Drink_Name_Serving_Size_Price', lazy=True)
 
     @property
     def serialize(self):
@@ -537,7 +538,7 @@ class Milk(db.Model):
 class Coffee(db.Model):
     __tablename__ = 'coffee'
     drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
-                   nullable=False)
+                         nullable=False)
     coffee_name_id = db.Column(db.String(80), db.ForeignKey('coffee_name.id'),
                                nullable=False)
     serving_size_id = db.Column(db.String(80), db.ForeignKey('drink_serving_size.id'),
@@ -565,7 +566,7 @@ class Coffee(db.Model):
 
 
 class Side(db.Model):
-    id = db.Column(UUID(as_uuid=True),primary_key=True,  # https://stackoverflow.com/questions/55917056/how-to-prevent-uuid-primary-key-for-new-sqlalchemy-objects-being-created-with-th
+    id = db.Column(UUID(as_uuid=True), primary_key=True,  # https://stackoverflow.com/questions/55917056/how-to-prevent-uuid-primary-key-for-new-sqlalchemy-objects-being-created-with-th
                    unique=True, nullable=False)
     side_type_id = db.Column(db.String(80), db.ForeignKey('side_type.id'),  # natural key
                              nullable=False)
@@ -574,7 +575,6 @@ class Side(db.Model):
     order_side = relationship('Order_Side', lazy=True)
 
     ice_cream = relationship('Order_Ice_Cream', backref='side', lazy=True)
-    
 
     @property
     def serialize(self):
@@ -618,22 +618,6 @@ class Side_Type(db.Model):
         return serialized_attributes
 
 
-class Croissant(db.Model):
-    side_id = db.Column(UUID(as_uuid=True), db.ForeignKey('side.id'), primary_key=True,  # natural key
-                        nullable=False)
-    flavor_id = db.Column(db.String(80), unique=True, nullable=False)
-    price = db.Column(db.Float(), nullable=False)
-
-    @property
-    def serialize(self):
-        attribute_names = list(self.__dict__.keys())
-        attributes = list(self.__dict__.values())
-        serialized_attributes = {}
-        for i in range(len(attributes)):
-            serialized_attributes[attribute_names[i]] = attributes[i]
-        return serialized_attributes
-
-
 class Ice_Cream_Flavor(db.Model):
     __tablename__ = 'ice_cream_flavor'
     id = db.Column(db.String(80), primary_key=True, unique=True,  # natural key with the name of the ice cream flavor
@@ -654,9 +638,12 @@ class Ice_Cream_Flavor(db.Model):
 
 class Ice_Cream_Bowl(db.Model):
     __tablename__ = 'ice_cream_bowl'
-    side_id = db.Column(UUID(as_uuid=True), db.ForeignKey("side.id"), primary_key=True, nullable=False)
-    flavor_id = db.Column(db.String(80), db.ForeignKey("ice_cream_flavor.id"),  primary_key=True, nullable=False)
-    serving_size_id = db.Column(db.String(80), db.ForeignKey("ice_cream_serving_size.id"), nullable=False)
+    side_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
+        "side.id"), primary_key=True, nullable=False)
+    flavor_id = db.Column(db.String(80), db.ForeignKey(
+        "ice_cream_flavor.id"),  primary_key=True, nullable=False)
+    serving_size_id = db.Column(db.String(80), db.ForeignKey(
+        "ice_cream_serving_size.id"), nullable=False)
     price = db.Column(db.Float(), nullable=False)
 
     @property
@@ -719,7 +706,6 @@ class Ice_Cream_Serving_Size(db.Model):
     id = db.Column(db.String(80), primary_key=True, unique=True,
                    nullable=False)
 
-
     @property
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -728,9 +714,10 @@ class Ice_Cream_Serving_Size(db.Model):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
-   
+
 
 cwd = os.getcwd()
+
 
 def load_json(filename):
 
@@ -743,8 +730,7 @@ def load_json(filename):
 
 
 def create_ingredient_category():
-    
-    
+
     file_path = Path(cwd+'/static/json/ingredient_category.json')
     json_items = load_json(file_path)
 
@@ -804,7 +790,7 @@ def create_ingredient_serving_size_price():
     json_items = load_json(file_path)
 
     for item in json_items:
-        ingredient_id =item['ingredient_id']
+        ingredient_id = item['ingredient_id']
         serving_size = item['serving_size']
         price = item['price']
 
@@ -886,55 +872,32 @@ def create_milk():
 
 
 def create_sides():
-    croissant_file_path = Path(cwd+'/static/json/croissant.json')
     ice_cream_bowl_file_path = Path(cwd+'/static/json/ice_cream.json')
 
-    croissant_items = load_json(
-        croissant_file_path)
     ice_cream_items = load_json(
         ice_cream_bowl_file_path)
-
-    for i in range(len(croissant_items)):
-        side_type_id = 'pastry'
-        side_name_id = 'croissant'
-        side_id = uuid.uuid4()
-        new_side = Side(id=side_id, side_type_id=side_type_id, side_name_id=side_name_id)
-        db.session.add(new_side)
-    db.session.commit()
 
     for i in range(len(ice_cream_items)):
         id = uuid.uuid4()
         side_type_id = 'ice_cream'
         side_name_id = 'ice_cream_bowl'
-        new_side = Side(id=id, side_type_id=side_type_id, side_name_id=side_name_id)
+        new_side = Side(id=id, side_type_id=side_type_id,
+                        side_name_id=side_name_id)
         db.session.add(new_side)
     db.session.commit()
 
     sides = db.session.query(Side)
     serialized_sides = [x.serialize for x in sides]
-    for i in range(len(croissant_items)):
-        side = croissant_items[i]
-        if serialized_sides[i]['side_name_id'] == 'croissant':
-            id = serialized_sides[i]['id']
-            side_flavor = side['flavor_id']
-            side_price = side['price']
-            new_croissant = Croissant(
-                side_id=id, flavor_id=side_flavor, price=side_price)
-            # After I create the ingredient, I can then add it to my session.
-            db.session.add(new_croissant)
 
-    for i in range(len(croissant_items), len(croissant_items) + len(ice_cream_items)):
-        ice_cream_index = i - len(croissant_items)
-        side = ice_cream_items[ice_cream_index]
-        if serialized_sides[i]['side_name_id'] == 'ice_cream_bowl':
-            side_flavor = side['flavor']
-            side_serving_size = side['serving_size']
-            side_price = side['price']
-            new_ice_cream = Ice_Cream_Flavor_Serving_Size_Price(
-               serving_size_id = side_serving_size, flavor_id = side_flavor, price = side_price)
-
-            # After I create the ingredient, I can then add it to my session.
-            db.session.add(new_ice_cream)
+    for i in range(len(ice_cream_items)):
+        side = ice_cream_items[i]
+        side_flavor = side['flavor']
+        side_serving_size = side['serving_size']
+        side_price = side['price']
+        new_ice_cream = Ice_Cream_Flavor_Serving_Size_Price(
+            serving_size_id=side_serving_size, flavor_id=side_flavor, price=side_price)
+        # After I create the ingredient, I can then add it to my session.
+        db.session.add(new_ice_cream)
     # commit the session to my DB.
     db.session.commit()
     db.session.remove()
@@ -1009,24 +972,6 @@ def create_coffee_name():
     db.session.remove()
 
 
-def create_coffee_name_serving_size_price():
-    file_path = Path(cwd+'/static/json/coffee_name_serving_size_price.json')
-    json_items = load_json(file_path)
-    for item in json_items:
-        coffee_name = item['coffee_name']
-        serving_size = item['serving_size']
-        price = item['price']
-        new_coffee_name_serving_size_price = Coffee_Name_Serving_Size_Price(
-            coffee_name=coffee_name, serving_size=serving_size, price=price)
-
-        # After I create the ingredient, I can then add it to my session.
-        db.session.add(new_coffee_name_serving_size_price)
-
-    # commit the session to my DB.
-    db.session.commit()
-    db.session.remove()
-
-
 def create_coffee_temperature():
     file_path = Path(cwd+'/static/json/coffee_temperature.json')
     json_items = load_json(file_path)
@@ -1072,7 +1017,8 @@ def create_coffee_flavor_syrup_serving_size():
 
 
 def create_coffee_flavor_syrup_serving_size_price():
-    file_path = Path(cwd+'/static/json/coffee_flavor_syrup_serving_size_price.json')
+    file_path = Path(
+        cwd+'/static/json/coffee_flavor_syrup_serving_size_price.json')
     json_items = load_json(file_path)
 
     for item in json_items:
@@ -1091,40 +1037,94 @@ def create_coffee_flavor_syrup_serving_size_price():
 
 
 def create_drinks():
+
+    drinks_file_path = Path(cwd+'/static/json/drink.json')
+    drink_items = load_json(drinks_file_path)
+
+    for item in drink_items:
+        name = item['name']
+        drink_category_id = item['drink_category_id']
+        id = uuid.uuid4()
+        new_drink = Drink(id=id, name=name,
+                          drink_category_id=drink_category_id)
+        db.session.add(new_drink)
+    db.session.commit()
+    db.session.remove()
+
+
+def create_drink_name_serving_size_price():
+    drinks = db.session.query(Drink)
+    serialized_drinks = [x.serialize for x in drinks]
     milkshake_file_path = Path(cwd+'/static/json/milkshake.json')
     milkshake_items = load_json(milkshake_file_path)
 
-    non_coffee_drinks_file_path = Path(cwd+'/static/json/non_coffee_drinks.json')
+    non_coffee_drinks_file_path = Path(
+        cwd+'/static/json/non_coffee_drinks.json')
     non_coffee_items = load_json(non_coffee_drinks_file_path)
 
     bottled_drinks_file_path = Path(cwd+'/static/json/bottled_drinks.json')
     bottled_drink_items = load_json(bottled_drinks_file_path)
 
-    for item in milkshake_items:
-        name = item['name']
-        price = item['price']
-        drink_category_id = 'milkshake'
-        id = uuid.uuid4()
-        new_drink = Drink(id=id, name=name, price=price, drink_category_id=drink_category_id)
-        db.session.add(new_drink)
+    coffee_file_path = Path(
+        cwd+'/static/json/coffee_name_serving_size_price.json')
+    coffee_items = load_json(coffee_file_path)
 
-    for item in non_coffee_items:
-        name = item['name']
-        price = item['price']
-        drink_category_id = 'non-coffee'
-        id = uuid.uuid4()
-        new_drink = Drink(id=id, name=name, price=price, drink_category_id=drink_category_id)
-        db.session.add(new_drink)
+    for i in range(len(milkshake_items)):
+        for j in range(len(serialized_drinks)):
+            item = milkshake_items[i]
+            name = item['name']
+            if name == serialized_drinks[j]['name']:
+                id = serialized_drinks[j]['id']
+                drink_category_id = 'milkshake'
+                serving_size = item['serving_size']
+                print("milkshake serving_size", serving_size)
+                
+                price = item['price']
+                new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price( id = id,
+                    name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
+                db.session.add(new_drink_name_serving_size_price)
 
-    for item in bottled_drink_items:
-        name = item['name']
-        price = item['price']
-        id = uuid.uuid4()
-        drink_category_id = 'bottled'
-        new_drink = Drink(id=id, name=name, price=price, drink_category_id=drink_category_id)
-        db.session.add(new_drink)
+    for i in range(len(non_coffee_items)):
+        for j in range(len(serialized_drinks)):
+            item = non_coffee_items[i]
+            name = item['name']
+            if name == serialized_drinks[j]['name']:
+                id = serialized_drinks[j]['id']
+                drink_category_id = 'non-coffee'
+                serving_size = item['serving_size']
+                price = item['price']
+                new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price(id=id,
+                                                                                name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
+                db.session.add(new_drink_name_serving_size_price)
+
+    for i in range(len(bottled_drink_items)):
+        for j in range(len(serialized_drinks)):
+            item = bottled_drink_items[i]
+            name = item['name']
+            if name == serialized_drinks[j]['name']:
+                id = serialized_drinks[j]['id']
+                drink_category_id = 'bottled'
+                serving_size = item['serving_size']
+                price = item['price']
+                new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price(id=id,
+                                                                                name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
+                db.session.add(new_drink_name_serving_size_price)
+
+    for i in range(len(coffee_items)):
+        for j in range(len(serialized_drinks)):
+            item = coffee_items[i]
+            name = item['name']
+            if name == serialized_drinks[j]['name']:
+                id = serialized_drinks[j]['id']
+                drink_category_id = 'coffee'
+                serving_size = item['serving_size']
+                price = item['price']
+                new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price(id=id,
+                                                                                name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
+                db.session.add(new_drink_name_serving_size_price)
     db.session.commit()
     db.session.remove()
+
 
 def create_side_type():
     file_path = Path(cwd+'/static/json/side_type.json')
@@ -1238,9 +1238,9 @@ def create_everything():
     create_coffee_flavor_syrup()
     create_coffee_flavor_syrup_serving_size()
     create_coffee_flavor_syrup_serving_size_price()
-    create_coffee_name_serving_size_price()
     create_coffee_temperature()
     create_drinks()
+    create_drink_name_serving_size_price()
     create_milk()
     create_crepe_origination()
     create_side_type()
@@ -1261,11 +1261,11 @@ def instantiate_db_connection():
     #     print(_t)
     # test = db.session.query(Ingredient).first()
     # if not test:
-        # db.create_all()
-        # create_everything()
+    # db.create_all()
+    # create_everything()
     #     print('working')
-        # except Exception as e:
-        #     print("Exception", str(e))
+    # except Exception as e:
+    #     print("Exception", str(e))
 
 
 # instantiate_db_connection()
