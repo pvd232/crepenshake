@@ -1,5 +1,5 @@
 ('use strict');
-import { Order, OrderCrepe } from './model.js';
+import { Order, OrderCrepe, humanize } from './model.js';
 
 var editCrepeIndex = null;
 var editOrder = null;
@@ -271,7 +271,7 @@ $(window).on('load resize', function () {
 		$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
-		$('.card-title, .head3').each(function () {
+		$('.card-title, .head3, h2').each(function () {
 			$(this).html(humanize(null, null, $(this).html()));
 		});
 		$('.head3').each(function () {

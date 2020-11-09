@@ -34,7 +34,7 @@
 		>
 			{% endblock %}
 			<a class="navbar-centered" style="background-color: black;" href='{{url_for("home")}}'>
-				<img class="img-responsive" src="../static/images/NewLogo.png" width="350" height="150"/>
+				<img class="img-responsive mx auto mr auto" src="../static/images/NewLogo.png" style=" height: 150px; width: 100vw;"/>
 			</a>
 			<nav class="navbar navbar-dark navbar-expand-lg" style="background-color: black">
 				<button
@@ -80,7 +80,7 @@
 			role="dialog"
 			aria-labelledby="exampleModalCenterTitle"
 			aria-hidden="true"
-			style="width: auto"
+			style="width: 100vw;"
 		>
 			<div class="modal-dialog modal-dialog-centered" id="dialog" role="document">
 				<div class="modal-content" id="content">
@@ -136,5 +136,4 @@
 
 		{% block script %} {%endblock%}
 	</body>
-	
 </html>
