@@ -27,15 +27,18 @@
 .modal.fade .btn9 {
 	background-color: rgb(0, 32, 120);
 	color: white;
-	font-size: 95%;
+	font-size: 110%;
 	border-radius: 5px;
 	border: none;
 	cursor: pointer;
 	font-weight: 500;
-	padding: 6px 6px 6px 6px;
+	padding: 6px 12px;
 	display:flex;
 	align-self:center;
 	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+
 
 }
 

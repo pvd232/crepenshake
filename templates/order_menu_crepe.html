@@ -10,12 +10,12 @@
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class='head3'>Savory Crepes</h3>
 	<div class="card-deck" id="savory">
-		{% for i in range(formatted_savory_menu_crepes|length) %}
+		{% for i in range(savory_menu_crepes|length) %}
 		<div class="card" id='{{savory_menu_crepes[i].crepe_id}}' data-menucrepes='{{ savory_menu_crepes[i]|tojson }}'>
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
-				<h5 class="card-title">{{formatted_savory_menu_crepes[i].name}}</h5>
-				<p class="card-text">${{formatted_savory_menu_crepes[i].price}}</p>
+				<h5 class="card-title">{{savory_menu_crepes[i].name}}</h5>
+				<p class="card-text">${{savory_menu_crepes[i].price}}</p>
 
 			</div>
 		</div>
@@ -26,12 +26,12 @@
 <div class="container" style="margin-top: 40px; border-bottom: 1px solid #dee1e3">
 	<h3 class='head3'>Sweet Crepes</h3>
 	<div class="card-deck" id="sweet">
-		{% for i in range(formatted_sweet_menu_crepes|length) %}
+		{% for i in range(sweet_menu_crepes|length) %}
 		<div class="card" id='{{sweet_menu_crepes[i].crepe_id}}' data-menucrepes='{{ sweet_menu_crepes[i]|tojson }}'>
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
-				<h5 class="card-title">{{formatted_sweet_menu_crepes[i].name}}</h5>
-				<p class="card-text">${{formatted_sweet_menu_crepes[i].price}}</p>
+				<h5 class="card-title">{{sweet_menu_crepes[i].name}}</h5>
+				<p class="card-text">${{sweet_menu_crepes[i].price}}</p>
 			</div>
 		</div>
 		{% endfor %}

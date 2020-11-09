@@ -12,5 +12,8 @@ $(window).on('load resize', function () {
 
 	if (cWidth <= 576) { 
 		$('#crepeButtonImage').remove();
+		$('#crepeButton').css("background-color", "rgba(251, 35, 49)")
+		$('#crepeButton').css('margin-top', '20px');
+		
 	}
 });

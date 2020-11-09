@@ -77,7 +77,8 @@ const pageLogic = () => {
 		.on('mouseenter', function () {
 			if (
 				$(this).find('.card-body').attr('id') != 'cardBody' &&
-				$(this).closest('.card-deck').attr('id') != 'toppings'
+				$(this).closest('.card-deck').attr('id') != 'toppings' &&
+				$(this).attr('class') != 'list-group-item d-flex justify-content-between align-items-center'
 			) {
 				$(this).find('.card-body, .card-img-top, .card-text, .card-title, p, h2, img').css('opacity', '.3');
 			}
@@ -86,6 +87,8 @@ const pageLogic = () => {
 				.unbind('click')
 				.bind('click', function (event) {
 					const senderElementClass = event.target.getAttribute('class');
+					const senderElementType = event.target.tagName;
+
 					console.log('senderElement', senderElementClass);
 
 					if (
@@ -93,7 +96,11 @@ const pageLogic = () => {
 						senderElementClass === 'card-text' ||
 						senderElementClass === 'card-title' ||
 						senderElementClass === 'card-body' ||
-						senderElementClass === 'card-img-top'
+						senderElementClass === 'card-img-top' ||
+						senderElementClass === 'container5' ||
+						senderElementType === 'P' ||
+						senderElementType === 'IMG' ||
+						senderElementType === 'H2' 
 					) {
 						const json = JSON.parse($(this).attr('data-ingredients'));
 

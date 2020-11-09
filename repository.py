@@ -40,46 +40,40 @@ class Ingredient_Repository(object):
 class Order_Repository(object):
     def post_stripe_order(self, session, order):
         new_customer = order['customerData']
-        if not new_customer:
+        print("new_customer", new_customer)
+        
+        amount = int(order['orderTotal'] * 100)
+        customerExistenceBool = False
+        if new_customer:
+            confirmCustomerExistence = session.query(Stripe).filter(Stripe.id == new_customer['stripeId']).first()  
+            # Lookup the saved card (you can store multiple PaymentMethods on a Customer)
+            if confirmCustomerExistence:
+                customerExistenceBool = True
+                payment_methods = stripe.PaymentMethod.list(
+                    customer=new_customer['stripeId'],
+                    type='card'
+                )
+                # Charge the customer and payment method immediately
+                payment_intent = stripe.PaymentIntent.create(
+                    amount=amount,
+                    currency='usd',
+                    customer=new_customer['stripeId'],
+                    payment_method=payment_methods.data[0].id
+                )
+                return {'clientSecret': payment_intent['client_secret'], 'customer': new_customer['stripeId']}
+        if not customerExistenceBool:
             new_customer = stripe.Customer.create()
             new_stripe_id = Stripe(id=new_customer.id)
             session.add(new_stripe_id)
             session.commit()
             amount = int(order['orderTotal'] * 100)
-            intent = stripe.PaymentIntent.create(
+            payment_intent = stripe.PaymentIntent.create(
                     amount=amount,
                     customer=new_customer.id,
                     setup_future_usage='off_session',
                     currency='usd'
                 )
-            return {'clientSecret': intent['client_secret'], 'customer': new_customer.id}
-        else:    
-            amount = int(order['orderTotal'] * 100)
-            
-            # Lookup the saved card (you can store multiple PaymentMethods on a Customer)
-            payment_methods = stripe.PaymentMethod.list(
-                customer=new_customer['stripeId'],
-                type='card'
-            )
-            # Charge the customer and payment method immediately
-            payment_intent = stripe.PaymentIntent.create(
-                amount=2000,
-                currency='usd',
-                customer=new_customer['stripeId'],
-                payment_method=payment_methods.data[0].id,
-                off_session=True,
-                confirm=True
-            )
-            if payment_intent.status == 'succeeded':
-                print('Successfully charged card off session')
-            # intent = stripe.PaymentIntent.create(
-            #     amount=amount,
-            #     customer=new_customer['stripeId'],
-            #     setup_future_usage='off_session',
-            #     currency='usd'
-            # )
-            return {'clientSecret': intent['client_secret'], 'customer': new_customer['stripeId']}
-    
+            return {'clientSecret': payment_intent['client_secret'], 'customer': new_customer.id}
     def post_order(self, session, order):
         new_customer = order.customer
         user = session.query(Customer).filter(
@@ -120,16 +114,16 @@ class Order_Repository(object):
                 drink_to_add = order.order_drink.order_drink[i]
  
                 if drink_to_add.drink_category_id == 'coffee':
-                    new_drink = Drink(
-                        id=drink_to_add.id, name=drink_to_add.name, price=drink_to_add.price, drink_category_id=drink_to_add.drink_category_id)
-                    session.add(new_drink)
+                    # new_drink = Drink(
+                    #     id=drink_to_add.id, name=drink_to_add.name, price=drink_to_add.price, drink_category_id=drink_to_add.drink_category_id)
+                    # session.add(new_drink)
                     
-                    new_coffee = Coffee(drink_id=drink_to_add.id, coffee_name_id=drink_to_add.name, serving_size_id=drink_to_add.serving_size,
+                    new_order_coffee = Order_Coffee(drink_id=drink_to_add.id, coffee_name_id=drink_to_add.name, serving_size_id=drink_to_add.serving_size,
                                         temperature_id=drink_to_add.temperature, flavor_syrup_id=drink_to_add.coffee_syrup_flavor,  flavor_syrup_serving_size_id=drink_to_add.coffee_syrup_flavor_serving_size, espresso_serving_size_id=drink_to_add.espresso_serving_size, milk_type_id=drink_to_add.milk_type_id)
-                    session.add(new_coffee)
+                    session.add(new_order_coffee)
                     
                 new_order_drink = Order_Drink(order_id=new_order.id, drink_id=drink_to_add.id,
-                                              serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity, )
+                                              serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity )
                 
                 session.add(new_order_drink)
             session.commit()

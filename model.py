@@ -294,7 +294,7 @@ class Drink_Category(object):
 class Coffee_Model(object):
     def __init__(self, id=None, drink_category_id=None, name=None, milk_type_id=None, price=None, espresso_serving_size=None, espresso_price=None, coffee_syrup_flavor=None, coffee_syrup_flavor_serving_size=None, serving_size=None, quantity=None, temperature=None, coffee_object=None):
         if (coffee_object):
-            self.id = uuid.uuid4()
+            self.id = coffee_object['id']
             self.name = coffee_object["name"]
             self.drink_category_id = coffee_object["drinkCategory"]
             self.milk_type_id = coffee_object["milkType"]

@@ -156,9 +156,24 @@ const pageLogic = () => {
 				.find('.card-text, .card-title, .card-body, .card-img-top, .list-group-item')
 				.unbind('click')
 				.bind('click', function (event) {
-					const senderElement = event.target;
+					const senderElementClass = event.target.getAttribute('class');
+					const senderElementType = event.target.tagName;
+					console.log("senderElementType", senderElementType)
+					
 
-					if (this === senderElement) {
+					console.log('senderElement', senderElementClass);
+
+					if (
+						senderElementClass === 'list-group-item d-flex justify-content-between align-items-center' ||
+						senderElementClass === 'card-text' ||
+						senderElementClass === 'card-title' ||
+						senderElementClass === 'card-body' ||
+						senderElementClass === 'card-img-top' ||
+						senderElementType === 'CONTAINER' ||
+						senderElementType === 'P' ||
+						senderElementType === 'IMG' ||
+						senderElementType === 'H2'
+					) {
 						const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
 						const json = JSON.parse($(this).closest('.card, li').attr('data-sides'));
 						// logic for toppings is the most complex and should be evaluated last. de facto the non-topping cards are ice cream which have counters
@@ -200,6 +215,8 @@ const pageLogic = () => {
 						) {
 							userOrderSide.removeTopping(json);
 							$(this).closest('.card, .list-group-item').find('.btn2').hide();
+							$(this).closest('.card, .list-group-item').find('.btn').hide();
+
 						} else if (
 							selectedItemCategory === 'toppings' &&
 							!userOrderSide.checkIfThisToppingSelected(json)

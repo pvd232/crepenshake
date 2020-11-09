@@ -183,7 +183,7 @@ const doShowAll = () => {
 							if (drink instanceof Coffee) {
 								const milkName = humanize(drink, 'milkType').milkType;
 								const milkPrice = drink.milkPrice;
-								const espressoPrice = drink.price;
+								const espressoPrice = drink.espressoPrice;
 								const espressoServingSize = drink.espressoServingSize;
 								var espressFormat;
 								var flavorSyrupPrice = '';
@@ -197,9 +197,9 @@ const doShowAll = () => {
 								}
 								if (drink.flavorSyrup && drink.flavorSyrupServingSize) {
 									if (drink.flavorSyrupServingSize === 'extra') {
-										flavorSyrupPrice = 0.99;
-									} else {
-										flavorSyrupPrice = 0;
+										flavorSyrupPrice = 1.98;
+									} else if (flavorSyrupPrice === 'regular') {
+										flavorSyrupPrice = .99;
 									}
 									$(`<div class="row" style= "margin-bottom: 20px;">
 													<div class="col-9" style="margin-right: 0px; " >
@@ -225,7 +225,7 @@ const doShowAll = () => {
 														<h4 >$${milkPrice}</h4>
 													</div>
 												</div>
-												<div class="row" style= "margin-bottom: 20px;" id='#drinkRow-${i}-${j + 1}'>
+												<div class="row" style= "margin-bottom: 20px;" id='drinkRow-${i}-${j + 1}'>
 													<div class="col-9" style="margin-right: 0px;">
 														<h5 >${humanize(drink, 'flavorSyrupServingSize').flavorSyrupServingSize} ${
 										humanize(drink, 'flavorSyrup').flavorSyrup
@@ -274,13 +274,13 @@ const doShowAll = () => {
 									drinkName = humanize(drink, 'name').name;
 								}
 								$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow-${i}-${j + 1}">
-											<div class="col-9" style="margin-right: 0px;" >
-												<h5 >${drink.quantity + 'x' + ' ' + drinkName}</h5>
-											</div>
-											<div class="col-3">
-												<h4 >$${drinkPrice.toFixed(2)}</h4>
-											</div>
-											</div>`).insertAfter(`#drinkRow-${i}-${j}`);
+										<div class="col-9" style="margin-right: 0px;" >
+											<h5 >${drink.quantity + 'x' + ' ' + drinkName}</h5>
+										</div>
+										<div class="col-3">
+											<h4 >$${drinkPrice.toFixed(2)}</h4>
+										</div>
+										</div>`).insertAfter(`#drinkRow-${i}-${j}`);
 							} // end of non-coffee drinks else block
 						} // end of loop for drinks in drink order
 

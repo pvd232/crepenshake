@@ -86,17 +86,17 @@ const modifyOrder = () => {
 				//send crepe recipe to blaise
 
 				if (drink.espressoServingSize === 'extra') {
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn2').html('3x');
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn2').show();
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn').show();
+					$(`#${drink.id}`).find('.btn2').html('3x');
+					$(`#${drink.id}`).find('.btn2').show();
+					$(`#${drink.id}`).find('.btn').show();
 				} else if (drink.espressoServingSize === 'regular') {
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn2').html('✓');
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn2').show();
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn').show();
+					$(`#${drink.id}`).find('.btn2').html('✓');
+					$(`#${drink.id}`).find('.btn2').show();
+					$(`#${drink.id}`).find('.btn').show();
 				} else if (drink.espressoServingSize === 'light') {
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn2').html('½');
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn2').show();
-					$(`#${drink.name}-${drink.servingSize}`).find('.btn').show();
+					$(`#${drink.id}`).find('.btn2').html('½');
+					$(`#${drink.id}`).find('.btn2').show();
+					$(`#${drink.id}`).find('.btn').show();
 				}
 
 				if (drink.flavorSyrup) {
@@ -183,46 +183,47 @@ const modifyOrder = () => {
 const pageLogic = () => {
 	$('.card, .list-group-item')
 		.on('mouseenter', function () {
-			// if ($(this).attr('class') === 'card') {
-			const json = JSON.parse($(this).attr('data-drinks'));
-			const selectedItemCategory = $(this).closest('.card-deck, .list-group-item').attr('id');
+			if ($(this).attr('class') === 'card') {
+				const json = JSON.parse($(this).attr('data-drinks'));
+				const selectedItemCategory = $(this).closest('.card-deck').attr('id');
 
-			// if the card isn't milk or temperature
-			if (
-				selectedItemCategory != 'milk' &&
-				selectedItemCategory != 'temperature' &&
-				selectedItemCategory != 'syrup'
-			) {
-				// if the card also isn't coffee then fade it out
-				if (selectedItemCategory != 'coffee') {
-					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-					// $(this).find('.btn').show();
-					// if the card is coffee but a coffee has not been previously selected
-				} else if (!userOrderDrink.checkIfCoffeeSelected()) {
-					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
+				// if the card isn't milk or temperature
+				if (
+					selectedItemCategory != 'milk' &&
+					selectedItemCategory != 'temperature' &&
+					selectedItemCategory != 'syrup'
+				) {
+					// if the card also isn't coffee then fade it out
+					if (selectedItemCategory != 'coffee') {
+						$(this).find('.card-body, .card-img-top').css('opacity', '.3');
+						// $(this).find('.btn').show();
+						// if the card is coffee but a coffee has not been previously selected
+					} else if (!userOrderDrink.checkIfCoffeeSelected()) {
+						$(this).find('.card-body, .card-img-top').css('opacity', '.3');
+						$(this).find('.btn').show();
+					}
+					// if you hover over a selected coffee card it will fade out otherwise it won't but it will already be faded out
+					// else if (userOrderDrink.findDrink(json)) {
+					// 	$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
+					// }
+					// if the hover card is syrup and a coffee has been selected then fade it out
+				} else if (selectedItemCategory === 'syrup' && userOrderDrink.checkIfCoffeeSelected()) {
+					$(this).find('.card-body, .card-img-top').css('opacity', '.3');
+
 					$(this).find('.btn').show();
-				}
-				// if you hover over a selected coffee card it will fade out otherwise it won't but it will already be faded out
-				// else if (userOrderDrink.findDrink(json)) {
-				// 	$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-				// }
-				// if the hover card is syrup and a coffee has been selected then fade it out
-			} else if (selectedItemCategory === 'syrup' && userOrderDrink.checkIfCoffeeSelected()) {
-				$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-
-				$(this).find('.btn').show();
-				// if the hover card is milk and a coffee has been selected then fade it out
-			} else if (selectedItemCategory === 'milk' && userOrderDrink.checkIfCoffeeSelected()) {
-				// 	make sure a milk hasn't already been selected
-				if (!userOrderDrink.checkIfMilkSelected()) {
-					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-					// if a milk has been selected then we only want to highlight the card if it is that milk
-				}
-			} else if (selectedItemCategory === 'temperature' && userOrderDrink.checkIfCoffeeSelected()) {
-				if (!userOrderDrink.checkIfTempSelected()) {
-					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-				} else if (userOrderDrink.checkIfThisTempSelected(json)) {
-					$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
+					// if the hover card is milk and a coffee has been selected then fade it out
+				} else if (selectedItemCategory === 'milk' && userOrderDrink.checkIfCoffeeSelected()) {
+					// 	make sure a milk hasn't already been selected
+					if (!userOrderDrink.checkIfMilkSelected()) {
+						$(this).find('.card-body, .card-img-top').css('opacity', '.3');
+						// if a milk has been selected then we only want to highlight the card if it is that milk
+					}
+				} else if (selectedItemCategory === 'temperature' && userOrderDrink.checkIfCoffeeSelected()) {
+					if (!userOrderDrink.checkIfTempSelected()) {
+						$(this).find('.card-body, .card-img-top').css('opacity', '.3');
+					} else if (userOrderDrink.checkIfThisTempSelected(json)) {
+						$(this).find('.card-body, .card-img-top').css('opacity', '.3');
+					}
 				}
 			}
 
@@ -231,6 +232,9 @@ const pageLogic = () => {
 				.unbind('click')
 				.bind('click', function (event) {
 					const senderElementClass = event.target.getAttribute('class');
+					const senderElementType = event.target.tagName;
+					console.log('senderElementType', senderElementType);
+
 					console.log('senderElement', senderElementClass);
 
 					if (
@@ -238,7 +242,11 @@ const pageLogic = () => {
 						senderElementClass === 'card-text' ||
 						senderElementClass === 'card-title' ||
 						senderElementClass === 'card-body' ||
-						senderElementClass === 'card-img-top'
+						senderElementClass === 'card-img-top' ||
+						senderElementType === 'CONTAINER' ||
+						senderElementType === 'P' ||
+						senderElementType === 'IMG' ||
+						senderElementType === 'H2'
 					) {
 						const json = JSON.parse($(this).closest('.card, li').attr('data-drinks'));
 						console.log('json', json);
@@ -265,7 +273,10 @@ const pageLogic = () => {
 						// if you click the card and it has already been selected then remove the item
 						else if (userOrderDrink.findDrink(json)) {
 							userOrderDrink.removeDrink(json);
-							$(this).closest('.card, li').find('.btn2').toggle();
+							$(this).closest('.card, li').find('.btn2').hide();
+							$(this).closest('.card, li').find('.btn').toggle();
+							console.log("userOrderDrink.checkIfCoffeeSelected()", userOrderDrink.checkIfCoffeeSelected())
+							
 							// if the card you removed was a coffee card
 							if (!userOrderDrink.checkIfCoffeeSelected()) {
 								// reactivate all the coffee cards
@@ -398,9 +409,12 @@ const pageLogic = () => {
 								// if a coffee has not already been selected and the card being selected isn't any of the other drink options then the card being selected should be coffee
 							} else if (selectedItemCategory === 'coffee') {
 								const espressoServingSize = 'regular';
+								console.log('adding coffee')
 								userOrderDrink.addCoffee(json, espressoServingSize);
 								$(this).closest('.card, li').find('.btn2').html('✓');
 								$(this).closest('.card, li').find('.btn2').toggle();
+								$(this).closest('.card, li').find('.btn').toggle();
+
 								$('#milk, #temperature, #syrup').each(function () {
 									$(this)
 										.find('.card, .list-group-item')
@@ -439,7 +453,7 @@ const pageLogic = () => {
 						} else if (selectedItemCategory === 'coffee') {
 							//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
 							$(this).blur();
-							$(this).html('3 Espresso Shots');
+							$(this).html('3X Espresso');
 							$(this).closest('.card, li').find('.btn3').show();
 							$(this).closest('.card, li').find('.btn4').show();
 						}
@@ -461,7 +475,12 @@ const pageLogic = () => {
 							$('#errorSyrup').html('You may only select one syrup for your coffee');
 							$('#errorSyrup').show();
 						} else if (selectedItemCategory === 'coffee') {
-							userOrderDrink.addCoffee(json, servingSize);
+							if (!userOrderDrink.findDrink(json)) {
+								userOrderDrink.addCoffee(json, servingSize);
+							}
+							else {
+								userOrderDrink.updateEspressoServingSize(json, servingSize);
+							}
 							$(this).closest('.card, li').find('.btn2').html('3X');
 							// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
 							$('#coffee')
@@ -768,9 +787,7 @@ $(window).on('load resize', function () {
 				listValue.setAttribute('style', 'width:100%');
 				const jsonData = constCardData[counter].getAttribute('data-drinks');
 				const data = JSON.parse(constCardData[counter].getAttribute('data-drinks'));
-				if (data.drink_category_id === 'coffee') {
-					listValue.setAttribute('id', data.name + '-' + data.serving_size);
-				} else if (data.coffee_syrup_flavor) {
+				if (data.coffee_syrup_flavor) {
 					listValue.setAttribute('id', data.coffee_syrup_flavor);
 				} else if (data.id) {
 					listValue.setAttribute('id', data.id);

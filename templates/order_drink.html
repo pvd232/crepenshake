@@ -14,7 +14,7 @@
 	<h3 class="head3">{{ drink_categories[j].id }}</h3>
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
 		{% for i in range(coffee_drinks|length) %}
-		<div class="card" id='{{coffee_drinks[i].name}}-{{coffee_drinks[i].serving_size}}' data-drinks='{{coffee_drinks[i]|tojson}}'>
+		<div class="card" id='{{coffee_drinks[i].id}}' data-drinks='{{coffee_drinks[i]|tojson}}'>
 			<img src="" class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{coffee_drinks[i].serving_size + " " + coffee_drinks[i].name}}</h5>

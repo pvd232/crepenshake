@@ -143,6 +143,10 @@ def order_menu_crepe(editOrder=None):
                          for x in menu_crepe_service.get_sweet_menu_crepes()]
 
     savory_menu_crepes = [x.serialize() for x in menu_crepe_service.get_savory_menu_crepes()]
+    for crepe in savory_menu_crepes:
+        print("crepe", crepe)
+        
+
    
     editOrder = request.args.get('editOrder')
     return render_template('order_menu_crepe.html', savory_menu_crepes=savory_menu_crepes, sweet_menu_crepes=sweet_menu_crepes, editOrder=editOrder)

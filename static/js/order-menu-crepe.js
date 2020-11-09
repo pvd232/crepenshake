@@ -1,9 +1,8 @@
 ('use strict');
-import { Order, OrderCrepe } from './model.js';
+import { Order, OrderCrepe, humanize } from './model.js';
 
 var editCrepeIndex = null;
 var editOrder = null;
-const menuCrepeDataArray = new Array();
 const userOrderMenuCrepe = new OrderCrepe();
 
 const stringify = (crepeOrder) => {
@@ -67,10 +66,10 @@ const modifyOrder = () => {
 		console.log('editOrderCrepe', editOrderCrepe);
 		for (var i = 0; i < editOrderCrepe.length; i++) {
 			const crepe = editOrderCrepe[i];
-			$(`#${crepe.id}`).closest('.card').find('.btn2').html(crepe.quantity);
-			$(`#${crepe.id}`).closest('.card').find('.btn2').show();
-			$(`#${crepe.id}`).closest('.card').find('.btn6').show();
-			$(`#${crepe.id}`).closest('.card').find('.btn7').show();
+			$(`#${crepe.id}`).closest('.card, .list-group-item').find('.btn2').html(crepe.quantity);
+			$(`#${crepe.id}`).closest('.card, .list-group-item').find('.btn2').show();
+			$(`#${crepe.id}`).closest('.card, .list-group-item').find('.btn6').show();
+			$(`#${crepe.id}`).closest('.card, .list-group-item').find('.btn7').show();
 		}
 	}
 };
@@ -79,31 +78,30 @@ const pageLogic = () => {
 	$('.card, .list-group')
 		.on('mouseenter', function () {
 			if ($(this).attr('class') === 'card') {
-				const json = JSON.parse($(this).attr('data-menucrepes'));
-
 				$(this).find('.card-body').css('opacity', '.3');
 				$(this).find('.card-img-top').css('opacity', '.3');
-
-				if ($(this).attr('class') === 'list-group') {
-					$(document).on('mouseenter', '.list-group-item', function () {
-						if (!userOrderMenuCrepe.findCrepe(json)) {
-							$(this).css('opacity', '.3');
-						}
-					});
-				}
 			}
 			//click the card somewhere
 			$(this)
 				.find('.card-text, .card-title, .card-body, .card-img-top, .list-group-item')
 				.unbind('click')
 				.bind('click', function (event) {
-					const senderElement = event.target;
-					if (this === senderElement) {
+					const senderElementClass = event.target.getAttribute('class');
+					const senderElementType = event.target.tagName;
+					if (
+						senderElementClass === 'list-group-item d-flex justify-content-between align-items-center' ||
+						senderElementClass === 'card-text' ||
+						senderElementClass === 'card-title' ||
+						senderElementClass === 'card-body' ||
+						senderElementClass === 'card-img-top' ||
+						senderElementClass === 'container5' ||
+						senderElementType === 'P' ||
+						senderElementType === 'IMG' ||
+						senderElementType === 'H2'
+					) {
 						const json = JSON.parse($(this).closest('.card, li').attr('data-menucrepes'));
 
 						const selectedCrepe = userOrderMenuCrepe.findCrepe(json);
-						console.log('selectedCrepe', selectedCrepe);
-
 						// if you click the card and it hasn't been selected
 						if (!selectedCrepe) {
 							const addedMenuCrepe = userOrderMenuCrepe.changeCrepeQuantity(json, 'increase');
@@ -165,9 +163,6 @@ const pageLogic = () => {
 
 				$(this).find('img').css('opacity', '1');
 				$(this).find('.card-body').css('opacity', '1');
-				if ($(this).closest('.list-group')) {
-					$(this).css('opacity', '1');
-				}
 			}
 		});
 };
@@ -299,7 +294,7 @@ $(window).on('load resize', function () {
 				listValue.setAttribute('style', 'width:100%');
 				const jsonData = constCardData[counter].getAttribute('data-menucrepes');
 				const data = JSON.parse(constCardData[counter].getAttribute('data-menucrepes'));
-				listValue.setAttribute('id', data.id);
+				listValue.setAttribute('id', data.crepe_id);
 				listValue.setAttribute('data-menucrepes', jsonData);
 
 				if (constCardTextValues[k]) {
@@ -356,6 +351,8 @@ $(window).on('load resize', function () {
 
 				listValue.appendChild(imageParent);
 				listGroupTitle.append(listValue);
+				counter += 1;
+
 			}
 
 			row.appendChild(listGroupTitle);
