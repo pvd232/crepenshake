@@ -8,35 +8,6 @@ from models import app
 
 stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
 
-def humanize(dict = None, attr = None, format = False):
-    if format == True:
-        for x in dict['ingredients']:
-            str = x.__getattribute__(attr)
-            frags = str.split('_')
-            if len(frags) < 2:
-                str = str.capitalize()
-                setattr(x, attr, str)
-            newFrags = []
-            for frag in frags:
-                frag = frag.capitalize()
-                newFrags.append(frag)
-            newFrags = " ".join(newFrags)
-            setattr(x, attr, newFrags)
-        return dict
-    str = dict.__getattribute__(attr)
-    frags = str.split('_')
-    if len(frags) < 2:
-        str = str.capitalize()
-        setattr(dict, attr, str)
-        return dict
-    newFrags = []
-    for frag in frags:
-        frag = frag.capitalize()
-        newFrags.append(frag)
-    newFrags = " ".join(newFrags)
-    setattr(dict, attr, newFrags)
-    return dict
-
 
 @app.route("/")
 def home():
@@ -131,8 +102,6 @@ def order_drink(editOrder=None):
                      for x in drink_service.get_drinks('coffee')]
     non_coffee_drinks = [x.serialize()
                          for x in drink_service.get_drinks('non-coffee')]
-    for x in non_coffee_drinks:
-        print('x', x)
     milk_drinks = [x.serialize() for x in drink_service.get_milk_drinks()]
 
     coffee_temperatures = [x.serialize() for x in drink_service.get_coffee_temperature()]

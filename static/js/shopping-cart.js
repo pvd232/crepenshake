@@ -149,7 +149,7 @@ const doShowAll = () => {
 							crepeURL = 'menu-crepe';
 						}
 						$(`<div class="grid-container" id="menubuttoncontainer${k}" style="grid-template-columns: 1fr 1fr 1fr;
-            				display:grid; grid-gap: 5px; width:80%; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
+            				display:grid; grid-gap: 5px; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
 							$(`#container${k}`)
 						);
 						$(`#menubuttoncontainer${k}`).append(
@@ -287,11 +287,11 @@ const doShowAll = () => {
 						const drinkItemIndex = $(`#drinkContainer${i}`).find('.row').first().attr('id').split('-')[1];
 
 						$(`<div class="grid-container" id="drinkButtonContainer${i}" style="grid-template-columns: 1fr 1fr 1fr;
-            				display:grid; grid-gap: 5px; width:80%; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
+            				display:grid; grid-gap: 5px; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
 							$(`#drinkContainer${i}`)
 						);
 						$(`#drinkButtonContainer${i}`).append(
-							`<button class="btn8" itemIndex="${drinkItemIndex}" itemType="drink" operation="copy" style="display:flex; align-self:center;">Duplicate</button>`
+							`<button class="btn8" itemIndex="${drinkItemIndex}" itemType="drink" operation="copy">Duplicate</button>`
 						);
 						// pass in the item that is being modified to the make your own crepe page
 						$(`#drinkButtonContainer${i}`).append(
@@ -359,7 +359,7 @@ const doShowAll = () => {
 						console.log('sideItemIndex', sideItemIndex);
 
 						$(`<div class="grid-container" id="sideButtonContainer${i}" style="grid-template-columns: 1fr 1fr 1fr;
-            				display:grid; grid-gap: 5px; width:80%; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
+            				display:grid; grid-gap: 5px; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
 							$(`#sideContainer${i}`)
 						);
 						$(`#sideButtonContainer${i}`).append(
