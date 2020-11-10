@@ -100,7 +100,7 @@ const pageLogic = () => {
 						senderElementClass === 'container4' ||
 						senderElementType === 'P' ||
 						senderElementType === 'IMG' ||
-						senderElementType === 'H2' 
+						senderElementType === 'H2'
 					) {
 						const json = JSON.parse($(this).attr('data-ingredients'));
 
@@ -181,10 +181,9 @@ $(window).on('load resize', function () {
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
-		console.log('cWidth', cWidth);
+	console.log('cWidth', cWidth);
 
 	if (cWidth <= 576) {
-		
 		const cardDeckElements = document.getElementsByClassName('card-deck');
 		const cardTitleElements = document.getElementsByClassName('card-title');
 		const cardTextElements = document.getElementsByClassName('card-text');
@@ -354,6 +353,12 @@ $(window).on('load resize', function () {
 		}
 		$('#sweetCrepeImg').closest('.row').find('.col').next().css('width:100%');
 		$('#sweetCrepeImg').closest('.row').find('.col').first().remove();
+		$('.btn6').each(function () {
+			$(this).css('-webkit-appearance', 'none !important');
+		});
+		$('.btn7').each(function () {
+			$(this).css('-webkit-appearance', 'none !important');
+		});
 	} else {
 		$('.container0sweetCrepe').each(function () {
 			$(this).addClass('container');

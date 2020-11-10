@@ -27,14 +27,6 @@
 	max-width: 25%;
 }
 
-/* Make the image responsive */
-.non-modal .container img {
-	width: 100%;
-	height: auto;
-	margin: 0 auto;
-	float: none;
-}
-
 /*https://www.w3schools.com/howto/howto_css_button_on_image.asp*/
 /*http://talkerscode.com/webtricks/show-button-on-hover-using-html-and-css.php*/
 .non-modal .container2 img {
@@ -247,7 +239,7 @@
 }
 
 .non-modal .container4 .btn7 {
-	-webkit-appearance: none;
+	-webkit-appearance: none !important;
 	color: white;
 	outline: none;
 	display: none;
@@ -270,7 +262,7 @@
 }
 
 .non-modal .container4 .btn6 {
-	-webkit-appearance: none;
+	-webkit-appearance: none !important;
 	color: white;
 	outline: none;
 	display: none;
