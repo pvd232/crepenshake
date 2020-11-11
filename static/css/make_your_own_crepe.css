@@ -64,10 +64,10 @@
 	color: white;
 	outline: none;
 	display: none;
-	width: 45px !important;
-	height: 45px !important;
-	border-radius: 22.5px !important;
-	padding-bottom: 6px;
+	width: 45px;
+	height: 45px;
+	border-radius: 22.5px;
+	padding: 0 0 6px 0;
 	background-color: rgba(251, 35, 49, 1);
 	font-size: 35px;
 	font-weight: 700;
@@ -76,7 +76,7 @@
 	text-align: center;
 	vertical-align: middle;
 	position: absolute;
-	line-height: 30px !important;
+	line-height: 30px;
 	top: 40%;
 	left: 55%;
 	right: 15%;
@@ -86,10 +86,10 @@
 	color: white;
 	outline: none;
 	display: none;
-	width: 45px !important;
-	height: 45px !important;
-	border-radius: 22.5px !important;
-	padding-bottom: 8px;
+	width: 45px;
+	height: 45px;
+	border-radius: 22.5px;
+	padding: 0 0 8px 0;
 	background-color: rgba(251, 35, 49, 1);
 	font-size: 40px;
 	font-weight: 700;
@@ -98,7 +98,7 @@
 	text-align: center;
 	vertical-align: middle;
 	position: absolute;
-	line-height: 30px !important;
+	line-height: 30px;
 	top: 40%;
 	left: 23%;
 	right: 50%;
@@ -239,14 +239,13 @@
 }
 
 .non-modal .container4 .btn7 {
-	-webkit-appearance: none !important;
 	color: white;
 	outline: none;
 	display: none;
-	width: 30px !important;
-	height: 30px !important;
-	border-radius: 15px !important;
-	padding-bottom: 5px;
+	width: 30px;
+	height: 30px;
+	border-radius: 15px;
+	padding: 0 0 2px 0;
 	background-color: rgba(251, 35, 49, 1);
 	font-size: 25px;
 	transform: translate(-50%, -50%);
@@ -254,22 +253,20 @@
 	border: none;
 	cursor: pointer;
 	text-align: center;
-	vertical-align: middle;
 	position: absolute;
-	line-height: 20px !important;
+	line-height: 20px;
 	left: 58%;
 	top: 50%;
 }
 
 .non-modal .container4 .btn6 {
-	-webkit-appearance: none !important;
 	color: white;
 	outline: none;
 	display: none;
-	width: 30px !important;
-	height: 30px !important;
-	border-radius: 15px !important;
-	padding-bottom: 10px;
+	width: 30px;
+	height: 30px;
+	border-radius: 15px;
+	padding: 0 0 4px 0;
 	background-color: rgba(251, 35, 49, 1);
 	font-size: 35px;
 	transform: translate(-50%, -50%);
