@@ -46,12 +46,12 @@
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
-		"id": "sauteed_garlic",
+		"id": "sauteed_minced_garlic",
 		"ingredient_category_id": "veggie",
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
-		"id": "sauteed_onions",
+		"id": "grilled_onions",
 		"ingredient_category_id": "veggie",
 		"ingredient_flavor_profile_id": "savory"
 	},
@@ -116,7 +116,7 @@
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
-		"id": "rasberries",
+		"id": "raspberries",
 		"ingredient_category_id": "fruit",
 		"ingredient_flavor_profile_id": "sweet"
 	},
@@ -126,7 +126,7 @@
 		"ingredient_flavor_profile_id": "sweet"
 	},
 	{
-		"id": "bananas",
+		"id": "banana_slices",
 		"ingredient_category_id": "fruit",
 		"ingredient_flavor_profile_id": "sweet"
 	},

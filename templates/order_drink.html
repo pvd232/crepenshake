@@ -15,10 +15,10 @@
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
 		{% for i in range(coffee_drinks|length) %}
 		<div class="card" id='{{coffee_drinks[i].id}}' data-drinks='{{coffee_drinks[i]|tojson}}'>
-			<img src="" class="card-img-top" alt="..." />
+			<img src='{{"../static/images/" + coffee_drinks[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{coffee_drinks[i].serving_size + " " + coffee_drinks[i].name}}</h5>
-				<p class="card-text">${{coffee_drinks[i].price}}</p>
+				<p class="card-text">{{coffee_drinks[i].price}}</p>
 			</div>
 		</div>
 		{% endfor %}
@@ -33,11 +33,11 @@
 		<div class="card-deck" id="milk">
 			{% for i in range(milk_drinks|length) %}
 			<div class="card" id='{{milk_drinks[i].id}}' data-drinks='{{milk_drinks[i]|tojson}}'>
-				<img src="" class="card-img-top" alt="..." />
+				<img src='{{"../static/images/" + milk_drinks[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 				<div class="card-body">
 					<h5 class="card-title">{{milk_drinks[i].id}}</h5>
 					{% if milk_drinks[i].id == 'almond_milk' %}
-					<p class="card-text">${{milk_drinks[i].price}} extra</p>
+					<p class="card-text">{{milk_drinks[i].price}} extra</p>
 					{% else %}
 					<p class="card-text"></p>
 					{% endif %}
@@ -55,7 +55,7 @@
 		<div class="card-deck" id="temperature">
 			{% for i in range(coffee_temperatures|length) %}
 			<div class="card" id='{{coffee_temperatures[i].id}}' data-drinks='{{coffee_temperatures[i]|tojson}}'>
-				<img src="" class="card-img-top" alt="..." />
+				<img src='{{"../static/images/" + coffee_temperatures[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 				<div class="card-body">
 					<h5 class="card-title">{{coffee_temperatures[i].id}}</h5>
 					<p class="card-text"></p>
@@ -74,7 +74,7 @@
 		<div class="card-deck" id="syrup">
 			{% for i in range(coffee_syrups|length) %}
 			<div class="card" id='{{coffee_syrups[i].coffee_syrup_flavor}}' data-drinks='{{coffee_syrups[i]|tojson}}'>
-				<img src="" class="card-img-top" alt="..." />
+				<img src='{{"../static/images/" + coffee_syrups[i].coffee_syrup_flavor + "_syrup" + ".jpg"}}' class="card-img-top" alt="..." />
 				<div class="card-body">
 					<h5 class="card-title">{{coffee_syrups[i].coffee_syrup_flavor}}</h5>
 					<p class="card-text"></p>
@@ -91,10 +91,10 @@
 		{% for i in range(milkshakes|length) %}
 		<div class="card" id='{{milkshakes[i].id}}' data-drinks='{{milkshakes[i]|tojson}}'>
 			<div  ></div>
-			<img src="" class="card-img-top" alt="..." />
+			<img src='{{"../static/images/" + milkshakes[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{milkshakes[i].name}}</h5>
-				<p class="card-text">${{milkshakes[i].price}}</p>
+				<p class="card-text">{{milkshakes[i].price}}</p>
 			</div>
 		</div>
 		{% endfor %}
@@ -107,10 +107,10 @@
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
 		{% for i in range(non_coffee_drinks|length) %}
 		<div class="card" id='{{non_coffee_drinks[i].id}}' data-drinks='{{non_coffee_drinks[i]|tojson}}' style="max-width: 240px !important; min-width: 210px !important">
-			<img src="" class="card-img-top" alt="..." />
+			<img src='{{"../static/images/" + non_coffee_drinks[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{non_coffee_drinks[i].serving_size + " " + non_coffee_drinks[i].name}}</h5>
-				<p class="card-text">${{non_coffee_drinks[i].price}}</p>
+				<p class="card-text">{{non_coffee_drinks[i].price}}</p>
 			</div>
 		</div>
 		{% endfor %}
@@ -123,10 +123,10 @@
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
 		{% for i in range(bottled_drinks|length) %}
 		<div class="card" id='{{bottled_drinks[i].id}}' data-drinks='{{bottled_drinks[i]|tojson}}'>
-			<img src="" class="card-img-top" alt="..." />
+			<img src='{{"../static/images/" + bottled_drinks[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{bottled_drinks[i].name}}</h5>
-				<p class="card-text">${{bottled_drinks[i].price}}</p>
+				<p class="card-text">{{bottled_drinks[i].price}}</p>
 			</div>
 		</div>
 		{% endfor %}

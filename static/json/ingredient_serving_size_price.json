@@ -35,7 +35,7 @@
 		"price": 0.0
 	},
 	{
-		"ingredient_id": "sauteed_garlic",
+		"ingredient_id": "sauteed_minced_garlic",
 		"serving_size": "regular",
 		"price": 0.0
 	},
@@ -50,7 +50,7 @@
 		"price": 0.0
 	},
 	{
-		"ingredient_id": "sauteed_onions",
+		"ingredient_id": "grilled_onions",
 		"serving_size": "regular",
 		"price": 0.0
 	},
@@ -115,7 +115,7 @@
 		"price": 0.99
 	},
 	{
-		"ingredient_id": "rasberries",
+		"ingredient_id": "raspberries",
 		"serving_size": "regular",
 		"price": 0.99
 	},
@@ -125,7 +125,7 @@
 		"price": 0.99
 	},
 	{
-		"ingredient_id": "bananas",
+		"ingredient_id": "banana_slices",
 		"serving_size": "regular",
 		"price": 0.99
 	},

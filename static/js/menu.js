@@ -1,11 +1,14 @@
 import { humanize, removeAllChildNodes } from './model.js';
 var cWidth = $(window).width();
 $(window).on('load resize', function () {
-	$('.card-img-top').each(function () {
-		this.src = '../static/images/vanilla_ice_cream.jpg';
-	});
 	$('.card-title, .head3').each(function () {
 		$(this).html(humanize(null, null, $(this).html()));
+	});
+	$('.card-text').each(function () {
+		const price = parseFloat($(this).html())
+		if (!Number.isNaN(price)) {
+			$(this).html('$' + price.toFixed(2));
+		}
 	});
 	$('.head3').each(function () {
 		$(this).html($(this).html().toLowerCase());
@@ -67,7 +70,7 @@ $(window).on('load resize', function () {
 			removeAllChildNodes(cardDeckElements[i]);
 		}
 		// set this to one because the first card on the page is a decorative card without a value
-		var counter = 1;
+		var counter = 0;
 		for (var i = 0; i < cardDeckElementsLength; i++) {
 			const row = document.createElement('div');
 			row.setAttribute('class', 'row');
@@ -150,7 +153,15 @@ $(window).on('load resize', function () {
 				const imageParent = document.createElement('div');
 				imageParent.setAttribute('class', 'image-parent');
 				const img = document.createElement('img');
-				img.setAttribute('src', constCardImgSrcValues[k]);
+
+				const cardImgAbsolutePath = constCardImgSrcValues[counter].split('/');
+				const cardImgRelativePathFrags = cardImgAbsolutePath.slice(
+					cardImgAbsolutePath.length - 3,
+					cardImgAbsolutePath.length
+				);
+				const cardImgRelativePath = '../' + cardImgRelativePathFrags.join('/');
+				img.setAttribute('src', cardImgRelativePath);
+
 				img.setAttribute('class', 'img-fluid');
 				imageParent.appendChild(img);
 
@@ -165,10 +176,6 @@ $(window).on('load resize', function () {
 			x[i].appendChild(row);
 		}
 	} else {
-		$('.container0').each(function () {
-			$(this).addClass('container');
-			$(this).removeClass('container0');
-		});
 		$('.container0sweetCrepe').each(function () {
 			$(this).addClass('container');
 			$(this).removeClass('container0sweetCrepe');

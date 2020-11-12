@@ -58,16 +58,16 @@
 			{% for j in range(savory_ingredient_prices_by_category[i].ingredients|length) %}
 				{% if savory_ingredient_prices_by_category[i].ingredients[j].price > 0.0 %} 
 					<div class="card" id='{{savory_ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredients='{{savory_ingredient_prices_by_category[i].ingredients[j]|tojson}}'>
-						<img src="" class="card-img-top" alt="..." />
+						<img src='{{"../static/images/" + savory_ingredient_prices_by_category[i].ingredients[j].id + ".jpg"}}' class="card-img-top" alt="..." />
 						<div class="card-body">
 							<h5 class="card-title">{{savory_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
-							<p class="card-text">${{savory_ingredient_prices_by_category[i].ingredients[j].price}}</p>
+							<p class="card-text">{{savory_ingredient_prices_by_category[i].ingredients[j].price}}</p>
 						</div>
 					</div>
 
 				{% else %}
 					<div class="card" id='{{savory_ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredients='{{savory_ingredient_prices_by_category[i].ingredients[j]|tojson}}'>
-						<img src="" class="card-img-top" alt="..." />
+						<img src='{{"../static/images/" + savory_ingredient_prices_by_category[i].ingredients[j].id + ".jpg"}}' class="card-img-top" alt="..." />
 						<div class="card-body">
 							<h5 class="card-title">{{savory_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
 							<p class="card-text"></p>

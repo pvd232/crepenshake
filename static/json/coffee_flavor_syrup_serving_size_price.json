@@ -10,7 +10,7 @@
 		"price": 0.99
 	},
 	{
-		"coffee_flavor_syrup_id": "hazel_nut",
+		"coffee_flavor_syrup_id": "hazelnut",
 		"coffee_flavor_syrup_serving_size_id": ".5_pumps",
 		"price": 0.99
 	},
@@ -60,7 +60,7 @@
 		"price": 0.99
 	},
 	{
-		"coffee_flavor_syrup_id": "hazel_nut",
+		"coffee_flavor_syrup_id": "hazelnut",
 		"coffee_flavor_syrup_serving_size_id": "1_pump",
 		"price": 0.99
 	},
@@ -110,7 +110,7 @@
 		"price": 0.99
 	},
 	{
-		"coffee_flavor_syrup_id": "hazel_nut",
+		"coffee_flavor_syrup_id": "hazelnut",
 		"coffee_flavor_syrup_serving_size_id": "2_pumps",
 		"price": 0.99
 	},

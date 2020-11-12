@@ -17,10 +17,10 @@
 	<h3 class="head3">{{side_names[j].side_name_id }}</h3>
 	<div class="card-deck" id = '{{side_names[j].side_name_id}}'>
 		<div class="card" id='{{ice_cream_bowls[0].flavor}}' data-sides='{{ice_cream_bowls[0]|tojson}}'>
-			<img src="" class="card-img-top" alt="..." />
+			<img src='{{"../static/images/" + ice_cream_bowls[0].flavor + "_" + side_names[j].side_name_id  + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{ice_cream_bowls[0].flavor + " " + "Ice Cream Bowl"}}</h5>
-				<p class="card-text">${{ice_cream_bowls[0].price}}</p>
+				<p class="card-text">{{ice_cream_bowls[0].price}}</p>
 			</div>
 		</div>
 	</div>
@@ -34,10 +34,10 @@
 	<div class="card-deck" id="toppings" id = '{{side_names[j].side_name_id}}'>
 		{% for i in range(toppings|length) %}
 		<div class="card" id='{{toppings[i].id}}' data-sides='{{toppings[i]|tojson}}'>
-			<img src="" class="card-img-top" alt="..." />
+			<img src='{{"../static/images/" + toppings[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{toppings[i].id}}</h5>
-				<p class="card-text">${{toppings[i].price}}</p>
+				<p class="card-text">{{toppings[i].price}}</p>
 			</div>
 		</div>
 		{% endfor %}

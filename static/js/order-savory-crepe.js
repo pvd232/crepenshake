@@ -269,7 +269,6 @@ $(window).on('load resize', function () {
 		$('<button class="btn4" id="servingSize-1" type="button">Regular</button>').insertAfter($(this));
 		$('<button class="btn3" id="servingSize-0" type="button">Light</button>').insertAfter($(this));
 		$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
-		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
 		$('.card-title, .head3, h2').each(function () {
 			$(this).html(humanize(null, null, $(this).html()));
@@ -277,6 +276,12 @@ $(window).on('load resize', function () {
 		$('.head3').each(function () {
 			$(this).html($(this).html().toLowerCase());
 		});
+	$('.card-text').each(function () {
+		const price = parseFloat($(this).html());
+		if (!Number.isNaN(price)) {
+			$(this).html('$' + price.toFixed(2));
+		}
+	});
 	$('#savoryCrepeCheckOut')
 		.unbind('click')
 		.bind('click', function () {
@@ -381,11 +386,8 @@ $(window).on('load resize', function () {
 				listValue.setAttribute('style', 'width:100%');
 				const jsonData = constCardData[counter].getAttribute('data-ingredients');
 
-				console.log('constCardData', constCardData);
-				console.log('jsonData', jsonData);
 
 				const data = JSON.parse(constCardData[counter].getAttribute('data-ingredients'));
-				console.log('data', data);
 
 				listValue.setAttribute('id', data.id);
 				listValue.setAttribute('data-ingredients', jsonData);
@@ -441,9 +443,19 @@ $(window).on('load resize', function () {
 				const imageParent = document.createElement('div');
 				imageParent.setAttribute('class', 'image-parent');
 				const img = document.createElement('img');
-				img.setAttribute('src', constCardImgSrcValues[k]);
+				
+				// need to push counter value back to 0 to index properly with the cardImg HTML collection
+				const cardImgAbsolutePath = constCardImgSrcValues[counter-1].split('/');
+				const cardImgRelativePathFrags = cardImgAbsolutePath.slice(
+					cardImgAbsolutePath.length - 3,
+					cardImgAbsolutePath.length
+				);
+				const cardImgRelativePath = '../' + cardImgRelativePathFrags.join('/');
+
+				img.setAttribute('src', cardImgRelativePath);
 				img.setAttribute('class', 'img-fluid');
 				imageParent.appendChild(img);
+
 
 				listValue.appendChild(imageParent);
 				listGroupTitle.append(listValue);

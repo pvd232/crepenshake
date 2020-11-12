@@ -3,7 +3,7 @@
 		"id": "",
 		"name": "bottled_water",
 		"serving_size": "12oz",
-		"price": 1.5
+		"price": 1.50
 	},
 	{
 		"id": "",
@@ -27,24 +27,24 @@
 		"id": "",
 		"name": "coke",
 		"serving_size": "12oz",
-		"price": 2.0
+		"price": 2.00
 	},
 	{
 		"id": "",
 		"name": "milk",
 		"serving_size": "12oz",
-		"price": 2
+		"price": 2.00
 	},
 	{
 		"id": "",
 		"name": "sprite",
 		"serving_size": "12oz",
-		"price": 2.0
+		"price": 2.00
 	},
 	{
 		"id": "",
 		"name": "moon_milk",
 		"serving_size": "16oz",
-		"price": 6.5
+		"price": 6.50
 	}
 ]

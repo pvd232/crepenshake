@@ -366,15 +366,18 @@ const pageLogic = () => {
 var cWidth = $(window).width();
 //https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
 $(window).on('load resize', function () {
-	$('.card-img-top').each(function () {
-		this.src = '../static/images/vanilla_ice_cream.jpg';
-	});
 	$('.card-img-top').wrap('<div class="container2"></div>');
 	$('.card-title, .head3').each(function () {
 		$(this).html(humanize(null, null, $(this).html()));
 	});
 	$('.head3').each(function () {
 		$(this).html($(this).html().toLowerCase());
+	});
+	$('.card-text').each(function () {
+		const price = parseFloat($(this).html());
+		if (!Number.isNaN(price)) {
+			$(this).html('$' + price.toFixed(2));
+		}
 	});
 	const newWidth = $(window).width();
 
@@ -502,7 +505,15 @@ $(window).on('load resize', function () {
 				const imageParent = document.createElement('div');
 				imageParent.setAttribute('class', 'image-parent');
 				const img = document.createElement('img');
-				img.setAttribute('src', constCardImgSrcValues[k]);
+
+				const cardImgAbsolutePath = constCardImgSrcValues[counter].split('/');
+				const cardImgRelativePathFrags = cardImgAbsolutePath.slice(
+					cardImgAbsolutePath.length - 3,
+					cardImgAbsolutePath.length
+				);
+
+				const cardImgRelativePath = '../' + cardImgRelativePathFrags.join('/');
+				img.setAttribute('src', cardImgRelativePath);
 				img.setAttribute('class', 'img-fluid');
 				imageParent.appendChild(img);
 
@@ -535,6 +546,12 @@ $(window).on('load resize', function () {
 			console.log($(this));
 			$(this).css('margin-left', '20px');
 			$(this).css('margin-right', '20px');
+		});
+	}
+	else {
+		$('.container0sweetCrepe').each(function () {
+			$(this).addClass('container');
+			$(this).removeClass('container0sweetCrepe');
 		});
 	}
 

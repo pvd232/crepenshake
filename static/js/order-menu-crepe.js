@@ -178,13 +178,18 @@ $(window).on('load resize', function () {
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 			$(this)
 		);
-		this.src = '../static/images/vanilla_ice_cream.jpg';
 	});
 	$('.card-title, .head3').each(function () {
 		$(this).html(humanize(null, null, $(this).html()));
 	});
 	$('.head3').each(function () {
 		$(this).html($(this).html().toLowerCase());
+	});
+	$('.card-text').each(function () {
+		const price = parseFloat($(this).html());
+		if (!Number.isNaN(price)) {
+			$(this).html('$' + price.toFixed(2));
+		}
 	});
 	$('#menuCrepeCheckout')
 		.unbind('click')
@@ -345,20 +350,34 @@ $(window).on('load resize', function () {
 				const imageParent = document.createElement('div');
 				imageParent.setAttribute('class', 'image-parent');
 				const img = document.createElement('img');
-				img.setAttribute('src', constCardImgSrcValues[k]);
+
+				const cardImgAbsolutePath = constCardImgSrcValues[counter].split('/');
+				const cardImgRelativePathFrags = cardImgAbsolutePath.slice(
+					cardImgAbsolutePath.length - 3,
+					cardImgAbsolutePath.length
+				);
+				const cardImgRelativePath = '../' + cardImgRelativePathFrags.join('/');
+				console.log('cardImgRelativePath', cardImgRelativePath);
+
+				img.setAttribute('src', cardImgRelativePath);
+
 				img.setAttribute('class', 'img-fluid');
 				imageParent.appendChild(img);
 
 				listValue.appendChild(imageParent);
 				listGroupTitle.append(listValue);
 				counter += 1;
-
 			}
 
 			row.appendChild(listGroupTitle);
 			const x = document.getElementsByClassName('list-group');
 			x[i].appendChild(row);
 		}
+	} else {
+		$('.container0sweetCrepe').each(function () {
+			$(this).addClass('container');
+			$(this).removeClass('container0sweetCrepe');
+		});
 	}
 	pageLogic();
 	modifyOrder();

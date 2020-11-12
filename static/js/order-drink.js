@@ -379,7 +379,7 @@ const pageLogic = () => {
 															$(this).css('opacity', '.3');
 														}
 													});
-												$('#errorSyrup').html('*Max of 1 coffee');
+												$('#errorSyrup').html('*Max of 1 syrup');
 												$('#errorSyrup').show();
 											}
 										}
@@ -472,7 +472,7 @@ const pageLogic = () => {
 										$(this).css('opacity', '.3');
 									}
 								});
-							$('#errorSyrup').html('You may only select one syrup for your coffee');
+							$('#errorSyrup').html('Max of 1 syrup');
 							$('#errorSyrup').show();
 						} else if (selectedItemCategory === 'coffee') {
 							if (!userOrderDrink.findDrink(json)) {
@@ -672,14 +672,23 @@ $(window).on('load resize', function () {
 		}
 	});
 
-	$('.card-img-top').each(function () {
-		this.src = '../static/images/steak.jpg';
-	});
 	$('.card-title, .head3').each(function () {
 		$(this).html(humanize(null, null, $(this).html()));
 	});
 	$('.head3').each(function () {
 		$(this).html($(this).html().toLowerCase());
+	});
+	$('.card-text').each(function () {
+		console.log("$(this).html()", $(this).html())
+		
+		const price = parseFloat($(this).html());
+		console.log("price", price)
+			console.log('price.toFixed(2)', price.toFixed(2));
+
+		if (!Number.isNaN(price)) {
+			
+			$(this).html('$' + price.toFixed(2));
+		}
 	});
 
 	$('#milk, #temperature, #syrup').each(function () {
@@ -816,7 +825,16 @@ $(window).on('load resize', function () {
 				const imageParent = document.createElement('div');
 				imageParent.setAttribute('class', 'image-parent');
 				const img = document.createElement('img');
-				img.setAttribute('src', constCardImgSrcValues[k]);
+
+				const cardImgAbsolutePath = constCardImgSrcValues[counter].split('/');
+				const cardImgRelativePathFrags = cardImgAbsolutePath.slice(
+					cardImgAbsolutePath.length - 3,
+					cardImgAbsolutePath.length
+				);
+				const cardImgRelativePath = '../' + cardImgRelativePathFrags.join('/');
+				console.log('cardImgRelativePath', cardImgRelativePath);
+
+				img.setAttribute('src', cardImgRelativePath);
 				img.setAttribute('class', 'img-fluid');
 				imageParent.appendChild(img);
 
@@ -855,16 +873,15 @@ $(window).on('load resize', function () {
 					</div>`).insertAfter($(this).find('container'));
 			}
 		});
+	} else {
+		$('.container0sweetCrepe').each(function () {
+			$(this).addClass('container');
+			$(this).removeClass('container0sweetCrepe');
+		});
 	}
 	pageLogic();
 	modifyOrder();
-	// else {
-	// $('#cardText').css('margin-left', '180px');
-	// $('#cardText').css('margin-right', '50px');
-	// $('#cardBody').css('margin-left', '170px');
-	// }
 });
-// TODO: add sauteed onions & peppers, pesto, dill
 var cWidth = $(window).width();
 $(window).on('resize', function () {
 	const newWidth = $(window).width();

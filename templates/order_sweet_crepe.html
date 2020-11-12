@@ -62,7 +62,7 @@
 	<div class="card-deck" id='{{sweet_ingredient_categories[j].id}}'>
 		{% for i in range(sweet_ingredients|length) %} {% if sweet_ingredients[i].ingredient_category_id == sweet_ingredient_categories[j].id %}
 		<div class="card" id='{{sweet_ingredients[i].id}}' data-ingredients='{{sweet_ingredients[i]|tojson}}'>
-			<img src="" class="card-img-top" alt="..." />
+			<img src='{{"../static/images/" + sweet_ingredients[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{sweet_ingredients[i].id}}</h5>
 				<p class="card-text">{{sweet_ingredients[i].price}}</p>
