@@ -68,15 +68,10 @@ const removeAllChildNodes = (parent) => {
 const modifyOrder = () => {
 	if ($('.edit').length) {
 		editDrinkIndex = $('.edit').first().attr('id');
-		console.log('editDrinkIndex', editDrinkIndex);
-
 		editOrder = new Order();
 		editOrder.fromJSON(localStorage.getItem('order'));
-		console.log('editOrder', editOrder);
 
 		const editOrderDrink = editOrder.orderDrink[editDrinkIndex];
-		console.log('editOrderDrink', editOrderDrink);
-		console.log('userOrderDrink', userOrderDrink);
 		userOrderDrink = editOrderDrink;
 
 		for (var i = 0; i < editOrderDrink.orderDrink.length; i++) {
@@ -233,10 +228,6 @@ const pageLogic = () => {
 				.bind('click', function (event) {
 					const senderElementClass = event.target.getAttribute('class');
 					const senderElementType = event.target.tagName;
-					console.log('senderElementType', senderElementType);
-
-					console.log('senderElement', senderElementClass);
-
 					if (
 						senderElementClass === 'list-group-item d-flex justify-content-between align-items-center' ||
 						senderElementClass === 'card-text' ||
@@ -249,11 +240,7 @@ const pageLogic = () => {
 						senderElementType === 'H2'
 					) {
 						const json = JSON.parse($(this).closest('.card, li').attr('data-drinks'));
-						console.log('json', json);
-
 						const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
-						console.log('selectedItemCategory', selectedItemCategory);
-
 						// check to see if the card is bottled or non-coffee or milkshake first because when you click on those cards, if they have already been selected you don't want to remove them
 						// these cards have counters so they will have fundamentally different logic from the rest of the cards which is why we want to evaluate them first and then apply other logical conditions after
 						// if you're clicking the card and it is a bottled drink or milkshake or non-coffee drink then by default you are adding the drink
@@ -275,7 +262,6 @@ const pageLogic = () => {
 							userOrderDrink.removeDrink(json);
 							$(this).closest('.card, li').find('.btn2').hide();
 							$(this).closest('.card, li').find('.btn').toggle();
-							console.log("userOrderDrink.checkIfCoffeeSelected()", userOrderDrink.checkIfCoffeeSelected())
 							
 							// if the card you removed was a coffee card
 							if (!userOrderDrink.checkIfCoffeeSelected()) {
@@ -409,7 +395,6 @@ const pageLogic = () => {
 								// if a coffee has not already been selected and the card being selected isn't any of the other drink options then the card being selected should be coffee
 							} else if (selectedItemCategory === 'coffee') {
 								const espressoServingSize = 'regular';
-								console.log('adding coffee')
 								userOrderDrink.addCoffee(json, espressoServingSize);
 								$(this).closest('.card, li').find('.btn2').html('✓');
 								$(this).closest('.card, li').find('.btn2').toggle();
@@ -605,8 +590,6 @@ const pageLogic = () => {
 			var selectedItemCategory;
 			// if ($(this).attr('class') === 'card') {
 			selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
-			console.log('selectedItemCategory', selectedItemCategory);
-
 			json = JSON.parse($(this).attr('data-drinks'));
 
 			if (selectedItemCategory != 'syrup' && !userOrderDrink.findDrink(json)) {
@@ -614,12 +597,10 @@ const pageLogic = () => {
 				$(this).find('.btn3').hide();
 				$(this).find('.btn4').hide();
 			} else if (selectedItemCategory === 'syrup' && !userOrderDrink.checkIfThisSyrupSelected(json)) {
-				console.log('hiding syrup');
 				$(this).find('.btn').hide();
 				$(this).find('.btn3').hide();
 				$(this).find('.btn4').hide();
 			} else {
-				console.log('leave button');
 				$(this).find('.btn3').hide();
 				$(this).find('.btn4').hide();
 			}
@@ -679,14 +660,8 @@ $(window).on('load resize', function () {
 		$(this).html($(this).html().toLowerCase());
 	});
 	$('.card-text').each(function () {
-		console.log("$(this).html()", $(this).html())
-		
 		const price = parseFloat($(this).html());
-		console.log("price", price)
-			console.log('price.toFixed(2)', price.toFixed(2));
-
 		if (!Number.isNaN(price)) {
-			
 			$(this).html('$' + price.toFixed(2));
 		}
 	});
@@ -832,7 +807,6 @@ $(window).on('load resize', function () {
 					cardImgAbsolutePath.length
 				);
 				const cardImgRelativePath = '../' + cardImgRelativePathFrags.join('/');
-				console.log('cardImgRelativePath', cardImgRelativePath);
 
 				img.setAttribute('src', cardImgRelativePath);
 				img.setAttribute('class', 'img-fluid');
