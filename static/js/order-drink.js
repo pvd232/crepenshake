@@ -135,7 +135,7 @@ const modifyOrder = () => {
 									if (userOrderDrink.checkIfThisMilkSelected(json)) {
 										$(this).css('opacity', '1');
 									}
-									$('#errorMilk').html('*Max of 1 milk');
+									$('#errorMilk').html('Only 1 milk per coffee');
 									$('#errorMilk').show();
 								} else {
 									$('#errorMilk').hide();
@@ -145,7 +145,7 @@ const modifyOrder = () => {
 									if (userOrderDrink.checkIfThisTempSelected(json)) {
 										$(this).css('opacity', '1');
 									}
-									$('#errorTemp').html('*Max of 1 temperature');
+									$('#errorTemp').html('*Only 1 temperature per coffee');
 									$('#errorTemp').show();
 								} else {
 									$('#errorTemp').hide();
@@ -155,7 +155,7 @@ const modifyOrder = () => {
 									if (userOrderDrink.checkIfThisSyrupSelected(json)) {
 										$(this).css('opacity', '1');
 									}
-									$('#errorSyrup').html('*Max of 1 syrup');
+									$('#errorSyrup').html('*Only 1 syrup per coffee');
 									$('#errorSyrup').show();
 								} else {
 									$(this).css('opacity', '1');
@@ -345,7 +345,7 @@ const pageLogic = () => {
 															$(this).css('opacity', '.3');
 														}
 													});
-												$('#errorTemp').html('*Max of 1 Temperature');
+												$('#errorTemp').html('*Only 1 temperature per coffee');
 												$('#errorTemp').show();
 											}
 										} else {
@@ -354,7 +354,9 @@ const pageLogic = () => {
 												const servingSize = 'regular';
 												userOrderDrink.addSyrup(json, servingSize);
 												$(this).closest('.card, li').find('.btn2').html('✓');
-												$(this).closest('.card, li').find('.btn2').toggle();
+												$(this).closest('.card, li').find('.btn2').show();
+												$(this).closest('.card, li').find('.btn').show();
+
 												// if a temp has been selected then we want to make sure all the other temp cards are knocked out
 												//and we want to change the temp error message to say that only one temp may be selected
 												$('#syrup')
@@ -365,7 +367,7 @@ const pageLogic = () => {
 															$(this).css('opacity', '.3');
 														}
 													});
-												$('#errorSyrup').html('*Max of 1 syrup');
+												$('#errorSyrup').html('*Only 1 syrup per coffee');
 												$('#errorSyrup').show();
 											}
 										}
@@ -387,7 +389,7 @@ const pageLogic = () => {
 														$(this).css('opacity', '.3');
 													}
 												});
-											$('#errorMilk').html('*Max of 1 milk');
+											$('#errorMilk').html('*Only 1 milk per coffee');
 											$('#errorMilk').show();
 										}
 									}
@@ -462,6 +464,7 @@ const pageLogic = () => {
 						} else if (selectedItemCategory === 'coffee') {
 							if (!userOrderDrink.findDrink(json)) {
 								userOrderDrink.addCoffee(json, servingSize);
+								$('#errorCoffee').show()
 							}
 							else {
 								userOrderDrink.updateEspressoServingSize(json, servingSize);
@@ -608,11 +611,7 @@ const pageLogic = () => {
 			$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '1');
 		});
 };
-
-// all this code changes display for smaller screen sizes
-var cWidth = $(window).width();
-//https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
-$(window).on('load resize', function () {
+const pageBuild = () => {
 	$('.card-img-top').wrap('<div class="container2"></div>');
 	$('#drinkcheckout')
 		.unbind('click')
@@ -641,13 +640,13 @@ $(window).on('load resize', function () {
 			selectedItemCategory === 'milkshake' ||
 			selectedItemCategory === 'non-coffee'
 		) {
-			$(`<div class="grid-container" id="bottled_drink${i}" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
+			$(`<div class="grid-container" id="bottled_drink${i}" style="margin-top: 0px; margin-bottom:0px; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
             grid-gap: 2px; display:grid;"><button class="btn7" type="button">+</button><button class="btn6" type="button">-</button></div>`).insertAfter(
 				$(this)
 			);
 			$('<button class="btn2" type="button">1</button>').insertAfter($(this));
-		} else if (selectedItemCategory === 'temperature' || 'milk') {
-			$(`<div class="grid-container" id="bottled_drink${i}" style="margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
+		} else if (selectedItemCategory === 'temperature' || selectedItemCategory === 'milk') {
+			$(`<div class="grid-container" id="bottled_drink${i}" style="margin-top: 0px; margin-bottom:0px; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto;
             grid-gap: 2px; display:grid;"></div>`).insertAfter($(this));
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 		}
@@ -673,13 +672,9 @@ $(window).on('load resize', function () {
 				$(this).css('opacity', '.3');
 			});
 	});
-	const newWidth = $(window).width();
+}
+const mobileRendering = () => {
 
-	if (cWidth < newWidth) {
-		cWidth = newWidth;
-	}
-
-	if (cWidth <= 576) {
 		const cardDeckElements = document.getElementsByClassName('card-deck');
 		const cardTitleElements = document.getElementsByClassName('card-title');
 		const cardTextElements = document.getElementsByClassName('card-text');
@@ -840,29 +835,34 @@ $(window).on('load resize', function () {
 					`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
 				).insertAfter($(this).find('container'));
 			} else if (selectedItemCategory === 'temperature' || selectedItemCategory === 'milk') {
-				$(`<div class='container3'>
-						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;'>
+				$(`<div class='drinkContainer3'>
+						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: 1 fr; align-self: center; grid-gap: 2px; display:grid;'>
 							<button class='btn2'>✓</button>
 						</div>
 					</div>`).insertAfter($(this).find('container'));
 			}
 		});
-	} else {
-		$('.container0sweetCrepe').each(function () {
-			$(this).addClass('container');
-			$(this).removeClass('container0sweetCrepe');
-		});
 	}
-	pageLogic();
-	modifyOrder();
-});
+// all this code changes display for smaller screen sizes
 var cWidth = $(window).width();
-$(window).on('resize', function () {
+//https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
+$(window).on('load', function () {
+	pageBuild();
 	const newWidth = $(window).width();
 	if (cWidth < newWidth) {
 		cWidth = newWidth;
 	}
-	if (cWidth > 576) {
-		location.reload();
+	if (cWidth <= 576) {
+		mobileRendering();
+		pageLogic();
+		modifyOrder();
+	}
+	else {
+		pageLogic();
+		modifyOrder();
+		$('.container0sweetCrepe').each(function () {
+			$(this).addClass('container');
+			$(this).removeClass('container0sweetCrepe');
+		});
 	}
 });

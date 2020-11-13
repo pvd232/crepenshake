@@ -356,6 +356,30 @@
 	margin-left: auto;
 	margin-right: auto;
 }
+.non-modal .drinkContainer3 {
+	position: absolute;
+	width: 100%;
+	align-self: center;
+	margin-left: 25px;
+}
+.non-modal .drinkContainer3 .btn2 {
+	color: white;
+	width: 45px;
+	height: 45px;
+	padding: 0px 0px;
+	border-radius: 22.5px;
+	position: absolute;
+	top: 50%;
+	left: 31%;
+	transform: translate(-50%, -50%);
+	display: none;
+	background-color: rgb(0, 32, 120);
+	font-size: 22px;
+	align-content: center;
+	font-weight: 700;
+	border: none;
+	cursor: pointer;
+}
 .non-modal .container5 p {
 	margin: 0px 0px 6px;
 }
