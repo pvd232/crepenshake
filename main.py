@@ -10,7 +10,7 @@ stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV
 
 @app.before_request
 def before_request():
-    if not request.is_secure:
+    if not request.is_secure():
         url = request.url.replace("http://", "https://", 1)
         code = 301
         return redirect(url, code=code)
