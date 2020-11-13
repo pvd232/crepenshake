@@ -41,11 +41,12 @@ class Order_Repository(object):
     def post_stripe_order(self, session, order):
         new_customer = order['customerData']
         print("new_customer", new_customer)
-        
+
         amount = int(order['orderTotal'] * 100)
         customerExistenceBool = False
         if new_customer:
-            confirmCustomerExistence = session.query(Stripe).filter(Stripe.id == new_customer['stripeId']).first()  
+            confirmCustomerExistence = session.query(Stripe).filter(
+                Stripe.id == new_customer['stripeId']).first()
             # Lookup the saved card (you can store multiple PaymentMethods on a Customer)
             if confirmCustomerExistence:
                 customerExistenceBool = True
@@ -68,19 +69,24 @@ class Order_Repository(object):
             session.commit()
             amount = int(order['orderTotal'] * 100)
             payment_intent = stripe.PaymentIntent.create(
-                    amount=amount,
-                    customer=new_customer.id,
-                    setup_future_usage='off_session',
-                    currency='usd'
-                )
+                amount=amount,
+                customer=new_customer.id,
+                setup_future_usage='off_session',
+                currency='usd'
+            )
             return {'clientSecret': payment_intent['client_secret'], 'customer': new_customer.id}
+
     def post_order(self, session, order):
         new_customer = order.customer
-        user = session.query(Customer).filter(
-            Customer.stripe_id == new_customer.stripe_id).first()
+        print("new_customer", new_customer)
+
+        user = session.query(Customer).filter(or_(
+            Customer.id == new_customer.id, Customer.stripe_id == new_customer.stripe_id)).first()
         # check to make sure the customer doesn't already exist in the database
+        print("user", user)
+
         if not user:
-            new_customer = Customer(id=new_customer.id, stripe_id = new_customer.stripe_id, first_name=new_customer.first_name, last_name=new_customer.last_name,
+            new_customer = Customer(id=new_customer.id, stripe_id=new_customer.stripe_id, first_name=new_customer.first_name, last_name=new_customer.last_name,
                                     street=new_customer.street, city=new_customer.city, state=new_customer.state, zipcode=new_customer.zipcode, country=new_customer.country)
             session.add(new_customer)
             new_order = Order(id=order.id, customer_id=new_customer.id,
@@ -96,7 +102,7 @@ class Order_Repository(object):
                 crepe_to_add = order.order_crepe.order_crepe[i]
                 if crepe_to_add.origination_id == 'custom':
                     new_crepe = Crepe(id=crepe_to_add.crepe_id, origination_id=crepe_to_add.origination_id,
-                                    flavor_profile_id=crepe_to_add.flavor_profile_id)
+                                      flavor_profile_id=crepe_to_add.flavor_profile_id)
                     session.add(new_crepe)
                     for ingredient in crepe_to_add.ingredients:
                         new_custom_crepe = Custom_Crepe(
@@ -112,37 +118,35 @@ class Order_Repository(object):
         if order.order_drink:
             for i in range(len(order.order_drink.order_drink)):
                 drink_to_add = order.order_drink.order_drink[i]
- 
                 if drink_to_add.drink_category_id == 'coffee':
-                    # new_drink = Drink(
-                    #     id=drink_to_add.id, name=drink_to_add.name, price=drink_to_add.price, drink_category_id=drink_to_add.drink_category_id)
-                    # session.add(new_drink)
-                    
-                    new_order_coffee = Order_Coffee(drink_id=drink_to_add.id, coffee_name_id=drink_to_add.name, serving_size_id=drink_to_add.serving_size,
-                                        temperature_id=drink_to_add.temperature, flavor_syrup_id=drink_to_add.coffee_syrup_flavor,  flavor_syrup_serving_size_id=drink_to_add.coffee_syrup_flavor_serving_size, espresso_serving_size_id=drink_to_add.espresso_serving_size, milk_type_id=drink_to_add.milk_type_id)
+                    new_order_coffee = Order_Coffee(id = drink_to_add.id, drink_id=drink_to_add.drink_id, coffee_name_id=drink_to_add.name, serving_size_id=drink_to_add.serving_size,
+                                                    temperature_id=drink_to_add.temperature, flavor_syrup_id=drink_to_add.coffee_syrup_flavor,  flavor_syrup_serving_size_id=drink_to_add.coffee_syrup_flavor_serving_size, espresso_serving_size_id=drink_to_add.espresso_serving_size, milk_type_id=drink_to_add.milk_type_id)
                     session.add(new_order_coffee)
-                    
-                new_order_drink = Order_Drink(order_id=new_order.id, drink_id=drink_to_add.id,
-                                              serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity )
-                
-                session.add(new_order_drink)
+
+                    new_order_drink = Order_Drink(order_id=new_order.id, drink_id=drink_to_add.drink_id,
+                                              serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity)
+                else:
+                    new_order_drink = Order_Drink(order_id=new_order.id, drink_id=drink_to_add.id,
+                                              serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity)
+                    session.add(new_order_drink)
             session.commit()
-                
-                
+
         if order.order_side:
             order_side_list = list()
             for i in range(len(order.order_side.order_side)):
                 side_to_add = order.order_side.order_side[i]
                 if side_to_add.side_name_id == 'ice_cream_bowl':
                     side_type_id = 'ice_cream'
-                    new_side = Side(id=side_to_add.id, side_type_id='ice_cream', side_name_id=side_to_add.side_name_id)
+                    new_side = Side(
+                        id=side_to_add.id, side_type_id='ice_cream', side_name_id=side_to_add.side_name_id)
                     session.add(new_side)
                     if len(side_to_add.toppings) > 0:
                         new_ice_cream_order_side = Order_Side(
                             order_id=new_order.id, side_id=side_to_add.id, quantity=side_to_add.quantity)
                         session.add(new_ice_cream_order_side)
                         for topping in side_to_add.toppings:
-                            new_ice_cream_bowl = Order_Ice_Cream(side_id=side_to_add.id, order_id=new_order.id, flavor=side_to_add.flavor, serving_size_id=side_to_add.serving_size, topping=topping.id, topping_serving_size=topping.serving_size, quantity=1)
+                            new_ice_cream_bowl = Order_Ice_Cream(side_id=side_to_add.id, order_id=new_order.id, flavor=side_to_add.flavor,
+                                                                 serving_size_id=side_to_add.serving_size, topping=topping.id, topping_serving_size=topping.serving_size, quantity=1)
                             session.add(new_ice_cream_bowl)
             session.commit()
         return True
@@ -158,7 +162,6 @@ class Drink_Repository(object):
         drinks = session.query(Drink_Name_Serving_Size_Price).filter(
             Drink_Name_Serving_Size_Price.drink_category_id == requested_drink_category_id)
         return drinks
-    
 
     def get_milk_drinks(self, session):
         milk_drinks = session.execute("SELECT id, price FROM milk")
@@ -196,6 +199,7 @@ class Side_Repository(object):
     def get_ice_cream_bowls(self, session):
         ice_cream = session.query(Ice_Cream_Flavor_Serving_Size_Price)
         return ice_cream
+
 
 class Menu_Crepe_Repository(object):
     def get_sweet_menu_crepes(self, session):

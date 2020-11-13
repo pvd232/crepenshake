@@ -28,6 +28,7 @@ def change_case(str):
             res.append(c)
     return ''.join(res)
 
+
 class Menu_Service(object):
     def __init__(self):
         self.username = "postgres"
@@ -46,7 +47,8 @@ class Menu_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.drink_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
+        self.drink_engine = create_engine(
+            os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.drink_engine)
@@ -62,11 +64,14 @@ class Menu_Service(object):
         finally:
             self.session.close()
         # now all calls to Session() will create a thread-local session
+
     def get_menu_items(self):
         response = {}
-        fruit_ingredients = [x.serialize() for x in self.ingredient_service.get_fruit_ingredients()]
+        fruit_ingredients = [
+            x.serialize() for x in self.ingredient_service.get_fruit_ingredients()]
         response['fruit_ingredients'] = fruit_ingredients
-        sweetness_ingredients = [x.serialize() for x in self.ingredient_service.get_sweetness_ingredients()]
+        sweetness_ingredients = [
+            x.serialize() for x in self.ingredient_service.get_sweetness_ingredients()]
         response['sweetness_ingredients'] = sweetness_ingredients
 
         savory_ingredient_prices_by_category = self.ingredient_service.get_savory_ingredient_prices_by_category()
@@ -76,51 +81,57 @@ class Menu_Service(object):
             new_ingredient_category_dict['ingredient_category'] = x['ingredient_category']
             new_ingredient_category_dict['ingredients'] = []
             for y in x['ingredients']:
-                new_ingredient_category_dict['ingredients'].append(y.serialize())
-            new_ingredient_prices_by_category.append(new_ingredient_category_dict)
+                new_ingredient_category_dict['ingredients'].append(
+                    y.serialize())
+            new_ingredient_prices_by_category.append(
+                new_ingredient_category_dict)
         response['savory_ingredient_prices_by_category'] = savory_ingredient_prices_by_category
 
-        ice_cream_bowls = [x.serialize() for x in self.side_service.get_ice_cream_bowls()]
+        ice_cream_bowls = [x.serialize()
+                           for x in self.side_service.get_ice_cream_bowls()]
         response['ice_cream_bowls'] = ice_cream_bowls
 
         toppings = [x.serialize()
                     for x in self.ingredient_service.get_sweet_ingredient_prices()]
         response['toppings'] = toppings
 
-        coffee_drinks = [x.serialize() for x in self.drink_service.get_drinks('coffee')]
+        coffee_drinks = [x.serialize()
+                         for x in self.drink_service.get_drinks('coffee')]
         response['coffee_drinks'] = coffee_drinks
-        
 
-        temperatures = [x.serialize() for x in self.drink_service.get_coffee_temperature()]
+        temperatures = [x.serialize()
+                        for x in self.drink_service.get_coffee_temperature()]
         response['temperatures'] = temperatures
 
         milks = [x.serialize() for x in self.drink_service.get_milk_drinks()]
         response['milks'] = milks
 
-        syrups = [x.serialize() for x in self.drink_service.get_coffee_syrups()]
+        syrups = [x.serialize()
+                  for x in self.drink_service.get_coffee_syrups()]
         response['syrups'] = syrups
 
-
-        milkshakes = [x.serialize() for x in self.drink_service.get_drinks('milkshake')]
+        milkshakes = [x.serialize()
+                      for x in self.drink_service.get_drinks('milkshake')]
         response['milkshakes'] = milkshakes
 
-        non_coffee_drinks = [x.serialize() for x in self.drink_service.get_drinks('non-coffee')]
+        non_coffee_drinks = [x.serialize()
+                             for x in self.drink_service.get_drinks('non-coffee')]
         response['non_coffee_drinks'] = non_coffee_drinks
-        
-        bottled_drinks = [x.serialize() for x in self.drink_service.get_drinks('bottled')]
+
+        bottled_drinks = [x.serialize()
+                          for x in self.drink_service.get_drinks('bottled')]
         response['bottled_drinks'] = bottled_drinks
 
-
-        savory_menu_crepes = [x.serialize() for x in self.menu_crepe_service.get_savory_menu_crepes()]
+        savory_menu_crepes = [
+            x.serialize() for x in self.menu_crepe_service.get_savory_menu_crepes()]
         response['savory_menu_crepes'] = savory_menu_crepes
 
-        sweet_menu_crepes = [x.serialize() for x in self.menu_crepe_service.get_sweet_menu_crepes()]
+        sweet_menu_crepes = [
+            x.serialize() for x in self.menu_crepe_service.get_sweet_menu_crepes()]
         response['sweet_menu_crepes'] = sweet_menu_crepes
 
         return response
 
-
-    
 
 class Ingredient_Service(object):
     # dope shit magic https://docs.sqlalchemy.org/en/13/orm/session_basics.html
@@ -138,7 +149,8 @@ class Ingredient_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.drink_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
+        self.drink_engine = create_engine(
+            os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.drink_engine)
@@ -164,7 +176,6 @@ class Ingredient_Service(object):
                 response.append(ingredient_category_model)
             return response
 
-    
     def get_sweet_ingredient_categories(self):
         response = []
         with self.session_scope() as session:
@@ -184,8 +195,6 @@ class Ingredient_Service(object):
                 response.append(ingredient_serving_size_model)
             return response
 
-
-
     def get_ingredients(self):
         response = []
         with self.session_scope() as session:
@@ -203,8 +212,8 @@ class Ingredient_Service(object):
                     id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
                 response.append(ingredient_model)
             return response
-    
-    #self.ingredient_repository.get_savory_ingredient_categories() only gets ingredient categories that are not sweet or fruit
+
+    # self.ingredient_repository.get_savory_ingredient_categories() only gets ingredient categories that are not sweet or fruit
     def get_savory_ingredient_prices_by_category(self):
         response = []
         savory_ingredient_categories = self.get_savory_ingredient_categories()
@@ -215,13 +224,13 @@ class Ingredient_Service(object):
                 for ingredient in self.ingredient_repository.get_ingredient_prices(session):
                     if ingredient_category.id == ingredient.ingredient_category_id:
                         ingredient_category_dict['ingredient_category'] = ingredient_category.id
-                        ingredient_model = Ingredient_Model(id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                        ingredient_model = Ingredient_Model(
+                            id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
                         ingredient_category_dict['ingredients'].append(
                             ingredient_model)
                 response.append(ingredient_category_dict)
             return response
 
-                
     def get_sweet_ingredient_prices(self):
         response = []
         with self.session_scope() as session:
@@ -266,7 +275,8 @@ class Order_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.drink_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
+        self.drink_engine = create_engine(
+            os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.drink_engine)
@@ -283,129 +293,47 @@ class Order_Service(object):
             self.session.close()
         # now all calls to Session() will create a thread-local session
 
-    def send_confirmation_email(self, customer_email):
-        mail_content = "Hello, we need you at the office ASAP. It is extremely urgent."
-        #The mail addresses and password
+    def send_confirmation_email(self, order):
+        mail_content = '<html><body>'
+        mail_content += str(order)
+        mail_content += '</body></html>'
+        # The mail addresses and password
         sender_address = 'patardriscoll@gmail.com'
         sender_pass = 'Iqopaogh23!'
-        #Setup the MIME
+        # email = 'driscoll_carol@yahoo.com'
+        email = 'patardriscoll@gmail.com'
+
+        # Setup the MIME
         message = MIMEMultipart()
         message['From'] = sender_address
-        message['To'] = customer_email
-        message['Subject'] = 'Urgent Strategy& Task'   #The subject line
-        #The body and the attachments for the mail
-        message.attach(MIMEText(mail_content, 'plain'))
-        #Create SMTP session for sending the mail
-        session = smtplib.SMTP('smtp.gmail.com', 587) #use gmail with port
-        session.starttls() #enable security
-        session.login(sender_address, sender_pass) #login with mail_id and password
+        message['To'] = email
+        message['Subject'] = 'New Order'  # The subject line
+        # The body and the attachments for the mail
+        message.attach(MIMEText(mail_content, 'html'))
+        # Create SMTP session for sending the mail
+        session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
+        session.starttls()  # enable security
+        # login with mail_id and password
+        session.login(sender_address, sender_pass)
         text = message.as_string()
-        session.sendmail(sender_address, customer_email, text)
+        session.sendmail(sender_address, email, text)
         session.quit()
         print('Mail Sent')
-
-    def developer_pay(self, order):
-        print("order", order)
-        
-        ###############################################
-        ########## BEGIN SCRIPT CONFIG SETUP ##########
-        ###############################################
-
-        merchantID = "CNKMYYVYGJHXJ"  # sandbox Test Merchant
-        target_env = "https://sandbox.dev.clover.com/v2/merchant/"
-        # orderID = order.id
-        orderID = "8GCADRD79S1DW"
-
-        print("orderID", orderID)
-        
-        API_Token = "1decda79-717f-8ad5-a3d4-f4f6bb0d7ee0"
-        # amount =  order.cost
-        amount = 1
-        print("amount", amount)
-        
-        # amount = 1
-        tip_amount = 0
-        tax_amount = 0
-        cardNumber = str(order.customer.payment_information.credit_card_number)
-        # cardNumber = '4761739001010010'
-
-        expMonth = order.customer.payment_information.credit_card_expiration_month
-        expYear = order.customer.payment_information.credit_card_expiration_year
-        CVV = order.customer.payment_information.credit_card_cvv
-
-
-        nj_sales_tax_rt = .06625
-        # tax_amount = amount * nj_sales_tax_rt
-        # tax_amount = round(tax_amount, 2)
-        print("tax_amount", tax_amount)
-        
-        ###############################################
-        ########## END SCRIPT CONFIG SETUP ############
-        ###############################################
-
-        # GET to /v2/merchant/{mId}/pay/key To get the encryption information needed for the pay endpoint.
-        url = target_env + merchantID + '/pay/key'
-        headers = {"Authorization": "Bearer " + API_Token}
-        response = requests.get(url, headers=headers).json()
-
-        modulus = int(response['modulus'])
-        print("modulus", modulus)
-        
-        exponent = int(response['exponent'])
-        print("exponent", exponent)
-        
-        prefix = str(response['prefix'])
-        print("prefix", prefix)
-        
-
-        # construct an RSA public key using the modulus and exponent provided by GET /v2/merchant/{mId}/pay/key
-        key = RSA.construct((modulus, exponent))
-
-        # create a cipher from the RSA key and use it to encrypt the card number, prepended with the prefix from GET /v2/merchant/{mId}/pay/key
-        cipher = PKCS1_OAEP.new(key)
-        encoded_card_num = cardNumber.encode('ascii')
-        encoded_prefix = prefix.encode('ascii')
-        encrypted = cipher.encrypt(encoded_prefix + encoded_card_num)
-
-        # Base64 encode the resulting encrypted data into a string to Clover as the 'cardEncrypted' property.
-        cardEncrypted = b64encode(encrypted)
-
-        # POST to /v2/merchant/{mId}/pay
-        post_data = {
-            "orderId": orderID,
-            "currency": "usd",
-            "amount": amount,
-            "tipAmount": tip_amount,
-            "taxAmount": tax_amount,
-            "expMonth": expMonth,
-            "cvv": CVV,
-            "expYear": expYear,
-            "cardEncrypted": cardEncrypted,
-            "last4": cardNumber[-4:],
-            "first6": cardNumber[0:6]
-        }
-        posturl = target_env + merchantID + '/pay'
-        postresponse = requests.post( 
-            posturl,
-            headers=headers,
-            data=post_data
-        ).json()
 
     def create_order(self, order):
         new_order = Order_Model(order_object=order)
         # customer_email = new_order.customer.id
-        email = 'crepenshake427@gmail.com'
+        # email = 'crepenshake427@gmail.com'
         # self.send_confirmation_email(customer_email)
-        self.send_confirmation_email(email)
+        self.send_confirmation_email(new_order)
         # self.developer_pay(new_order)
         with self.session_scope() as session:
             self.order_repository.post_order(session, order=new_order)
             return True
-    
+
     def stripe_pay(self, order):
         with self.session_scope() as session:
             return self.order_repository.post_stripe_order(session, order=order)
-        
 
 
 class Drink_Service(object):
@@ -422,7 +350,8 @@ class Drink_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.drink_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
+        self.drink_engine = create_engine(
+            os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.drink_engine)
@@ -455,8 +384,8 @@ class Drink_Service(object):
 
         with self.session_scope() as session:
             for drink in self.drink_repository.get_drinks(session, requested_drink_category_id):
-                drink_model = Drink_Model( id = drink.id, drink_category_id = drink.drink_category_id, serving_size = drink.serving_size,
-                    name=drink.name, price=drink.price)
+                drink_model = Drink_Model(id=drink.id, drink_category_id=drink.drink_category_id, serving_size=drink.serving_size,
+                                          name=drink.name, price=drink.price)
                 response.append(drink_model)
             return response
 
@@ -506,7 +435,8 @@ class Side_Service(object):
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.side_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
+        self.side_engine = create_engine(
+            os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.side_engine)
@@ -522,7 +452,7 @@ class Side_Service(object):
         finally:
             self.session.close()
         # now all calls to Session() will create a thread-local session
-   
+
     def get_side_types(self):
         response = []
 
@@ -546,7 +476,7 @@ class Side_Service(object):
         with self.session_scope() as session:
             for ice_cream in self.side_repository.get_ice_cream_bowls(session):
                 ice_cream_model = Ice_Cream_Bowl_Model(
-                                       flavor=ice_cream.flavor_id, price=ice_cream.price, serving_size = ice_cream.serving_size_id, quantity=1, side_name_id= 'ice_cream_bowl',toppings=None,ice_cream_object=None )
+                    flavor=ice_cream.flavor_id, price=ice_cream.price, serving_size=ice_cream.serving_size_id, quantity=1, side_name_id='ice_cream_bowl', toppings=None, ice_cream_object=None)
                 response.append(ice_cream_model)
             return response
 
@@ -559,14 +489,15 @@ class Menu_Crepe_Service(object):
         self.connection_string_end = "@localhost:5432/crepenshakedb"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
-        
+
         self.menu_crepe_repository = Menu_Crepe_Repository()
 
     @contextmanager
     def session_scope(self):
         # an Engine, which the Session will use for connection
         # resources
-        self.menu_crepe_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
+        self.menu_crepe_engine = create_engine(
+            os.environ.get("DB_STRING", self.connection_string))
 
         # create a configured "Session" class
         self.session_factory = sessionmaker(bind=self.menu_crepe_engine)
@@ -601,6 +532,7 @@ class Menu_Crepe_Service(object):
                 response.append(crepe_model)
             return response
 
+
 class Test_Service(object):
     def __init__(self):
         self.username = "postgres"
@@ -609,12 +541,11 @@ class Test_Service(object):
         self.connection_string_end = "@localhost:5432/crepenshakedb"
         self.connection_string = self.connection_string_beginning + \
             self.username + ":" + self.password + self.connection_string_end
-        self.test_engine = create_engine(os.environ.get("DB_STRING", self.connection_string))
+        self.test_engine = create_engine(
+            os.environ.get("DB_STRING", self.connection_string))
 
     def test_connection(self):
         inspector = inspect(self.test_engine)
-        print("len(inspector.get_table_names())", len(inspector.get_table_names()))
-        
         if len(inspector.get_table_names()) == 0:
             print('instantiating')
             instantiate_db_connection()

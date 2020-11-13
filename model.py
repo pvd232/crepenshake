@@ -2,6 +2,50 @@ from datetime import date
 import uuid
 
 
+def humanize(dict=None, attr=None, format=False, word = False):
+    if format == True:
+        for x in dict['ingredients']:
+            str = x.__getattribute__(attr)
+            frags = str.split('_')
+            if len(frags) < 2:
+                str = str.capitalize()
+                setattr(x, attr, str)
+            newFrags = []
+            for frag in frags:
+                frag = frag.capitalize()
+                newFrags.append(frag)
+            newFrags = " ".join(newFrags)
+            setattr(x, attr, newFrags)
+        return dict
+    elif attr and dict:
+        str = dict.__getattribute__(attr)
+        frags = str.split('_')
+        if len(frags) < 2:
+            str = str.capitalize()
+            setattr(dict, attr, str)
+            return dict
+        newFrags = []
+        for frag in frags:
+            frag = frag.capitalize()
+            newFrags.append(frag)
+        newFrags = " ".join(newFrags)
+        setattr(dict, attr, newFrags)
+        return dict
+
+    elif word:
+        frags = word.split('_')
+        if len(frags) < 2:
+            word = word.capitalize()
+            return word
+        else:
+            newFrags = []
+            for i in range(len(frags)):
+                capitalFrag = frags[i].capitalize()
+                newFrags.append(capitalFrag)    
+            newFrags = ' '.join(newFrags)
+            return newFrags
+
+
 class Crepe_Model(object):
     def __init__(self, id=None, orgination_id=None, flavor_profile_id=None):
         self.id = id
@@ -51,6 +95,9 @@ class Ingredient_Model(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+    def __str__(self):
+        return '<p style="font-size:large;"><span style="text-decoration:underline">Ingredient:</span> {0}, {1}</p>'.format(humanize(word=self.id), humanize(word=self.serving_size))
+
 
 class Order_Crepe_Model(object):
     def __init__(self, order_id=None, order_crepe=None, order_crepe_object=None):
@@ -58,11 +105,7 @@ class Order_Crepe_Model(object):
         self.order_crepe = list()
         if order_crepe_object:
             for order_crepe in order_crepe_object:
-                if order_crepe['origination'] == 'custom':
-                    new_custom_crepe = Custom_Crepe_Model(
-                        custom_crepe_object=order_crepe)
-                    self.order_crepe.append(new_custom_crepe)
-                elif order_crepe['origination'] == 'menu':
+                if order_crepe['origination'] == 'menu':
                     for menu_crepe in order_crepe['menuCrepes']:
                         menu_crepe_bool = False
                         new_menu_crepe = Menu_Crepe_Model(
@@ -73,6 +116,11 @@ class Order_Crepe_Model(object):
                                 menu_crepe_bool = True
                         if not menu_crepe_bool:
                             self.order_crepe.append(new_menu_crepe)
+            for order_crepe in order_crepe_object:
+                if order_crepe['origination'] == 'custom':
+                    new_custom_crepe = Custom_Crepe_Model(
+                        custom_crepe_object=order_crepe)
+                    self.order_crepe.append(new_custom_crepe)
         else:
             self.order_id = order_id
             self.order_crepe = order_crepe
@@ -84,6 +132,19 @@ class Order_Crepe_Model(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
+    def __str__(self):
+        return_object = ''
+        menu_bool = False
+        for i in range(len(self.order_crepe)):
+            if self.order_crepe[i].origination_id == 'custom':
+                return_object += str(self.order_crepe[i])
+            elif self.order_crepe[i].origination_id == 'menu':
+                if not menu_bool:
+                    return_object += '<p style = "font-size: large; font-weight:bold;">Menu Crepes:</p>'
+                    menu_bool = True
+                return_object += str(self.order_crepe[i])
+        return return_object
 
 
 class Order_Side_Model(object):
@@ -107,27 +168,66 @@ class Order_Side_Model(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+    def __str__(self):
+        return_object = ''
+        for i in range(len(self.order_side)):
+            if self.order_side[i].side_name_id == 'ice_cream_bowl':
+                return_object += str(self.order_side[i])
+        return return_object
+
 
 class Order_Drink_Model(object):
     def __init__(self, order_id=None, order_drink=None, order_drink_object=None):
         if order_drink_object:
             self.order_id = order_id
             self.order_drink = list()
+            coffee_list = []
+            milkshake_list = []
+            bottled_list = []
+            non_coffee_list = []
             for orderDrink in order_drink_object:
                 drinks_in_order = orderDrink['orderDrink']
+                # organizing the list for when i send the confirmation email to my parents
                 for drink in drinks_in_order:
                     if drink['drinkCategory'] == 'coffee':
                         new_coffee = Coffee_Model(coffee_object=drink)
-                        self.order_drink.append(new_coffee)
-                    else:
+                        coffee_list.append(new_coffee)
+                    elif drink['drinkCategory'] == 'milkshake':
                         drink_bool = False
                         new_drink = Drink_Model(drink_object=drink)
-                        for drink in self.order_drink:
+                        for drink in milkshake_list:
                             if drink.id == new_drink.id:
                                 drink.quantity += 1
                                 drink_bool = True
                         if not drink_bool:
-                            self.order_drink.append(new_drink)
+                            milkshake_list.append(new_drink)
+                    elif drink['drinkCategory'] == 'bottled':
+                        drink_bool = False
+                        new_drink = Drink_Model(drink_object=drink)
+                        for drink in bottled_list:
+                            if drink.id == new_drink.id:
+                                drink.quantity += 1
+                                drink_bool = True
+                        if not drink_bool:
+                            bottled_list.append(new_drink)
+                    elif drink['drinkCategory'] == 'non-coffee':
+                        drink_bool = False
+                        new_drink = Drink_Model(drink_object=drink)
+                        for drink in non_coffee_list:
+                            if drink.id == new_drink.id:
+                                drink.quantity += 1
+                                drink_bool = True
+                        if not drink_bool:
+                            non_coffee_list.append(new_drink)
+            for drink in coffee_list:
+                self.order_drink.append(drink)
+            for drink in milkshake_list:
+                self.order_drink.append(drink)
+            for drink in non_coffee_list:
+                self.order_drink.append(drink)
+            for drink in bottled_list:
+                self.order_drink.append(drink)
+            
         else:
             self.order_id = order_id
             self.order_drink = order_drink
@@ -140,6 +240,34 @@ class Order_Drink_Model(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+    def __str__(self):
+        return_object = ''
+        coffee_bool = False
+        milkshake_bool = False
+        non_coffee_bool = False
+        bottled_bool = False
+        for i in range(len(self.order_drink)):
+            if self.order_drink[i].drink_category_id == 'coffee':
+                if not coffee_bool:
+                    return_object += '<p style="font-size: large; font-weight:bold;">Coffee</p>'
+                    coffee_bool = True
+                return_object += str(self.order_drink[i])
+            elif self.order_drink[i].drink_category_id == 'milkshake':
+                if not milkshake_bool:
+                    return_object += '<p style="font-size: large; font-weight:bold;">Milkshake</p>'
+                    milkshake_bool = True
+                return_object += str(self.order_drink[i])
+            elif self.order_drink[i].drink_category_id == 'non-coffee':
+                if not non_coffee_bool:
+                    return_object += '<p style="font-size: large; font-weight:bold;">Non-Coffee</p>'
+                    non_coffee_bool = True
+                return_object += str(self.order_drink[i])
+            elif self.order_drink[i].drink_category_id == 'bottled':
+                if not bottled_bool:
+                    return_object += '<p style="font-size: large; font-weight:bold;">Bottled</p>'
+                    bottled_bool = True
+                return_object += str(self.order_drink[i])
+        return return_object
 
 class Order_Model(object):
     def __init__(self, id=None, customer=None, cost=None, date=date.today(), order_crepe=None, order_drink=None, order_side=None, order_object=None):
@@ -179,6 +307,9 @@ class Order_Model(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+    def __str__(self):
+        return '<p style= "font-weight:bold; font-size: large;">Crepes In Order:</p> <p style="font-size:large;">{0}</p> <p style= "font-weight:bold; font-size: large;">Drinks in Order :</p> <p style="font-size:large;">{1}</p> <p style= "font-weight:bold; font-size: large;">Sides in Order:</p> <p style="font-size:large;">{2}</p>'.format(str(self.order_crepe), str(self.order_drink), str(self.order_side))
+
 
 class Customer_Model(object):
     def __init__(self, id=None, first_name=None, last_name=None, street=None, city=None, state=None, zipcode=None, country=None, customer_object=None, stripe_id=None):
@@ -192,9 +323,7 @@ class Customer_Model(object):
             self.state = customer_object["state"]
             self.zipcode = customer_object["zipcode"]
             self.country = customer_object["country"]
-            # self.payment_information = Payment_Information_Model(
-            #     payment_object=customer_object['paymentInformation'])
-        
+
         else:
             self.id = id
             self.stripe_id = stripe_id
@@ -213,18 +342,6 @@ class Customer_Model(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
-
-
-# class Payment_Information_Model(object):
-#     def __init__(self, payment_object):
-#         print("payment_object", payment_object)
-        
-#         self.payment_method = payment_object["paymentMethod"]
-#         self.credit_card_name = payment_object["creditCardName"]
-#         self.credit_card_number = payment_object["creditCardNumber"]
-#         self.credit_card_expiration_month = payment_object["creditCardExpirationMonth"]
-#         self.credit_card_expiration_year = payment_object["creditCardExpirationYear"]
-#         self.credit_card_cvv = payment_object["creditCardCVV"]
 
 
 class Menu_Crepe_Model(object):
@@ -251,6 +368,8 @@ class Menu_Crepe_Model(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+    def __str__(self):
+        return '<p style="font-size: large;"><span style="text-decoration:underline">Crepe Name:</span> {0}, Quantity: {1}</p>'.format(humanize(word=self.name), self.quantity)
 # these will only be recieved from the front end
 
 
@@ -277,6 +396,13 @@ class Custom_Crepe_Model(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+    def __str__(self):
+        return_object = '<p style="font-size:large; font-weight:bold;">Custom Crepe:</p>'
+        for i in range(len(self.ingredients)-1):
+            return_object += str(self.ingredients[i])
+        return_object += str(self.ingredients[-1])
+        return return_object
+
 
 class Drink_Category(object):
     def __init__(self, id=None):
@@ -292,14 +418,14 @@ class Drink_Category(object):
 
 
 class Coffee_Model(object):
-    def __init__(self, id=None, drink_category_id=None, name=None, milk_type_id=None, price=None, espresso_serving_size=None, espresso_price=None, coffee_syrup_flavor=None, coffee_syrup_flavor_serving_size=None, serving_size=None, quantity=None, temperature=None, coffee_object=None):
+    def __init__(self, id=None, drink_id = None, drink_category_id=None, name=None, milk_type_id=None, price=None, espresso_serving_size=None, espresso_price=None, coffee_syrup_flavor=None, coffee_syrup_flavor_serving_size=None, serving_size=None, quantity=None, temperature=None, syrup_price=None, coffee_object=None):
         if (coffee_object):
-            self.id = coffee_object['id']
+            self.id = uuid.uuid4()
+            self.drink_id = coffee_object['id']
             self.name = coffee_object["name"]
             self.drink_category_id = coffee_object["drinkCategory"]
             self.milk_type_id = coffee_object["milkType"]
             self.price = coffee_object["price"]
-
             if coffee_object["espressoServingSize"] == 'extra':
                 self.espresso_serving_size = '3_shots'
             elif coffee_object["espressoServingSize"] == 'regular':
@@ -318,9 +444,11 @@ class Coffee_Model(object):
             self.coffee_syrup_flavor = coffee_object["flavorSyrup"]
             self.serving_size = coffee_object["servingSize"]
             self.temperature = coffee_object['temperature']
+            self.syrup_price = syrup_price
             self.quantity = coffee_object["quantity"]
         else:
             self.id = id
+            self.drink_id = drink_id
             self.name = name
             self.drink_category_id = drink_category_id
             self.milk_type_id = milk_type_id
@@ -330,6 +458,7 @@ class Coffee_Model(object):
             self.coffee_syrup_flavor = coffee_syrup_flavor
             self.coffee_syrup_flavor_serving_size = coffee_syrup_flavor_serving_size
             self.serving_size = serving_size
+            self.syrup_price = syrup_price
             self.quantity = quantity
 
     def serialize(self):
@@ -339,6 +468,9 @@ class Coffee_Model(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
+    def __str__(self):
+        return '<p style="font-size: large;"><span style="text-decoration: underline;">Name:</span> {0}, Serving Size: {1}</p> <p style="font-size:large;">Milk: {2}</p> <p style="font-size:large;">Temperature: {3}</p> <p style="font-size:large;"> # of Espresso Shots: {4}</p> <p style="font-size:large;">Syrup Flavor: {5}, Serving Size: {6}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), humanize(word=self.milk_type_id), humanize(word=self.temperature), humanize(word=self.espresso_serving_size), humanize(word=self.coffee_syrup_flavor), humanize(word=self.coffee_syrup_flavor_serving_size))
 
 
 class Drink_Model(object):
@@ -365,6 +497,9 @@ class Drink_Model(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
+    def __str__(self):
+        return '<p style="font-size: large"><span style="text-decoration: underline">Drink:</span> {0}, Serving Size: {1}, Quantity: {2}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), self.quantity)
 
 
 class Temperature(object):
@@ -409,25 +544,16 @@ class Side_Model(object):
 class Ice_Cream_Bowl_Model(object):
     def __init__(self, id=None, flavor=None, price=None, serving_size=None, quantity=None, side_name_id=None, toppings=None, ice_cream_object=None):
         if ice_cream_object:
-            print()
-            print("ice_cream_object", ice_cream_object)
-            print()
             self.id = uuid.uuid4()
-
             self.flavor = ice_cream_object["flavor"]
             self.price = ice_cream_object["price"]
             self.serving_size = ice_cream_object["servingSize"]
             self.quantity = ice_cream_object["quantity"]
             self.side_name_id = ice_cream_object["sideName"]
             self.toppings = list()
-            print()
-            print("self.toppings b4", self.toppings)
-            print()
             for topping in ice_cream_object["toppings"]:
                 new_topping = Ingredient_Model(ingredient_object=topping)
                 self.toppings.append(new_topping)
-            print("self.toppings after", self.toppings)
-
         else:
             self.id = id
             self.flavor = flavor
@@ -444,3 +570,10 @@ class Ice_Cream_Bowl_Model(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
+    def __str__(self):
+        return_object = '<p style="font-size:large; font-weight:bold;">Vanilla Ice Cream Bowl:</p>'
+        return_object += f'<p style="font-size: large;">{humanize(word= self.serving_size)}</p>'
+        for i in range(len(self.toppings)):
+            return_object += str(self.toppings[i])
+        return return_object

@@ -13,6 +13,8 @@ import os
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy import inspect, create_engine
+from flask_talisman import Talisman
+
 
 
 @compiles(DropTable, "postgresql")
@@ -21,6 +23,7 @@ def _compile_drop_table(element, compiler, **kwargs):
 
 
 app = Flask(__name__)
+Talisman(app)
 
 
 username = "postgres"
@@ -161,7 +164,7 @@ class Customer(db.Model):
 
 
 class Stripe(db.Model):
-    id = db.Column(db.String(80), primary_key=True,  # this will be the customer's email
+    id = db.Column(db.String(80), primary_key=True,
                    unique=True, nullable=False)
     customer = relationship('Customer', lazy=True)
 
@@ -537,7 +540,9 @@ class Milk(db.Model):
 
 class Order_Coffee(db.Model):
     __tablename__ = 'order_coffee'
-    drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'), primary_key=True,
+    id = db.Column(UUID(as_uuid=True), primary_key=True,
+                   nullable=False)
+    drink_id = db.Column(UUID(as_uuid=True), db.ForeignKey('drink.id'),
                          nullable=False)
     coffee_name_id = db.Column(db.String(80), db.ForeignKey('coffee_name.id'),
                                nullable=False)
@@ -1075,10 +1080,10 @@ def create_drink_name_serving_size_price():
                 drink_category_id = 'milkshake'
                 serving_size = item['serving_size']
                 print("milkshake serving_size", serving_size)
-                
+
                 price = item['price']
-                new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price( id = id,
-                    name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
+                new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price(id=id,
+                                                                                  name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
                 db.session.add(new_drink_name_serving_size_price)
 
     for i in range(len(non_coffee_items)):
@@ -1091,7 +1096,7 @@ def create_drink_name_serving_size_price():
                 serving_size = item['serving_size']
                 price = item['price']
                 new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price(id=id,
-                                                                                name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
+                                                                                  name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
                 db.session.add(new_drink_name_serving_size_price)
 
     for i in range(len(bottled_drink_items)):
@@ -1104,7 +1109,7 @@ def create_drink_name_serving_size_price():
                 serving_size = item['serving_size']
                 price = item['price']
                 new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price(id=id,
-                                                                                name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
+                                                                                  name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
                 db.session.add(new_drink_name_serving_size_price)
 
     for i in range(len(coffee_items)):
@@ -1117,7 +1122,7 @@ def create_drink_name_serving_size_price():
                 serving_size = item['serving_size']
                 price = item['price']
                 new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price(id=id,
-                                                                                name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
+                                                                                  name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)
                 db.session.add(new_drink_name_serving_size_price)
     db.session.commit()
     db.session.remove()
@@ -1252,17 +1257,6 @@ def create_everything():
 def instantiate_db_connection():
     db.create_all()
     create_everything()
-#     print('instantiate')
-#     ins = inspect(db)
-    # for _t in ins.get_table_names():
-    #     print(_t)
-    # test = db.session.query(Ingredient).first()
-    # if not test:
-    # db.create_all()
-    # create_everything()
-    #     print('working')
-    # except Exception as e:
-    #     print("Exception", str(e))
 
 
 # instantiate_db_connection()
