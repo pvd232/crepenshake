@@ -26,7 +26,6 @@ const removeAllChildNodes = (parent) => {
 		parent.removeChild(parent.firstChild);
 	}
 };
-
 const stringify = (sideOrder) => {
 	if (editSideIndex === null) {
 		const order = new Order();
@@ -158,17 +157,13 @@ const pageLogic = () => {
 				.bind('click', function (event) {
 					const senderElementClass = event.target.getAttribute('class');
 					const senderElementType = event.target.tagName;
-					console.log("senderElementType", senderElementType)
-					
-
-					console.log('senderElement', senderElementClass);
-
 					if (
 						senderElementClass === 'list-group-item d-flex justify-content-between align-items-center' ||
 						senderElementClass === 'card-text' ||
 						senderElementClass === 'card-title' ||
 						senderElementClass === 'card-body' ||
 						senderElementClass === 'card-img-top' ||
+						senderElementClass === 'container4' ||
 						senderElementType === 'CONTAINER' ||
 						senderElementType === 'P' ||
 						senderElementType === 'IMG' ||
@@ -178,7 +173,6 @@ const pageLogic = () => {
 						const json = JSON.parse($(this).closest('.card, li').attr('data-sides'));
 						// logic for toppings is the most complex and should be evaluated last. de facto the non-topping cards are ice cream which have counters
 						userOrderSide.checkIfThisToppingSelected(json);
-
 						if (selectedItemCategory != 'toppings') {
 							// the side will be an ice cream bowl and it will only be added by clicking the card if it is not currently selected
 							userOrderSide.findSide(json);
@@ -216,7 +210,6 @@ const pageLogic = () => {
 							userOrderSide.removeTopping(json);
 							$(this).closest('.card, .list-group-item').find('.btn2').hide();
 							$(this).closest('.card, .list-group-item').find('.btn').hide();
-
 						} else if (
 							selectedItemCategory === 'toppings' &&
 							!userOrderSide.checkIfThisToppingSelected(json)
@@ -224,7 +217,6 @@ const pageLogic = () => {
 							if (userOrderSide.checkIfIceCreamSelected()) {
 								const toppingServingSize = 'regular';
 								userOrderSide.addTopping(json, toppingServingSize);
-
 								$(this).closest('.card, .list-group-item').find('.btn').show();
 								$(this).closest('.card, .list-group-item').find('.btn2').html('✓');
 								$(this).closest('.card, .list-group-item').find('.btn2').show();
@@ -237,7 +229,6 @@ const pageLogic = () => {
 				.bind('click', function () {
 					const json = JSON.parse($(this).closest('.card, .list-group-item').attr('data-sides'));
 					const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
-
 					if (selectedItemCategory === 'toppings') {
 						if ($(this).html() === 'Customize') {
 							$(this).blur();
@@ -326,7 +317,6 @@ const pageLogic = () => {
 				.unbind('click')
 				.bind('click', function () {
 					const json = JSON.parse($(this).closest('.card, li').attr('data-sides'));
-
 					const updatedSide = userOrderSide.changeSideQuantity(json, 'increase');
 					if (updatedSide.quantity === 3 && updatedSide.sideName === 'ice_cream_bowl') {
 						displayErrorMsg($(this));
@@ -547,8 +537,7 @@ $(window).on('load resize', function () {
 			$(this).css('margin-left', '20px');
 			$(this).css('margin-right', '20px');
 		});
-	}
-	else {
+	} else {
 		$('.container0sweetCrepe').each(function () {
 			$(this).addClass('container');
 			$(this).removeClass('container0sweetCrepe');

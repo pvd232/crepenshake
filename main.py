@@ -8,12 +8,6 @@ from models import app
 
 stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
 
-# @app.before_request
-# def before_request():
-#     if not request.is_secure:
-#         url = request.url.replace("http://", "https://", 1)
-#         code = 301
-#         return redirect(url, code=code)
 
 @app.route("/")
 def home():
@@ -190,4 +184,4 @@ def favicon():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(ssl_context='adhoc', debug=True)
