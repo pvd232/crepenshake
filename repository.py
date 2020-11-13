@@ -39,57 +39,51 @@ class Ingredient_Repository(object):
 
 class Order_Repository(object):
     def post_stripe_order(self, session, order):
-        new_customer = order['customerData']
-        print("new_customer", new_customer)
-
+        customer = order['customerData']
         amount = int(order['orderTotal'] * 100)
         customerExistenceBool = False
-        if new_customer:
+        if customer:
             confirmCustomerExistence = session.query(Stripe).filter(
-                Stripe.id == new_customer['stripeId']).first()
+                Stripe.id == customer['stripeId']).first()
             # Lookup the saved card (you can store multiple PaymentMethods on a Customer)
             if confirmCustomerExistence:
                 customerExistenceBool = True
                 payment_methods = stripe.PaymentMethod.list(
-                    customer=new_customer['stripeId'],
+                    customer=customer['stripeId'],
                     type='card'
                 )
                 # Charge the customer and payment method immediately
                 payment_intent = stripe.PaymentIntent.create(
                     amount=amount,
                     currency='usd',
-                    customer=new_customer['stripeId'],
+                    customer=customer['stripeId'],
                     payment_method=payment_methods.data[0].id
                 )
-                return {'clientSecret': payment_intent['client_secret'], 'customer': new_customer['stripeId']}
+                return {'clientSecret': payment_intent['client_secret'], 'customer': customer['stripeId']}
         if not customerExistenceBool:
-            new_customer = stripe.Customer.create()
-            new_stripe_id = Stripe(id=new_customer.id)
+            customer = stripe.Customer.create()
+            new_stripe_id = Stripe(id=customer.id)
             session.add(new_stripe_id)
             session.commit()
             amount = int(order['orderTotal'] * 100)
             payment_intent = stripe.PaymentIntent.create(
                 amount=amount,
-                customer=new_customer.id,
+                customer=customer.id,
                 setup_future_usage='off_session',
                 currency='usd'
             )
-            return {'clientSecret': payment_intent['client_secret'], 'customer': new_customer.id}
+            return {'clientSecret': payment_intent['client_secret'], 'customer': customer.id}
 
     def post_order(self, session, order):
-        new_customer = order.customer
-        print("new_customer", new_customer)
-
+        customer = order.customer
         user = session.query(Customer).filter(or_(
-            Customer.id == new_customer.id, Customer.stripe_id == new_customer.stripe_id)).first()
+            Customer.id == customer.id, Customer.stripe_id == customer.stripe_id)).first()
         # check to make sure the customer doesn't already exist in the database
-        print("user", user)
-
         if not user:
-            new_customer = Customer(id=new_customer.id, stripe_id=new_customer.stripe_id, first_name=new_customer.first_name, last_name=new_customer.last_name,
-                                    street=new_customer.street, city=new_customer.city, state=new_customer.state, zipcode=new_customer.zipcode, country=new_customer.country)
-            session.add(new_customer)
-            new_order = Order(id=order.id, customer_id=new_customer.id,
+            customer = Customer(id=customer.id, stripe_id=customer.stripe_id, first_name=customer.first_name, last_name=customer.last_name,
+                                    street=customer.street, city=customer.city, state=customer.state, zipcode=customer.zipcode, country=customer.country)
+            session.add(customer)
+            new_order = Order(id=order.id, customer_id=customer.id,
                               cost=order.cost, date=order.date)
             session.add(new_order)
         else:

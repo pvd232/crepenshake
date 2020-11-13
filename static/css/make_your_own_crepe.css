@@ -20,6 +20,7 @@
 .non-modal .card-img-top {
 	width: 100% !important;
 	max-height: 220px !important;
+	min-height: 220px !important;
 	object-fit: cover;
 }
 

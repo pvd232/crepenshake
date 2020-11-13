@@ -432,14 +432,14 @@ class Coffee_Model(object):
                 self.espresso_serving_size = '2_shots'
             elif coffee_object["espressoServingSize"] == 'light':
                 self.espresso_serving_size = '0_shots'
-
             if coffee_object["flavorSyrupServingSize"] == 'extra':
                 self.coffee_syrup_flavor_serving_size = '2_pumps'
             elif coffee_object["flavorSyrupServingSize"] == 'regular':
                 self.coffee_syrup_flavor_serving_size = '1_pump'
             elif coffee_object["flavorSyrupServingSize"] == 'light':
                 self.coffee_syrup_flavor_serving_size = '.5_pumps'
-
+            else:
+                self.coffee_syrup_flavor_serving_size = coffee_object["flavorSyrupServingSize"]
             self.espresso_price = coffee_object["espressoPrice"]
             self.coffee_syrup_flavor = coffee_object["flavorSyrup"]
             self.serving_size = coffee_object["servingSize"]
@@ -470,7 +470,11 @@ class Coffee_Model(object):
         return serialized_attributes
 
     def __str__(self):
-        return '<p style="font-size: large;"><span style="text-decoration: underline;">Name:</span> {0}, Serving Size: {1}</p> <p style="font-size:large;">Milk: {2}</p> <p style="font-size:large;">Temperature: {3}</p> <p style="font-size:large;"> # of Espresso Shots: {4}</p> <p style="font-size:large;">Syrup Flavor: {5}, Serving Size: {6}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), humanize(word=self.milk_type_id), humanize(word=self.temperature), humanize(word=self.espresso_serving_size), humanize(word=self.coffee_syrup_flavor), humanize(word=self.coffee_syrup_flavor_serving_size))
+        if self.coffee_syrup_flavor and self.coffee_syrup_flavor_serving_size:
+            return '<p style="font-size: large;"><span style="text-decoration: underline;">Name:</span> {0}, Serving Size: {1}</p> <p style="font-size:large;">Milk: {2}</p> <p style="font-size:large;">Temperature: {3}</p> <p style="font-size:large;"> # of Espresso Shots: {4}</p> <p style="font-size:large;">Syrup Flavor: {5}, Serving Size: {6}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), humanize(word=self.milk_type_id), humanize(word=self.temperature), humanize(word=self.espresso_serving_size), humanize(word=self.coffee_syrup_flavor), humanize(word=self.coffee_syrup_flavor_serving_size))
+        else:
+            return '<p style="font-size: large;"><span style="text-decoration: underline;">Name:</span> {0}, Serving Size: {1}</p> <p style="font-size:large;">Milk: {2}</p> <p style="font-size:large;">Temperature: {3}</p> <p style="font-size:large;"> # of Espresso Shots: {4}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), humanize(word=self.milk_type_id), humanize(word=self.temperature), humanize(word=self.espresso_serving_size))
+
 
 
 class Drink_Model(object):
@@ -499,7 +503,7 @@ class Drink_Model(object):
         return serialized_attributes
 
     def __str__(self):
-        return '<p style="font-size: large"><span style="text-decoration: underline">Drink:</span> {0}, Serving Size: {1}, Quantity: {2}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), self.quantity)
+        return '<p style="font-size: large"><span style="text-decoration: underline">Name:</span> {0}, Serving Size: {1}, Quantity: {2}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), self.quantity)
 
 
 class Temperature(object):
