@@ -412,6 +412,7 @@ $(window).on("load", function () {
   if (cWidth <= 576) {
     pageLogic();
     modifyOrder();
+    mobileRendering();
   } else {
     pageLogic();
     modifyOrder();
