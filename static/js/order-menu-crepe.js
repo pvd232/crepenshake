@@ -414,7 +414,6 @@ $(window).on("load", function () {
     pageLogic();
     modifyOrder();
   } else {
-    mobileRendering();
     pageLogic();
     modifyOrder();
     $(".container0sweetCrepe").each(function () {
