@@ -23,7 +23,7 @@ def _compile_drop_table(element, compiler, **kwargs):
 
 
 app = Flask(__name__)
-Talisman(app, content_security_policy=None)
+Talisman(app, content_security_policy=None, force_https_permanent='true', force_https='true')
 
 
 username = "postgres"
