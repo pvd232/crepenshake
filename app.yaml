@@ -13,8 +13,10 @@ env_variables:
     # postgresql+psycopg2://USER:PASSWORD@/DATABASE?host=/cloudsql/INSTANCE_CONNECTION_NAME
     # Replace user, password, database, and instance connection name with the values obtained
     # when configuring your Cloud SQL instance.
+    GOOGLE_APPLICATION_CREDENTIALS: ./CrepeNShake-8b4a0f7fb8c9.json
     DB_STRING: >-
       postgresql+psycopg2://postgres:Iqopaogh23!@/postgres?host=/cloudsql/crepenshake:us-east4:crepenshakedatabase
+    
 #[END env]
 
 #[START cloudsql_settings]

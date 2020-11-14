@@ -4,7 +4,16 @@ import stripe
 from datetime import date
 from sqlalchemy import or_
 from sqlalchemy.orm import load_only
-import logging
+# Imports the Cloud Logging client library
+from google.cloud import logging
+from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
+
+client = logging.Client()
+handler = CloudLoggingHandler(client)
+logging.getLogger().setLevel(logging.WARN)  # defaults to WARN
+setup_logging(handler)
+logging.error('bad news')  # API call
+logging.log_text("A simple entry")  # API call
 
 
 class Ingredient_Repository(object):
