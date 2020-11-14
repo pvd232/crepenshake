@@ -5,15 +5,15 @@ from datetime import date
 from sqlalchemy import or_
 from sqlalchemy.orm import load_only
 # Imports the Cloud Logging client library
-from google.cloud import logging
+import logging
+import google.cloud.logging  # Don't conflict with standard logging
 from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
 
-client = logging.Client()
+client = google.cloud.logging.Client()
 handler = CloudLoggingHandler(client)
 logging.getLogger().setLevel(logging.WARN)  # defaults to WARN
 setup_logging(handler)
-logging.error('bad news')  # API call
-logging.log_text("A simple entry")  # API call
+logging.error('bad news')
 
 
 class Ingredient_Repository(object):
