@@ -1079,8 +1079,6 @@ def create_drink_name_serving_size_price():
                 id = serialized_drinks[j]['id']
                 drink_category_id = 'milkshake'
                 serving_size = item['serving_size']
-                print("milkshake serving_size", serving_size)
-
                 price = item['price']
                 new_drink_name_serving_size_price = Drink_Name_Serving_Size_Price(id=id,
                                                                                   name=name, drink_category_id=drink_category_id, serving_size=serving_size, price=price)

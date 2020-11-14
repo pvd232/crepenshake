@@ -4,6 +4,7 @@ import stripe
 from datetime import date
 from sqlalchemy import or_
 from sqlalchemy.orm import load_only
+import logging
 
 
 class Ingredient_Repository(object):
@@ -43,35 +44,44 @@ class Order_Repository(object):
         amount = int(order['orderTotal'] * 100)
         customerExistenceBool = False
         if customer:
-            confirmCustomerExistence = session.query(Stripe).filter(
+            confirmCustomerExistence = session.query(Stripe).filter(                
                 Stripe.id == customer['stripeId']).first()
+            logging.debug("confirmCustomerExistence", confirmCustomerExistence)
+
             # Lookup the saved card (you can store multiple PaymentMethods on a Customer)
             if confirmCustomerExistence:
                 customerExistenceBool = True
-                payment_methods = stripe.PaymentMethod.list(
+                payment_methods = stripe.PaymentMethod.list(                    
                     customer=customer['stripeId'],
                     type='card'
                 )
+                logging.debug("payment_methods", payment_methods)
+
                 # Charge the customer and payment method immediately
-                payment_intent = stripe.PaymentIntent.create(
+                payment_intent = stripe.PaymentIntent.create(                    
                     amount=amount,
                     currency='usd',
                     customer=customer['stripeId'],
                     payment_method=payment_methods.data[0].id
                 )
+                logging.debug("payment_intent", payment_intent)
                 return {'clientSecret': payment_intent['client_secret'], 'customer': customer['stripeId']}
         if not customerExistenceBool:
             customer = stripe.Customer.create()
+            logging.debug("customer", customer)
             new_stripe_id = Stripe(id=customer.id)
+            logging.debug("new_stripe_id", new_stripe_id)
             session.add(new_stripe_id)
             session.commit()
             amount = int(order['orderTotal'] * 100)
-            payment_intent = stripe.PaymentIntent.create(
+            payment_intent = stripe.PaymentIntent.create(                
                 amount=amount,
                 customer=customer.id,
                 setup_future_usage='off_session',
                 currency='usd'
             )
+            logging.debug("payment_intent", payment_intent)
+
             return {'clientSecret': payment_intent['client_secret'], 'customer': customer.id}
 
     def post_order(self, session, order):
