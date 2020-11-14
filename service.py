@@ -2,8 +2,6 @@ import json
 import os
 from base64 import b64encode
 import requests
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
 from model import *
 from models import instantiate_db_connection
 from repository import Ingredient_Repository,  Order_Repository, Drink_Repository, Side_Repository, Menu_Crepe_Repository, db
