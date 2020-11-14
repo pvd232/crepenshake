@@ -57,13 +57,9 @@ const modifyOrder = () => {
     editOrder.fromJSON(localStorage.getItem("order"));
     const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex];
     userOrderCrepe = editOrderCrepe;
-    console.log("editOrderCrepe", editOrderCrepe);
-
     const crepeIngredients = editOrderCrepe.ingredients;
     for (var i = 0; i < crepeIngredients.length; i++) {
       const ingredient = crepeIngredients[i];
-      console.log("ingredient", ingredient);
-
       $(`#${ingredient.id}`).find(".btn2").html(ingredient.quantity);
       $(`#${ingredient.id}`).find(".btn2").show();
       $(`#${ingredient.id}`).find(".btn6").show();
@@ -93,9 +89,6 @@ const pageLogic = () => {
         .bind("click", function (event) {
           const senderElementClass = event.target.getAttribute("class");
           const senderElementType = event.target.tagName;
-
-          console.log("senderElement", senderElementClass);
-
           if (
             senderElementClass ===
               "list-group-item d-flex justify-content-between align-items-center" ||
@@ -245,7 +238,6 @@ const mobileRendering = () => {
   const constCardData = new Array();
   for (var i = 0; i < cardData.length; i++) {
     const clone = cardData[i].cloneNode(true);
-    console.log("clone", clone);
     constCardData.push(clone);
   }
 
@@ -304,15 +296,9 @@ const mobileRendering = () => {
       );
       listValue.setAttribute("style", "width:100%");
       const jsonData = constCardData[counter].getAttribute("data-ingredients");
-
-      console.log("constCardData", constCardData);
-      console.log("jsonData", jsonData);
-
       const data = JSON.parse(
         constCardData[counter].getAttribute("data-ingredients")
       );
-      console.log("data", data);
-
       listValue.setAttribute("id", data.id);
       listValue.setAttribute("data-ingredients", jsonData);
 
@@ -391,17 +377,15 @@ const mobileRendering = () => {
 
     row.appendChild(listGroupTitle);
     const x = document.getElementsByClassName("list-group");
-    console.log("x", x);
     x[i].appendChild(row);
   }
   $("#sweetCrepeImg").closest(".row").find(".col").next().css("width:100%");
   $("#sweetCrepeImg").closest(".row").find(".col").first().remove();
-  $(".btn6").each(function () {
-    $(this).css("-webkit-appearance", "none !important");
-  });
-  $(".btn7").each(function () {
-    $(this).css("-webkit-appearance", "none !important");
-  });
+
+  	$('.container0sweetCrepe').each(function () {
+		$(this).css('border-bottom', '');
+		$(this).find('.list-group').css('border-bottom', '');
+	});
 };
 var cWidth = $(window).width();
 //https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
@@ -411,16 +395,17 @@ $(window).on("load", function () {
   if (cWidth < newWidth) {
     cWidth = newWidth;
   }
-  console.log("cWidth", cWidth);
-
   if (cWidth <= 576) {
     mobileRendering();
+      pageLogic();
+		modifyOrder();
   } else {
+      pageLogic();
+		modifyOrder();
     $(".container0sweetCrepe").each(function () {
       $(this).addClass("container");
       $(this).removeClass("container0sweetCrepe");
     });
   }
-  pageLogic();
-  modifyOrder();
+
 });

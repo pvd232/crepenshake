@@ -58,13 +58,9 @@ const doShowAll = () => {
 		};
 		
 		const orderDict = localStorage.getItem('order');
-		console.log("orderDict", orderDict)
-		
 		if (orderDict) {
 			const order = new Order();
 			order.fromJSON(orderDict);
-			console.log('order', order);
-
 			// to do finish the serialization and deserialization of all the classes, then build savory crepe, then menu crepe pg, then clover pmt in backend, then mobile buttons
 			if (order) {
 				if (order.orderCrepe.length) {
@@ -177,8 +173,6 @@ const doShowAll = () => {
 
 						for (var j = 0; j < drinks.length; j++) {
 							const drink = drinks[j];
-							console.log('drink', drink);
-
 							const drinkPrice = drink.price * drink.quantity;
 							if (drink instanceof Coffee) {
 								const milkName = humanize(drink, 'milkType').milkType;
@@ -356,8 +350,6 @@ const doShowAll = () => {
 							}
 						} // end of for loop iterating through side list
 						const sideItemIndex = $(`#sideContainer${i}`).find('.row').first().attr('id').split('-')[1];
-						console.log('sideItemIndex', sideItemIndex);
-
 						$(`<div class="grid-container" id="sideButtonContainer${i}" style="grid-template-columns: 1fr 1fr 1fr;
             				display:grid; grid-gap: 5px; justify-items: center; margin: 30px auto;"></div>`).insertAfter(
 							$(`#sideContainer${i}`)
@@ -401,8 +393,6 @@ const doShowAll = () => {
 };
 
 $(window).on('load', function () {
-	console.log("localStorage.getItem('reload')", localStorage.getItem('reload'))
-	
 	const modal = $('#shoppingCart');
 	$('#showShoppingCart')
 		.unbind('click')

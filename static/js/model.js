@@ -714,8 +714,6 @@ export class OrderDrink {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			const selectedDrink = new Drink();
 			selectedDrink.fromJSON(json);
-			console.log('find drink selectedDrink', selectedDrink);
-
 			if (
 				this._orderDrink[i].id === selectedDrink.id &&
 				this._orderDrink[i].servingSize === selectedDrink.servingSize
@@ -1024,8 +1022,6 @@ export class OrderSide {
 	};
 	checkIfIceCreamSelected = () => {
 		for (var i = 0; i < this._orderSide.length; i++) {
-			console.log('this._orderSide[i]', this._orderSide[i]);
-
 			if (this._orderSide[i].sideName === 'ice_cream_bowl') {
 				return true;
 			}
@@ -1051,12 +1047,8 @@ export class OrderSide {
 	changeSideQuantity = (json, value) => {
 		const selectedItemCategory = json.side_name_id;
 		const selectedSide = this.findSide(json);
-		console.log('selectedSide', selectedSide);
-
 		if (!selectedSide && value === 'increase') {
 			const addedSide = this.addSide(json);
-			console.log('addedSide', addedSide);
-
 			return addedSide;
 		} else {
 			if (selectedItemCategory === 'ice_cream_bowl') {
@@ -1323,8 +1315,6 @@ export class MenuCrepe {
 	};
 	fromJSON = (json) => {
 		const data = json;
-		console.log("data", data)
-		
 		if (data.crepe_id) {
 			this._id = data.crepe_id;
 		} else if (data.id) {
@@ -1493,8 +1483,6 @@ export class OrderCrepe {
 		const newIngredient = new Ingredient();
 		newIngredient.fromJSON(json);
 		newIngredient.servingSize = servingSize;
-		console.log('newIngredient', newIngredient);
-
 		this._ingredients.push(newIngredient);
 		this.priceCrepe();
 		return newIngredient;
@@ -1530,14 +1518,8 @@ export class OrderCrepe {
 	};
 	changeSavoryIngredientQuantity = (json, servingSize) => {
 		const selectedIngredient = this.findIngredient(json);
-		console.log('selectedIngredient', selectedIngredient);
-
 		const ingredientCategory = json.ingredient_category_id;
-		console.log('ingredientCategory', ingredientCategory);
-
 		const proteinStatus = this.checkIfProteinSelected();
-		console.log('proteinStatus', proteinStatus);
-
 		if (!selectedIngredient) {
 			if (ingredientCategory != 'protein') {
 				const addedIngredient = this.addIngredient(json, servingSize);
@@ -1579,8 +1561,6 @@ export class OrderCrepe {
 		for (var i = 0; i < this._ingredients.length; i++) {
 			if (this._ingredients[i].id === ingredient.id) {
 				this._ingredients[i].servingSize = servingSize;
-				console.log('change serving size this._ingredients[i].servingSize', this._ingredients[i].servingSize);
-
 				this.priceCrepe();
 				return true;
 			}
@@ -1616,8 +1596,6 @@ export class OrderCrepe {
 	findCrepe = (json) => {
 		const selectedCrepe = new MenuCrepe();
 		selectedCrepe.fromJSON(json);
-		console.log('selectedCrepe', selectedCrepe);
-
 		for (var i = 0; i < this._menuCrepes.length; i++) {
 			if (this._menuCrepes[i].id === selectedCrepe.id) {
 				return this._menuCrepes[i];
@@ -1628,8 +1606,6 @@ export class OrderCrepe {
 	addCrepe = (json) => {
 		const crepeToAdd = new MenuCrepe();
 		crepeToAdd.fromJSON(json);
-		console.log('crepeToAdd', crepeToAdd);
-
 		this._menuCrepes.push(crepeToAdd);
 		this.priceCrepes();
 		return crepeToAdd;

@@ -1259,7 +1259,6 @@ def instantiate_db_connection():
     create_everything()
 
 
-# instantiate_db_connection()
 # 2000-12-31
 # db.drop_all()
 # db.create_all()

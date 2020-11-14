@@ -8,12 +8,9 @@ import { Order, Customer, Coffee } from './model.js';
 const buildPage = () => {
 	const key = 'order';
 	const orderDict = localStorage.getItem(key);
-	console.log("orderDict", orderDict)
-	
 	const order = new Order();
 	if (orderDict) {
 		order.fromJSON(orderDict);
-		console.log('order', order);
 		var numOrderItems = 0
 		if (order.orderCrepe.length) {
 			for (i in order.orderCrepe) {
@@ -70,7 +67,6 @@ const buildPage = () => {
 					}
 				}
 				const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
-				console.log('lastElementId: %s', lastElementId);
 			}
 
 			if (order.orderDrink.length) {
@@ -86,8 +82,6 @@ const buildPage = () => {
 
 					for (var j = 0; j < drinks.length; j++) {
 						const drink = drinks[j];
-						console.log('drink: %s', drink);
-
 						const drinkPrice = drink.price * drink.quantity;
 						if (drink instanceof Coffee) {
 							const milkName = humanize(drink, 'milkType').milkType;
@@ -177,7 +171,6 @@ const buildPage = () => {
 								).insertAfter(`#checkoutDrinkRow${i}${j}`);
 							}
 						} else {
-							console.log('poo');
 							var drinkName = '';
 							if (drink.drinkCategory === 'milkshake') {
 								drinkName = humanize(drink, 'name').name;
@@ -205,8 +198,6 @@ const buildPage = () => {
 				const orderSides = order.orderSide;
 				for (var i = 0; i < orderSides.length; i++) {
 					const sideOrder = orderSides[i].orderSide;
-					console.log('sideOrder', sideOrder);
-
 					$(`#checkingCartBody0`).append(
 						`<li class="list-group-item d-flex justify-content-between lh-condensed" " id="checkoutSideRow${i}0">
 								<h4 style="font-weight:bold;">Side Order #${i + 1}</h4>
@@ -226,7 +217,6 @@ const buildPage = () => {
 							if (side.toppings.length) {
 								for (var k = 0; k < side.toppings.length; k++) {
 									const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
-									console.log('lastElementId: %s', lastElementId);
 									const topping = side.toppings[k];
 									$(
 										`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${j + 1
@@ -270,19 +260,11 @@ const handleFormSubmit = (stripe, card, data) => {
 			customerData[$(this).attr('id')] = $(this).val();
 		}
 	});
-	console.log("data", data)
-	console.log("data.customer", data.customer)
-	
 	customerData["stripeId"]= data.customer
-	console.log('customerData: %s', JSON.stringify(customerData));
 	const newCustomer = new Customer(customerData);
 	order.customerData = newCustomer;
-
-	console.log('order', order);
 	response['order'] = order;
 	const JSONResponse = JSON.stringify(response);
-	console.log('jsonValue', JSONResponse);
-	console.log('response', response);
 	// payWithCard(stripe, card, data.clientSecret, newCustomer);
 	loading(true);
 	stripe
@@ -296,14 +278,12 @@ const handleFormSubmit = (stripe, card, data) => {
 			},
 		})
 		.then(function (result) {
-			console.log('result', result);
 			if (result.error) {
 				// Show error to your customer
 				showError(result.error.message);
 				return false;
 			} else {
 				// The payment succeeded!
-				console.log('result.paymentIntent.id', result.paymentIntent.id);
 				$.ajax({
 					url: '/checkout',
 					data: JSONResponse,
@@ -318,8 +298,6 @@ const handleFormSubmit = (stripe, card, data) => {
 				// return result;
 			}
 		});
-	// console.log('result', result);
-		
 };
 // Show the customer the error from Stripe if their card fails to charge
 const showError = (errorMsgText) => {
@@ -343,20 +321,7 @@ const loading = (isLoading) => {
 		document.querySelector('#button-text').classList.remove('hidden');
 	}
 };
-// Calls stripe.confirmCardPayment
-// If the card requires authentication Stripe shows a pop-up modal to
-// prompt the user to enter authentication details without leaving your page.
-const payWithCard = (stripe, card, clientSecret, customer) => {
-	console.log("clientSecret", clientSecret)
-	
-	console.log("card", card)
-	
-	console.log("stripe", stripe)
-	
-	console.log("customer", customer)
-	
 
-};
 const orderComplete = (paymentIntentId) => {
 	loading(false);
 	const url = 'https://dashboard.stripe.com/test/payments/' + paymentIntentId;
@@ -387,15 +352,12 @@ const validateForm = () => {
 	// function luhnValidate(fullcode) {
 	// 	return luhnChecksum(fullcode) == 0;
 	// }
-	console.log("localStorage.getItem('stripeId')", localStorage.getItem('stripeId'))
-	
 	const order = new Order();
 	const orderDict = localStorage.getItem('order');
 	if (orderDict) {
 		order.fromJSON(orderDict);
 		if (localStorage.getItem('stripeId')) {
 			const newCustomer = new Customer(null, localStorage.getItem('stripeId'));
-			console.log("newCustomer", newCustomer)
 			order.customerData = newCustomer
 		}
 		const forms = document.getElementsByClassName('needs-validation');
@@ -414,31 +376,11 @@ const validateForm = () => {
 				return result.json();
 			})
 			.then(function (data) {
-				console.log("data", data)
-			
-			
 				const elements = stripe.elements();
-				// var style = {
-				// 	base: {
-				// 		color: '#32325d',
-				// 		fontFamily: 'Arial, sans-serif',
-				// 		fontSmoothing: 'antialiased',
-				// 		fontSize: '16px',
-				// 		'::placeholder': {
-				// 			color: '#32325d',
-				// 		},
-				// 	},
-				// 	invalid: {
-				// 		fontFamily: 'Arial, sans-serif',
-				// 		color: '#fa755a',
-				// 		iconColor: '#fa755a',
-				// 	},
-				// };
 				const card = elements.create('card');
 				// Stripe injects an iframe into the DOM
 				card.mount('#cc-card');
 				card.on('change', function (event) {
-					console.log('event', event);
 					// Disable the Pay button if there are no card details in the Element
 					document.querySelector('#checkoutButton').disabled = event.empty;
 					if (event.error) {

@@ -1,6 +1,6 @@
 import { humanize, removeAllChildNodes } from './model.js';
 var cWidth = $(window).width();
-$(window).on('load resize', function () {
+$(window).on('load', function () {
 	$('.card-title, .head3').each(function () {
 		$(this).html(humanize(null, null, $(this).html()));
 	});
@@ -13,6 +13,16 @@ $(window).on('load resize', function () {
 	$('.head3').each(function () {
 		$(this).html($(this).html().toLowerCase());
 	});
+	const description = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
+	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
+	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
+	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
+	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
+	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
+	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
+	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
+
+	$('#savory_menu_crepes').find('.card-body').first().append(`<p class="description" >${description}</p>`)
 	const newWidth = $(window).width();
 
 	if (cWidth < newWidth) {
@@ -23,6 +33,9 @@ $(window).on('load resize', function () {
 		const cardDeckElements = document.getElementsByClassName('card-deck');
 		const cardTitleElements = document.getElementsByClassName('card-title');
 		const cardTextElements = document.getElementsByClassName('card-text');
+		// const descriptionElements = document.getElementsByClassName('description');
+		
+
 		const cardImgTopElements = document.getElementsByClassName('card-img-top');
 
 		$('#crepeImg').css('margin-left', '0px');
@@ -65,7 +78,11 @@ $(window).on('load resize', function () {
 			}
 			cardDeckChildrenLength.push(counter);
 		}
-
+		// const constDescriptionElements = new Array()
+		// for (var i = 0; i < descriptionElements.length; i++) {
+		// 	const clone = descriptionElements[i].cloneNode(true);
+		// 	constDescriptionElements.push(clone)
+		// }
 		for (var i = 0; i < cardDeckElementsLength; i++) {
 			removeAllChildNodes(cardDeckElements[i]);
 		}
@@ -104,6 +121,7 @@ $(window).on('load resize', function () {
 
 				const string1 = String(constCardTitleValues[k]);
 				const string2 = String(constCardTextValues[k]);
+				
 				const container = document.createElement('container');
 				container.setAttribute('style', 'max-width:25%');
 				container.setAttribute('class', 'container5');
@@ -128,26 +146,26 @@ $(window).on('load resize', function () {
 				const container3 = document.createElement('div');
 				container3.setAttribute('class', 'container3');
 
-				const gridContainer = document.createElement('div');
-				gridContainer.setAttribute('class', 'grid-container');
-				gridContainer.setAttribute(
-					'style',
-					'margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;'
-				);
+				// const gridContainer = document.createElement('div');
+				// gridContainer.setAttribute('class', 'grid-container');
+				// gridContainer.setAttribute(
+				// 	'style',
+				// 	'margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;'
+				// );
 
-				const button = document.createElement('button');
-				button.setAttribute('class', 'btn');
-				button.setAttribute('id', 'servingSize-2');
-				button.innerHTML = 'Customize';
+				// const button = document.createElement('button');
+				// button.setAttribute('class', 'btn');
+				// button.setAttribute('id', 'servingSize-2');
+				// button.innerHTML = 'Customize';
 
-				const button2 = document.createElement('button');
-				button2.setAttribute('class', 'btn2');
-				button2.innerHTML = '✓';
+				// const button2 = document.createElement('button');
+				// button2.setAttribute('class', 'btn2');
+				// button2.innerHTML = '✓';
 
-				gridContainer.appendChild(button);
-				gridContainer.appendChild(button2);
+				// gridContainer.appendChild(button);
+				// gridContainer.appendChild(button2);
 
-				container3.appendChild(gridContainer);
+				// container3.appendChild(gridContainer);
 				listValue.appendChild(container3);
 
 				const imageParent = document.createElement('div');
@@ -175,21 +193,17 @@ $(window).on('load resize', function () {
 			const x = document.getElementsByClassName('list-group');
 			x[i].appendChild(row);
 		}
+		// $(`<div class="grid-container"  style="margin-top: 0px; margin-bottom:0px; margin-left:15px; margin-right:10px; vertical-align:center; align-items:center; grid-template-columns: 1fr; align-self: center; overflow:auto;
+        //     grid-gap: 2px; display:grid;"><p style="font-size:93%; margin-bottom:0px;">${constDescriptionElements[0].innerHTML}</p></div>`).insertAfter($('#savory_menu_crepes').find('.list-group-item').first().find('.container3'));
+		$('.container0sweetCrepe').each(function () {
+			$(this).css('border-bottom', '');
+			$(this).find('.list-group').css('border-bottom', '');
+		});
+
 	} else {
 		$('.container0sweetCrepe').each(function () {
 			$(this).addClass('container');
 			$(this).removeClass('container0sweetCrepe');
 		});
-	}
-});
-// TODO: add sauteed onions & peppers, pesto, dill
-var cWidth = $(window).width();
-$(window).on('resize', function () {
-	const newWidth = $(window).width();
-	if (cWidth < newWidth) {
-		cWidth = newWidth;
-	}
-	if (cWidth > 576) {
-		location.reload();
 	}
 });

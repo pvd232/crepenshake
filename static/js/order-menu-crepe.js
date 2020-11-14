@@ -25,9 +25,7 @@ const stringify = (crepeOrder) => {
     }
   } else {
     if (crepeOrder.menuCrepes.length) {
-      console.log("b4", editOrder.orderCrepe[editCrepeIndex]);
       editOrder.orderCrepe[editCrepeIndex] = crepeOrder;
-      console.log("after", editOrder.orderCrepe[editCrepeIndex]);
       localStorage.setItem("order", JSON.stringify(editOrder));
     } else {
       editOrder.orderCrepe.splice(editCrepeIndex, 1);
@@ -59,13 +57,10 @@ const removeAllChildNodes = (parent) => {
 const modifyOrder = () => {
   if ($(".edit").length) {
     editCrepeIndex = $(".edit").first().attr("id");
-    console.log("editCrepeIndex", editCrepeIndex);
-
     editOrder = new Order();
     editOrder.fromJSON(localStorage.getItem("order"));
     const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex].menuCrepes;
     userOrderMenuCrepe.menuCrepes = editOrderCrepe;
-    console.log("editOrderCrepe", editOrderCrepe);
     for (var i = 0; i < editOrderCrepe.length; i++) {
       const crepe = editOrderCrepe[i];
       $(`#${crepe.id}`)
@@ -139,13 +134,11 @@ const pageLogic = () => {
           const selectedCrepe = userOrderMenuCrepe.findCrepe(json);
           userOrderMenuCrepe.changeCrepeQuantity(json, "decrease");
           if (!userOrderMenuCrepe.findCrepe(json)) {
-            console.log("removed");
             $(this).closest(".card, .list-group-item").find(".btn2").hide();
             $(this).closest(".card, .list-group-item").find(".btn2").html(0);
             $(this).hide();
             $(this).closest(".card, .list-group-item").find(".btn7").hide();
           } else {
-            console.log("nope");
             $(this)
               .closest(".card, .list-group-item")
               .find(".btn2")
@@ -175,8 +168,6 @@ const pageLogic = () => {
         const json = JSON.parse($(this).attr("data-menucrepes"));
 
         const selectedCrepe = userOrderMenuCrepe.findCrepe(json);
-        console.log("selectedCrepe mouseleave", selectedCrepe);
-
         // if you click the card and it hasn't been selected
         if (!selectedCrepe) {
           $(this).find(".btn").hide();
@@ -384,8 +375,6 @@ const mobileRendering = () => {
         cardImgAbsolutePath.length
       );
       const cardImgRelativePath = "../" + cardImgRelativePathFrags.join("/");
-      console.log("cardImgRelativePath", cardImgRelativePath);
-
       img.setAttribute("src", cardImgRelativePath);
 
       img.setAttribute("class", "img-fluid");
@@ -400,6 +389,10 @@ const mobileRendering = () => {
     const x = document.getElementsByClassName("list-group");
     x[i].appendChild(row);
   }
+  	$('.container0sweetCrepe').each(function () {
+		$(this).css('border-bottom', '');
+		$(this).find('.list-group').css('border-bottom', '');
+	});
 };
 var cWidth = $(window).width();
 $(window).on("load", function () {
@@ -410,9 +403,9 @@ $(window).on("load", function () {
     cWidth = newWidth;
   }
   if (cWidth <= 576) {
+    mobileRendering();
     pageLogic();
     modifyOrder();
-    mobileRendering();
   } else {
     pageLogic();
     modifyOrder();

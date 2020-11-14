@@ -19,8 +19,7 @@
 
 .non-modal .card-img-top {
 	width: 100% !important;
-	max-height: 220px !important;
-	min-height: 220px !important;
+	height: 220px !important;
 	object-fit: cover;
 }
 
@@ -107,17 +106,22 @@
 /*https://stackoverflow.com/questions/36430816/bootstrap-4-card-deck-with-number-of-columns-based-on-viewport*/
 .non-modal .card-deck .card {
 	max-width: 220px !important;
-	min-width: 190px !important;
-	max-height: 330px !important;
+	min-width: 200px !important;
+	max-height: 400px !important;
 	margin-bottom: 40px !important;
 }
-
+.non-modal .card-deck .card .description {
+	margin-left: 11px; 
+	font-size:95%;
+}
 .non-modal .card .card-title {
 	margin-bottom: 6px !important;
 }
 .non-modal .card .card-text {
 	margin-left: 10px !important;
 	margin-right: 6px !important;
+	margin-bottom: 6px !important;
+
 	font-size: 120%;
 }
 

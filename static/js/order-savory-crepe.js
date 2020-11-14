@@ -85,13 +85,11 @@ function removeAllChildNodes(parent) {
 }
 const modifyOrder = () => {
   if ($(".edit").length) {
-    console.log("edit");
     editCrepeIndex = $(".edit").first().attr("id");
     editOrder = new Order();
     editOrder.fromJSON(localStorage.getItem("order"));
     const editOrderCrepe = editOrder.orderCrepe[editCrepeIndex];
     userOrderCrepe = editOrderCrepe;
-    console.log("editOrderCrepe", editOrderCrepe);
 
     const crepeIngredients = editOrderCrepe.ingredients;
     for (var i = 0; i < crepeIngredients.length; i++) {
@@ -105,11 +103,8 @@ const modifyOrder = () => {
       }
       $(`#${ingredient.id}`).find(".btn2").show();
       $(`#${ingredient.id}`).find(".btn").show();
-
-      console.log("ingredient", ingredient);
     }
   }
-  console.log("userOrderCrepe", userOrderCrepe);
 };
 const pageLogic = () => {
   $(".card, .list-group-item")
@@ -129,14 +124,8 @@ const pageLogic = () => {
       $(this)
         .unbind("click")
         .bind("click", function (event) {
-          console.log("event.target", event.target);
-
           const senderElementClass = event.target.getAttribute("class");
           const senderElementType = event.target.tagName;
-          console.log("senderElementType", senderElementType);
-
-          console.log("senderElement", senderElementClass);
-
           if (
             senderElementClass ===
               "list-group-item d-flex justify-content-between align-items-center" ||
@@ -361,8 +350,6 @@ const mobileRendering = () => {
   const constCardData = new Array();
   for (var i = 0; i < cardData.length; i++) {
     const clone = cardData[i].cloneNode(true);
-    console.log("clone", clone);
-
     constCardData.push(clone);
   }
 
@@ -507,6 +494,10 @@ const mobileRendering = () => {
   }
   $("#savoryCrepeImg").closest(".row").find(".col").next().css("width:100%");
   $("#savoryCrepeImg").closest(".row").find(".col").first().remove();
+  	$('.container0').each(function () {
+		$(this).css('border-bottom', '');
+		$(this).find('.list-group').css('border-bottom', '');
+	});
 };
 var cWidth = $(window).width();
 $(window).on("load", function () {
@@ -526,7 +517,5 @@ $(window).on("load", function () {
       $(this).addClass("container");
       $(this).removeClass("container0");
     });
-    console.log("smoll");
-    console.log("$('#savoryCrepeImg')", $("#savoryCrepeImg").attr("class"));
   }
 });

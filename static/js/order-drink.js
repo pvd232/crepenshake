@@ -842,6 +842,10 @@ const mobileRendering = () => {
 					</div>`).insertAfter($(this).find('container'));
 			}
 		});
+		$('.container0sweetCrepe').each(function () {
+			$(this).css('border-bottom', '');
+			$(this).find('.list-group').css('border-bottom', '');
+		});
 	}
 // all this code changes display for smaller screen sizes
 var cWidth = $(window).width();
