@@ -319,26 +319,26 @@ class Order_Service(object):
         text = message.as_string()
         session.sendmail(sender_address, email, text)
         session.quit()
-        logging.debug('Mail Sent')
+        logging.info('Mail Sent')
 
     def create_order(self, order):
         try:
             new_order = Order_Model(order_object=order)
         except Exception as e:
-            logging.debug('repository create new order exception', e)
+            logging.info('repository create new order exception', e)
         # customer_email = new_order.customer.id
         # email = 'crepenshake427@gmail.com'
         # self.send_confirmation_email(customer_email)
         try:
             self.send_confirmation_email(new_order)
         except Exception as e:
-            logging.debug('email exception', e)
+            logging.info('email exception', e)
         # self.developer_pay(new_order)
         with self.session_scope() as session:
             try:
                 self.order_repository.post_order(session, order=new_order)
             except Exception as e:
-                logging.debug('post order to repository exception',e)
+                logging.info('post order to repository exception',e)
             return True
 
     def stripe_pay(self, order):
@@ -557,5 +557,5 @@ class Test_Service(object):
     def test_connection(self):
         inspector = inspect(self.test_engine)
         if len(inspector.get_table_names()) == 0:
-            logging.debug('instantiating')
+            logging.info('instantiating')
             instantiate_db_connection()
