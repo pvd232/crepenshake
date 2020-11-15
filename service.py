@@ -304,7 +304,10 @@ class Order_Service(object):
         message = MIMEMultipart()
         message['From'] = sender_address
         message['To'] = email
-        message['Subject'] = 'New Order'  # The subject line
+        message_subject = order.customer.name + order.customer.email
+        message['Subject'] = 'Order From' + message_subject  # The subject line
+        print("message['Subject']", message['Subject'])
+        
         # The body and the attachments for the mail
         message.attach(MIMEText(mail_content, 'html'))
         # Create SMTP session for sending the mail
