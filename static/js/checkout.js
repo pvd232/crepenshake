@@ -90,7 +90,6 @@ const buildPage = () => {
 							const espressoServingSize = drink.espressoServingSize;
 							var espressFormat;
 							var flavorSyrupPrice = '';
-
 							if (espressoServingSize === 'extra') {
 								espressFormat = '3x Espresso Shot';
 							} else if (espressoServingSize === 'regular') {
@@ -108,7 +107,7 @@ const buildPage = () => {
 								$(
 									`<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}0">
 									<div class="col-8" style="margin-right: 0px; ">
-										<h5 style=''>${drink.quantity + 'x' + ' ' + humanize(drink, 'name').name}</h5>
+										<h5 style=''>${drink.servingSize + ' ' + humanize(drink, 'name').name}</h5>
 									</div>
 									<div class="col-4">
 										<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
@@ -172,19 +171,25 @@ const buildPage = () => {
 								).insertAfter(`#checkoutDrinkRow${i}${j}`);
 							}
 						} else {
-							var drinkName = '';
-							if (drink.drinkCategory === 'milkshake') {
-								drinkName = humanize(drink, 'name').name;
-								drinkName += ' Milkshake';
-							} else {
-								drinkName = humanize(drink, 'name').name;
-							}
+						var drinkName;
+						var drinkQuantity;
+						if (drink.drinkCategory === 'milkshake') {
+							drinkName = humanize(drink, 'name').name;
+							drinkName += ' Milkshake';
+							drinkQuantity = drink.servingSize;
+						} else if (drink.drinkCategory === 'non-coffee') {
+							drinkName = humanize(drink, 'name').name;
+							drinkQuantity = drink.servingSize;
+						} else {
+							drinkName = humanize(drink, 'name').name;
+							drinkQuantity = drink.quantity + 'x';
+						}
 							$(
 								`<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}${
 									j + 1
 								}">
 								<div class="col-8" style="margin-right: 0px; ">
-									<h5 style=''>${drink.quantity + 'x' + ' ' + humanize(drink, 'name').name}</h5>
+									<h5 style=''>${drinkQuantity + ' ' + drinkName}</h5>
 								</div>
 								<div class="col-4">
 									<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
@@ -382,7 +387,7 @@ const validateForm = () => {
 				Array.prototype.filter.call(forms, function (form) {
 					$('#checkoutButton')
 						.unbind('click')
-						.bind('click', function (event) {
+						.bind('click', function () {
 							if (form.checkValidity() === false) {
 								form.classList.add('was-validated');
 								return false;

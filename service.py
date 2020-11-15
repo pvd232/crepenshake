@@ -314,7 +314,6 @@ class Order_Service(object):
                 '6695313d8a619bc44dce00ad7184960a-ba042922-f2a8cfbb')
         s.sendmail(message['From'], message['To'], message.as_string())
         s.quit()
-        logging.info('Mail Sent')
 
     def create_order(self, order):
         new_order = Order_Model(order_object=order)
@@ -539,5 +538,5 @@ class Test_Service(object):
     def test_connection(self):
         inspector = inspect(self.test_engine)
         if len(inspector.get_table_names()) == 0:
-            logging.info('instantiating')
             instantiate_db_connection()
+            return
