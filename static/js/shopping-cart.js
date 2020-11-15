@@ -1,4 +1,3 @@
-//https://stackoverflow.com/questions/39627549/how-to-center-modal-to-the-center-of-screen/39636961
 ('use strict');
 
 import { Coffee, Order, capitalize, humanize } from './model.js';
@@ -7,7 +6,6 @@ const showShoppingCart = () => {
 	$('#shoppingCart').modal('toggle');
 };
 
-//https://www.smashingmagazine.com/2019/08/shopping-cart-html5-web-storage/
 const checkBrowser = () => {
 	if ('localStorage' in window && window['localStorage'] !== null) {
 		return true;
@@ -16,7 +14,6 @@ const checkBrowser = () => {
 	}
 };
 
-//https://stackoverflow.com/questions/2827764/ecommerceshopping-cartwhere-should-i-store-shopping-cart-data-in-session-or#:~:text=The%20client%20never%20stores%20individual,cart%20is%20lost%20for%20good.
 const doShowAll = () => {
 	if (checkBrowser()) {
 		const modifyItem = (index, itemType, operation) => {
@@ -56,7 +53,7 @@ const doShowAll = () => {
 			}
 			localStorage.setItem('reload', 'true');
 		};
-		
+
 		const orderDict = localStorage.getItem('order');
 		if (orderDict) {
 			const order = new Order();
@@ -90,27 +87,25 @@ const doShowAll = () => {
 										`#row-${k}-${j}`
 									);
 								}
-							}
-							else if (orderCrepe.flavor === 'sweet') {
-										$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
-										$(`#container${k}`).append(
-											`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row-${k}-0"  flavor="${
-												orderCrepe.flavor
-											}" origination="${
-												orderCrepe.origination
-											}"><h5 style='font-weight: 700;'>Crepe Order #${k + 1}</h5></div>`
-										);
-										for (var j = 0; j < orderCrepe.ingredients.length; j++) {
-											$(`<div class="row" style= "margin-bottom: 20px;" id="row-${k}-${
-												j + 1
-											}"><div class="col-9" style="margin-right: 0px;"><h5>
+							} else if (orderCrepe.flavor === 'sweet') {
+								$('#modalBody1').append(`<div class="container" id="container${k}"></div>`);
+								$(`#container${k}`).append(
+									`<div class="row" style= "border-bottom: 2px solid black; margin-bottom:20px;" id="row-${k}-0"  flavor="${
+										orderCrepe.flavor
+									}" origination="${
+										orderCrepe.origination
+									}"><h5 style='font-weight: 700;'>Crepe Order #${k + 1}</h5></div>`
+								);
+								for (var j = 0; j < orderCrepe.ingredients.length; j++) {
+									$(`<div class="row" style= "margin-bottom: 20px;" id="row-${k}-${
+										j + 1
+									}"><div class="col-9" style="margin-right: 0px;"><h5>
 								${orderCrepe.ingredients[j].quantity + 'x' + ' ' + humanize(orderCrepe.ingredients[j], 'id').id}</h5>
 									</div><div class="col-3" ><h4>$${
-										orderCrepe.ingredients[j].price.toFixed(2) * orderCrepe.ingredients[j]
-									.quantity}</h4></div></div>`).insertAfter(`#row-${k}-${j}`);
-										}
+										orderCrepe.ingredients[j].price.toFixed(2) * orderCrepe.ingredients[j].quantity
+									}</h4></div></div>`).insertAfter(`#row-${k}-${j}`);
+								}
 							}
-							
 						} // end of if block that corrals custom crepe
 						// iterate through each menu crepe in the order
 						else if (orderCrepe.origination === 'menu') {
@@ -192,8 +187,11 @@ const doShowAll = () => {
 								if (drink.flavorSyrup && drink.flavorSyrupServingSize) {
 									if (drink.flavorSyrupServingSize === 'extra') {
 										flavorSyrupPrice = 1.98;
-									} else if (flavorSyrupPrice === 'regular') {
-										flavorSyrupPrice = .99;
+									} else if (
+										drink.flavorSyrupServingSize === 'regular' ||
+										drink.flavorSyrupServingSize === 'light'
+									) {
+										flavorSyrupPrice = 0.99;
 									}
 									$(`<div class="row" style= "margin-bottom: 20px;">
 													<div class="col-9" style="margin-right: 0px; " >
@@ -208,7 +206,7 @@ const doShowAll = () => {
 														<h5 >${espressFormat}</h5>
 													</div>
 													<div class="col-3" style="">
-														<h4 >$${espressoPrice}</h4>
+														<h4>$${espressoPrice}</h4>
 													</div>
 												</div>
 												<div class="row" style= "margin-bottom: 20px;">
@@ -216,17 +214,17 @@ const doShowAll = () => {
 														<h5 >${milkName}</h5>
 													</div>
 													<div class="col-3" style="">
-														<h4 >$${milkPrice}</h4>
+														<h4>$${milkPrice}</h4>
 													</div>
 												</div>
 												<div class="row" style= "margin-bottom: 20px;" id='drinkRow-${i}-${j + 1}'>
 													<div class="col-9" style="margin-right: 0px;">
-														<h5 >${humanize(drink, 'flavorSyrupServingSize').flavorSyrupServingSize} ${
+														<h5>${humanize(drink, 'flavorSyrupServingSize').flavorSyrupServingSize} ${
 										humanize(drink, 'flavorSyrup').flavorSyrup
 									} Syrup</h5>
 													</div>
 													<div class="col-3" style="">
-														<h4 >$${flavorSyrupPrice}</h4>
+														<h4>$${flavorSyrupPrice}</h4>
 													</div>
 												</div>`).insertAfter(`#drinkRow-${i}-${j}`);
 								}
@@ -367,7 +365,9 @@ const doShowAll = () => {
 					} // end of for loop iterating through sides in side order
 				}
 
-				$(`<div class="modal-footer" id="footer" style= " border-top: 2px solid black"></div>`).insertAfter(`#modalBody1`);
+				$(`<div class="modal-footer" id="footer" style= " border-top: 2px solid black"></div>`).insertAfter(
+					`#modalBody1`
+				);
 
 				$(`#footer`).append(`<div class="col-8" ><h3 style="font-weight: bold;">Order Total</h3></div>`);
 				$(`#footer`).append(
@@ -384,8 +384,7 @@ const doShowAll = () => {
 						const itemType = $(this).attr('itemType');
 						const operation = $(this).attr('operation');
 						modifyItem(itemIndex, itemType, operation);
-					
-							$(this).css('margin-left', '0px');
+						$(this).css('margin-left', '0px');
 					});
 			});
 		}

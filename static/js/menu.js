@@ -5,7 +5,7 @@ $(window).on('load', function () {
 		$(this).html(humanize(null, null, $(this).html()));
 	});
 	$('.card-text').each(function () {
-		const price = parseFloat($(this).html())
+		const price = parseFloat($(this).html());
 		if (!Number.isNaN(price)) {
 			$(this).html('$' + price.toFixed(2));
 		}
@@ -22,7 +22,7 @@ $(window).on('load', function () {
 	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
 	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
 
-	$('#savory_menu_crepes').find('.card-body').first().append(`<p class="description" >${description}</p>`)
+	$('#savory_menu_crepes').find('.card-body').first().append(`<p class="description" >${description}</p>`);
 	const newWidth = $(window).width();
 
 	if (cWidth < newWidth) {
@@ -34,7 +34,6 @@ $(window).on('load', function () {
 		const cardTitleElements = document.getElementsByClassName('card-title');
 		const cardTextElements = document.getElementsByClassName('card-text');
 		// const descriptionElements = document.getElementsByClassName('description');
-		
 
 		const cardImgTopElements = document.getElementsByClassName('card-img-top');
 
@@ -93,13 +92,10 @@ $(window).on('load', function () {
 			row.setAttribute('class', 'row');
 			row.setAttribute('style', 'width: 100%');
 			const listGroupTitle = document.createElement('div');
-			//https://www.htmldog.com/guides/javascript/advanced/creatingelements/
 			listGroupTitle.setAttribute('class', 'col-12 col-sm-12 col-lg-12 col-md-12');
 
-			//https://stackoverflow.com/questions/3304014/how-to-interpolate-variables-in-strings-in-javascript-without-concatenation
 			$(`#${constCardDeckNodes[i].id}`).removeClass('card-deck');
 			$(`#${constCardDeckNodes[i].id}`).addClass('list-group');
-
 			//need to move the iterator for each card deck to not get the prior deck's card titles
 			var k;
 			if (i == 0) {
@@ -121,7 +117,7 @@ $(window).on('load', function () {
 
 				const string1 = String(constCardTitleValues[k]);
 				const string2 = String(constCardTextValues[k]);
-				
+
 				const container = document.createElement('container');
 				container.setAttribute('style', 'max-width:25%');
 				container.setAttribute('class', 'container5');
@@ -145,27 +141,6 @@ $(window).on('load', function () {
 				}
 				const container3 = document.createElement('div');
 				container3.setAttribute('class', 'container3');
-
-				// const gridContainer = document.createElement('div');
-				// gridContainer.setAttribute('class', 'grid-container');
-				// gridContainer.setAttribute(
-				// 	'style',
-				// 	'margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;'
-				// );
-
-				// const button = document.createElement('button');
-				// button.setAttribute('class', 'btn');
-				// button.setAttribute('id', 'servingSize-2');
-				// button.innerHTML = 'Customize';
-
-				// const button2 = document.createElement('button');
-				// button2.setAttribute('class', 'btn2');
-				// button2.innerHTML = '✓';
-
-				// gridContainer.appendChild(button);
-				// gridContainer.appendChild(button2);
-
-				// container3.appendChild(gridContainer);
 				listValue.appendChild(container3);
 
 				const imageParent = document.createElement('div');
@@ -194,12 +169,11 @@ $(window).on('load', function () {
 			x[i].appendChild(row);
 		}
 		// $(`<div class="grid-container"  style="margin-top: 0px; margin-bottom:0px; margin-left:15px; margin-right:10px; vertical-align:center; align-items:center; grid-template-columns: 1fr; align-self: center; overflow:auto;
-        //     grid-gap: 2px; display:grid;"><p style="font-size:93%; margin-bottom:0px;">${constDescriptionElements[0].innerHTML}</p></div>`).insertAfter($('#savory_menu_crepes').find('.list-group-item').first().find('.container3'));
+		//     grid-gap: 2px; display:grid;"><p style="font-size:93%; margin-bottom:0px;">${constDescriptionElements[0].innerHTML}</p></div>`).insertAfter($('#savory_menu_crepes').find('.list-group-item').first().find('.container3'));
 		$('.container0sweetCrepe').each(function () {
 			$(this).css('border-bottom', '');
 			$(this).find('.list-group').css('border-bottom', '');
 		});
-
 	} else {
 		$('.container0sweetCrepe').each(function () {
 			$(this).addClass('container');

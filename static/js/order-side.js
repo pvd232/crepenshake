@@ -1,6 +1,3 @@
-//https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
-//https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
-//https://stackoverflow.com/questions/4735342/jquery-to-loop-through-elements-with-the-same-class
 ('use strict');
 import { Order, OrderSide, humanize } from './model.js';
 
@@ -12,7 +9,7 @@ const displayErrorMsg = (element) => {
 	const selector = `#${element.closest('.card, .list-group-item').attr('id') + 'error'}`;
 	const id = `${element.closest('.card, .list-group-item').attr('id') + 'error'}`;
 	if ($(selector).length) {
-		$(selector).fadeIn('slow').delay(4000).fadeOut('slow'); //https://stackoverflow.com/questions/15686598/jquery-delay-before-fadeout
+		$(selector).fadeIn('slow').delay(4000).fadeOut('slow');
 	} else {
 		$(
 			`<div class="alert-danger" role="alert" id="${id}" style="font-size: 20px; font-weight: 600; vertical-align: middle; text-align: center; padding: 5px; display: none; line-height: 40px; color:black; height: 100px; top: 0px; position: absolute;">Max of 3 Ice Cream Scoops.</div>`
@@ -58,10 +55,8 @@ const stringify = (sideOrder) => {
 };
 const checkOut = (order) => {
 	if (editSideIndex != null) {
-		// stringify(order);
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		// stringify(order);
 		$.when(stringify(order)).then(location.assign('/checkout'));
 	}
 };
@@ -140,14 +135,11 @@ const pageLogic = () => {
 				if (selectedItemCategory != 'toppings') {
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
-					// $(this).find('img, h5, p').css('opacity', '.3');
-
 					$(this).find('.btn').show();
 				} else if (selectedItemCategory === 'toppings' && userOrderSide.checkIfIceCreamSelected()) {
 					$(this).find('.btn').show();
 					$(this).find('.card-body').css('opacity', '.3');
 					$(this).find('.card-img-top').css('opacity', '.3');
-					// $(this).find('img, h5, p').css('opacity', '.3');
 				}
 			}
 			//click the card somewhere
@@ -348,7 +340,6 @@ const pageLogic = () => {
 			// all cards should go back to normal opacity when the mouse leaves them no matter what
 			$(this).find('img').css('opacity', '1');
 			$(this).find('.card-body').css('opacity', '1');
-			// $(this).find('img, h5, p').css('opacity', '1');
 		});
 };
 const pageBuild = () => {
@@ -430,10 +421,7 @@ const mobileRendering = () => {
 		row.setAttribute('class', 'row');
 		row.setAttribute('style', 'width: 100%');
 		const listGroupTitle = document.createElement('div');
-		//https://www.htmldog.com/guides/javascript/advanced/creatingelements/
 		listGroupTitle.setAttribute('class', 'col-12 col-sm-12 col-lg-12 col-md-12');
-
-		//https://stackoverflow.com/questions/3304014/how-to-interpolate-variables-in-strings-in-javascript-without-concatenation
 		$(`#${constCardDeckNodes[i].id}`).removeClass('card-deck');
 		$(`#${constCardDeckNodes[i].id}`).addClass('list-group');
 
@@ -508,7 +496,6 @@ const mobileRendering = () => {
 		x[i].appendChild(row);
 	}
 	$('.list-group-item').each(function () {
-		// $(this).find('container').append(cardDataToBeInserted);
 		const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
 		if (selectedItemCategory === 'toppings') {
 			$(`<div class='container3'>
@@ -529,7 +516,6 @@ const mobileRendering = () => {
 	});
 };
 var cWidth = $(window).width();
-//https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
 $(window).on('load', function () {
 	pageBuild();
 	const newWidth = $(window).width();

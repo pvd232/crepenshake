@@ -144,6 +144,7 @@ class Order_Crepe_Model(object):
                     return_object += '<p style = "font-size: large; font-weight:bold;">Menu Crepes:</p>'
                     menu_bool = True
                 return_object += str(self.order_crepe[i])
+        return_object += '<br>'
         return return_object
 
 
@@ -173,6 +174,7 @@ class Order_Side_Model(object):
         for i in range(len(self.order_side)):
             if self.order_side[i].side_name_id == 'ice_cream_bowl':
                 return_object += str(self.order_side[i])
+        return_object += '<br>'
         return return_object
 
 
@@ -267,6 +269,7 @@ class Order_Drink_Model(object):
                     return_object += '<p style="font-size: large; font-weight:bold;">Bottled</p>'
                     bottled_bool = True
                 return_object += str(self.order_drink[i])
+        return_object += '<br>'
         return return_object
 
 class Order_Model(object):
@@ -308,7 +311,7 @@ class Order_Model(object):
         return serialized_attributes
 
     def __str__(self):
-        return '<p style= "font-weight:bold; font-size: large;">Crepes In Order:</p> <p style="font-size:large;">{0}</p> <p style= "font-weight:bold; font-size: large;">Drinks in Order :</p> <p style="font-size:large;">{1}</p> <p style= "font-weight:bold; font-size: large;">Sides in Order:</p> <p style="font-size:large;">{2}</p>'.format(str(self.order_crepe), str(self.order_drink), str(self.order_side))
+        return '<p style= "font-weight:bold; font-size: large;">Crepes In Order:</p> <p style="font-size:large;">{0}</p> <br> <p style= "font-weight:bold; font-size: large;">Drinks in Order :</p> <p style="font-size:large;">{1}</p> <br> <p style= "font-weight:bold; font-size: large;">Sides in Order:</p> <p style="font-size:large;">{2}</p>'.format(str(self.order_crepe), str(self.order_drink), str(self.order_side))
 
 
 class Customer_Model(object):

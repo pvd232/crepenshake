@@ -1,3 +1,4 @@
+
 export const removeAllChildNodes = (parent) => {
 	while (parent.firstChild) {
 		parent.removeChild(parent.firstChild);
@@ -628,7 +629,7 @@ export class OrderDrink {
 				this._orderDrink.push(newCoffee);
 			}
 		}
-		this.priceDrinks()
+		this.priceDrinks();
 	};
 	checkIfCoffeeSelected = () => {
 		for (var i = 0; i < this._orderDrink.length; i++) {
@@ -1641,6 +1642,3 @@ export class OrderCrepe {
 		}
 	};
 }
-// Bugs:
-// 1. fix pricing for sweet crepe page
-// 2.

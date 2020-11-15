@@ -1,5 +1,3 @@
-//https://stackoverflow.com/questions/15876302/uncaught-typeerror-cannot-read-property-clientwidth-of-null
-//https://stackoverflow.com/questions/4381228/jquery-selector-inside-the-each-method
 ('use strict');
 import { Order, OrderDrink, humanize } from './model.js';
 
@@ -7,9 +5,6 @@ var editDrinkIndex = null;
 var editOrder = null;
 var userOrderDrink = new OrderDrink();
 
-const jq = (myid) => {
-	return myid.replace(/(:|\.|\[|\]|%|,|=|@)/g, '\\$1');
-};
 const checkOut = (order) => {
 	if (editDrinkIndex != null) {
 		// when checking out make sure that if no milk has been selected then we assign the default value of 2%
@@ -20,10 +15,8 @@ const checkOut = (order) => {
 				}
 			}
 		}
-		// stringify(order);
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		// stringify(order);
 		$.when(stringify(order)).then(location.assign('/order/side'));
 	}
 };
@@ -37,7 +30,6 @@ const stringify = (drinkOrder) => {
 				const drinkOrderTotal = drinkOrder.orderTotal;
 				order.orderTotal += drinkOrderTotal;
 				order.orderDrink.push(drinkOrder);
-
 				const stringifiedDrinkOrder = JSON.stringify(order);
 				localStorage.setItem('order', stringifiedDrinkOrder);
 			} else {
@@ -79,7 +71,6 @@ const modifyOrder = () => {
 
 			if (drink.drinkCategory === 'coffee') {
 				//send crepe recipe to blaise
-
 				if (drink.espressoServingSize === 'extra') {
 					$(`#${drink.id}`).find('.btn2').html('3x');
 					$(`#${drink.id}`).find('.btn2').show();
@@ -166,7 +157,6 @@ const modifyOrder = () => {
 						});
 				});
 			} else {
-				// i add the word milkshake to each name for formatting so i have to remove it for the html element id to be recognized
 				$(`#${drink.id}`).find('.btn2').html(drink.quantity);
 				$(`#${drink.id}`).find('.btn2').show();
 				$(`#${drink.id}`).find('.btn6').show();
@@ -182,7 +172,7 @@ const pageLogic = () => {
 				const json = JSON.parse($(this).attr('data-drinks'));
 				const selectedItemCategory = $(this).closest('.card-deck').attr('id');
 
-				// if the card isn't milk or temperature
+				// if the card isn't milk or temperature or syrup
 				if (
 					selectedItemCategory != 'milk' &&
 					selectedItemCategory != 'temperature' &&
@@ -191,27 +181,19 @@ const pageLogic = () => {
 					// if the card also isn't coffee then fade it out
 					if (selectedItemCategory != 'coffee') {
 						$(this).find('.card-body, .card-img-top').css('opacity', '.3');
-						// $(this).find('.btn').show();
 						// if the card is coffee but a coffee has not been previously selected
 					} else if (!userOrderDrink.checkIfCoffeeSelected()) {
 						$(this).find('.card-body, .card-img-top').css('opacity', '.3');
 						$(this).find('.btn').show();
 					}
-					// if you hover over a selected coffee card it will fade out otherwise it won't but it will already be faded out
-					// else if (userOrderDrink.findDrink(json)) {
-					// 	$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '.3');
-					// }
-					// if the hover card is syrup and a coffee has been selected then fade it out
 				} else if (selectedItemCategory === 'syrup' && userOrderDrink.checkIfCoffeeSelected()) {
 					$(this).find('.card-body, .card-img-top').css('opacity', '.3');
-
 					$(this).find('.btn').show();
 					// if the hover card is milk and a coffee has been selected then fade it out
 				} else if (selectedItemCategory === 'milk' && userOrderDrink.checkIfCoffeeSelected()) {
 					// 	make sure a milk hasn't already been selected
 					if (!userOrderDrink.checkIfMilkSelected()) {
 						$(this).find('.card-body, .card-img-top').css('opacity', '.3');
-						// if a milk has been selected then we only want to highlight the card if it is that milk
 					}
 				} else if (selectedItemCategory === 'temperature' && userOrderDrink.checkIfCoffeeSelected()) {
 					if (!userOrderDrink.checkIfTempSelected()) {
@@ -221,7 +203,6 @@ const pageLogic = () => {
 					}
 				}
 			}
-
 			//click the card somewhere
 			$(this)
 				.unbind('click')
@@ -262,7 +243,7 @@ const pageLogic = () => {
 							userOrderDrink.removeDrink(json);
 							$(this).closest('.card, li').find('.btn2').hide();
 							$(this).closest('.card, li').find('.btn').toggle();
-							
+
 							// if the card you removed was a coffee card
 							if (!userOrderDrink.checkIfCoffeeSelected()) {
 								// reactivate all the coffee cards
@@ -285,7 +266,6 @@ const pageLogic = () => {
 								$('#errorTemp').show();
 								$('#errorSyrup').show();
 							}
-							// if the selected item is a milk card
 						} else if (selectedItemCategory === 'milk' && userOrderDrink.checkIfThisMilkSelected(json)) {
 							userOrderDrink.removeMilk();
 							// reactivate all the milk cards
@@ -302,7 +282,6 @@ const pageLogic = () => {
 						) {
 							userOrderDrink.removeTemp();
 							$(this).closest('.card, li').find('.btn2').hide();
-							// reactivate all the milk cards
 							$('#temperature')
 								.find('.card, .list-group-item')
 								.each(function () {
@@ -312,7 +291,6 @@ const pageLogic = () => {
 						} else if (selectedItemCategory === 'syrup' && userOrderDrink.checkIfThisSyrupSelected(json)) {
 							userOrderDrink.removeSyrup();
 							$(this).closest('.card, li').find('.btn2').hide();
-							// reactivate all the milk cards
 							$('#syrup')
 								.find('.card, .list-group-item')
 								.each(function () {
@@ -432,13 +410,11 @@ const pageLogic = () => {
 
 					if ($(this).html() == 'Customize') {
 						if (selectedItemCategory === 'syrup') {
-							//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
 							$(this).blur();
 							$(this).html('2 Pumps');
 							$(this).closest('.card, li').find('.btn3').show();
 							$(this).closest('.card, li').find('.btn4').show();
 						} else if (selectedItemCategory === 'coffee') {
-							//https://stackoverflow.com/questions/857245/is-there-a-jquery-unfocus-method
 							$(this).blur();
 							$(this).html('3X Espresso');
 							$(this).closest('.card, li').find('.btn3').show();
@@ -464,9 +440,8 @@ const pageLogic = () => {
 						} else if (selectedItemCategory === 'coffee') {
 							if (!userOrderDrink.findDrink(json)) {
 								userOrderDrink.addCoffee(json, servingSize);
-								$('#errorCoffee').show()
-							}
-							else {
+								$('#errorCoffee').show();
+							} else {
 								userOrderDrink.updateEspressoServingSize(json, servingSize);
 							}
 							$(this).closest('.card, li').find('.btn2').html('3X');
@@ -591,7 +566,6 @@ const pageLogic = () => {
 		.on('mouseleave', function () {
 			var json;
 			var selectedItemCategory;
-			// if ($(this).attr('class') === 'card') {
 			selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
 			json = JSON.parse($(this).attr('data-drinks'));
 
@@ -617,7 +591,7 @@ const pageBuild = () => {
 		.unbind('click')
 		.bind('click', function () {
 			if (userOrderDrink.checkIfCoffeeSelected() && !userOrderDrink.checkIfTempSelected()) {
-				$('#errorCoffee').show();
+				$('#errorCoffeeCheckout').show();
 				return false;
 			} else {
 				checkOut(userOrderDrink);
@@ -626,14 +600,14 @@ const pageBuild = () => {
 	$('.card-img-top').each(function (i) {
 		const selectedItemCategory = $(this).closest('.card-deck').attr('id');
 		if (selectedItemCategory === 'syrup') {
-			$('<button class="btn" id="servingSize-2" type="button">Customize</button>').insertAfter($(this));
-			$('<button class="btn4" id="servingSize-1" type="button">1 Pump</button>').insertAfter($(this));
-			$('<button class="btn3" id="servingSize-0" type="button">½ Pump</button>').insertAfter($(this));
+			$('<button class="btn"  type="button">Customize</button>').insertAfter($(this));
+			$('<button class="btn4"  type="button">1 Pump</button>').insertAfter($(this));
+			$('<button class="btn3"  type="button">½ Pump</button>').insertAfter($(this));
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 		} else if (selectedItemCategory === 'coffee') {
-			$('<button class="btn" id="servingSize-2" type="button">Customize</button>').insertAfter($(this));
-			$('<button class="btn4" id="servingSize-1" type="button">2 Espresso Shots</button>').insertAfter($(this));
-			$('<button class="btn3" id="servingSize-0" type="button">Decaf</button>').insertAfter($(this));
+			$('<button class="btn"  type="button">Customize</button>').insertAfter($(this));
+			$('<button class="btn4"  type="button">2 Espresso Shots</button>').insertAfter($(this));
+			$('<button class="btn3"  type="button">Decaf</button>').insertAfter($(this));
 			$('<button class="btn2" type="button">✓</button>').insertAfter($(this));
 		} else if (
 			selectedItemCategory === 'bottled' ||
@@ -672,184 +646,177 @@ const pageBuild = () => {
 				$(this).css('opacity', '.3');
 			});
 	});
-}
+};
 const mobileRendering = () => {
+	const cardDeckElements = document.getElementsByClassName('card-deck');
+	const cardTitleElements = document.getElementsByClassName('card-title');
+	const cardTextElements = document.getElementsByClassName('card-text');
+	const cardImgTopElements = document.getElementsByClassName('card-img-top');
+	const cardData = document.getElementsByClassName('card');
 
-		const cardDeckElements = document.getElementsByClassName('card-deck');
-		const cardTitleElements = document.getElementsByClassName('card-title');
-		const cardTextElements = document.getElementsByClassName('card-text');
-		const cardImgTopElements = document.getElementsByClassName('card-img-top');
-		const cardData = document.getElementsByClassName('card');
+	$('#crepeImg').css('margin-left', '0px');
+	$('#cardText').css('margin-left', '0px');
+	$('#cardText').css('margin-right', '0px');
+	$('#cardText').css('margin-bottom', '20px');
+	$('#cardBody').css('margin-left', '0px');
 
-		$('#crepeImg').css('margin-left', '0px');
-		$('#cardText').css('margin-left', '0px');
-		$('#cardText').css('margin-right', '0px');
-		$('#cardText').css('margin-bottom', '20px');
-		$('#cardBody').css('margin-left', '0px');
+	const cardTitleValues = new Array();
+	for (var i = 0; i < cardTitleElements.length; i++) {
+		cardTitleValues.push(cardTitleElements[i].innerHTML);
+	}
 
-		const cardTitleValues = new Array();
-		for (var i = 0; i < cardTitleElements.length; i++) {
-			cardTitleValues.push(cardTitleElements[i].innerHTML);
-		}
+	const constCardTitleValues = [...cardTitleValues];
+	const cardTextValues = new Array();
+	for (var i = 0; i < cardTextElements.length; i++) {
+		cardTextValues.push(cardTextElements[i].innerHTML);
+	}
 
-		const constCardTitleValues = [...cardTitleValues];
-		const cardTextValues = new Array();
-		for (var i = 0; i < cardTextElements.length; i++) {
-			cardTextValues.push(cardTextElements[i].innerHTML);
-		}
+	const constCardTextValues = [...cardTextValues];
+	var cardImgSrcValues = new Array();
+	for (var i = 0; i < cardImgTopElements.length; i++) {
+		cardImgSrcValues.push(cardImgTopElements[i].src);
+	}
 
-		const constCardTextValues = [...cardTextValues];
-		var cardImgSrcValues = new Array();
-		for (var i = 0; i < cardImgTopElements.length; i++) {
-			cardImgSrcValues.push(cardImgTopElements[i].src);
-		}
+	const constCardImgSrcValues = [...cardImgSrcValues];
+	const cardDeckElementsLength = cardDeckElements.length;
 
-		const constCardImgSrcValues = [...cardImgSrcValues];
-		const cardDeckElementsLength = cardDeckElements.length;
+	const constCardData = new Array();
+	for (var i = 0; i < cardData.length; i++) {
+		const clone = cardData[i].cloneNode(true);
+		constCardData.push(clone);
+	}
 
-		const constCardData = new Array();
-		for (var i = 0; i < cardData.length; i++) {
-			const clone = cardData[i].cloneNode(true);
-			constCardData.push(clone);
-		}
-
-		const cardDeckChildrenLength = new Array();
-		const constCardDeckNodes = new Array();
-		for (var i = 0; i < cardDeckElementsLength; i++) {
-			const clone = cardDeckElements[i].cloneNode(true);
-			constCardDeckNodes.push(clone);
-			const cardDeckCards = cardDeckElements[i].children;
-			var counter = 0;
-			for (var j = 0; j < cardDeckCards.length; j++) {
-				if (cardDeckCards[j].className == 'card') {
-					counter += 1;
-				}
-			}
-			cardDeckChildrenLength.push(counter);
-		}
-
-		for (var i = 0; i < cardDeckElementsLength; i++) {
-			removeAllChildNodes(cardDeckElements[i]);
-		}
-
+	const cardDeckChildrenLength = new Array();
+	const constCardDeckNodes = new Array();
+	for (var i = 0; i < cardDeckElementsLength; i++) {
+		const clone = cardDeckElements[i].cloneNode(true);
+		constCardDeckNodes.push(clone);
+		const cardDeckCards = cardDeckElements[i].children;
 		var counter = 0;
-
-		for (var i = 0; i < cardDeckElementsLength; i++) {
-			const row = document.createElement('div');
-			row.setAttribute('class', 'row');
-			row.setAttribute('style', 'width: 100%');
-			const listGroupTitle = document.createElement('div');
-			//https://www.htmldog.com/guides/javascript/advanced/creatingelements/
-			listGroupTitle.setAttribute('class', 'col-12 col-sm-12 col-lg-12 col-md-12');
-
-			//https://stackoverflow.com/questions/3304014/how-to-interpolate-variables-in-strings-in-javascript-without-concatenation
-			$(`#${constCardDeckNodes[i].id}`).removeClass('card-deck');
-			$(`#${constCardDeckNodes[i].id}`).addClass('list-group');
-
-			//need to move the iterator for each card deck to not get the prior deck's card titles
-			var k;
-
-			if (i == 0) {
-				k = 0;
-			} else {
-				var priorChildLength = 0;
-				for (var m = 0; m < i; m++) {
-					priorChildLength += cardDeckChildrenLength[m];
-				}
-				k = priorChildLength;
-			}
-
-			const stoppingPoint = k + cardDeckChildrenLength[i];
-			for (k; k < stoppingPoint; k++) {
-				const listValue = document.createElement('li');
-				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
-				listValue.setAttribute('style', 'width:100%');
-				const jsonData = constCardData[counter].getAttribute('data-drinks');
-				const data = JSON.parse(constCardData[counter].getAttribute('data-drinks'));
-				if (data.coffee_syrup_flavor) {
-					listValue.setAttribute('id', data.coffee_syrup_flavor);
-				} else if (data.id) {
-					listValue.setAttribute('id', data.id);
-				}
-				listValue.setAttribute('data-drinks', jsonData);
-
-				const string1 = String(constCardTitleValues[k]);
-				const string2 = String(constCardTextValues[k]);
-
-				const container = document.createElement('container');
-				container.setAttribute('style', 'width:30%');
-
-				const listValueHeader = document.createElement('h5');
-				const listValueBodyText = document.createElement('p');
-				if (constCardTextValues[k]) {
-					listValueBodyText.innerHTML = string2;
-					listValueHeader.innerHTML = string1 + '<br>';
-					container.appendChild(listValueHeader);
-					container.appendChild(listValueBodyText);
-					listValue.appendChild(container);
-				} else {
-					listValueHeader.innerHTML = string1;
-					container.appendChild(listValueHeader);
-					listValue.appendChild(container);
-				}
-				const imageParent = document.createElement('div');
-				imageParent.setAttribute('class', 'image-parent');
-				const img = document.createElement('img');
-
-				const cardImgAbsolutePath = constCardImgSrcValues[counter].split('/');
-				const cardImgRelativePathFrags = cardImgAbsolutePath.slice(
-					cardImgAbsolutePath.length - 3,
-					cardImgAbsolutePath.length
-				);
-				const cardImgRelativePath = '../' + cardImgRelativePathFrags.join('/');
-
-				img.setAttribute('src', cardImgRelativePath);
-				img.setAttribute('class', 'img-fluid');
-				imageParent.appendChild(img);
-
-				listValue.appendChild(imageParent);
-				listGroupTitle.append(listValue);
-
+		for (var j = 0; j < cardDeckCards.length; j++) {
+			if (cardDeckCards[j].className == 'card') {
 				counter += 1;
 			}
-
-			row.appendChild(listGroupTitle);
-			const x = document.getElementsByClassName('list-group');
-			x[i].appendChild(row);
 		}
-		$('.list-group-item').each(function () {
-			const selectedItemCategory = $(this).closest('.list-group').attr('id');
-			if (selectedItemCategory === 'syrup' || selectedItemCategory === 'coffee') {
-				$(`<div class='container3'>
+		cardDeckChildrenLength.push(counter);
+	}
+
+	for (var i = 0; i < cardDeckElementsLength; i++) {
+		removeAllChildNodes(cardDeckElements[i]);
+	}
+
+	var counter = 0;
+
+	for (var i = 0; i < cardDeckElementsLength; i++) {
+		const row = document.createElement('div');
+		row.setAttribute('class', 'row');
+		row.setAttribute('style', 'width: 100%');
+		const listGroupTitle = document.createElement('div');
+		listGroupTitle.setAttribute('class', 'col-12 col-sm-12 col-lg-12 col-md-12');
+		$(`#${constCardDeckNodes[i].id}`).removeClass('card-deck');
+		$(`#${constCardDeckNodes[i].id}`).addClass('list-group');
+		//need to move the iterator for each card deck to not get the prior deck's card titles
+		var k;
+
+		if (i == 0) {
+			k = 0;
+		} else {
+			var priorChildLength = 0;
+			for (var m = 0; m < i; m++) {
+				priorChildLength += cardDeckChildrenLength[m];
+			}
+			k = priorChildLength;
+		}
+
+		const stoppingPoint = k + cardDeckChildrenLength[i];
+		for (k; k < stoppingPoint; k++) {
+			const listValue = document.createElement('li');
+			listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
+			listValue.setAttribute('style', 'width:100%');
+			const jsonData = constCardData[counter].getAttribute('data-drinks');
+			const data = JSON.parse(constCardData[counter].getAttribute('data-drinks'));
+			if (data.coffee_syrup_flavor) {
+				listValue.setAttribute('id', data.coffee_syrup_flavor);
+			} else if (data.id) {
+				listValue.setAttribute('id', data.id);
+			}
+			listValue.setAttribute('data-drinks', jsonData);
+
+			const string1 = String(constCardTitleValues[k]);
+			const string2 = String(constCardTextValues[k]);
+
+			const container = document.createElement('container');
+			container.setAttribute('style', 'width:30%');
+
+			const listValueHeader = document.createElement('h5');
+			const listValueBodyText = document.createElement('p');
+			if (constCardTextValues[k]) {
+				listValueBodyText.innerHTML = string2;
+				listValueHeader.innerHTML = string1 + '<br>';
+				container.appendChild(listValueHeader);
+				container.appendChild(listValueBodyText);
+				listValue.appendChild(container);
+			} else {
+				listValueHeader.innerHTML = string1;
+				container.appendChild(listValueHeader);
+				listValue.appendChild(container);
+			}
+			const imageParent = document.createElement('div');
+			imageParent.setAttribute('class', 'image-parent');
+			const img = document.createElement('img');
+
+			const cardImgAbsolutePath = constCardImgSrcValues[counter].split('/');
+			const cardImgRelativePathFrags = cardImgAbsolutePath.slice(
+				cardImgAbsolutePath.length - 3,
+				cardImgAbsolutePath.length
+			);
+			const cardImgRelativePath = '../' + cardImgRelativePathFrags.join('/');
+
+			img.setAttribute('src', cardImgRelativePath);
+			img.setAttribute('class', 'img-fluid');
+			imageParent.appendChild(img);
+
+			listValue.appendChild(imageParent);
+			listGroupTitle.append(listValue);
+
+			counter += 1;
+		}
+
+		row.appendChild(listGroupTitle);
+		const x = document.getElementsByClassName('list-group');
+		x[i].appendChild(row);
+	}
+	$('.list-group-item').each(function () {
+		const selectedItemCategory = $(this).closest('.list-group').attr('id');
+		if (selectedItemCategory === 'syrup' || selectedItemCategory === 'coffee') {
+			$(`<div class='container3'>
 						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px; align-items:center; grid-template-columns: auto auto auto; align-self: center;  grid-gap: 2px; display:grid;'>
-							<button class='btn' id='servingSize-2' style='display: none;'>Customize</button>
+							<button class='btn' style='display: none;'>Customize</button>
 							<button class='btn2'>✓</button>
 						</div>
 					</div>`).insertAfter($(this).find('container'));
-			} else if (
-				selectedItemCategory === 'bottled' ||
-				selectedItemCategory === 'milkshake' ||
-				selectedItemCategory === 'non-coffee'
-			) {
-				$(
-					`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
-				).insertAfter($(this).find('container'));
-			} else if (selectedItemCategory === 'temperature' || selectedItemCategory === 'milk') {
-				$(`<div class='drinkContainer3'>
+		} else if (
+			selectedItemCategory === 'bottled' ||
+			selectedItemCategory === 'milkshake' ||
+			selectedItemCategory === 'non-coffee'
+		) {
+			$(
+				`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
+			).insertAfter($(this).find('container'));
+		} else if (selectedItemCategory === 'temperature' || selectedItemCategory === 'milk') {
+			$(`<div class='drinkContainer3'>
 						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: 1 fr; align-self: center; grid-gap: 2px; display:grid;'>
 							<button class='btn2'>✓</button>
 						</div>
 					</div>`).insertAfter($(this).find('container'));
-			}
-		});
-		$('.container0sweetCrepe').each(function () {
-			$(this).css('border-bottom', '');
-			$(this).find('.list-group').css('border-bottom', '');
-		});
-	}
-// all this code changes display for smaller screen sizes
+		}
+	});
+	$('.container0sweetCrepe').each(function () {
+		$(this).css('border-bottom', '');
+		$(this).find('.list-group').css('border-bottom', '');
+	});
+};
 var cWidth = $(window).width();
-//https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
 $(window).on('load', function () {
 	pageBuild();
 	const newWidth = $(window).width();
@@ -860,8 +827,7 @@ $(window).on('load', function () {
 		mobileRendering();
 		pageLogic();
 		modifyOrder();
-	}
-	else {
+	} else {
 		pageLogic();
 		modifyOrder();
 		$('.container0sweetCrepe').each(function () {

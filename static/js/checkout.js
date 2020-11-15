@@ -1,7 +1,7 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 //https://www.codeply.com/p?starter=Bootstrap&ex=Sh3KmpOVTc
 ('use strict');
-import { humanize } from './model.js';
+import { humanize} from './model.js';
 
 import { Order, Customer, Coffee } from './model.js';
 
@@ -11,10 +11,10 @@ const buildPage = () => {
 	const order = new Order();
 	if (orderDict) {
 		order.fromJSON(orderDict);
-		var numOrderItems = 0
+		var numOrderItems = 0;
 		if (order.orderCrepe.length) {
 			for (i in order.orderCrepe) {
-				numOrderItems += 1
+				numOrderItems += 1;
 			}
 		}
 		if (order.orderDrink.length) {
@@ -27,8 +27,7 @@ const buildPage = () => {
 				numOrderItems += 1;
 			}
 		}
-		$('#pill').html(numOrderItems)
-
+		$('#pill').html(numOrderItems);
 		if (order) {
 			if (order.orderCrepe.length) {
 				const orderCrepes = order.orderCrepe;
@@ -36,14 +35,15 @@ const buildPage = () => {
 					const crepeOrder = orderCrepes[i];
 					if (crepeOrder.origination === 'custom') {
 						$(`#checkingCartBody0`).append(
-							`<li class="list-group-item d-flex justify-content-between lh-condensed" " id="crepeRow${i}0">
+							`<li class="list-group-item d-flex justify-content-between" " id="crepeRow${i}0">
 								<h4 style="font-weight:bold;">Crepe Order #${i + 1}</h4>
 						</li>`
 						);
 						for (var j = 0; j < crepeOrder.ingredients.length; j++) {
 							const ingredient = crepeOrder.ingredients[j];
 							$(
-								`<li class="list-group-item d-flex justify-content-between lh-condensed" id="crepeRow${i}${j + 1
+								`<li class="list-group-item d-flex justify-content-between" id="crepeRow${i}${
+									j + 1
 								}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${humanize(ingredient, 'servingSize').servingSize + ' ' + humanize(ingredient, 'id').id}</h5>
 									</div><div class="col-4"><h4 style=''>$${ingredient.price.toFixed(2)}</h4></div></li>`
@@ -51,14 +51,15 @@ const buildPage = () => {
 						}
 					} else if (crepeOrder.origination === 'menu') {
 						$(`#checkingCartBody0`).append(
-							`<li class="list-group-item d-flex justify-content-between lh-condensed" " id="crepeRow${i}0">
+							`<li class="list-group-item d-flex justify-content-between" " id="crepeRow${i}0">
 								<h4 style="font-weight:bold;">Crepe Order #${i + 1}</h4>
 						</li>`
 						);
 						for (var j = 0; j < crepeOrder.menuCrepes.length; j++) {
 							const menuCrepe = crepeOrder.menuCrepes[j];
 							$(
-								`<li class="list-group-item d-flex justify-content-between lh-condensed" id="crepeRow${i}${j + 1
+								`<li class="list-group-item d-flex justify-content-between" id="crepeRow${i}${
+									j + 1
 								}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${menuCrepe.quantity + 'x' + ' ' + humanize(menuCrepe, 'name').name}</h5>
 									</div><div class="col-4"><h4 style=''>$${menuCrepe.price.toFixed(2)}</h4></div></li>`
@@ -66,7 +67,6 @@ const buildPage = () => {
 						}
 					}
 				}
-				const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 			}
 
 			if (order.orderDrink.length) {
@@ -74,7 +74,7 @@ const buildPage = () => {
 
 				for (var i = 0; i < drinkOrders.length; i++) {
 					$(`#checkingCartBody0`).append(
-						`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutDrinkRow${i}0">
+						`<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}0">
 								<h4 style="font-weight:bold;">Drink Order #${i + 1}</h4>
 					</li>`
 					);
@@ -106,7 +106,7 @@ const buildPage = () => {
 									flavorSyrupPrice = 0;
 								}
 								$(
-									`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutDrinkRow${i}0">
+									`<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}0">
 									<div class="col-8" style="margin-right: 0px; ">
 										<h5 style=''>${drink.quantity + 'x' + ' ' + humanize(drink, 'name').name}</h5>
 									</div>
@@ -114,7 +114,7 @@ const buildPage = () => {
 										<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
 									</div>
 								</li>
-								<li class="list-group-item d-flex justify-content-between lh-condensed">
+								<li class="list-group-item d-flex justify-content-between">
 									<div class="col-8" style="margin-right: 0px; ">
 										<h5 style=''>${espressFormat}</h5>
 									</div>	
@@ -122,7 +122,7 @@ const buildPage = () => {
 										<h4 style=''>$${espressoPrice}</h4>
 									</div>
 								</li>
-								<li class="list-group-item d-flex justify-content-between lh-condensed">
+								<li class="list-group-item d-flex justify-content-between">
 									<div class="col-8" style="margin-right: 0px; ">
 										<h5 style=''>${milkName}</h5>
 									</div>
@@ -130,12 +130,13 @@ const buildPage = () => {
 										<h4 style=''>$${milkPrice}</h4>
 									</div>
 								</li>
-								<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutDrinkRow${i}${j + 1}">
+								<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}${j + 1}">
 									<div class="col-8" style="margin-right: 0px; ">
-										<h5 style=''>${humanize(drink, 'flavorSyrupServingSize').flavorSyrupServingSize +
-									' ' +
-									humanize(drink, 'flavorSyrup').flavorSyrup
-									}</h5>
+										<h5 style=''>${
+											humanize(drink, 'flavorSyrupServingSize').flavorSyrupServingSize +
+											' ' +
+											humanize(drink, 'flavorSyrup').flavorSyrup
+										}</h5>
 									</div>
 									<div class="col-4">
 										<h4 style=''>$${flavorSyrupPrice}</h4>
@@ -144,7 +145,7 @@ const buildPage = () => {
 								).insertAfter(`#checkoutDrinkRow${i}${j}`);
 							} else {
 								$(
-									`<li class="list-group-item d-flex justify-content-between lh-condensed">
+									`<li class="list-group-item d-flex justify-content-between">
 									<div class="col-8" style="margin-right: 0px; ">
 										<h5 style=''>${drink.quantity + 'x' + ' ' + humanize(drink, 'name').name}</h5>
 									</div>
@@ -152,7 +153,7 @@ const buildPage = () => {
 										<h4 style=''>$${drinkPrice.toFixed(2)}</h4>
 									</div>
 								</li>
-								<li class="list-group-item d-flex justify-content-between lh-condensed">
+								<li class="list-group-item d-flex justify-content-between">
 									<div class="col-8" style="margin-right: 0px; ">
 										<h5 style=''>${espressFormat}</h5>
 									</div>	
@@ -160,7 +161,7 @@ const buildPage = () => {
 										<h4 style=''>$${espressoPrice}</h4>
 									</div>
 								</li>
-								<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutDrinkRow${i}${j + 1}">
+								<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}${j + 1}">
 									<div class="col-8" style="margin-right: 0px; ">
 										<h5 style=''>${milkName}</h5>
 									</div>
@@ -179,7 +180,8 @@ const buildPage = () => {
 								drinkName = humanize(drink, 'name').name;
 							}
 							$(
-								`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutDrinkRow${i}${j + 1
+								`<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}${
+									j + 1
 								}">
 								<div class="col-8" style="margin-right: 0px; ">
 									<h5 style=''>${drink.quantity + 'x' + ' ' + humanize(drink, 'name').name}</h5>
@@ -199,7 +201,7 @@ const buildPage = () => {
 				for (var i = 0; i < orderSides.length; i++) {
 					const sideOrder = orderSides[i].orderSide;
 					$(`#checkingCartBody0`).append(
-						`<li class="list-group-item d-flex justify-content-between lh-condensed" " id="checkoutSideRow${i}0">
+						`<li class="list-group-item d-flex justify-content-between" " id="checkoutSideRow${i}0">
 								<h4 style="font-weight:bold;">Side Order #${i + 1}</h4>
 						</li>`
 					);
@@ -207,9 +209,9 @@ const buildPage = () => {
 						const side = sideOrder[j];
 						if (side.sideName === 'ice_cream_bowl') {
 							const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
-
 							$(
-								`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${j + 1
+								`<li class="list-group-item d-flex justify-content-between" id="checkoutSideRow${i}${
+									j + 1
 								}${k}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${side.quantity + 'x Scoop ' + humanize(side, 'sideName').sideName}</h5>
 									</div><div class="col-4"><h4 style=''>$${side.price.toFixed(2)}</h4></div></li>`
@@ -219,7 +221,8 @@ const buildPage = () => {
 									const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 									const topping = side.toppings[k];
 									$(
-										`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${j + 1
+										`<li class="list-group-item d-flex justify-content-between" id="checkoutSideRow${i}${
+											j + 1
 										}${k}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${humanize(topping, 'servingSize').servingSize + ' ' + humanize(topping, 'id').id}</h5>
 									</div><div class="col-4"><h4 style=''>$${topping.price.toFixed(2)}</h4></div></li>`
@@ -230,7 +233,8 @@ const buildPage = () => {
 							const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 
 							$(
-								`<li class="list-group-item d-flex justify-content-between lh-condensed" id="checkoutSideRow${i}${j + 1
+								`<li class="list-group-item d-flex justify-content-between" id="checkoutSideRow${i}${
+									j + 1
 								}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${side.quantity + 'x' + ' ' + humanize(side, 'sideName').sideName}</h5>
 									</div><div class="col-4"><h4 style=''>$${side.price.toFixed(2)}</h4></div></li>`
@@ -244,13 +248,26 @@ const buildPage = () => {
 			);
 
 			$(`#checkoutFooter`).append(`<div class="col-8"><h4 style="font-weight: bold;">Order Total</h4>
-		</div> <div class="col-4" style="margin-left: 21px; "><h4 style="float:right; font-weight: bold; ">$${order.orderTotal.toFixed(
-				2
-			)}</h4></div>`);
+				</div> <div class="col-4" style="margin-left: 21px; "><h4 style="float:right; font-weight: bold; ">$${order.orderTotal.toFixed(
+					2
+		)}</h4></div>`);
 		}
 	}
 };
+const loading = (isLoading) => {
+	if (isLoading) {
+		// Disable the button and show a spinner
+		document.querySelector('button').disabled = true;
+		$('#buttonText').html('Loading...');
+		$('#spinner').css('visibility', 'visible');
+		
+	} else {
+		document.querySelector('button').disabled = false;
+		document.querySelector('#spinner').classList.add('hidden');
+	}
+};
 const handleFormSubmit = (stripe, card, data) => {
+	loading(true);
 	const order = new Order();
 	order.fromJSON(localStorage.getItem('order'));
 	const response = {};
@@ -260,13 +277,11 @@ const handleFormSubmit = (stripe, card, data) => {
 			customerData[$(this).attr('id')] = $(this).val();
 		}
 	});
-	customerData["stripeId"]= data.customer
+	customerData['stripeId'] = data.customer;
 	const newCustomer = new Customer(customerData);
 	order.customerData = newCustomer;
 	response['order'] = order;
 	const JSONResponse = JSON.stringify(response);
-	// payWithCard(stripe, card, data.clientSecret, newCustomer);
-	loading(true);
 	stripe
 		.confirmCardPayment(data.clientSecret, {
 			payment_method: {
@@ -290,12 +305,14 @@ const handleFormSubmit = (stripe, card, data) => {
 					dataType: 'json',
 					type: 'POST',
 					contentType: 'application/json',
-					success: (response) => localStorage.setItem('stripeId', newCustomer.stripeId),
-					// success: () => location.assign('/order/confirmation'),
+					success: () =>
+						{
+							localStorage.setItem('stripeId', newCustomer.stripeId);
+							location.assign('/order/confirmation');
+							console.log('hey')
+						},
 					error: (response) => console.log('console.log error', response),
 				});
-				orderComplete(result.paymentIntent.id);
-				// return result;
 			}
 		});
 };
@@ -308,57 +325,14 @@ const showError = (errorMsgText) => {
 		errorMsg.textContent = '';
 	}, 4000);
 };
-// Show a spinner on payment submission
-const loading = (isLoading) => {
-	if (isLoading) {
-		// Disable the button and show a spinner
-		document.querySelector('button').disabled = true;
-		document.querySelector('#spinner').classList.remove('hidden');
-		document.querySelector('#button-text').classList.add('hidden');
-	} else {
-		document.querySelector('button').disabled = false;
-		document.querySelector('#spinner').classList.add('hidden');
-		document.querySelector('#button-text').classList.remove('hidden');
-	}
-};
-
-const orderComplete = (paymentIntentId) => {
-	loading(false);
-	const url = 'https://dashboard.stripe.com/test/payments/' + paymentIntentId;
-	$('#success').find('a').attr('href' , url)
-	$('#success').css('visibility', 'visible');
-	document.querySelector('button').disabled = true;
-};
 const validateForm = () => {
-	// function luhnChecksum(code) {
-	// 	var len = code.length;
-	// 	var parity = len % 2;
-	// 	var sum = 0;
-	// 	for (var i = len - 1; i >= 0; i--) {
-	// 		var d = parseInt(code.charAt(i));
-	// 		if (i % 2 == parity) {
-	// 			d *= 2;
-	// 		}
-	// 		if (d > 9) {
-	// 			d -= 9;
-	// 		}
-	// 		sum += d;
-	// 	}
-	// 	return sum % 10;
-	// }
-	// /* luhn_validate
-	//  * Return true if specified code (with check digit) is valid.
-	//  */
-	// function luhnValidate(fullcode) {
-	// 	return luhnChecksum(fullcode) == 0;
-	// }
 	const order = new Order();
 	const orderDict = localStorage.getItem('order');
 	if (orderDict) {
 		order.fromJSON(orderDict);
 		if (localStorage.getItem('stripeId')) {
 			const newCustomer = new Customer(null, localStorage.getItem('stripeId'));
-			order.customerData = newCustomer
+			order.customerData = newCustomer;
 		}
 		const forms = document.getElementsByClassName('needs-validation');
 		const stripe = Stripe(
@@ -389,10 +363,9 @@ const validateForm = () => {
 						$('#cardError').show();
 					} else if (!event.complete) {
 						document.querySelector('#cardError').textContent = 'Please enter a valid card date';
-					}
-					else {
+					} else {
 						document.querySelector('#checkoutButton').disabled = false;
-						document.querySelector('#cardError').textContent = ''
+						document.querySelector('#cardError').textContent = '';
 						$('#cardError').hide();
 					}
 				});
@@ -401,11 +374,11 @@ const validateForm = () => {
 					if (!event.empty) {
 						document.querySelector('#cardError').textContent = 'Please enter a valid card number';
 					} else if (!event.complete) {
-						document.querySelector('#cardError').textContent = 'Please complete the required card information';
+						document.querySelector('#cardError').textContent =
+							'Please complete the required card information';
 					}
 				});
 				// Loop over them and prevent submission
-				//https://gomakethings.com/what-the-hell-is-the-call-method-and-when-should-you-use-it/
 				Array.prototype.filter.call(forms, function (form) {
 					$('#checkoutButton')
 						.unbind('click')
@@ -417,13 +390,11 @@ const validateForm = () => {
 								if (document.querySelector('#cardError').textContent) {
 									$('#cardError').show();
 									return false;
-								}
-								else {
+								} else {
 									form.classList.add('was-validated');
 									handleFormSubmit(stripe, card, data);
 									return false;
 								}
-							
 							}
 						});
 				});

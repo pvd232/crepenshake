@@ -13,7 +13,6 @@ client = google.cloud.logging.Client()
 handler = CloudLoggingHandler(client)
 logging.getLogger().setLevel(logging.WARN)  # defaults to WARN
 setup_logging(handler)
-logging.error('bad news')
 
 
 class Ingredient_Repository(object):

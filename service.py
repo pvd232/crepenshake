@@ -317,24 +317,11 @@ class Order_Service(object):
         logging.info('Mail Sent')
 
     def create_order(self, order):
-        try:
-            new_order = Order_Model(order_object=order)
-        except Exception as e:
-            logging.info('repository create new order exception', str(e))
-        # customer_email = new_order.customer.id
-        # email = 'crepenshake427@gmail.com'
-        # self.send_confirmation_email(customer_email)
-        try:
-            self.send_confirmation_email(new_order)
-        except Exception as e:
-            logging.info('email exception', str(e))
-
+        new_order = Order_Model(order_object=order)
+        self.send_confirmation_email(new_order)
         with self.session_scope() as session:
-            try:
-                self.order_repository.post_order(session, order=new_order)
-            except Exception as e:
-                logging.info('post order to repository exception',e)
-            return True
+            return self.order_repository.post_order(session, order=new_order)
+            
 
     def stripe_pay(self, order):
         with self.session_scope() as session:
