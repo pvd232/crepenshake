@@ -72,19 +72,18 @@ const modifyOrder = () => {
 			if (drink.drinkCategory === 'coffee') {
 				//send crepe recipe to blaise
 				if (drink.espressoServingSize === 'extra') {
-					$(`#${drink.id}`).find('.btn2').html('3x');
-					$(`#${drink.id}`).find('.btn2').show();
-					$(`#${drink.id}`).find('.btn').show();
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn2').html('3x');
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn2').show();
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn').show();
 				} else if (drink.espressoServingSize === 'regular') {
-					$(`#${drink.id}`).find('.btn2').html('✓');
-					$(`#${drink.id}`).find('.btn2').show();
-					$(`#${drink.id}`).find('.btn').show();
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn2').html('✓');
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn2').show();
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn').show();
 				} else if (drink.espressoServingSize === 'light') {
-					$(`#${drink.id}`).find('.btn2').html('½');
-					$(`#${drink.id}`).find('.btn2').show();
-					$(`#${drink.id}`).find('.btn').show();
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn2').html('½');
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn2').show();
+					$(`#${drink.id}-${drink.servingSize}`).find('.btn').show();
 				}
-
 				if (drink.flavorSyrup) {
 					if (drink.flavorSyrupServingSize === 'extra') {
 						$(`#${drink.flavorSyrup}`).closest('.card, .list-group-item').find('.btn2').html('2x');
@@ -126,6 +125,10 @@ const modifyOrder = () => {
 									if (userOrderDrink.checkIfThisMilkSelected(json)) {
 										$(this).css('opacity', '1');
 									}
+									else {
+										$(this).css('opacity', '.3');
+										
+								}
 									$('#errorMilk').html('Only 1 milk per coffee');
 									$('#errorMilk').show();
 								} else {
@@ -136,6 +139,9 @@ const modifyOrder = () => {
 									if (userOrderDrink.checkIfThisTempSelected(json)) {
 										$(this).css('opacity', '1');
 									}
+									else {
+										$(this).css('opacity', '.3');
+									}
 									$('#errorTemp').html('*Only 1 temperature per coffee');
 									$('#errorTemp').show();
 								} else {
@@ -145,18 +151,24 @@ const modifyOrder = () => {
 								if (userOrderDrink.checkIfSyrupSelected()) {
 									if (userOrderDrink.checkIfThisSyrupSelected(json)) {
 										$(this).css('opacity', '1');
+									} else {
+										$(this).css('opacity', '.3');
 									}
 									$('#errorSyrup').html('*Only 1 syrup per coffee');
 									$('#errorSyrup').show();
-								} else {
-									$(this).css('opacity', '1');
-								}
+								} 
 							} else {
 								$('#errorSyrup').hide();
 							}
 						});
 				});
-			} else {
+			} else if (drinkCategory === 'non-coffee') {
+				$(`#${drink.id}-${drink.servingSize}`).find('.btn2').html(drink.quantity);
+				$(`#${drink.id}-${drink.servingSize}`).find('.btn2').show();
+				$(`#${drink.id}-${drink.servingSize}`).find('.btn6').show();
+				$(`#${drink.id}-${drink.servingSize}`).find('.btn7').show();
+			}
+			else {
 				$(`#${drink.id}`).find('.btn2').html(drink.quantity);
 				$(`#${drink.id}`).find('.btn2').show();
 				$(`#${drink.id}`).find('.btn6').show();
@@ -737,7 +749,10 @@ const mobileRendering = () => {
 			const data = JSON.parse(constCardData[counter].getAttribute('data-drinks'));
 			if (data.coffee_syrup_flavor) {
 				listValue.setAttribute('id', data.coffee_syrup_flavor);
-			} else if (data.id) {
+			} else if (data.drink_category_id === 'coffee' || data.drink_category_id === 'non-coffee') {
+				const id = String(data.id) + '-' + data.serving_size;
+				listValue.setAttribute('id', id);
+			} else {
 				listValue.setAttribute('id', data.id);
 			}
 			listValue.setAttribute('data-drinks', jsonData);

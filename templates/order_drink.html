@@ -17,7 +17,7 @@
 		</div>
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
 		{% for i in range(coffee_drinks|length) %}
-		<div class="card" id='{{coffee_drinks[i].id}}' data-drinks='{{coffee_drinks[i]|tojson}}'>
+		<div class="card" id='{{coffee_drinks[i].id}}-{{coffee_drinks[i].serving_size}}' data-drinks='{{coffee_drinks[i]|tojson}}'>
 			<img src='{{"../static/images/" + coffee_drinks[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{coffee_drinks[i].serving_size + " " + coffee_drinks[i].name}}</h5>
@@ -109,7 +109,7 @@
 	<h3 class="head3">{{drink_categories[j].id }} drinks</h3>
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
 		{% for i in range(non_coffee_drinks|length) %}
-		<div class="card" id='{{non_coffee_drinks[i].id}}' data-drinks='{{non_coffee_drinks[i]|tojson}}' style="max-width: 240px !important; min-width: 210px !important">
+		<div class="card" id='{{non_coffee_drinks[i].id}}-{{non_coffee_drinks[i].serving_size}}' data-drinks='{{non_coffee_drinks[i]|tojson}}' style="max-width: 240px !important; min-width: 210px !important">
 			<img src='{{"../static/images/" + non_coffee_drinks[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{non_coffee_drinks[i].serving_size + " " + non_coffee_drinks[i].name}}</h5>
