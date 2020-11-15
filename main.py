@@ -48,7 +48,6 @@ def order():
 @app.route('/order/make-your-own-savory-crepe')
 def make_your_own_savory_crepe(editOrder=None):
     ingredient_service = Ingredient_Service()
-
     savory_ingredient_prices_by_category = ingredient_service.get_savory_ingredient_prices_by_category()
     new_ingredient_prices_by_category = []
     for x in savory_ingredient_prices_by_category:

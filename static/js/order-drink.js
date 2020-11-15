@@ -119,7 +119,6 @@ const modifyOrder = () => {
 						.each(function () {
 							const json = JSON.parse($(this).attr('data-drinks'));
 							const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
-
 							if (selectedItemCategory === 'milk') {
 								if (userOrderDrink.checkIfMilkSelected()) {
 									if (userOrderDrink.checkIfThisMilkSelected(json)) {
@@ -127,7 +126,6 @@ const modifyOrder = () => {
 									}
 									else {
 										$(this).css('opacity', '.3');
-										
 								}
 									$('#errorMilk').html('Only 1 milk per coffee');
 									$('#errorMilk').show();
@@ -162,7 +160,7 @@ const modifyOrder = () => {
 							}
 						});
 				});
-			} else if (drinkCategory === 'non-coffee') {
+			} else if (drink.drinkCategory === 'non-coffee') {
 				$(`#${drink.id}-${drink.servingSize}`).find('.btn2').html(drink.quantity);
 				$(`#${drink.id}-${drink.servingSize}`).find('.btn2').show();
 				$(`#${drink.id}-${drink.servingSize}`).find('.btn6').show();
@@ -183,7 +181,6 @@ const pageLogic = () => {
 			if ($(this).attr('class') === 'card') {
 				const json = JSON.parse($(this).attr('data-drinks'));
 				const selectedItemCategory = $(this).closest('.card-deck').attr('id');
-
 				// if the card isn't milk or temperature or syrup
 				if (
 					selectedItemCategory != 'milk' &&
