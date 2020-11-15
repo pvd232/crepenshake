@@ -314,7 +314,6 @@ const handleFormSubmit = (stripe, card, data) => {
 						{
 							localStorage.setItem('stripeId', newCustomer.stripeId);
 							location.assign('/order/confirmation');
-							console.log('hey')
 						},
 					error: (response) => console.log('console.log error', response),
 				});
