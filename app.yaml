@@ -30,7 +30,7 @@ beta_settings:
 # for production use. For more information, see:
 # https://cloud.google.com/appengine/docs/flexible/python/configuring-your-app-with-app-yaml
 basic_scaling:
-  max_instances: 10
+  max_instances: 50
 resources:
   cpu: 1
   memory_gb: 0.5
