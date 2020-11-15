@@ -297,8 +297,8 @@ class Order_Service(object):
         mail_content += str(order)
         mail_content += '</body></html>'
         # The mail addresses and password
-        sender_address = 'patardriscoll@gmail.com'
-        sender_pass = 'Iqopaogh23!'
+        sender_address = 'confirmation@crepenshake.com'
+        # sender_pass = 'Iqopaogh23!'
         # email = 'driscoll_carol@yahoo.com'
         email = 'crepenshake@yahoo.com'
 
@@ -310,28 +310,32 @@ class Order_Service(object):
         # The body and the attachments for the mail
         message.attach(MIMEText(mail_content, 'html'))
         # Create SMTP session for sending the mail
-        session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
-        session.starttls()  # enable security
+        s = smtplib.SMTP('smtp.mailgun.org', 587)
+        s.starttls()
+        s.login('postmaster@crepenshake.com', 'Iqopaogh23!')
+        s.sendmail(message['From'], message['To'], message.as_string())
+        s.quit()
+        # session.starttls()  # enable security
         # login with mail_id and password
-        session.login(sender_address, sender_pass)
-        text = message.as_string()
-        session.sendmail(sender_address, email, text)
-        session.quit()
+        # session.login(sender_address, sender_pass)
+        # text = message.as_string()
+        # session.sendmail(sender_address, email, text)
+        # session.quit()
         logging.info('Mail Sent')
 
     def create_order(self, order):
         try:
             new_order = Order_Model(order_object=order)
         except Exception as e:
-            logging.info('repository create new order exception', e)
+            logging.info('repository create new order exception', str(e))
         # customer_email = new_order.customer.id
         # email = 'crepenshake427@gmail.com'
         # self.send_confirmation_email(customer_email)
         try:
             self.send_confirmation_email(new_order)
         except Exception as e:
-            logging.info('email exception', e)
-        # self.developer_pay(new_order)
+            logging.info('email exception', str(e))
+
         with self.session_scope() as session:
             try:
                 self.order_repository.post_order(session, order=new_order)

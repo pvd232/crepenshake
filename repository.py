@@ -55,8 +55,6 @@ class Order_Repository(object):
         if customer:
             confirmCustomerExistence = session.query(Stripe).filter(                
                 Stripe.id == customer['stripeId']).first()
-            logging.info("confirmCustomerExistence", confirmCustomerExistence)
-
             # Lookup the saved card (you can store multiple PaymentMethods on a Customer)
             if confirmCustomerExistence:
                 customerExistenceBool = True
@@ -64,7 +62,6 @@ class Order_Repository(object):
                     customer=customer['stripeId'],
                     type='card'
                 )
-                logging.info("payment_methods", payment_methods)
 
                 # Charge the customer and payment method immediately
                 payment_intent = stripe.PaymentIntent.create(                    
@@ -73,13 +70,10 @@ class Order_Repository(object):
                     customer=customer['stripeId'],
                     payment_method=payment_methods.data[0].id
                 )
-                logging.info("payment_intent", payment_intent)
                 return {'clientSecret': payment_intent['client_secret'], 'customer': customer['stripeId']}
         if not customerExistenceBool:
             customer = stripe.Customer.create()
-            logging.info("customer", customer)
             new_stripe_id = Stripe(id=customer.id)
-            logging.info("new_stripe_id", new_stripe_id)
             session.add(new_stripe_id)
             session.commit()
             amount = int(order['orderTotal'] * 100)
@@ -89,8 +83,6 @@ class Order_Repository(object):
                 setup_future_usage='off_session',
                 currency='usd'
             )
-            logging.info("payment_intent", payment_intent)
-
             return {'clientSecret': payment_intent['client_secret'], 'customer': customer.id}
 
     def post_order(self, session, order):
