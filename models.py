@@ -13,7 +13,6 @@ import os
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy import inspect, create_engine
-from flask_talisman import Talisman
 
 
 
@@ -23,7 +22,6 @@ def _compile_drop_table(element, compiler, **kwargs):
 
 
 app = Flask(__name__)
-Talisman(app, content_security_policy=None, force_https_permanent='true', force_https='true')
 
 
 username = "postgres"

@@ -9,7 +9,6 @@ dataclasses==0.6
 dnspython==1.16.0
 Flask==1.1.2
 Flask-SQLAlchemy==2.4.4
-flask-talisman==0.7.0
 google-api-core==1.23.0
 google-auth==1.23.0
 google-cloud-core==1.4.3
