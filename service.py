@@ -296,10 +296,8 @@ class Order_Service(object):
         mail_content = '<html><body>'
         mail_content += str(order)
         mail_content += '</body></html>'
-        # The mail addresses and password
+
         sender_address = 'confirmation@crepenshake.com'
-        # sender_pass = 'Iqopaogh23!'
-        # email = 'driscoll_carol@yahoo.com'
         email = 'crepenshake@yahoo.com'
 
         # Setup the MIME
@@ -312,15 +310,10 @@ class Order_Service(object):
         # Create SMTP session for sending the mail
         s = smtplib.SMTP('smtp.mailgun.org', 587)
         s.starttls()
-        s.login('postmaster@crepenshake.com', 'Iqopaogh23!')
+        s.login('postmaster@crepenshake.com',
+                '6695313d8a619bc44dce00ad7184960a-ba042922-f2a8cfbb')
         s.sendmail(message['From'], message['To'], message.as_string())
         s.quit()
-        # session.starttls()  # enable security
-        # login with mail_id and password
-        # session.login(sender_address, sender_pass)
-        # text = message.as_string()
-        # session.sendmail(sender_address, email, text)
-        # session.quit()
         logging.info('Mail Sent')
 
     def create_order(self, order):
