@@ -195,7 +195,7 @@ const doShowAll = () => {
 									}
 									$(`<div class="row" style= "margin-bottom: 20px;">
 													<div class="col-9" style="margin-right: 0px; " >
-														<h5 >${drink.quantity + 'x' + ' ' + humanize(drink, 'name').name}</h5>
+														<h5 >${drink.servingSize + ' ' + humanize(drink, 'name').name}</h5>
 												</div>
 													<div class="col-3">
 														<h4 >$${drinkPrice.toFixed(2)}</h4>
@@ -232,7 +232,7 @@ const doShowAll = () => {
 								else {
 									$(`<div class="row" style= "margin-bottom: 20px;">
 											<div class="col-9" style="margin-right: 0px;">
-												<h5>${drink.quantity + 'x' + ' ' + humanize(drink, 'name').name}</h5>
+												<h5>${drink.servingSize + ' ' + humanize(drink, 'name').name}</h5>
 											</div>
 											<div class="col-3">
 												<h4>$${drinkPrice.toFixed(2)}</h4>
@@ -259,15 +259,22 @@ const doShowAll = () => {
 							// if the drink is not a coffee
 							else {
 								var drinkName;
+								var drinkQuantity;
 								if (drink.drinkCategory === 'milkshake') {
 									drinkName = humanize(drink, 'name').name;
 									drinkName += ' Milkshake';
-								} else {
+									drinkQuantity = drink.servingSize
+								} else if (drink.drinkCategory === 'non-coffee') {
 									drinkName = humanize(drink, 'name').name;
+									drinkQuantity = drink.servingSize
+								}
+								else{
+									drinkName = humanize(drink, 'name').name;
+									drinkQuantity = drink.quantity + 'x';
 								}
 								$(`<div class="row" style= "margin-bottom: 20px;" id="drinkRow-${i}-${j + 1}">
 										<div class="col-9" style="margin-right: 0px;" >
-											<h5 >${drink.quantity + 'x' + ' ' + drinkName}</h5>
+											<h5 >${drinkQuantity + ' ' + drinkName}</h5>
 										</div>
 										<div class="col-3">
 											<h4 >$${drinkPrice.toFixed(2)}</h4>
