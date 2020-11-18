@@ -283,8 +283,6 @@ const handleFormSubmit = (stripe, card, data) => {
 	});
 	customerData['stripeId'] = data.customer;
 	const newCustomer = new Customer(customerData);
-	console.log("newCustomer", newCustomer)
-	
 	order.customerData = newCustomer;
 	response['order'] = order;
 	const JSONResponse = JSON.stringify(response);
@@ -301,7 +299,6 @@ const handleFormSubmit = (stripe, card, data) => {
 		.then(function (result) {
 			if (result.error) {
 				console.log('result.error', result.error);
-
 				// Show error to your customer
 				showError(result.error.message);
 				return false;

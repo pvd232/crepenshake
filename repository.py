@@ -76,8 +76,8 @@ class Order_Repository(object):
 
     def post_order(self, session, order):
         customer = order.customer
-        user = session.query(Customer).filter(or_(
-            Customer.id == customer.id, Customer.stripe_id == customer.stripe_id)).first()
+        user = session.query(Customer).filter(
+            Customer.id == customer.id, Customer.stripe_id == customer.stripe_id).first()
 
         # update stripe customer email because the customer is created with the payment intent when the email has not been harvested yet
         if not stripe.Customer.retrieve(user.stripe_id).email:
