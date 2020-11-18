@@ -25,7 +25,7 @@ const stringify = (drinkOrder) => {
 	if (editDrinkIndex === null) {
 		const order = new Order();
 		if (drinkOrder.orderDrink.length) {
-			if (localStorage.length > 0) {
+			if (localStorage.getItem('order')) {
 				order.fromJSON(localStorage.getItem('order'));
 				const drinkOrderTotal = drinkOrder.orderTotal;
 				order.orderTotal += drinkOrderTotal;

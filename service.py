@@ -304,7 +304,7 @@ class Order_Service(object):
         message = MIMEMultipart()
         message['From'] = sender_address
         message['To'] = email
-        message_subject = order.customer.name + order.customer.email
+        message_subject = ' ' + order.customer.first_name + ' ' + order.customer.last_name
         message['Subject'] = 'Order From' + message_subject  # The subject line
         print("message['Subject']", message['Subject'])
         

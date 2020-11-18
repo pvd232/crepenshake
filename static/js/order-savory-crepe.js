@@ -30,7 +30,7 @@ const stringify = (crepeOrder) => {
 	if (editCrepeIndex === null) {
 		if (crepeOrder.ingredients.length) {
 			const order = new Order();
-			if (localStorage.length > 0) {
+			if (localStorage.getItem('order')) {
 				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 				order.fromJSON(localStorage.getItem('order'));
 				// only one crepe order will be processed on this page at a time
@@ -63,10 +63,8 @@ const checkOut = (order) => {
 	userOrderCrepe.flavor = 'savory';
 	userOrderCrepe.origination = 'custom';
 	if (editCrepeIndex != null) {
-		// stringify(order);
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		// stringify(order);
 		$.when(stringify(order)).then(location.assign('/order/drink'));
 	}
 };

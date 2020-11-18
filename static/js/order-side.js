@@ -27,7 +27,7 @@ const stringify = (sideOrder) => {
 	if (editSideIndex === null) {
 		const order = new Order();
 		if (sideOrder.orderSide.length) {
-			if (localStorage.length > 0) {
+			if (localStorage.getItem('order')) {
 				order.fromJSON(localStorage.getItem('order'));
 				const sideOrderTotal = sideOrder.orderTotal;
 				order.orderTotal += sideOrderTotal;

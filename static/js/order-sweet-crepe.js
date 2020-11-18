@@ -9,7 +9,7 @@ const stringify = (crepeOrder) => {
 	if (editCrepeIndex === null) {
 		if (crepeOrder.ingredients.length) {
 			const order = new Order();
-			if (localStorage.length > 0) {
+			if (localStorage.getItem('order')) {
 				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 				order.fromJSON(localStorage.getItem('order'));
 				// only one crepe order will be processed on this page at a time

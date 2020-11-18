@@ -1,7 +1,7 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 //https://www.codeply.com/p?starter=Bootstrap&ex=Sh3KmpOVTc
 ('use strict');
-import { humanize} from './model.js';
+import { humanize } from './model.js';
 
 import { Order, Customer, Coffee } from './model.js';
 
@@ -171,19 +171,19 @@ const buildPage = () => {
 								).insertAfter(`#checkoutDrinkRow${i}${j}`);
 							}
 						} else {
-						var drinkName;
-						var drinkQuantity;
-						if (drink.drinkCategory === 'milkshake') {
-							drinkName = humanize(drink, 'name').name;
-							drinkName += ' Milkshake';
-							drinkQuantity = drink.servingSize;
-						} else if (drink.drinkCategory === 'non-coffee') {
-							drinkName = humanize(drink, 'name').name;
-							drinkQuantity = drink.servingSize;
-						} else {
-							drinkName = humanize(drink, 'name').name;
-							drinkQuantity = drink.quantity + 'x';
-						}
+							var drinkName;
+							var drinkQuantity;
+							if (drink.drinkCategory === 'milkshake') {
+								drinkName = humanize(drink, 'name').name;
+								drinkName += ' Milkshake';
+								drinkQuantity = drink.servingSize;
+							} else if (drink.drinkCategory === 'non-coffee') {
+								drinkName = humanize(drink, 'name').name;
+								drinkQuantity = drink.servingSize;
+							} else {
+								drinkName = humanize(drink, 'name').name;
+								drinkQuantity = drink.quantity + 'x';
+							}
 							$(
 								`<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}${
 									j + 1
@@ -255,7 +255,7 @@ const buildPage = () => {
 			$(`#checkoutFooter`).append(`<div class="col-8"><h4 style="font-weight: bold;">Order Total</h4>
 				</div> <div class="col-4" style="margin-left: 21px; "><h4 style="float:right; font-weight: bold; ">$${order.orderTotal.toFixed(
 					2
-		)}</h4></div>`);
+				)}</h4></div>`);
 		}
 	}
 };
@@ -265,7 +265,6 @@ const loading = (isLoading) => {
 		document.querySelector('button').disabled = true;
 		$('#buttonText').html('Loading...');
 		$('#spinner').css('visibility', 'visible');
-		
 	} else {
 		document.querySelector('button').disabled = false;
 		document.querySelector('#spinner').classList.add('hidden');
@@ -284,6 +283,8 @@ const handleFormSubmit = (stripe, card, data) => {
 	});
 	customerData['stripeId'] = data.customer;
 	const newCustomer = new Customer(customerData);
+	console.log("newCustomer", newCustomer)
+	
 	order.customerData = newCustomer;
 	response['order'] = order;
 	const JSONResponse = JSON.stringify(response);
@@ -293,12 +294,14 @@ const handleFormSubmit = (stripe, card, data) => {
 				card: card,
 				billing_details: {
 					name: newCustomer.firstName + ' ' + newCustomer.lastName,
-					receiptEmail: newCustomer.email,
 				},
 			},
+			receipt_email: newCustomer.id,
 		})
 		.then(function (result) {
 			if (result.error) {
+				console.log('result.error', result.error);
+
 				// Show error to your customer
 				showError(result.error.message);
 				return false;
@@ -310,11 +313,10 @@ const handleFormSubmit = (stripe, card, data) => {
 					dataType: 'json',
 					type: 'POST',
 					contentType: 'application/json',
-					success: () =>
-						{
-							localStorage.setItem('stripeId', newCustomer.stripeId);
-							location.assign('/order/confirmation');
-						},
+					success: () => {
+						localStorage.setItem('stripeId', newCustomer.stripeId);
+						location.assign('/order/confirmation');
+					},
 					error: (response) => console.log('console.log error', response),
 				});
 			}
@@ -340,7 +342,7 @@ const validateForm = () => {
 		}
 		const forms = document.getElementsByClassName('needs-validation');
 		const stripe = Stripe(
-			'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+			'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
 		);
 		document.querySelector('button').disabled = true;
 		fetch('/create-payment-intent', {

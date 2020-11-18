@@ -9,7 +9,7 @@ const stringify = (crepeOrder) => {
 	if (editCrepeIndex === null) {
 		const order = new Order();
 		if (crepeOrder.menuCrepes.length) {
-			if (localStorage.length > 0) {
+			if (localStorage.getItem('order')) {
 				order.fromJSON(localStorage.getItem('order'));
 				const crepeOrderTotal = crepeOrder.orderTotal;
 				order.orderTotal += crepeOrderTotal;

@@ -10,9 +10,19 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import os
+
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy import inspect, create_engine
+# Imports the Cloud Logging client library
+import logging
+import google.cloud.logging  # Don't conflict with standard logging
+from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
+
+client = google.cloud.logging.Client()
+handler = CloudLoggingHandler(client)
+logging.getLogger().setLevel(logging.WARN)  # defaults to WARN
+setup_logging(handler)
 
 
 
@@ -1247,7 +1257,7 @@ def create_everything():
     create_ice_cream_flavor()
     create_sides()
     create_menu_crepe()
-    print('everything')
+    logging.info('database created')
 
 
 def instantiate_db_connection():
