@@ -306,7 +306,6 @@ class Order_Service(object):
         message['To'] = email
         message_subject = ' ' + order.customer.first_name + ' ' + order.customer.last_name
         message['Subject'] = 'Order From' + message_subject  # The subject line
-        print("message['Subject']", message['Subject'])
         
         # The body and the attachments for the mail
         message.attach(MIMEText(mail_content, 'html'))

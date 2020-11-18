@@ -4,16 +4,6 @@ import stripe
 from datetime import date
 from sqlalchemy import or_
 from sqlalchemy.orm import load_only
-# Imports the Cloud Logging client library
-import logging
-import google.cloud.logging  # Don't conflict with standard logging
-from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
-
-client = google.cloud.logging.Client()
-handler = CloudLoggingHandler(client)
-logging.getLogger().setLevel(logging.WARN)  # defaults to WARN
-setup_logging(handler)
-
 
 class Ingredient_Repository(object):
 
@@ -49,7 +39,6 @@ class Ingredient_Repository(object):
 class Order_Repository(object):
     def post_stripe_order(self, session, order):
         customer = order['customerData']
-        print("customer", customer)    
         amount = int(order['orderTotal'] * 100)
         customerExistenceBool = False
         if customer:
