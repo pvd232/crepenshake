@@ -5,7 +5,7 @@ var editCrepeIndex = null;
 var editOrder = null;
 var userOrderCrepe = new OrderCrepe();
 
-const displayErrorMsg = (element) => {
+function displayErrorMsg(element) {
 	const selector = `#${element.closest('.card, .list-group-item').attr('id') + 'error'}`;
 	const id = `${element.closest('.card, .list-group-item').attr('id') + 'error'}`;
 	if ($(selector).length) {
@@ -26,7 +26,7 @@ const displayErrorMsg = (element) => {
 	return false;
 };
 
-const stringify = (crepeOrder) => {
+function stringify(crepeOrder) {
 	if (editCrepeIndex === null) {
 		if (crepeOrder.ingredients.length) {
 			const order = new Order();
@@ -59,9 +59,9 @@ const stringify = (crepeOrder) => {
 	return true;
 };
 
-const checkOut = (order) => {
-	userOrderCrepe.flavor = 'savory';
-	userOrderCrepe.origination = 'custom';
+function checkOut(order) {
+	order.flavor = 'savory';
+	order.origination = 'custom';
 	if (editCrepeIndex != null) {
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
@@ -74,7 +74,7 @@ function removeAllChildNodes(parent) {
 		parent.removeChild(parent.firstChild);
 	}
 }
-const modifyOrder = () => {
+function modifyOrder() {
 	if ($('.edit').length) {
 		editCrepeIndex = $('.edit').first().attr('id');
 		editOrder = new Order();
@@ -97,7 +97,7 @@ const modifyOrder = () => {
 		}
 	}
 };
-const pageLogic = () => {
+function pageLogic() {
 	$('.card, .list-group-item')
 		.on('mouseenter', function () {
 			if (
@@ -246,7 +246,7 @@ const pageLogic = () => {
 		});
 };
 
-const pageBuild = () => {
+function pageBuild() {
 	$('.card-img-top').each(function () {
 		$(this).wrap('<div class="container2"></div>');
 		$('<button class="btn" id="servingSize-2" type="button">Customize</button>').insertAfter($(this));
@@ -272,7 +272,7 @@ const pageBuild = () => {
 			checkOut(userOrderCrepe);
 		});
 };
-const mobileRendering = () => {
+function mobileRendering() {
 	const cardDeckElements = document.getElementsByClassName('card-deck');
 	const cardTitleElements = document.getElementsByClassName('card-title');
 	const cardTextElements = document.getElementsByClassName('card-text');
