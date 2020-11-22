@@ -272,7 +272,7 @@ function pageBuild() {
 			checkOut(userOrderCrepe);
 		});
 };
-function mobileRendering() {
+function mobileRendering () {
 	const cardDeckElements = document.getElementsByClassName('card-deck');
 	const cardTitleElements = document.getElementsByClassName('card-title');
 	const cardTextElements = document.getElementsByClassName('card-text');

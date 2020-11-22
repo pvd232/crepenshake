@@ -1,16 +1,16 @@
 
-export const removeAllChildNodes = (parent) => {
+export function removeAllChildNodes (parent) {
 	while (parent.firstChild) {
 		parent.removeChild(parent.firstChild);
 	}
 };
-export const capitalize = (str) => {
+export function capitalize (str) {
 	return str.replace(/^./, function (str) {
 		return str.toUpperCase();
 	});
 };
 
-export const humanize = (dict = null, attr = null, word = null) => {
+export function humanize (dict = null, attr = null, word = null) {
 	// this is providing a deep copy of the object so we don't mutate the original order
 	var formatDict = JSON.parse(JSON.stringify(dict));
 	if (formatDict) {

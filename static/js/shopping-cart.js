@@ -2,11 +2,11 @@
 
 import { Coffee, Order, capitalize, humanize } from './model.js';
 
-const showShoppingCart = () => {
+function showShoppingCart () {
 	$('#shoppingCart').modal('toggle');
 };
 
-const checkBrowser = () => {
+function checkBrowser () {
 	if ('localStorage' in window && window['localStorage'] !== null) {
 		return true;
 	} else {
@@ -14,9 +14,9 @@ const checkBrowser = () => {
 	}
 };
 
-const doShowAll = () => {
+function doShowAll () {
 	if (checkBrowser()) {
-		const modifyItem = (index, itemType, operation) => {
+		function modifyItem (index, itemType, operation) {
 			const order = new Order();
 			order.fromJSON(localStorage.getItem('order'));
 			if (operation === 'copy') {

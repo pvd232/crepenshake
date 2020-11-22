@@ -341,6 +341,10 @@ const validateForm = () => {
 		const stripe = Stripe(
 			'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
 		);
+		// const stripe = Stripe(
+		// 	'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		// );
+		
 		document.querySelector('button').disabled = true;
 		fetch('/create-payment-intent', {
 			method: 'POST',
@@ -353,6 +357,7 @@ const validateForm = () => {
 				return result.json();
 			})
 			.then(function (data) {
+				console.log('data', data)
 				const elements = stripe.elements();
 				const card = elements.create('card');
 				// Stripe injects an iframe into the DOM

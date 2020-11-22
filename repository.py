@@ -76,11 +76,12 @@ class Order_Repository(object):
 
     def post_order(self, session, order):
         customer = order.customer
+        print('customer', customer)
         user = session.query(Customer).filter(
             Customer.id == customer.id, Customer.stripe_id == customer.stripe_id).first()
 
         # update stripe customer email because the customer is created with the payment intent when the email has not been harvested yet
-        if not stripe.Customer.retrieve(user.stripe_id).email:
+        if user and not stripe.Customer.retrieve(user.stripe_id).email:
             stripe.Customer.modify(user.stripe_id, email=user.id)
         # check to make sure the customer doesn't already exist in the database
         
