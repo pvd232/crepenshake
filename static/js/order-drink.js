@@ -5,7 +5,7 @@ var editDrinkIndex = null;
 var editOrder = null;
 var userOrderDrink = new OrderDrink();
 
-const checkOut = (order) => {
+function checkOut (order) {
 	if (editDrinkIndex != null) {
 		// when checking out make sure that if no milk has been selected then we assign the default value of 2%
 		for (var i = 0; i < userOrderDrink.orderDrink.length; i++) {
@@ -21,7 +21,7 @@ const checkOut = (order) => {
 	}
 };
 
-const stringify = (drinkOrder) => {
+function stringify (drinkOrder) {
 	if (editDrinkIndex === null) {
 		const order = new Order();
 		if (drinkOrder.orderDrink.length) {
@@ -51,13 +51,13 @@ const stringify = (drinkOrder) => {
 	return true;
 };
 
-const removeAllChildNodes = (parent) => {
+function removeAllChildNodes (parent) {
 	while (parent.firstChild) {
 		parent.removeChild(parent.firstChild);
 	}
 };
 
-const modifyOrder = () => {
+function modifyOrder () {
 	if ($('.edit').length) {
 		editDrinkIndex = $('.edit').first().attr('id');
 		editOrder = new Order();
@@ -175,7 +175,7 @@ const modifyOrder = () => {
 		}
 	}
 };
-const pageLogic = () => {
+function pageLogic () {
 	$('.card, .list-group-item')
 		.on('mouseenter', function () {
 			if ($(this).attr('class') === 'card') {
@@ -594,7 +594,7 @@ const pageLogic = () => {
 			$(this).find('.card-body, .card-img-top, img, h5, p').css('opacity', '1');
 		});
 };
-const pageBuild = () => {
+function pageBuild () {
 	$('.card-img-top').wrap('<div class="container2"></div>');
 	$('#drinkcheckout')
 		.unbind('click')
@@ -656,7 +656,7 @@ const pageBuild = () => {
 			});
 	});
 };
-const mobileRendering = () => {
+function mobileRendering () {
 	const cardDeckElements = document.getElementsByClassName('card-deck');
 	const cardTitleElements = document.getElementsByClassName('card-title');
 	const cardTextElements = document.getElementsByClassName('card-text');

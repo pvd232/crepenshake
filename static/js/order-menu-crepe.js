@@ -5,7 +5,7 @@ var editCrepeIndex = null;
 var editOrder = null;
 const userOrderMenuCrepe = new OrderCrepe();
 
-const stringify = (crepeOrder) => {
+function stringify (crepeOrder) {
 	if (editCrepeIndex === null) {
 		const order = new Order();
 		if (crepeOrder.menuCrepes.length) {
@@ -35,7 +35,7 @@ const stringify = (crepeOrder) => {
 	return true;
 };
 
-const checkOut = (orderCrepe) => {
+function checkOut (orderCrepe) {
 	orderCrepe._origination = 'menu';
 	if (editCrepeIndex != null) {
 		$.when(stringify(orderCrepe)).then(location.assign('/order?userOrder=true'));
@@ -44,13 +44,13 @@ const checkOut = (orderCrepe) => {
 	}
 };
 
-const removeAllChildNodes = (parent) => {
+function removeAllChildNodes (parent) {
 	while (parent.firstChild) {
 		parent.removeChild(parent.firstChild);
 	}
 };
 
-const modifyOrder = () => {
+function modifyOrder () {
 	if ($('.edit').length) {
 		editCrepeIndex = $('.edit').first().attr('id');
 		editOrder = new Order();
@@ -67,7 +67,7 @@ const modifyOrder = () => {
 	}
 };
 
-const pageLogic = () => {
+function pageLogic () {
 	$('.card, .list-group')
 		.on('mouseenter', function () {
 			if ($(this).attr('class') === 'card') {
@@ -155,7 +155,7 @@ const pageLogic = () => {
 			}
 		});
 };
-const pageBuild = () => {
+function pageBuild () {
 	$('.card-img-top').wrap('<div class="container2"></div>');
 
 	$('.card-img-top').each(function () {
@@ -183,7 +183,7 @@ const pageBuild = () => {
 			checkOut(userOrderMenuCrepe);
 		});
 };
-const mobileRendering = () => {
+function mobileRendering () {
 	const cardDeckElements = document.getElementsByClassName('card-deck');
 	const cardTitleElements = document.getElementsByClassName('card-title');
 	const cardTextElements = document.getElementsByClassName('card-text');

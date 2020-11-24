@@ -5,7 +5,7 @@ import { humanize } from './model.js';
 
 import { Order, Customer, Coffee } from './model.js';
 
-const buildPage = () => {
+function buildPage () {
 	const key = 'order';
 	const orderDict = localStorage.getItem(key);
 	const order = new Order();
@@ -176,13 +176,25 @@ const buildPage = () => {
 							if (drink.drinkCategory === 'milkshake') {
 								drinkName = humanize(drink, 'name').name;
 								drinkName += ' Milkshake';
+								if (drink.quantity > 1) {
+									drinkQuantity = drink.quantity + 'x' + ' ' + drink.servingSize
+								}
+								else {
 								drinkQuantity = drink.servingSize;
+								}
 							} else if (drink.drinkCategory === 'non-coffee') {
 								drinkName = humanize(drink, 'name').name;
+								if (drink.quantity > 1) {
+									drinkQuantity = drink.quantity + 'x' + ' ' + drink.servingSize
+								}
+								else {
 								drinkQuantity = drink.servingSize;
+								}
 							} else {
+								if (drink.quantity > 1) {
+									drinkQuantity = drink.quantity + 'x'
+								}
 								drinkName = humanize(drink, 'name').name;
-								drinkQuantity = drink.quantity + 'x';
 							}
 							$(
 								`<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}${
@@ -259,7 +271,7 @@ const buildPage = () => {
 		}
 	}
 };
-const loading = (isLoading) => {
+function loading (isLoading) {
 	if (isLoading) {
 		// Disable the button and show a spinner
 		document.querySelector('button').disabled = true;
@@ -270,7 +282,7 @@ const loading = (isLoading) => {
 		document.querySelector('#spinner').classList.add('hidden');
 	}
 };
-const handleFormSubmit = (stripe, card, data) => {
+function handleFormSubmit (stripe, card, data) {
 	loading(true);
 	const order = new Order();
 	order.fromJSON(localStorage.getItem('order'));
@@ -310,17 +322,17 @@ const handleFormSubmit = (stripe, card, data) => {
 					dataType: 'json',
 					type: 'POST',
 					contentType: 'application/json',
-					success: () => {
+					success: function() {
 						localStorage.setItem('stripeId', newCustomer.stripeId);
 						location.assign('/order/confirmation');
 					},
-					error: (response) => console.log('console.log error', response),
+					error: function (response) { console.log('console.log error', response)},
 				});
 			}
 		});
 };
 // Show the customer the error from Stripe if their card fails to charge
-const showError = (errorMsgText) => {
+function showError (errorMsgText) {
 	loading(false);
 	var errorMsg = document.querySelector('#cardError');
 	errorMsg.textContent = errorMsgText;
@@ -328,7 +340,7 @@ const showError = (errorMsgText) => {
 		errorMsg.textContent = '';
 	}, 4000);
 };
-const validateForm = () => {
+function validateForm () {
 	const order = new Order();
 	const orderDict = localStorage.getItem('order');
 	if (orderDict) {
@@ -338,12 +350,12 @@ const validateForm = () => {
 			order.customerData = newCustomer;
 		}
 		const forms = document.getElementsByClassName('needs-validation');
-		const stripe = Stripe(
-			'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
-		);
 		// const stripe = Stripe(
-		// 	'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		// 	'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
 		// );
+		const stripe = Stripe(
+			'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		);
 		
 		document.querySelector('button').disabled = true;
 		fetch('/create-payment-intent', {

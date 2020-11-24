@@ -376,7 +376,7 @@ function doShowAll () {
 					`#modalBody1`
 				);
 
-				$(`#footer`).append(`<div class="col-8" ><h3 style="font-weight: bold;">Order Total</h3></div>`);
+				$(`#footer`).append(`<div class="col-8" ><h3 style="font-weight: bold;float:left">Total</h3></div>`);
 				$(`#footer`).append(
 					`<div class="col-3" style="margin-left:21px;" id="footerCol1"><h3 style="float:right;font-weight:bold;">$${order.orderTotal.toFixed(
 						2

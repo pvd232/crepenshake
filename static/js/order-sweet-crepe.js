@@ -5,7 +5,7 @@ var editCrepeIndex = null;
 var editOrder = null;
 var userOrderCrepe = new OrderCrepe();
 
-const stringify = (crepeOrder) => {
+function stringify (crepeOrder) {
 	if (editCrepeIndex === null) {
 		if (crepeOrder.ingredients.length) {
 			const order = new Order();
@@ -38,7 +38,7 @@ const stringify = (crepeOrder) => {
 	return true;
 };
 
-const checkOut = (order) => {
+function checkOut (order) {
 	userOrderCrepe.flavor = 'sweet';
 	userOrderCrepe.origination = 'custom';
 	if (editCrepeIndex != null) {
@@ -48,7 +48,7 @@ const checkOut = (order) => {
 	}
 };
 
-const modifyOrder = () => {
+function modifyOrder () {
 	if ($('.edit').length) {
 		editCrepeIndex = $('.edit').first().attr('id');
 		editOrder = new Order();
@@ -66,7 +66,7 @@ const modifyOrder = () => {
 	}
 };
 
-const pageLogic = () => {
+function pageLogic () {
 	$('.card, .list-group-item')
 		.on('mouseenter', function () {
 			if (
@@ -141,7 +141,7 @@ const pageLogic = () => {
 			$(this).find('.card-body, .card-img-top, .card-text, .card-title').css('opacity', '1');
 		});
 };
-const pageBuild = () => {
+function pageBuild () {
 	$('#buildSweetCrepecheckout')
 		.unbind('click')
 		.bind('click', function () {
@@ -170,7 +170,7 @@ const pageBuild = () => {
 		}
 	});
 };
-const mobileRendering = () => {
+function mobileRendering () {
 	const cardDeckElements = document.getElementsByClassName('card-deck');
 	const cardTitleElements = document.getElementsByClassName('card-title');
 	const cardTextElements = document.getElementsByClassName('card-text');

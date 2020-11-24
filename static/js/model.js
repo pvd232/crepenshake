@@ -101,7 +101,7 @@ export class Drink {
 	set drinkCategory(value) {
 		this._drinkCategory = value;
 	}
-	toJSON = () => {
+	toJSON () {
 		const data = {
 			id: this._id,
 			name: this._name,
@@ -112,7 +112,7 @@ export class Drink {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = json;
 		data.id;
 
@@ -133,7 +133,7 @@ export class Drink {
 			this._servingSize = data.serving_size;
 		}
 	};
-	updateDrinkQuantity = (value) => {
+	updateDrinkQuantity (value) {
 		if (value === 'decrease') {
 			if (this._quantity === 0) {
 				return;
@@ -255,7 +255,7 @@ export class Coffee {
 		this._quantity = value;
 	}
 
-	toJSON = () => {
+	toJSON () {
 		const data = {
 			id: this._id,
 			name: this._name,
@@ -273,7 +273,7 @@ export class Coffee {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON  (json) {
 		const data = json;
 		this._id = data.id;
 		this._name = data.name;
@@ -360,7 +360,7 @@ export class Order {
 	set customerData(value) {
 		this._customerData = value;
 	}
-	toJSON = () => {
+	toJSON () {
 		this.priceOrder();
 		const data = {
 			orderCrepe: this._orderCrepe,
@@ -371,7 +371,7 @@ export class Order {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = JSON.parse(json);
 		for (var i = 0; i < data.orderDrink.length; i++) {
 			const newDrinkOrder = new OrderDrink();
@@ -392,7 +392,7 @@ export class Order {
 		this._customerData = data.customerData;
 		this.priceOrder();
 	};
-	priceOrder = () => {
+	priceOrder () {
 		this._orderTotal = 0;
 		for (var i in this._orderCrepe) {
 			this._orderTotal += this._orderCrepe[i].orderTotal;
@@ -406,74 +406,9 @@ export class Order {
 		}
 	};
 }
-// export class PaymentInformation {
-// 	constructor(paymentObject) {
-// 		this.paymentMethod = paymentObject.paymentMethod;
-// 		this.creditCardName = paymentObject['cc-name'];
-// 		this.creditCardNumber = paymentObject['cc-number'];
-// 		this.creditCardExpirationMonth = paymentObject['cc-expiration'].split('/')[0];
-// 		this.creditCardExpirationYear = paymentObject['cc-expiration'].split('/')[1];
-// 		this.creditCardCVV = paymentObject['cc-cvv'];
-// 	}
 
-// 	get paymentMethod() {
-// 		return this._paymentMethod;
-// 	}
-// 	get creditCardName() {
-// 		return this._creditCardName;
-// 	}
-// 	get creditCardNumber() {
-// 		return this._creditCardNumber;
-// 	}
-// 	get creditCardExpirationMonth() {
-// 		return this._creditCardExpirationMonth;
-// 	}get creditCardExpirationYear() {
-// 		return this._creditCardExpirationYear;
-// 	}
-// 	get creditCardCVV() {
-// 		return this._creditCardCVV;
-// 	}
-// 	set paymentMethod(value) {
-// 		this._paymentMethod = value;
-// 	}
-// 	set creditCardName(value) {
-// 		this._creditCardName = value;
-// 	}
-// 	set creditCardNumber(value) {
-// 		this._creditCardNumber = value;
-// 	}
-// 	set creditCardExpirationMonth(value) {
-// 		this._creditCardExpirationMonth = value;
-// 	}
-// 	set creditCardExpirationYear(value) {
-// 		this._creditCardExpirationYear = value;
-// 	}
-// 	set creditCardCVV(value) {
-// 		this._creditCardCVV = value;
-// 	}
-// 	toJSON = () => {
-// 		const data = {
-// 			paymentMethod: this._paymentMethod,
-// 			creditCardName: this._creditCardName,
-// 			creditCardNumber: this._creditCardNumber,
-// 			creditCardExpirationMonth: this._creditCardExpirationMonth,
-// 			creditCardExpirationYear: this._creditCardExpirationYear,
-// 			creditCardCVV: this._creditCardCVV,
-// 		};
-// 		return data;
-// 	};
-// 	fromJSON = (json) => {
-// 		const data = json;
-// 		this._paymentMethod = data.paymentMethod;
-// 		this._creditCardName = data.creditCardName;
-// 		this._creditCardNumber = data.creditCardNumber;
-// 		this._creditCardExpirationMonth = data.creditCardExpirationMonth;
-// 		this._creditCardExpirationYear = data.creditCardExpirationYear;
-// 		this._creditCardCVV = data.creditCardCVV;
-// 	};
-// }
 export class Customer {
-	constructor(customerObject = null, stripeId = null) {
+	constructor(customerObject, stripeId) {
 		if (customerObject) {
 			this.id = customerObject.email;
 			this.stripeId = customerObject.stripeId;
@@ -528,9 +463,6 @@ export class Customer {
 	get country() {
 		return this._country;
 	}
-	// get paymentInformation() {
-	// 	return this._paymentInformation;
-	// }
 	set id(value) {
 		this._id = value;
 	}
@@ -558,10 +490,7 @@ export class Customer {
 	set country(value) {
 		this._country = value;
 	}
-	// set paymentInformation(value) {
-	// 	this._paymentInformation = value;
-	// }
-	toJSON = () => {
+	toJSON () {
 		const data = {
 			id: this._id,
 			stripeId: this._stripeId,
@@ -576,7 +505,7 @@ export class Customer {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = json;
 		this._id = data.id;
 		this.stripeId = data.stripeId;
@@ -594,7 +523,6 @@ export class OrderDrink {
 		this.orderDrink = orderDrink;
 		this.orderTotal = orderTotal;
 	}
-
 	get orderDrink() {
 		return this._orderDrink;
 	}
@@ -607,7 +535,7 @@ export class OrderDrink {
 	set orderTotal(value) {
 		this._orderTotal = value;
 	}
-	toJSON = () => {
+	toJSON () {
 		this.priceDrinks();
 		const data = {
 			orderDrink: this._orderDrink,
@@ -615,7 +543,7 @@ export class OrderDrink {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = json;
 		for (var i = 0; i < data.orderDrink.length; i++) {
 			const drinkCategory = data.orderDrink[i].drinkCategory;
@@ -631,7 +559,7 @@ export class OrderDrink {
 		}
 		this.priceDrinks();
 	};
-	checkIfCoffeeSelected = () => {
+	checkIfCoffeeSelected () {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				return true;
@@ -639,7 +567,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfTempSelected = () => {
+	checkIfTempSelected () {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				if (this._orderDrink[i].temperature) {
@@ -650,7 +578,7 @@ export class OrderDrink {
 		return false;
 	};
 
-	checkIfThisTempSelected = (json) => {
+	checkIfThisTempSelected (json) {
 		const temp = json;
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
@@ -661,7 +589,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfMilkSelected = () => {
+	checkIfMilkSelected () {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				if (this._orderDrink[i].milkType) {
@@ -671,7 +599,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfThisMilkSelected = (json) => {
+	checkIfThisMilkSelected (json) {
 		const milk = json;
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
@@ -682,7 +610,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfSyrupSelected = () => {
+	checkIfSyrupSelected () {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				if (this._orderDrink[i].flavorSyrup) {
@@ -692,7 +620,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	checkIfThisSyrupSelected = (json) => {
+	checkIfThisSyrupSelected (json) {
 		const syrup = json;
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
@@ -703,7 +631,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	changeDrinkQuantity = (json, value) => {
+	changeDrinkQuantity (json, value) {
 		const selectedDrink = this.findDrink(json);
 		if (!selectedDrink) {
 			return this.addDrink(json);
@@ -711,7 +639,7 @@ export class OrderDrink {
 			selectedDrink.updateDrinkQuantity(value);
 		}
 	};
-	findDrink = (json) => {
+	findDrink (json) {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			const selectedDrink = new Drink();
 			selectedDrink.fromJSON(json);
@@ -725,7 +653,7 @@ export class OrderDrink {
 
 		return false;
 	};
-	addDrink = (json) => {
+	addDrink (json) {
 		this.findDrink(json);
 		if (!this.findDrink(json)) {
 			const selectedDrink = new Drink();
@@ -735,7 +663,7 @@ export class OrderDrink {
 			return selectedDrink;
 		}
 	};
-	removeDrink = (json) => {
+	removeDrink (json) {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			const selectedDrink = new Drink();
 			selectedDrink.fromJSON(json);
@@ -750,14 +678,14 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	addCoffee = (json, espressoServingSize) => {
+	addCoffee (json, espressoServingSize) {
 		const coffee = new Coffee();
 		coffee.fromJSON(json);
 		coffee.espressoServingSize = espressoServingSize;
 		this._orderDrink.push(coffee);
 		this.priceDrinks();
 	};
-	updateEspressoServingSize = (json, espressoServingSize) => {
+	updateEspressoServingSize (json, espressoServingSize) {
 		const coffee = new Coffee();
 		coffee.fromJSON(json);
 		for (var i in this._orderDrink) {
@@ -767,7 +695,7 @@ export class OrderDrink {
 		}
 		this.priceDrinks();
 	};
-	addTemp = (json) => {
+	addTemp (json) {
 		const temp = json;
 
 		for (var i = 0; i < this._orderDrink.length; i++) {
@@ -778,7 +706,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	removeTemp = () => {
+	removeTemp () {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				this._orderDrink[i].temperature = null;
@@ -787,7 +715,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	addMilk = (json) => {
+	addMilk (json) {
 		const milk = json;
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
@@ -799,7 +727,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	removeMilk = () => {
+	removeMilk () {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				this._orderDrink[i].milkType = null;
@@ -810,7 +738,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	addSyrup = (json, servingSize) => {
+	addSyrup (json, servingSize) {
 		const syrup = json;
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
@@ -823,7 +751,7 @@ export class OrderDrink {
 
 		return false;
 	};
-	removeSyrup = () => {
+	removeSyrup () {
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
 				this._orderDrink[i].flavorSyrup = null;
@@ -834,7 +762,7 @@ export class OrderDrink {
 		}
 		return false;
 	};
-	priceDrinks = () => {
+	priceDrinks () {
 		this._orderTotal = 0;
 		for (var i = 0; i < this._orderDrink.length; i++) {
 			if (this._orderDrink[i].drinkCategory === 'coffee') {
@@ -860,9 +788,7 @@ export class OrderDrink {
 		}
 	};
 }
-
 // Side Models
-
 export class IceCreamBowl {
 	constructor(
 		id = null,
@@ -924,7 +850,7 @@ export class IceCreamBowl {
 		this._toppings = value;
 	}
 
-	toJSON = () => {
+	toJSON () {
 		this.updateServingSize();
 		const data = {
 			id: this._id,
@@ -937,7 +863,7 @@ export class IceCreamBowl {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = json;
 		this._id = data.id;
 		this._flavor = data.flavor;
@@ -957,7 +883,7 @@ export class IceCreamBowl {
 			}
 		}
 	};
-	updateIceCreamBowlQuantity = (value) => {
+	updateIceCreamBowlQuantity (value) {
 		if (value === 'decrease') {
 			if (this._quantity === 0) {
 				return;
@@ -974,7 +900,7 @@ export class IceCreamBowl {
 			}
 		}
 	};
-	updateServingSize = () => {
+	updateServingSize () {
 		if (this._quantity === 1) {
 			this._servingSize = '1_scoop';
 		} else if (this._quantity === 2) {
@@ -1001,7 +927,7 @@ export class OrderSide {
 	set orderTotal(value) {
 		this._orderTotal = value;
 	}
-	toJSON = () => {
+	toJSON () {
 		this.priceSides();
 		const data = {
 			orderSide: this._orderSide,
@@ -1009,7 +935,7 @@ export class OrderSide {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = json;
 		for (var i = 0; i < data.orderSide.length; i++) {
 			const sideCategory = data.orderSide[i].sideName;
@@ -1021,7 +947,7 @@ export class OrderSide {
 		}
 		this.priceSides();
 	};
-	checkIfIceCreamSelected = () => {
+	checkIfIceCreamSelected ()  {
 		for (var i = 0; i < this._orderSide.length; i++) {
 			if (this._orderSide[i].sideName === 'ice_cream_bowl') {
 				return true;
@@ -1029,7 +955,7 @@ export class OrderSide {
 		}
 		return false;
 	};
-	checkIfThisToppingSelected = (json) => {
+	checkIfThisToppingSelected (json) {
 		const topping = new Ingredient();
 		topping.fromJSON(json);
 		for (var i = 0; i < this._orderSide.length; i++) {
@@ -1045,7 +971,7 @@ export class OrderSide {
 		}
 		return false;
 	};
-	changeSideQuantity = (json, value) => {
+	changeSideQuantity (json, value) {
 		const selectedItemCategory = json.side_name_id;
 		const selectedSide = this.findSide(json);
 		if (!selectedSide && value === 'increase') {
@@ -1063,7 +989,7 @@ export class OrderSide {
 			}
 		}
 	};
-	findSide = (json) => {
+	findSide (json) {
 		const selectedItemCategory = json.side_name_id;
 
 		if (selectedItemCategory === 'ice_cream_bowl') {
@@ -1077,7 +1003,7 @@ export class OrderSide {
 		}
 		return false;
 	};
-	addSide = (json) => {
+	addSide (json) {
 		const selectedItemCategory = json.side_name_id;
 		if (!this.findSide(json)) {
 			if (selectedItemCategory === 'ice_cream_bowl') {
@@ -1089,7 +1015,7 @@ export class OrderSide {
 			}
 		}
 	};
-	removeSide = (json) => {
+	removeSide (json) {
 		const selectedItemCategory = json['side_name_id'];
 		if (selectedItemCategory === 'ice_cream_bowl') {
 			const selectedItem = new IceCreamBowl();
@@ -1105,7 +1031,7 @@ export class OrderSide {
 
 		return false;
 	};
-	addTopping = (json, servingSize) => {
+	addTopping (json, servingSize) {
 		const selectedItem = new Ingredient();
 		selectedItem.fromJSON(json);
 		if (!this.checkIfThisToppingSelected(json)) {
@@ -1123,7 +1049,7 @@ export class OrderSide {
 		}
 		return false;
 	};
-	removeTopping = (json) => {
+	removeTopping (json) {
 		const selectedTopping = new Ingredient();
 		selectedTopping.fromJSON(json);
 		for (var i = 0; i < this._orderSide.length; i++) {
@@ -1141,7 +1067,7 @@ export class OrderSide {
 		}
 		return false;
 	};
-	priceSides = () => {
+	priceSides () {
 		this._orderTotal = 0;
 		if (this._orderSide.length) {
 			for (var i = 0; i < this._orderSide.length; i++) {
@@ -1166,7 +1092,7 @@ export class OrderSide {
 			}
 		}
 	};
-	updateToppingServingSize = (topping, servingSize) => {
+	updateToppingServingSize (topping, servingSize) {
 		for (var i = 0; i < this._orderSide.length; i++) {
 			if (this._orderSide[i].sideName === 'ice_cream_bowl') {
 				if (this._orderSide[i].toppings.length) {
@@ -1221,7 +1147,7 @@ export class Ingredient {
 	set quantity(value) {
 		this._quantity = value;
 	}
-	toJSON = () => {
+	toJSON () {
 		const data = {
 			id: this._id,
 			servingSize: this._servingSize,
@@ -1231,7 +1157,7 @@ export class Ingredient {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = json;
 		this._id = data.id;
 		this._servingSize = data.servingSize;
@@ -1245,7 +1171,7 @@ export class Ingredient {
 			this._quantity = data.quantity;
 		}
 	};
-	updateQuantity = (value) => {
+	updateQuantity (value) {
 		if (value === 'decrease') {
 			if (this._quantity === 0) {
 				return;
@@ -1303,7 +1229,7 @@ export class MenuCrepe {
 		this._price = value;
 	}
 
-	toJSON = () => {
+	toJSON () {
 		const data = {
 			id: this._id,
 			name: this._name,
@@ -1314,7 +1240,7 @@ export class MenuCrepe {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = json;
 		if (data.crepe_id) {
 			this._id = data.crepe_id;
@@ -1337,7 +1263,7 @@ export class MenuCrepe {
 		}
 		this._price = data.price;
 	};
-	updateCrepeQuantity = (value) => {
+	updateCrepeQuantity (value) {
 		if (value === 'decrease') {
 			if (this._quantity === 0) {
 				return;
@@ -1425,7 +1351,7 @@ export class OrderCrepe {
 		this._orderTotal = value;
 	}
 
-	toJSON = () => {
+	toJSON () {
 		if (this._ingredients.length) {
 			this.priceCrepe();
 		} else if (this._menuCrepes.length) {
@@ -1443,7 +1369,7 @@ export class OrderCrepe {
 		};
 		return data;
 	};
-	fromJSON = (json) => {
+	fromJSON (json) {
 		const data = json;
 		this._id = data.id;
 		this._name = data.name;
@@ -1468,7 +1394,7 @@ export class OrderCrepe {
 		}
 	};
 
-	findIngredient = (json) => {
+	findIngredient (json) {
 		const selectedIngredient = new Ingredient();
 		selectedIngredient.fromJSON(json);
 		if (this._ingredients.length) {
@@ -1480,7 +1406,7 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	addIngredient = (json, servingSize = null) => {
+	addIngredient (json, servingSize) {
 		const newIngredient = new Ingredient();
 		newIngredient.fromJSON(json);
 		newIngredient.servingSize = servingSize;
@@ -1488,7 +1414,7 @@ export class OrderCrepe {
 		this.priceCrepe();
 		return newIngredient;
 	};
-	removeIngredient = (json) => {
+	removeIngredient (json) {
 		const selectedIngredient = new Ingredient();
 		selectedIngredient.fromJSON(json);
 		if (this._ingredients.length) {
@@ -1502,7 +1428,7 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	changeIngredientQuantity = (json, value) => {
+	changeIngredientQuantity (json, value) {
 		const selectedIngredient = this.findIngredient(json);
 		if (!selectedIngredient) {
 			const addedIngredient = this.addIngredient(json, 'regular');
@@ -1517,7 +1443,7 @@ export class OrderCrepe {
 			return selectedIngredient;
 		}
 	};
-	changeSavoryIngredientQuantity = (json, servingSize) => {
+	changeSavoryIngredientQuantity (json, servingSize) {
 		const selectedIngredient = this.findIngredient(json);
 		const ingredientCategory = json.ingredient_category_id;
 		const proteinStatus = this.checkIfProteinSelected();
@@ -1558,7 +1484,7 @@ export class OrderCrepe {
 			return this.updateIngredientServingSize(selectedIngredient, servingSize);
 		}
 	};
-	updateIngredientServingSize = (ingredient, servingSize) => {
+	updateIngredientServingSize (ingredient, servingSize) {
 		for (var i = 0; i < this._ingredients.length; i++) {
 			if (this._ingredients[i].id === ingredient.id) {
 				this._ingredients[i].servingSize = servingSize;
@@ -1568,7 +1494,7 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	priceCrepe = () => {
+	priceCrepe () {
 		this._orderTotal = 0;
 		if (this._ingredients.length) {
 			for (var i = 0; i < this._ingredients.length; i++) {
@@ -1577,7 +1503,7 @@ export class OrderCrepe {
 			}
 		}
 	};
-	checkIfProteinSelected = () => {
+	checkIfProteinSelected () {
 		var counter = 0;
 		var response = null;
 		for (var i = 0; i < this._ingredients.length; i++) {
@@ -1594,7 +1520,7 @@ export class OrderCrepe {
 			return response;
 		}
 	};
-	findCrepe = (json) => {
+	findCrepe (json) {
 		const selectedCrepe = new MenuCrepe();
 		selectedCrepe.fromJSON(json);
 		for (var i = 0; i < this._menuCrepes.length; i++) {
@@ -1604,14 +1530,14 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	addCrepe = (json) => {
+	addCrepe (json) {
 		const crepeToAdd = new MenuCrepe();
 		crepeToAdd.fromJSON(json);
 		this._menuCrepes.push(crepeToAdd);
 		this.priceCrepes();
 		return crepeToAdd;
 	};
-	removeCrepe = (json) => {
+	removeCrepe (json) {
 		const selectedCrepe = new MenuCrepe();
 		selectedCrepe.fromJSON(json);
 		for (var i = 0; i < this._menuCrepes.length; i++) {
@@ -1623,7 +1549,7 @@ export class OrderCrepe {
 		}
 		return false;
 	};
-	changeCrepeQuantity = (json, value) => {
+	changeCrepeQuantity (json, value) {
 		const selectedCrepe = this.findCrepe(json);
 		if (!selectedCrepe) {
 			return this.addCrepe(json);
@@ -1634,7 +1560,7 @@ export class OrderCrepe {
 			}
 		}
 	};
-	priceCrepes = () => {
+	priceCrepes () {
 		this._orderTotal = 0;
 		for (var i = 0; i < this._menuCrepes.length; i++) {
 			const crepePrice = this._menuCrepes[i].price * this._menuCrepes[i].quantity;

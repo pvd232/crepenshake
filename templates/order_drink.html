@@ -77,7 +77,7 @@
 		<div class="card-deck" id="syrup">
 			{% for i in range(coffee_syrups|length) %}
 			<div class="card" id='{{coffee_syrups[i].coffee_syrup_flavor}}' data-drinks='{{coffee_syrups[i]|tojson}}'>
-				<img src='{{"../static/images/" + coffee_syrups[i].coffee_syrup_flavor + "_syrup" + ".jpg"}}' class="card-img-top" alt="..." />
+				<img src='{{"../static/images/" + coffee_syrups[i].coffee_syrup_flavor + "_syrup" + ".png"}}' class="card-img-top" alt="..." />
 				<div class="card-body">
 					<h5 class="card-title">{{coffee_syrups[i].coffee_syrup_flavor}}</h5>
 					<p class="card-text"></p>
