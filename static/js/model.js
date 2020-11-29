@@ -410,7 +410,7 @@ export class Order {
 export class Customer {
 	constructor(customerObject, stripeId) {
 		if (customerObject) {
-			this.id = customerObject.email;
+			this.id = customerObject.email.toLowerCase();
 			this.stripeId = customerObject.stripeId;
 			this.firstName = customerObject.firstName;
 			this.lastName = customerObject.lastName;
@@ -419,7 +419,6 @@ export class Customer {
 			this.state = customerObject.state;
 			this.zipcode = customerObject.zip;
 			this.country = customerObject.country;
-			// this.paymentInformation = new PaymentInformation(customerObject.paymentInformation);
 		} else if (stripeId) {
 			this._stripeId = stripeId;
 		} else {
@@ -432,7 +431,6 @@ export class Customer {
 			this.state = null;
 			this.zipcode = null;
 			this.country = null;
-			// this.paymentInformation = null;
 		}
 	}
 
