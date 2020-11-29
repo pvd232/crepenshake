@@ -76,15 +76,16 @@ class Order_Repository(object):
 
     def post_order(self, session, order):
         customer = order.customer
-        print('customer', customer)
+        print('customer', str(customer))
         user = session.query(Customer).filter(
             Customer.id == customer.id, Customer.stripe_id == customer.stripe_id).first()
-
+        if not user:
+            # if the user already exists in the database but for some reason they have been assigned a different stripe id, for example if they deleted their browser cache then they would be assigned a new stripe id even if their email exists in the database already
+            user = session.query(Customer).filter(Customer.id == customer.id).first()
         # update stripe customer email because the customer is created with the payment intent when the email has not been harvested yet
         if user and not stripe.Customer.retrieve(user.stripe_id).email:
             stripe.Customer.modify(user.stripe_id, email=user.id)
-        # check to make sure the customer doesn't already exist in the database
-        
+        # check to make sure the customer doesn't already exist in the database        
         if not user:
             customer = Customer(id=customer.id, stripe_id=customer.stripe_id, first_name=customer.first_name, last_name=customer.last_name,
                                     street=customer.street, city=customer.city, state=customer.state, zipcode=customer.zipcode, country=customer.country)
@@ -93,7 +94,7 @@ class Order_Repository(object):
                               cost=order.cost, date=order.date)
             session.add(new_order)
         else:
-            
+            print('cust', stripe.Customer.retrieve(user.stripe_id))  
             new_order = Order(id=order.id, customer_id=user.id,
                               cost=order.cost, date=order.date)
             session.add(new_order)
