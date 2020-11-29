@@ -76,7 +76,6 @@ class Order_Repository(object):
 
     def post_order(self, session, order):
         customer = order.customer
-        print('customer', str(customer))
         user = session.query(Customer).filter(
             Customer.id == customer.id, Customer.stripe_id == customer.stripe_id).first()
         if not user:
@@ -94,7 +93,6 @@ class Order_Repository(object):
                               cost=order.cost, date=order.date)
             session.add(new_order)
         else:
-            print('cust', stripe.Customer.retrieve(user.stripe_id))  
             new_order = Order(id=order.id, customer_id=user.id,
                               cost=order.cost, date=order.date)
             session.add(new_order)
