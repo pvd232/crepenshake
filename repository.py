@@ -96,7 +96,6 @@ class Order_Repository(object):
             new_order = Order(id=order.id, customer_id=user.id,
                               cost=order.cost, date=order.date)
             session.add(new_order)
-        session.commit()
         if order.order_crepe:
             for i in range(len(order.order_crepe.order_crepe)):
                 crepe_to_add = order.order_crepe.order_crepe[i]
@@ -129,7 +128,6 @@ class Order_Repository(object):
                     new_order_drink = Order_Drink(order_id=new_order.id, drink_id=drink_to_add.id,
                                               serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity)
                     session.add(new_order_drink)
-            session.commit()
 
         if order.order_side:
             order_side_list = list()
@@ -148,7 +146,6 @@ class Order_Repository(object):
                             new_ice_cream_bowl = Order_Ice_Cream(side_id=side_to_add.id, order_id=new_order.id, flavor=side_to_add.flavor,
                                                                  serving_size_id=side_to_add.serving_size, topping=topping.id, topping_serving_size=topping.serving_size, quantity=1)
                             session.add(new_ice_cream_bowl)
-            session.commit()
         return True
 
     def get_orders(self, session):
