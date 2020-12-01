@@ -64,7 +64,6 @@ class Order_Repository(object):
             customer = stripe.Customer.create()
             new_stripe_id = Stripe(id=customer.id)
             session.add(new_stripe_id)
-            session.commit()
             amount = int(order['orderTotal'] * 100)
             payment_intent = stripe.PaymentIntent.create(                
                 amount=amount,
