@@ -46,7 +46,7 @@ def humanize(dict=None, attr=None, format=False, word = False):
             return newFrags
 
 
-class Crepe_Model(object):
+class Crepe_Domain(object):
     def __init__(self, id=None, orgination_id=None, flavor_profile_id=None):
         self.id = id
         self.origination_id = orgination_id
@@ -74,7 +74,7 @@ class Ingredient_Category(object):
         return serialized_attributes
 
 
-class Ingredient_Model(object):
+class Ingredient_Domain(object):
     def __init__(self, id=None, ingredient_category_id=None, serving_size=None, price=None, ingredient_object=None):
         if ingredient_object:
             self.id = ingredient_object["id"]
@@ -99,7 +99,7 @@ class Ingredient_Model(object):
         return '<p style="font-size:large;"><span style="text-decoration:underline">Ingredient:</span> {0}, {1}</p>'.format(humanize(word=self.id), humanize(word=self.serving_size))
 
 
-class Order_Crepe_Model(object):
+class Order_Crepe_Domain(object):
     def __init__(self, order_id=None, order_crepe=None, order_crepe_object=None):
         self.order_id = order_id
         self.order_crepe = list()
@@ -108,7 +108,7 @@ class Order_Crepe_Model(object):
                 if order_crepe['origination'] == 'menu':
                     for menu_crepe in order_crepe['menuCrepes']:
                         menu_crepe_bool = False
-                        new_menu_crepe = Menu_Crepe_Model(
+                        new_menu_crepe = Menu_Crepe_Domain(
                             menu_crepe_object=menu_crepe)
                         for crepe in self.order_crepe:
                             if crepe.crepe_id == new_menu_crepe.crepe_id:
@@ -118,7 +118,7 @@ class Order_Crepe_Model(object):
                             self.order_crepe.append(new_menu_crepe)
             for order_crepe in order_crepe_object:
                 if order_crepe['origination'] == 'custom':
-                    new_custom_crepe = Custom_Crepe_Model(
+                    new_custom_crepe = Custom_Crepe_Domain(
                         custom_crepe_object=order_crepe)
                     self.order_crepe.append(new_custom_crepe)
         else:
@@ -148,7 +148,7 @@ class Order_Crepe_Model(object):
         return return_object
 
 
-class Order_Side_Model(object):
+class Order_Side_Domain(object):
     def __init__(self, order_id=None, order_side=None, quantity=None, order_side_object=None):
         if order_side_object:
             self.order_id = order_id
@@ -157,7 +157,7 @@ class Order_Side_Model(object):
                 sides_in_order = order_side['orderSide']
                 for side in sides_in_order:
                     if side['sideName'] == 'ice_cream_bowl':
-                        new_ice_cream_bowl = Ice_Cream_Bowl_Model(
+                        new_ice_cream_bowl = Ice_Cream_Bowl_Domain(
                             ice_cream_object=side)
                         self.order_side.append(new_ice_cream_bowl)
 
@@ -178,7 +178,7 @@ class Order_Side_Model(object):
         return return_object
 
 
-class Order_Drink_Model(object):
+class Order_Drink_Domain(object):
     def __init__(self, order_id=None, order_drink=None, order_drink_object=None):
         if order_drink_object:
             self.order_id = order_id
@@ -192,11 +192,11 @@ class Order_Drink_Model(object):
                 # organizing the list for when i send the confirmation email to my parents
                 for drink in drinks_in_order:
                     if drink['drinkCategory'] == 'coffee':
-                        new_coffee = Coffee_Model(coffee_object=drink)
+                        new_coffee = Coffee_Domain(coffee_object=drink)
                         coffee_list.append(new_coffee)
                     elif drink['drinkCategory'] == 'milkshake':
                         drink_bool = False
-                        new_drink = Drink_Model(drink_object=drink)
+                        new_drink = Drink_Domain(drink_object=drink)
                         for drink in milkshake_list:
                             if drink.id == new_drink.id:
                                 drink.quantity += 1
@@ -205,7 +205,7 @@ class Order_Drink_Model(object):
                             milkshake_list.append(new_drink)
                     elif drink['drinkCategory'] == 'bottled':
                         drink_bool = False
-                        new_drink = Drink_Model(drink_object=drink)
+                        new_drink = Drink_Domain(drink_object=drink)
                         for drink in bottled_list:
                             if drink.id == new_drink.id:
                                 drink.quantity += 1
@@ -214,7 +214,7 @@ class Order_Drink_Model(object):
                             bottled_list.append(new_drink)
                     elif drink['drinkCategory'] == 'non-coffee':
                         drink_bool = False
-                        new_drink = Drink_Model(drink_object=drink)
+                        new_drink = Drink_Domain(drink_object=drink)
                         for drink in non_coffee_list:
                             if drink.id == new_drink.id:
                                 drink.quantity += 1
@@ -272,26 +272,26 @@ class Order_Drink_Model(object):
         return_object += '<br>'
         return return_object
 
-class Order_Model(object):
+class Order_Domain(object):
     def __init__(self, id=None, customer=None, cost=None, date=date.today(), order_crepe=None, order_drink=None, order_side=None, order_object=None):
         if order_object:
             self.id = uuid.uuid4()
-            self.customer = Customer_Model(
+            self.customer = Customer_Domain(
                 customer_object=order_object['customerData'])
             self.cost = float(order_object['orderTotal'])
             self.date = date
             if len(order_object['orderCrepe']) > 0:
-                self.order_crepe = Order_Crepe_Model(order_id=self.id,
+                self.order_crepe = Order_Crepe_Domain(order_id=self.id,
                                                      order_crepe_object=order_object['orderCrepe'])
             else:
                 self.order_crepe = order_crepe
             if len(order_object['orderDrink']) > 0:
-                self.order_drink = Order_Drink_Model(order_id=self.id,
+                self.order_drink = Order_Drink_Domain(order_id=self.id,
                                                      order_drink_object=order_object['orderDrink'])
             else:
                 self.order_drink = order_drink
             if len(order_object['orderSide']) > 0:
-                self.order_side = Order_Side_Model(order_id=self.id,
+                self.order_side = Order_Side_Domain(order_id=self.id,
                                                    order_side_object=order_object['orderSide'])
             else:
                 self.order_side = order_side
@@ -314,7 +314,7 @@ class Order_Model(object):
         return '<p style= "font-weight:bold; font-size: large;">Crepes In Order:</p> <p style="font-size:large;">{0}</p> <br> <p style= "font-weight:bold; font-size: large;">Drinks in Order :</p> <p style="font-size:large;">{1}</p> <br> <p style= "font-weight:bold; font-size: large;">Sides in Order:</p> <p style="font-size:large;">{2}</p>'.format(str(self.order_crepe), str(self.order_drink), str(self.order_side))
 
 
-class Customer_Model(object):
+class Customer_Domain(object):
     def __init__(self, id=None, first_name=None, last_name=None, street=None, city=None, state=None, zipcode=None, country=None, customer_object=None, stripe_id=None):
         if customer_object:
             self.id = customer_object["id"]
@@ -347,7 +347,7 @@ class Customer_Model(object):
         return serialized_attributes
 
 
-class Menu_Crepe_Model(object):
+class Menu_Crepe_Domain(object):
     def __init__(self, crepe_id=None, name=None, price=None, flavor_profile_id=None, origination_id=None, menu_crepe_object=None):
         if menu_crepe_object:
             self.crepe_id = menu_crepe_object["id"]
@@ -376,7 +376,7 @@ class Menu_Crepe_Model(object):
 # these will only be recieved from the front end
 
 
-class Custom_Crepe_Model(object):
+class Custom_Crepe_Domain(object):
     def __init__(self, crepe_id=None, ingredients=None, flavor_profile_id=None, origination_id=None, quantity=1, custom_crepe_object=None):
         if custom_crepe_object:
             self.crepe_id = uuid.uuid4()
@@ -385,7 +385,7 @@ class Custom_Crepe_Model(object):
             self.origination_id = 'custom'
             self.quantity = custom_crepe_object['quantity']
             for ingredient in custom_crepe_object["ingredients"]:
-                new_ingredient = Ingredient_Model(ingredient_object=ingredient)
+                new_ingredient = Ingredient_Domain(ingredient_object=ingredient)
                 self.ingredients.append(new_ingredient)
         else:
             self.crepe_id = uuid.uuid4()
@@ -420,7 +420,7 @@ class Drink_Category(object):
         return serialized_attributes
 
 
-class Coffee_Model(object):
+class Coffee_Domain(object):
     def __init__(self, id=None, drink_id = None, drink_category_id=None, name=None, milk_type_id=None, price=None, espresso_serving_size=None, espresso_price=None, coffee_syrup_flavor=None, coffee_syrup_flavor_serving_size=None, serving_size=None, quantity=None, temperature=None, syrup_price=None, coffee_object=None):
         if (coffee_object):
             self.id = uuid.uuid4()
@@ -480,7 +480,7 @@ class Coffee_Model(object):
 
 
 
-class Drink_Model(object):
+class Drink_Domain(object):
     def __init__(self, id=None, drink_category_id=None, name=None,  price=None, serving_size=None, quantity=None, drink_object=None):
         if (drink_object):
             self.id = drink_object['id']
@@ -522,7 +522,7 @@ class Temperature(object):
         return serialized_attributes
 
 
-class Side_Model(object):
+class Side_Domain(object):
     def __init__(self, id=None, side_type_id=None, side_name_id=None, flavor=None, price=None, quantity=None, side_object=None):
         if side_object:
             self.id = side_object["id"]
@@ -548,7 +548,7 @@ class Side_Model(object):
         return serialized_attributes
 
 
-class Ice_Cream_Bowl_Model(object):
+class Ice_Cream_Bowl_Domain(object):
     def __init__(self, id=None, flavor=None, price=None, serving_size=None, quantity=None, side_name_id=None, toppings=None, ice_cream_object=None):
         if ice_cream_object:
             self.id = uuid.uuid4()
@@ -559,7 +559,7 @@ class Ice_Cream_Bowl_Model(object):
             self.side_name_id = ice_cream_object["sideName"]
             self.toppings = list()
             for topping in ice_cream_object["toppings"]:
-                new_topping = Ingredient_Model(ingredient_object=topping)
+                new_topping = Ingredient_Domain(ingredient_object=topping)
                 self.toppings.append(new_topping)
         else:
             self.id = id
