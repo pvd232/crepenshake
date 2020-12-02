@@ -168,8 +168,6 @@ $(window).on('load', function () {
 			const x = document.getElementsByClassName('list-group');
 			x[i].appendChild(row);
 		}
-		// $(`<div class="grid-container"  style="margin-top: 0px; margin-bottom:0px; margin-left:15px; margin-right:10px; vertical-align:center; align-items:center; grid-template-columns: 1fr; align-self: center; overflow:auto;
-		//     grid-gap: 2px; display:grid;"><p style="font-size:93%; margin-bottom:0px;">${constDescriptionElements[0].innerHTML}</p></div>`).insertAfter($('#savory_menu_crepes').find('.list-group-item').first().find('.container3'));
 		$('.container0sweetCrepe').each(function () {
 			$(this).css('border-bottom', '');
 			$(this).find('.list-group').css('border-bottom', '');
