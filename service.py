@@ -27,43 +27,41 @@ def change_case(str):
             res.append(c)
     return ''.join(res)
 
+@contextmanager
+def session_scope():
+    username = "postgres"
+    password = "Iqopaogh23!"
+    connection_string_beginning = "postgres://"
+    connection_string_end = "@localhost:5432/crepenshakedb"
+    connection_string = connection_string_beginning + \
+        username + ":" + password + connection_string_end
+
+    # an Engine, which the Session will use for connection
+    # resources
+    drink_engine = create_engine(
+        os.environ.get("DB_STRING", connection_string), pool_size=20,max_overflow=10 )
+
+    # create a configured "Session" class
+    session_factory = sessionmaker(bind=drink_engine)
+
+    # create a Session
+    session = scoped_session(session_factory)
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+    # now all calls to Session() will create a thread-local session
 
 class Menu_Service(object):
     def __init__(self):
-        self.username = "postgres"
-        self.password = "Iqopaogh23!"
-        self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshakedb"
-        self.connection_string = self.connection_string_beginning + \
-            self.username + ":" + self.password + self.connection_string_end
-
         self.ingredient_service = Ingredient_Service()
         self.drink_service = Drink_Service()
         self.side_service = Side_Service()
         self.menu_crepe_service = Menu_Crepe_Service()
-
-    @contextmanager
-    def session_scope(self):
-        # an Engine, which the Session will use for connection
-        # resources
-        self.drink_engine = create_engine(
-            os.environ.get("DB_STRING", self.connection_string))
-
-        # create a configured "Session" class
-        self.session_factory = sessionmaker(bind=self.drink_engine)
-
-        # create a Session
-        self.session = scoped_session(self.session_factory)
-        try:
-            yield self.session
-            self.session.commit()
-        except:
-            self.session.rollback()
-            raise
-        finally:
-            self.session.close()
-        # now all calls to Session() will create a thread-local session
-
     def get_menu_items(self):
         response = {}
         fruit_ingredients = [
@@ -135,40 +133,40 @@ class Menu_Service(object):
 class Ingredient_Service(object):
     # dope shit magic https://docs.sqlalchemy.org/en/13/orm/session_basics.html
     def __init__(self):
-        self.username = "postgres"
-        self.password = "Iqopaogh23!"
-        self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshakedb"
-        self.connection_string = self.connection_string_beginning + \
-            self.username + ":" + self.password + self.connection_string_end
+        # self.username = "postgres"
+        # self.password = "Iqopaogh23!"
+        # self.connection_string_beginning = "postgres://"
+        # self.connection_string_end = "@localhost:5432/crepenshakedb"
+        # self.connection_string = self.connection_string_beginning + \
+        #     self.username + ":" + self.password + self.connection_string_end
 
         self.ingredient_repository = Ingredient_Repository()
 
-    @contextmanager
-    def session_scope(self):
-        # an Engine, which the Session will use for connection
-        # resources
-        self.drink_engine = create_engine(
-            os.environ.get("DB_STRING", self.connection_string))
+    # @contextmanager
+    # def session_scope(self):
+    #     # an Engine, which the Session will use for connection
+    #     # resources
+    #     self.drink_engine = create_engine(
+    #         os.environ.get("DB_STRING", self.connection_string))
 
-        # create a configured "Session" class
-        self.session_factory = sessionmaker(bind=self.drink_engine)
+    #     # create a configured "Session" class
+    #     self.session_factory = sessionmaker(bind=self.drink_engine)
 
-        # create a Session
-        self.session = scoped_session(self.session_factory)
-        try:
-            yield self.session
-            self.session.commit()
-        except:
-            self.session.rollback()
-            raise
-        finally:
-            self.session.close()
-        # now all calls to Session() will create a thread-local session
+    #     # create a Session
+    #     self.session = scoped_session(self.session_factory)
+    #     try:
+    #         yield self.session
+    #         self.session.commit()
+    #     except:
+    #         self.session.rollback()
+    #         raise
+    #     finally:
+    #         self.session.close()
+    #     # now all calls to Session() will create a thread-local session
 
     def get_savory_ingredient_categories(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient_category in self.ingredient_repository.get_savory_ingredient_categories(session):
                 ingredient_category_model = Ingredient_Category(
                     id=ingredient_category.id)
@@ -177,7 +175,7 @@ class Ingredient_Service(object):
 
     def get_sweet_ingredient_categories(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient_category in self.ingredient_repository.get_sweet_ingredient_categories(session):
 
                 ingredient_category_model = Ingredient_Category(
@@ -187,7 +185,7 @@ class Ingredient_Service(object):
 
     def get_ingredient_serving_sizes(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient_serving_size in self.ingredient_repository.get_ingredient_serving_sizes(session):
                 ingredient_serving_size_model = Ingredient_Domain(
                     serving_size=ingredient_serving_size.id)
@@ -196,7 +194,7 @@ class Ingredient_Service(object):
 
     def get_ingredients(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient in self.ingredient_repository.get_ingredients(session):
                 ingredient_model = Ingredient_Domain(
                     id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id)
@@ -205,7 +203,7 @@ class Ingredient_Service(object):
 
     def get_ingredient_prices(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient in self.ingredient_repository.get_ingredient_prices(session):
                 ingredient_model = Ingredient_Domain(
                     id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
@@ -216,7 +214,7 @@ class Ingredient_Service(object):
     def get_savory_ingredient_prices_by_category(self):
         response = []
         savory_ingredient_categories = self.get_savory_ingredient_categories()
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient_category in savory_ingredient_categories:
                 ingredient_category_dict = {}
                 ingredient_category_dict['ingredients'] = []
@@ -232,7 +230,7 @@ class Ingredient_Service(object):
 
     def get_sweet_ingredient_prices(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
                 ingredient_model = Ingredient_Domain(
                     id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
@@ -241,7 +239,7 @@ class Ingredient_Service(object):
 
     def get_sweetness_ingredients(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
                 if ingredient.ingredient_category_id == 'sweetness':
                     ingredient_domain = Ingredient_Domain(
@@ -251,7 +249,7 @@ class Ingredient_Service(object):
 
     def get_fruit_ingredients(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
                 if ingredient.ingredient_category_id == 'fruit':
                     ingredient_domain = Ingredient_Domain(
@@ -262,34 +260,34 @@ class Ingredient_Service(object):
 
 class Order_Service(object):
     def __init__(self):
-        self.username = "postgres"
-        self.password = "Iqopaogh23!"
-        self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshakedb"
-        self.connection_string = self.connection_string_beginning + \
-            self.username + ":" + self.password + self.connection_string_end
+        # self.username = "postgres"
+        # self.password = "Iqopaogh23!"
+        # self.connection_string_beginning = "postgres://"
+        # self.connection_string_end = "@localhost:5432/crepenshakedb"
+        # self.connection_string = self.connection_string_beginning + \
+        #     self.username + ":" + self.password + self.connection_string_end
         self.order_repository = Order_Repository()
 
-    @contextmanager
-    def session_scope(self):
-        # an Engine, which the Session will use for connection
-        # resources
-        self.drink_engine = create_engine(
-            os.environ.get("DB_STRING", self.connection_string))
+    # @contextmanager
+    # def session_scope(self):
+    #     # an Engine, which the Session will use for connection
+    #     # resources
+    #     self.drink_engine = create_engine(
+    #         os.environ.get("DB_STRING", self.connection_string))
 
-        # create a configured "Session" class
-        self.session_factory = sessionmaker(bind=self.drink_engine)
+    #     # create a configured "Session" class
+    #     self.session_factory = sessionmaker(bind=self.drink_engine)
 
-        # create a Session
-        self.session = scoped_session(self.session_factory)
-        try:
-            yield self.session
-            self.session.commit()
-        except:
-            self.session.rollback()
-            raise
-        finally:
-            self.session.close()
+    #     # create a Session
+    #     self.session = scoped_session(self.session_factory)
+    #     try:
+    #         yield self.session
+    #         self.session.commit()
+    #     except:
+    #         self.session.rollback()
+    #         raise
+    #     finally:
+    #         self.session.close()
         # now all calls to Session() will create a thread-local session
 
     def send_confirmation_email(self, order):
@@ -320,51 +318,51 @@ class Order_Service(object):
     def create_order(self, order):
         new_order = Order_Domain(order_object=order)
         self.send_confirmation_email(new_order)
-        with self.session_scope() as session:
+        with session_scope() as session:
             return self.order_repository.post_order(session, order=new_order)
             
 
     def stripe_pay(self, order):
-        with self.session_scope() as session:
+        with session_scope() as session:
             return self.order_repository.post_stripe_order(session, order=order)
 
 
 class Drink_Service(object):
     def __init__(self):
-        self.username = "postgres"
-        self.password = "Iqopaogh23!"
-        self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshakedb"
-        self.connection_string = self.connection_string_beginning + \
-            self.username + ":" + self.password + self.connection_string_end
+        # self.username = "postgres"
+        # self.password = "Iqopaogh23!"
+        # self.connection_string_beginning = "postgres://"
+        # self.connection_string_end = "@localhost:5432/crepenshakedb"
+        # self.connection_string = self.connection_string_beginning + \
+        #     self.username + ":" + self.password + self.connection_string_end
         self.drink_repository = Drink_Repository()
 
-    @contextmanager
-    def session_scope(self):
-        # an Engine, which the Session will use for connection
-        # resources
-        self.drink_engine = create_engine(
-            os.environ.get("DB_STRING", self.connection_string))
+    # @contextmanager
+    # def session_scope(self):
+    #     # an Engine, which the Session will use for connection
+    #     # resources
+    #     self.drink_engine = create_engine(
+    #         os.environ.get("DB_STRING", self.connection_string))
 
-        # create a configured "Session" class
-        self.session_factory = sessionmaker(bind=self.drink_engine)
+    #     # create a configured "Session" class
+    #     self.session_factory = sessionmaker(bind=self.drink_engine)
 
-        # create a Session
-        self.session = scoped_session(self.session_factory)
-        try:
-            yield self.session
-            self.session.commit()
-        except:
-            self.session.rollback()
-            raise
-        finally:
-            self.session.close()
+    #     # create a Session
+    #     self.session = scoped_session(self.session_factory)
+    #     try:
+    #         yield self.session
+    #         self.session.commit()
+    #     except:
+    #         self.session.rollback()
+    #         raise
+    #     finally:
+    #         self.session.close()
         # now all calls to Session() will create a thread-local session
 
     def get_drink_categories(self):
         response = []
 
-        with self.session_scope() as session:
+        with session_scope() as session:
             for drink_category in self.drink_repository.get_drink_categories(session):
                 drink_category_domain = Drink_Category(id=drink_category.id)
                 response.append(drink_category_domain)
@@ -375,7 +373,7 @@ class Drink_Service(object):
     def get_drinks(self, requested_drink_category_id):
         response = []
 
-        with self.session_scope() as session:
+        with session_scope() as session:
             for drink in self.drink_repository.get_drinks(session, requested_drink_category_id):
                 drink_domain = Drink_Domain(id=drink.id, drink_category_id=drink.drink_category_id, serving_size=drink.serving_size,
                                           name=drink.name, price=drink.price)
@@ -385,7 +383,7 @@ class Drink_Service(object):
     def get_milk_drinks(self):
         response = []
 
-        with self.session_scope() as session:
+        with session_scope() as session:
             for milk_drink in self.drink_repository.get_milk_drinks(session):
 
                 drink_domain = Drink_Domain(
@@ -396,7 +394,7 @@ class Drink_Service(object):
     def get_coffee_syrups(self):
         response = []
 
-        with self.session_scope() as session:
+        with session_scope() as session:
             for coffee_syrup in self.drink_repository.get_coffee_syrups(session):
                 drink_domain = Coffee_Domain(
                     coffee_syrup_flavor=coffee_syrup.id)
@@ -406,7 +404,7 @@ class Drink_Service(object):
     def get_coffee_temperature(self):
         response = []
 
-        with self.session_scope() as session:
+        with session_scope() as session:
             for temp in self.drink_repository.get_temperature(session):
                 temp_domain = Temperature(
                     id=temp.id)
@@ -416,40 +414,40 @@ class Drink_Service(object):
 
 class Side_Service(object):
     def __init__(self):
-        self.username = "postgres"
-        self.password = "Iqopaogh23!"
-        self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshakedb"
-        self.connection_string = self.connection_string_beginning + \
-            self.username + ":" + self.password + self.connection_string_end
+        # self.username = "postgres"
+        # self.password = "Iqopaogh23!"
+        # self.connection_string_beginning = "postgres://"
+        # self.connection_string_end = "@localhost:5432/crepenshakedb"
+        # self.connection_string = self.connection_string_beginning + \
+        #     self.username + ":" + self.password + self.connection_string_end
         self.side_repository = Side_Repository()
 
-    @contextmanager
-    def session_scope(self):
-        # an Engine, which the Session will use for connection
-        # resources
-        self.side_engine = create_engine(
-            os.environ.get("DB_STRING", self.connection_string))
+    # @contextmanager
+    # def session_scope(self):
+    #     # an Engine, which the Session will use for connection
+    #     # resources
+    #     self.side_engine = create_engine(
+    #         os.environ.get("DB_STRING", self.connection_string))
 
-        # create a configured "Session" class
-        self.session_factory = sessionmaker(bind=self.side_engine)
+    #     # create a configured "Session" class
+    #     self.session_factory = sessionmaker(bind=self.side_engine)
 
-        # create a Session
-        self.session = scoped_session(self.session_factory)
-        try:
-            yield self.session
-            self.session.commit()
-        except:
-            self.session.rollback()
-            raise
-        finally:
-            self.session.close()
+    #     # create a Session
+    #     self.session = scoped_session(self.session_factory)
+    #     try:
+    #         yield self.session
+    #         self.session.commit()
+    #     except:
+    #         self.session.rollback()
+    #         raise
+    #     finally:
+    #         self.session.close()
         # now all calls to Session() will create a thread-local session
 
     def get_side_types(self):
         response = []
 
-        with self.session_scope() as session:
+        with session_scope() as session:
             for side_type in self.side_repository.get_side_types(session):
                 side_type_domain = Side_Domain(side_type_id=side_type.id)
                 response.append(side_type_domain)
@@ -458,7 +456,7 @@ class Side_Service(object):
 
     def get_side_names(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for side_name in self.side_repository.get_side_names(session):
                 side_name_domain = Side_Domain(side_name_id=side_name.id)
                 response.append(side_name_domain)
@@ -466,7 +464,7 @@ class Side_Service(object):
 
     def get_ice_cream_bowls(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for ice_cream in self.side_repository.get_ice_cream_bowls(session):
                 ice_cream_domain = Ice_Cream_Bowl_Domain(
                     flavor=ice_cream.flavor_id, price=ice_cream.price, serving_size=ice_cream.serving_size_id, quantity=1, side_name_id='ice_cream_bowl', toppings=None, ice_cream_object=None)
@@ -476,40 +474,40 @@ class Side_Service(object):
 
 class Menu_Crepe_Service(object):
     def __init__(self):
-        self.username = "postgres"
-        self.password = "Iqopaogh23!"
-        self.connection_string_beginning = "postgres://"
-        self.connection_string_end = "@localhost:5432/crepenshakedb"
-        self.connection_string = self.connection_string_beginning + \
-            self.username + ":" + self.password + self.connection_string_end
+        # self.username = "postgres"
+        # self.password = "Iqopaogh23!"
+        # self.connection_string_beginning = "postgres://"
+        # self.connection_string_end = "@localhost:5432/crepenshakedb"
+        # self.connection_string = self.connection_string_beginning + \
+        #     self.username + ":" + self.password + self.connection_string_end
 
         self.menu_crepe_repository = Menu_Crepe_Repository()
 
-    @contextmanager
-    def session_scope(self):
-        # an Engine, which the Session will use for connection
-        # resources
-        self.menu_crepe_engine = create_engine(
-            os.environ.get("DB_STRING", self.connection_string))
+    # @contextmanager
+    # def session_scope(self):
+    #     # an Engine, which the Session will use for connection
+    #     # resources
+    #     self.menu_crepe_engine = create_engine(
+    #         os.environ.get("DB_STRING", self.connection_string))
 
-        # create a configured "Session" class
-        self.session_factory = sessionmaker(bind=self.menu_crepe_engine)
+    #     # create a configured "Session" class
+    #     self.session_factory = sessionmaker(bind=self.menu_crepe_engine)
 
-        # create a Session
-        self.session = scoped_session(self.session_factory)
-        try:
-            yield self.session
-            self.session.commit()
-        except:
-            self.session.rollback()
-            raise
-        finally:
-            self.session.close()
+    #     # create a Session
+    #     self.session = scoped_session(self.session_factory)
+    #     try:
+    #         yield self.session
+    #         self.session.commit()
+    #     except:
+    #         self.session.rollback()
+    #         raise
+    #     finally:
+    #         self.session.close()
         # now all calls to Session() will create a thread-local session
 
     def get_sweet_menu_crepes(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for menu_crepe in self.menu_crepe_repository.get_sweet_menu_crepes(session):
                 crepe_domain = Menu_Crepe_Domain(
                     crepe_id=menu_crepe.crepe_id, name=menu_crepe.name, price=menu_crepe.price, flavor_profile_id=menu_crepe.flavor_profile_id, origination_id=menu_crepe.origination_id)
@@ -518,7 +516,7 @@ class Menu_Crepe_Service(object):
 
     def get_savory_menu_crepes(self):
         response = []
-        with self.session_scope() as session:
+        with session_scope() as session:
             for menu_crepe in self.menu_crepe_repository.get_savory_menu_crepes(session):
                 crepe_domain = Menu_Crepe_Domain(
                     crepe_id=menu_crepe.crepe_id, name=menu_crepe.name, price=menu_crepe.price, flavor_profile_id=menu_crepe.flavor_profile_id, origination_id=menu_crepe.origination_id)
@@ -541,4 +539,5 @@ class Test_Service(object):
         inspector = inspect(self.test_engine)
         if len(inspector.get_table_names()) == 0:
             instantiate_db_connection()
+            self.test_engine.dispose()
             return
