@@ -133,36 +133,7 @@ class Menu_Service(object):
 class Ingredient_Service(object):
     # dope shit magic https://docs.sqlalchemy.org/en/13/orm/session_basics.html
     def __init__(self):
-        # self.username = "postgres"
-        # self.password = "Iqopaogh23!"
-        # self.connection_string_beginning = "postgres://"
-        # self.connection_string_end = "@localhost:5432/crepenshakedb"
-        # self.connection_string = self.connection_string_beginning + \
-        #     self.username + ":" + self.password + self.connection_string_end
-
         self.ingredient_repository = Ingredient_Repository()
-
-    # @contextmanager
-    # def session_scope(self):
-    #     # an Engine, which the Session will use for connection
-    #     # resources
-    #     self.drink_engine = create_engine(
-    #         os.environ.get("DB_STRING", self.connection_string))
-
-    #     # create a configured "Session" class
-    #     self.session_factory = sessionmaker(bind=self.drink_engine)
-
-    #     # create a Session
-    #     self.session = scoped_session(self.session_factory)
-    #     try:
-    #         yield self.session
-    #         self.session.commit()
-    #     except:
-    #         self.session.rollback()
-    #         raise
-    #     finally:
-    #         self.session.close()
-    #     # now all calls to Session() will create a thread-local session
 
     def get_savory_ingredient_categories(self):
         response = []
@@ -260,35 +231,7 @@ class Ingredient_Service(object):
 
 class Order_Service(object):
     def __init__(self):
-        # self.username = "postgres"
-        # self.password = "Iqopaogh23!"
-        # self.connection_string_beginning = "postgres://"
-        # self.connection_string_end = "@localhost:5432/crepenshakedb"
-        # self.connection_string = self.connection_string_beginning + \
-        #     self.username + ":" + self.password + self.connection_string_end
         self.order_repository = Order_Repository()
-
-    # @contextmanager
-    # def session_scope(self):
-    #     # an Engine, which the Session will use for connection
-    #     # resources
-    #     self.drink_engine = create_engine(
-    #         os.environ.get("DB_STRING", self.connection_string))
-
-    #     # create a configured "Session" class
-    #     self.session_factory = sessionmaker(bind=self.drink_engine)
-
-    #     # create a Session
-    #     self.session = scoped_session(self.session_factory)
-    #     try:
-    #         yield self.session
-    #         self.session.commit()
-    #     except:
-    #         self.session.rollback()
-    #         raise
-    #     finally:
-    #         self.session.close()
-        # now all calls to Session() will create a thread-local session
 
     def send_confirmation_email(self, order):
         mail_content = '<html><body>'
@@ -329,35 +272,7 @@ class Order_Service(object):
 
 class Drink_Service(object):
     def __init__(self):
-        # self.username = "postgres"
-        # self.password = "Iqopaogh23!"
-        # self.connection_string_beginning = "postgres://"
-        # self.connection_string_end = "@localhost:5432/crepenshakedb"
-        # self.connection_string = self.connection_string_beginning + \
-        #     self.username + ":" + self.password + self.connection_string_end
         self.drink_repository = Drink_Repository()
-
-    # @contextmanager
-    # def session_scope(self):
-    #     # an Engine, which the Session will use for connection
-    #     # resources
-    #     self.drink_engine = create_engine(
-    #         os.environ.get("DB_STRING", self.connection_string))
-
-    #     # create a configured "Session" class
-    #     self.session_factory = sessionmaker(bind=self.drink_engine)
-
-    #     # create a Session
-    #     self.session = scoped_session(self.session_factory)
-    #     try:
-    #         yield self.session
-    #         self.session.commit()
-    #     except:
-    #         self.session.rollback()
-    #         raise
-    #     finally:
-    #         self.session.close()
-        # now all calls to Session() will create a thread-local session
 
     def get_drink_categories(self):
         response = []
@@ -414,35 +329,7 @@ class Drink_Service(object):
 
 class Side_Service(object):
     def __init__(self):
-        # self.username = "postgres"
-        # self.password = "Iqopaogh23!"
-        # self.connection_string_beginning = "postgres://"
-        # self.connection_string_end = "@localhost:5432/crepenshakedb"
-        # self.connection_string = self.connection_string_beginning + \
-        #     self.username + ":" + self.password + self.connection_string_end
         self.side_repository = Side_Repository()
-
-    # @contextmanager
-    # def session_scope(self):
-    #     # an Engine, which the Session will use for connection
-    #     # resources
-    #     self.side_engine = create_engine(
-    #         os.environ.get("DB_STRING", self.connection_string))
-
-    #     # create a configured "Session" class
-    #     self.session_factory = sessionmaker(bind=self.side_engine)
-
-    #     # create a Session
-    #     self.session = scoped_session(self.session_factory)
-    #     try:
-    #         yield self.session
-    #         self.session.commit()
-    #     except:
-    #         self.session.rollback()
-    #         raise
-    #     finally:
-    #         self.session.close()
-        # now all calls to Session() will create a thread-local session
 
     def get_side_types(self):
         response = []
@@ -474,36 +361,7 @@ class Side_Service(object):
 
 class Menu_Crepe_Service(object):
     def __init__(self):
-        # self.username = "postgres"
-        # self.password = "Iqopaogh23!"
-        # self.connection_string_beginning = "postgres://"
-        # self.connection_string_end = "@localhost:5432/crepenshakedb"
-        # self.connection_string = self.connection_string_beginning + \
-        #     self.username + ":" + self.password + self.connection_string_end
-
         self.menu_crepe_repository = Menu_Crepe_Repository()
-
-    # @contextmanager
-    # def session_scope(self):
-    #     # an Engine, which the Session will use for connection
-    #     # resources
-    #     self.menu_crepe_engine = create_engine(
-    #         os.environ.get("DB_STRING", self.connection_string))
-
-    #     # create a configured "Session" class
-    #     self.session_factory = sessionmaker(bind=self.menu_crepe_engine)
-
-    #     # create a Session
-    #     self.session = scoped_session(self.session_factory)
-    #     try:
-    #         yield self.session
-    #         self.session.commit()
-    #     except:
-    #         self.session.rollback()
-    #         raise
-    #     finally:
-    #         self.session.close()
-        # now all calls to Session() will create a thread-local session
 
     def get_sweet_menu_crepes(self):
         response = []
