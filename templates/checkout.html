@@ -2,6 +2,8 @@
 
 {% block style %}
 <link rel="stylesheet" href="../static/css/checkout.css" />
+<link href="./static/css/mdtimepicker.css" rel="stylesheet">
+
 {% endblock %} 
 {% block content %}
 		<div class="container" id="checkout">
@@ -63,7 +65,18 @@
 								placeholder="you@example.com"
 								required=""
 							/>
-							<div class="invalid-feedback">Please enter a valid email address for shipping updates.</div>
+							<div class="invalid-feedback">Please enter a valid email address for order updates.</div>
+						</div>
+						<div class="mb-3">
+							<label for="phoneNumber">Phone Number</label>
+							<input
+								type="tel"
+								class="form-control"
+								id="phoneNumber"
+								placeholder="1234567890"
+								required=""
+							/>
+							<div class="invalid-feedback">Please enter a valid phone number for order updates.</div>
 						</div>
 						<div class="mb-3">
 							<label for="address">Address</label>
@@ -74,7 +87,7 @@
 								placeholder="1234 Main St"
 								required=""
 							/>
-							<div class="invalid-feedback">Please enter your shipping address.</div>
+							<div class="invalid-feedback">Please enter your address.</div>
 						</div>
 						<div class="mb-3">
 							<label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
@@ -171,6 +184,15 @@
 							</div>								
 						</div>
 						<hr class="mb-4" />
+						<h4 class="mb-3">Pickup Time</h4>
+						<div class="row">
+							<div class="col-md-10 mb-3">
+								<div class="md-form">
+  								<input placeholder="Click here to choose a pickup time" type="text" id="timePicker" class="form-control timepicker">
+								</div>
+							</div>
+						</div>
+						<hr class="mb-4" />
 						<h4 class="mb-3">Payment</h4>
 						<div class="row">
 							<div class="col-md-6 mb-3">
@@ -186,7 +208,7 @@
 						>
 						<span class="spinner-border spinner-border-sm" role="status" id="spinner" aria-hidden="true" style="visibility: hidden;"></span>
 						<span id ="buttonText">Pay</span>
-						</button>
+						</button>						
 					</form>
 				</div>
 			</div>
@@ -203,4 +225,5 @@
 {% block script %}
 	<script type='module' src="../static/js/checkout.js"></script>
 	<script src="https://js.stripe.com/v3/"></script>
+	<script src="../static/js/mdtimepicker.js"></script>
 {% endblock %} 

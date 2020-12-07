@@ -268,8 +268,16 @@ function buildPage () {
 				</div> <div class="col-4" style="margin-left: 21px; "><h4 style="float:right; font-weight: bold; ">$${order.orderTotal.toFixed(
 					2
 				)}</h4></div>`);
+				$('#timePicker').mdtimepicker({theme:'red'});
+				$('#timePicker').mdtimepicker().on('timechanged', function(e){
+					// console.log(e.value);
+					// console.log(e.time);
+					order.pickupTime = e.value;
+					// console.log('order.pickupTime', order.pickupTime); 
+				  });
 		}
 	}
+	return order
 };
 function loading (isLoading) {
 	if (isLoading) {
@@ -282,14 +290,17 @@ function loading (isLoading) {
 		document.querySelector('#spinner').classList.add('hidden');
 	}
 };
-function handleFormSubmit (stripe, card, data) {
+function handleFormSubmit (stripe, card, data, order) {
 	loading(true);
-	const order = new Order();
-	order.fromJSON(localStorage.getItem('order'));
 	const response = {};
 	const customerData = {};
 	$('input, select', $('#checkoutForm')).each(function () {
 		if ($(this).val() != '' && $(this).val() != 'on') {
+			if ($(this).attr('id') === 'phoneNumber'){
+				if ($(this).val().split("-").length > 1){
+					customerData[$(this).attr('id')] = $(this).val().split("-").join("")
+				} 
+			} 
 			customerData[$(this).attr('id')] = $(this).val();
 		}
 	});
@@ -340,22 +351,18 @@ function showError (errorMsgText) {
 		errorMsg.textContent = '';
 	}, 4000);
 };
-function validateForm () {
-	const order = new Order();
-	const orderDict = localStorage.getItem('order');
-	if (orderDict) {
-		order.fromJSON(orderDict);
+function validateForm (order) {
 		if (localStorage.getItem('stripeId')) {
 			const newCustomer = new Customer(null, localStorage.getItem('stripeId'));
 			order.customerData = newCustomer;
 		}
 		const forms = document.getElementsByClassName('needs-validation');
-		const stripe = Stripe(
-			'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
-		);
 		// const stripe = Stripe(
-		// 	'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		// 	'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
 		// );
+		const stripe = Stripe(
+			'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		);
 		
 		document.querySelector('button').disabled = true;
 		fetch('/create-payment-intent', {
@@ -412,17 +419,17 @@ function validateForm () {
 									return false;
 								} else {
 									form.classList.add('was-validated');
-									handleFormSubmit(stripe, card, data);
+									handleFormSubmit(stripe, card, data, order);
 									return false;
 								}
 							}
 						});
 				});
 			});
-	}
 };
 
 $(window).ready(function () {
-	buildPage();
-	validateForm();
+	const order = buildPage();
+	console.log('order', order)
+	validateForm(order);
 });

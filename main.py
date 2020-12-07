@@ -6,11 +6,12 @@ from flask import request, Response, Flask, render_template, jsonify, send_file,
 from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service, Test_Service
 from models import app
 
-# stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
-stripe.api_key = "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"
+stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
+# stripe.api_key = "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"
 
 @app.route("/")
 def home():
+    #only necessary when deploying for the first time
     # test_service = Test_Service()
     # test_service.test_connection()
     return render_template('index.html')
@@ -165,6 +166,7 @@ def checkout():
     elif request.method == 'POST':
         new_order = request.json
         new_order_value = new_order['order']
+        print('new_order_value', new_order_value)
         order_service = Order_Service()
         order_service.create_order(new_order_value)
         return jsonify(200)

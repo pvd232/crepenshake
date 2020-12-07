@@ -280,6 +280,8 @@ class Order_Domain(object):
                 customer_object=order_object['customerData'])
             self.cost = float(order_object['orderTotal'])
             self.date = date
+            self.pickup_time = order_object["pickupTime"]
+            print('self.pickup_time', self.pickup_time)
             if len(order_object['orderCrepe']) > 0:
                 self.order_crepe = Order_Crepe_Domain(order_id=self.id,
                                                      order_crepe_object=order_object['orderCrepe'])
@@ -326,6 +328,7 @@ class Customer_Domain(object):
             self.state = customer_object["state"]
             self.zipcode = customer_object["zipcode"]
             self.country = customer_object["country"]
+            self.phone_number = customer_object["phoneNumber"]
 
         else:
             self.id = id
