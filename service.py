@@ -66,18 +66,18 @@ class Menu_Service(object):
         response = {}
         fruit_ingredients = [
             x.serialize() for x in self.ingredient_service.get_fruit_ingredients()]
-        response['fruit_ingredients'] = fruit_ingredients
+        response.fruit_ingredients = fruit_ingredients
         sweetness_ingredients = [
             x.serialize() for x in self.ingredient_service.get_sweetness_ingredients()]
-        response['sweetness_ingredients'] = sweetness_ingredients
+        response.sweetness_ingredients = sweetness_ingredients
 
         savory_ingredient_prices_by_category = self.ingredient_service.get_savory_ingredient_prices_by_category()
         new_ingredient_prices_by_category = []
         for x in savory_ingredient_prices_by_category:
             new_ingredient_category_dict = {}
-            new_ingredient_category_dict['ingredient_category'] = x['ingredient_category']
+            new_ingredient_category_dict['ingredient_category'] = x.ingredient_category
             new_ingredient_category_dict['ingredients'] = []
-            for y in x['ingredients']:
+            for y in x.ingredients:
                 new_ingredient_category_dict['ingredients'].append(
                     y.serialize())
             new_ingredient_prices_by_category.append(
@@ -86,6 +86,9 @@ class Menu_Service(object):
 
         ice_cream_bowls = [x.serialize()
                            for x in self.side_service.get_ice_cream_bowls()]
+        for x in ice_cream_bowls:
+            print('x',x)
+            
         response['ice_cream_bowls'] = ice_cream_bowls
 
         toppings = [x.serialize()
@@ -139,7 +142,7 @@ class Ingredient_Service(object):
         response = []
         with session_scope() as session:
             for ingredient_category in self.ingredient_repository.get_savory_ingredient_categories(session):
-                ingredient_category_model = Ingredient_Category(
+                ingredient_category_model = Ingredient_Category_Domain(
                     id=ingredient_category.id)
                 response.append(ingredient_category_model)
             return response
@@ -148,8 +151,7 @@ class Ingredient_Service(object):
         response = []
         with session_scope() as session:
             for ingredient_category in self.ingredient_repository.get_sweet_ingredient_categories(session):
-
-                ingredient_category_model = Ingredient_Category(
+                ingredient_category_model = Ingredient_Category_Domain(
                     id=ingredient_category.id)
                 response.append(ingredient_category_model)
             return response
@@ -158,8 +160,8 @@ class Ingredient_Service(object):
         response = []
         with session_scope() as session:
             for ingredient_serving_size in self.ingredient_repository.get_ingredient_serving_sizes(session):
-                ingredient_serving_size_model = Ingredient_Domain(
-                    serving_size=ingredient_serving_size.id)
+                ingredient_serving_size_model = Ingredient_Serving_Size(
+                    id=ingredient_serving_size.id)
                 response.append(ingredient_serving_size_model)
             return response
 
@@ -168,7 +170,7 @@ class Ingredient_Service(object):
         with session_scope() as session:
             for ingredient in self.ingredient_repository.get_ingredients(session):
                 ingredient_model = Ingredient_Domain(
-                    id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id)
+                    ingredient_object=ingredient)
                 response.append(ingredient_model)
             return response
 
@@ -177,7 +179,7 @@ class Ingredient_Service(object):
         with session_scope() as session:
             for ingredient in self.ingredient_repository.get_ingredient_prices(session):
                 ingredient_model = Ingredient_Domain(
-                    id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                    ingredient_object=ingredient)
                 response.append(ingredient_model)
             return response
 
@@ -193,7 +195,7 @@ class Ingredient_Service(object):
                     if ingredient_category.id == ingredient.ingredient_category_id:
                         ingredient_category_dict['ingredient_category'] = ingredient_category.id
                         ingredient_model = Ingredient_Domain(
-                            id=ingredient.id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                            ingredient_object=ingredient)
                         ingredient_category_dict['ingredients'].append(
                             ingredient_model)
                 response.append(ingredient_category_dict)
@@ -204,7 +206,7 @@ class Ingredient_Service(object):
         with session_scope() as session:
             for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
                 ingredient_model = Ingredient_Domain(
-                    id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                    ingredient_object=ingredient)
                 response.append(ingredient_model)
             return response
 
@@ -214,7 +216,7 @@ class Ingredient_Service(object):
             for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
                 if ingredient.ingredient_category_id == 'sweetness':
                     ingredient_domain = Ingredient_Domain(
-                        id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                        ingredient_object=ingredient)
                     response.append(ingredient_domain)
             return response
 
@@ -224,7 +226,7 @@ class Ingredient_Service(object):
             for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
                 if ingredient.ingredient_category_id == 'fruit':
                     ingredient_domain = Ingredient_Domain(
-                        id=ingredient.ingredient_id, ingredient_category_id=ingredient.ingredient_category_id, price=ingredient.price)
+                        ingredient_object=ingredient)
                     response.append(ingredient_domain)
             return response
 
@@ -259,7 +261,7 @@ class Order_Service(object):
         s.quit()
 
     def create_order(self, order):
-        new_order = Order_Domain(order_object=order)
+        new_order = Order_Domain(order_json=order)
         self.send_confirmation_email(new_order)
         with session_scope() as session:
             return self.order_repository.post_order(session, order=new_order)
@@ -276,52 +278,45 @@ class Drink_Service(object):
 
     def get_drink_categories(self):
         response = []
-
         with session_scope() as session:
             for drink_category in self.drink_repository.get_drink_categories(session):
-                drink_category_domain = Drink_Category(id=drink_category.id)
+                drink_category_domain = Drink_Category_Domain(id=drink_category.id)
                 response.append(drink_category_domain)
-                # response.append(drink_domain.serialize())
-
             return response
 
     def get_drinks(self, requested_drink_category_id):
         response = []
-
         with session_scope() as session:
             for drink in self.drink_repository.get_drinks(session, requested_drink_category_id):
-                drink_domain = Drink_Domain(id=drink.id, drink_category_id=drink.drink_category_id, serving_size=drink.serving_size,
-                                          name=drink.name, price=drink.price)
+                print('drink',drink.serialize)
+                drink_domain = Drink_Domain(drink_object=drink)
                 response.append(drink_domain)
             return response
 
     def get_milk_drinks(self):
         response = []
-
         with session_scope() as session:
             for milk_drink in self.drink_repository.get_milk_drinks(session):
-
-                drink_domain = Drink_Domain(
-                    id=milk_drink.id, price=milk_drink.price)
+                print('milk_drink',milk_drink)
+                drink_domain = Milk_Domain(
+                    milk_object=milk_drink)
                 response.append(drink_domain)
             return response
 
     def get_coffee_syrups(self):
         response = []
-
         with session_scope() as session:
-            for coffee_syrup in self.drink_repository.get_coffee_syrups(session):
-                drink_domain = Coffee_Domain(
-                    coffee_syrup_flavor=coffee_syrup.id)
-                response.append(drink_domain)
+            for coffee_syrup_flavor in self.drink_repository.get_coffee_syrups(session):
+                coffee_syrup_flavor_domain = Coffee_Syrup_Flavor_Domain(
+                    id=coffee_syrup_flavor.id)
+                response.append(coffee_syrup_flavor_domain)
             return response
 
     def get_coffee_temperature(self):
         response = []
-
         with session_scope() as session:
             for temp in self.drink_repository.get_temperature(session):
-                temp_domain = Temperature(
+                temp_domain = Temperature_Domain(
                     id=temp.id)
                 response.append(temp_domain)
             return response
@@ -333,10 +328,9 @@ class Side_Service(object):
 
     def get_side_types(self):
         response = []
-
         with session_scope() as session:
             for side_type in self.side_repository.get_side_types(session):
-                side_type_domain = Side_Domain(side_type_id=side_type.id)
+                side_type_domain = Side_Type_Domain(id=side_type.id)
                 response.append(side_type_domain)
 
             return response
@@ -345,7 +339,7 @@ class Side_Service(object):
         response = []
         with session_scope() as session:
             for side_name in self.side_repository.get_side_names(session):
-                side_name_domain = Side_Domain(side_name_id=side_name.id)
+                side_name_domain = Side_Type_Domain(id=side_name.id)
                 response.append(side_name_domain)
             return response
 
@@ -353,8 +347,9 @@ class Side_Service(object):
         response = []
         with session_scope() as session:
             for ice_cream in self.side_repository.get_ice_cream_bowls(session):
-                ice_cream_domain = Ice_Cream_Bowl_Domain(
-                    flavor=ice_cream.flavor_id, price=ice_cream.price, serving_size=ice_cream.serving_size_id, quantity=1, side_name_id='ice_cream_bowl', toppings=None, ice_cream_object=None)
+                print('ice_cream',ice_cream.serialize)
+                ice_cream_domain = Ice_Cream_Bowl_Domain(ice_cream_object=ice_cream)
+                print('ice_cream_domain',ice_cream_domain.serialize())
                 response.append(ice_cream_domain)
             return response
 
@@ -367,9 +362,9 @@ class Menu_Crepe_Service(object):
         response = []
         with session_scope() as session:
             for menu_crepe in self.menu_crepe_repository.get_sweet_menu_crepes(session):
-                crepe_domain = Menu_Crepe_Domain(
-                    crepe_id=menu_crepe.crepe_id, name=menu_crepe.name, price=menu_crepe.price, flavor_profile_id=menu_crepe.flavor_profile_id, origination_id=menu_crepe.origination_id)
-                response.append(crepe_domain)
+                menu_crepe_domain = Menu_Crepe_Domain(
+                    menu_crepe_object = menu_crepe)
+                response.append(menu_crepe_domain)
             return response
 
     def get_savory_menu_crepes(self):
@@ -377,7 +372,7 @@ class Menu_Crepe_Service(object):
         with session_scope() as session:
             for menu_crepe in self.menu_crepe_repository.get_savory_menu_crepes(session):
                 crepe_domain = Menu_Crepe_Domain(
-                    crepe_id=menu_crepe.crepe_id, name=menu_crepe.name, price=menu_crepe.price, flavor_profile_id=menu_crepe.flavor_profile_id, origination_id=menu_crepe.origination_id)
+                    menu_crepe_object = menu_crepe)
                 response.append(crepe_domain)
             return response
 

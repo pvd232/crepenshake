@@ -192,7 +192,8 @@ class Order(db.Model):
     customer_id = db.Column(db.String(80), db.ForeignKey(
         'customer.id'), nullable=False)
     cost = db.Column(db.Float(), nullable=False)
-    date = db.Column(db.String(80), nullable=False)
+    date = db.Column(db.DateTime(), nullable=False)
+    pickup_timestamp = db.Column(db.DateTime(), nullable=False)
     order_drink = relationship('Order_Drink', lazy=True)
     order_crepe = relationship('Order_Crepe', lazy=True)
     order_side = relationship('Order_Side', lazy=True)

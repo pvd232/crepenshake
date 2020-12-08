@@ -328,14 +328,16 @@ export class Order {
     orderSide = new Array(),
     orderTotal = 0,
     customerData = null,
-    pickupTime = null
+	pickupTime = null,
+	pickupTimestamp = null
   ) {
     this.orderCrepe = orderCrepe;
     this.orderDrink = orderDrink;
     this.orderSide = orderSide;
     this.orderTotal = orderTotal;
     this.customerData = customerData;
-    this.pickupTime = pickupTime;
+	this.pickupTime = pickupTime;
+	this.pickupTimestamp = pickupTimestamp;
   }
 
   get orderCrepe() {
@@ -356,6 +358,9 @@ export class Order {
   get pickupTime() {
     return this._pickupTime;
   }
+  get pickupTimestamp() {
+    return this._pickupTimestamp;
+  }
   set orderCrepe(value) {
     this._orderCrepe = value;
   }
@@ -374,6 +379,9 @@ export class Order {
   set pickupTime(value) {
     this._pickupTime = value;
   }
+  set pickupTimestamp(value) {
+    this._pickupTimestamp = value;
+  }
   toJSON() {
     this.priceOrder();
     const data = {
@@ -382,7 +390,8 @@ export class Order {
       orderSide: this._orderSide,
       orderTotal: this._orderTotal,
       customerData: this._customerData,
-      pickupTime: this._pickupTime,
+	  pickupTime: this._pickupTime,
+	  pickupTimestamp: this._pickupTimestamp
     };
     return data;
   }
@@ -405,7 +414,8 @@ export class Order {
     }
     this._orderTotal = data.orderTotal;
     this._customerData = data.customerData;
-    this._pickupTime = data.pickupTime;
+	this._pickupTime = data.pickupTime;
+	this._pickupTimestamp = data.pickupTimestamp;
     this.priceOrder();
   }
   priceOrder() {

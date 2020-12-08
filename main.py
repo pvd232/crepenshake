@@ -6,14 +6,14 @@ from flask import request, Response, Flask, render_template, jsonify, send_file,
 from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service, Test_Service
 from models import app
 
-# stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
-stripe.api_key = "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"
-
+stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
+# stripe.api_key = "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"
+#TODO: Add customer phone number attribute and order pickup time to the database 
 @app.route("/")
 def home():
     #only necessary when deploying for the first time
-    # test_service = Test_Service()
-    # test_service.test_connection()
+    test_service = Test_Service()
+    test_service.test_connection()
     return render_template('index.html')
 
 
@@ -119,7 +119,6 @@ def order_drink(editOrder=None):
 def order_side(editOrder=None):
     side_service = Side_Service()
     ingredient_service = Ingredient_Service()
-
     side_names = [x.serialize() for x in side_service.get_side_names()]
     new_side_name = {}
     new_side_name['side_name_id'] = 'toppings'

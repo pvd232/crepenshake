@@ -12,7 +12,7 @@ class Ingredient_Repository(object):
         return ingredients
 
     def get_ingredient_prices(self, session):
-        ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price FROM ingredient i JOIN ingredient_serving_size_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
+        ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price, p.serving_size FROM ingredient i JOIN ingredient_serving_size_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
                                             {"param": "regular"})
         return ingredient_prices
 
@@ -89,11 +89,11 @@ class Order_Repository(object):
                                     street=customer.street, city=customer.city, state=customer.state, zipcode=customer.zipcode, country=customer.country)
             session.add(customer)
             new_order = Order(id=order.id, customer_id=customer.id,
-                              cost=order.cost, date=order.date)
+                              cost=order.cost, date=order.date, pickup_timestamp = order.pickup_timestamp)
             session.add(new_order)
         else:
             new_order = Order(id=order.id, customer_id=user.id,
-                              cost=order.cost, date=order.date)
+                              cost=order.cost, date=order.date, pickup_timestamp = order.pickup_timestamp)
             session.add(new_order)
         if order.order_crepe:
             for i in range(len(order.order_crepe.order_crepe)):

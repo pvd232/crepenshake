@@ -11,14 +11,14 @@
 {% endif %}
 {% for j in range(side_names|length) %} 
 
-{% if side_names[j].side_name_id == 'ice_cream_bowl' %}
+{% if side_names[j].id == 'ice_cream_bowl' %}
 <div class="container0sweetCrepe" style="margin-top: 40px; justify-items:center">
 	<div class="row">
-		<h3 class="head3">{{side_names[j].side_name_id }}</h3>
+		<h3 class="head3">{{side_names[j].id }}</h3>
 	</div>
-	<div class="card-deck" id = '{{side_names[j].side_name_id}}'>
+	<div class="card-deck" id = '{{side_names[j].id}}'>
 		<div class="card" id='{{ice_cream_bowls[0].flavor}}' data-sides='{{ice_cream_bowls[0]|tojson}}'>
-			<img src='{{"../static/images/" + ice_cream_bowls[0].flavor + "_" + side_names[j].side_name_id  + ".jpg"}}' class="card-img-top" alt="..." />
+			<img src='{{"../static/images/" + ice_cream_bowls[0].flavor + "_" + side_names[j].id  + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{ice_cream_bowls[0].flavor + " " + "Ice Cream Bowl"}}</h5>
 				<p class="card-text">{{ice_cream_bowls[0].price}}</p>
@@ -31,7 +31,7 @@
 		<h3 class="head3" style="float: left">ice cream toppings</h3>
 		<h5 id="errorTopping" style="color: #f20000; margin-left: 20px">*Please select an ice cream first</h5>
 	</div>
-	<div class="card-deck" id="toppings" id = '{{side_names[j].side_name_id}}'>
+	<div class="card-deck" id="toppings" id = '{{side_names[j].id}}'>
 		{% for i in range(toppings|length) %}
 		<div class="card" id='{{toppings[i].id}}' data-sides='{{toppings[i]|tojson}}'>
 			<img src='{{"../static/images/" + toppings[i].id + ".jpg"}}' class="card-img-top" alt="..." />

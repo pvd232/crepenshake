@@ -270,10 +270,11 @@ function buildPage () {
 				)}</h4></div>`);
 				$('#timePicker').mdtimepicker({theme:'red'});
 				$('#timePicker').mdtimepicker().on('timechanged', function(e){
-					// console.log(e.value);
-					// console.log(e.time);
+					console.log(e.timeStamp);
+					console.log(e.time);
 					order.pickupTime = e.value;
-					// console.log('order.pickupTime', order.pickupTime); 
+					// must divide by 1000 because python time stamp is in seconds while javascript is in miliseconds
+					order.pickupTimestamp = e.timeStamp/1000;
 				  });
 		}
 	}
@@ -335,7 +336,7 @@ function handleFormSubmit (stripe, card, data, order) {
 					contentType: 'application/json',
 					success: function() {
 						localStorage.setItem('stripeId', newCustomer.stripeId);
-						location.assign('/order/confirmation');
+						// location.assign('/order/confirmation');
 					},
 					error: function (response) { console.log('console.log error', response)},
 				});
@@ -357,12 +358,12 @@ function validateForm (order) {
 			order.customerData = newCustomer;
 		}
 		const forms = document.getElementsByClassName('needs-validation');
-		const stripe = Stripe(
-			'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
-		);
 		// const stripe = Stripe(
-		// 	'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		// 	'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
 		// );
+		const stripe = Stripe(
+			'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		);
 		
 		document.querySelector('button').disabled = true;
 		fetch('/create-payment-intent', {
