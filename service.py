@@ -86,8 +86,6 @@ class Menu_Service(object):
 
         ice_cream_bowls = [x.serialize()
                            for x in self.side_service.get_ice_cream_bowls()]
-        for x in ice_cream_bowls:
-            print('x',x)
             
         response['ice_cream_bowls'] = ice_cream_bowls
 

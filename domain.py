@@ -89,7 +89,8 @@ class Ingredient_Domain(object):
             self.serving_size = ingredient_json["servingSize"]
             self.price = ingredient_json["price"]
         elif ingredient_object:
-            self.id = ingredient_object.ingredient_id
+            print('ingredient_object',ingredient_object)
+            self.id = ingredient_object.id
             self.ingredient_category_id = ingredient_object.ingredient_category_id
             self.serving_size = ingredient_object.serving_size
             self.price = ingredient_object.price
