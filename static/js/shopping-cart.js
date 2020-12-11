@@ -84,7 +84,7 @@ function doShowAll () {
 									' ' +
 									humanize(orderCrepe.ingredients[j], 'id').id
 								}</h5>
-									</div><div class="col-3" ><h4>$${orderCrepe.ingredients[j].price.toFixed(2)}</h4></div></div>`).insertAfter(
+									</div><div class="col-3" ><h4>$${orderCrepe.ingredients[j].cost.toFixed(2)}</h4></div></div>`).insertAfter(
 										`#row-${k}-${j}`
 									);
 								}
@@ -98,12 +98,14 @@ function doShowAll () {
 									}"><h5 style='font-weight: 700;'>Crepe Order #${k + 1}</h5></div>`
 								);
 								for (var j = 0; j < orderCrepe.ingredients.length; j++) {
+									console.log('orderCrepe.ingredients.length',orderCrepe.ingredients[j])
+									console.log('orderCrepe.ingredients[j]',orderCrepe.ingredients[j])
 									$(`<div class="row" style= "margin-bottom: 20px;" id="row-${k}-${
 										j + 1
 									}"><div class="col-9" style="margin-right: 0px;"><h5>
 								${orderCrepe.ingredients[j].quantity + 'x' + ' ' + humanize(orderCrepe.ingredients[j], 'id').id}</h5>
 									</div><div class="col-3" ><h4>$${
-										orderCrepe.ingredients[j].price.toFixed(2) * orderCrepe.ingredients[j].quantity
+										orderCrepe.ingredients[j].cost.toFixed(2) 
 									}</h4></div></div>`).insertAfter(`#row-${k}-${j}`);
 								}
 							}
@@ -313,6 +315,7 @@ function doShowAll () {
 						const sidesInOrder = order.orderSide[i].orderSide;
 						for (var j = 0; j < sidesInOrder.length; j++) {
 							const side = sidesInOrder[j];
+							console.log('side',side)
 							if (side.toppings) {
 								$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow-${i}-${j + 1}">
 												<div class="col-9" style="margin-right: 0px; " id="sideCol-${i}-${j + 1}">
@@ -338,9 +341,10 @@ function doShowAll () {
 												<h5 >${toppingServingSize + ' ' + humanize(topping, 'id').id}</h5>
 											</div>
 											<div class="col-3">
-												<h4 >$${topping.price.toFixed(2)}</h4>
+												<h4 >$${topping.cost.toFixed(2)}</h4>
 											</div>
 										</div>`).insertAfter(`#${lastElementId}`);
+										console.log('topping', topping)
 								}
 							} else {
 								const lastElementId = $('#modalBody1').find('.row').last().attr('id');

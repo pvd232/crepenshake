@@ -36,12 +36,14 @@ function buildPage () {
 					const crepeOrder = orderCrepes[i];
 					if (crepeOrder.origination === 'custom') {
 						$(`#checkingCartBody0`).append(
-							`<li class="list-group-item d-flex justify-content-between" " id="crepeRow${i}0">
+							`<li class="list-group-item d-flex justify-content-between" id="crepeRow${i}0">
 								<h4 style="font-weight:bold;">Crepe Order #${i + 1}</h4>
 						</li>`
 						);
+						if (crepeOrder.flavor === 'savory'){
 						for (var j = 0; j < crepeOrder.ingredients.length; j++) {
 							const ingredient = crepeOrder.ingredients[j];
+							console.log('ingredient',ingredient)
 							$(
 								`<li class="list-group-item d-flex justify-content-between" id="crepeRow${i}${
 									j + 1
@@ -50,6 +52,19 @@ function buildPage () {
 									</div><div class="col-4"><h4 style=''>$${ingredient.cost.toFixed(2)}</h4></div></li>`
 							).insertAfter(`#crepeRow${i}${j}`);
 						}
+					}
+					else if (crepeOrder.flavor === 'sweet'){
+						for (var j = 0; j < crepeOrder.ingredients.length; j++) {
+							const ingredient = crepeOrder.ingredients[j];
+							$(
+								`<li class="list-group-item d-flex justify-content-between" id="crepeRow${i}${
+									j + 1
+								}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
+								${ingredient.quantity + 'x' + ' ' + humanize(ingredient, 'id').id}</h5>
+									</div><div class="col-4"><h4 style=''>$${ingredient.cost.toFixed(2)}</h4></div></li>`
+							).insertAfter(`#crepeRow${i}${j}`);
+						}
+					}
 					} else if (crepeOrder.origination === 'menu') {
 						$(`#checkingCartBody0`).append(
 							`<li class="list-group-item d-flex justify-content-between" " id="crepeRow${i}0">
@@ -243,7 +258,7 @@ function buildPage () {
 											j + 1
 										}${k}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${humanize(topping, 'servingSize').servingSize + ' ' + humanize(topping, 'id').id}</h5>
-									</div><div class="col-4"><h4 style=''>$${topping.price.toFixed(2)}</h4></div></li>`
+									</div><div class="col-4"><h4 style=''>$${topping.cost.toFixed(2)}</h4></div></li>`
 									).insertAfter(`#${lastElementId}`);
 								}
 							}

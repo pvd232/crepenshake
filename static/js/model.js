@@ -1069,7 +1069,8 @@ export class OrderSide {
   }
   addTopping(json, servingSize) {
     const selectedItem = new Ingredient();
-    selectedItem.fromJSON(json);
+	selectedItem.fromJSON(json);
+	console.log('selectedItem',selectedItem)
     if (!this.checkIfThisToppingSelected(json)) {
       selectedItem.servingSize = servingSize;
       for (var i = 0; i < this._orderSide.length; i++) {
@@ -1186,11 +1187,12 @@ export class Ingredient {
   }
   set servingSize(value) {
 	this._servingSize = value;
-	if (this._servingSize === 'extra'){
-		this._cost = 2 * this._price
+	if (this._category != 'fruit' && this._category != 'sweetness' && this._servingSize === 'extra'){
+		this._quantity = 2
+		this._cost = this._quantity * this._price
 	}
-	else {
-		this._cost = 1*this._price
+	else{
+		this._cost = this._quantity * this._price
 	}
   }
   set price(value) {
@@ -1206,12 +1208,6 @@ export class Ingredient {
     this._cost = value;
   }
   toJSON() {
-	console.log('this._servingSize',this._servingSize)
-    if (this._servingSize === "extra") {
-      this._cost = 2 * this._price;
-    } else {
-      this._cost = 1 * this._price;
-    }
     const data = {
       id: this._id,
       servingSize: this._servingSize,
@@ -1242,13 +1238,20 @@ export class Ingredient {
   updateQuantity(value) {
     if (value === "decrease") {
       if (this._quantity === 0) {
+		if (this._category === 'fruit' || this._category === 'sweetness') {
+			this._cost = this._quantity*this._price
+		}
         return;
       } else {
         this._quantity -= 1;
       }
     } else if (value === "increase") {
       this._quantity += 1;
-    }
+	}
+	if (this._category === 'fruit' || this._category === 'sweetness') {
+		this._cost = this._quantity*this._price
+		return
+	}
   }
 }
 export class MenuCrepe {
@@ -1456,7 +1459,8 @@ export class OrderCrepe {
     if (data.ingredients) {
       for (var i = 0; i < data.ingredients.length; i++) {
         const newIngredient = new Ingredient();
-        newIngredient.fromJSON(data.ingredients[i]);
+		newIngredient.fromJSON(data.ingredients[i]);
+		console.log('newIngredient',newIngredient)
         this._ingredients.push(newIngredient);
       }
     }
