@@ -1,171 +1,205 @@
 [
 	{
 		"ingredient_id": "steak",
+		"ingredient_category_id": "protein",
 		"serving_size": "regular",
 		"price": 9.5
 	},
 	{
 		"ingredient_id": "chicken_breast",
+		"ingredient_category_id": "protein",
 		"serving_size": "regular",
 		"price": 8.5
 	},
 	{
 		"ingredient_id": "blackened_tofu",
+		"ingredient_category_id": "protein",
 		"serving_size": "regular",
 		"price": 7.95
 	},
 	{
 		"ingredient_id": "virginia_ham",
+		"ingredient_category_id": "protein",
 		"serving_size": "regular",
 		"price": 7.95
 	},
 	{
 		"ingredient_id": "artichoke_hearts",
+		"ingredient_category_id": "vegetable",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "mushrooms",
+		"ingredient_category_id": "vegetable",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "roasted_red_peppers",
+		"ingredient_category_id": "vegetable",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "sauteed_minced_garlic",
+		"ingredient_category_id": "vegetable",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "cooked_spinach",
+		"ingredient_category_id": "vegetable",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "raw_spinach",
+		"ingredient_category_id": "vegetable",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "grilled_onions",
+		"ingredient_category_id": "vegetable",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "cooked_broccoli",
+		"ingredient_category_id": "vegetable",
 		"serving_size": "regular",
 		"price": 0.0
 	},
 	{
 		"ingredient_id": "blue_cheese_crumbles",
+		"ingredient_category_id": "cheese",
 		"serving_size": "regular",
-		"price": 0.0
+		"price": 0.99
 	},
 	{
 		"ingredient_id": "gourmet_herb_cheese",
+		"ingredient_category_id": "cheese",
 		"serving_size": "regular",
-		"price": 0.0
+		"price": 0.99
 	},
 	{
 		"ingredient_id": "brie",
+		"ingredient_category_id": "cheese",
 		"serving_size": "regular",
-		"price": 0.0
+		"price": 0.99
 	},
 	{
 		"ingredient_id": "sharp_cheddar",
+		"ingredient_category_id": "cheese",
 		"serving_size": "regular",
-		"price": 0.0
+		"price": 0.99
 	},
 	{
 		"ingredient_id": "swiss",
+		"ingredient_category_id": "cheese",
 		"serving_size": "regular",
-		"price": 0.0
+		"price": 0.99
 	},
 	{
 		"ingredient_id": "smoked_gouda",
+		"ingredient_category_id": "cheese",
 		"serving_size": "regular",
-		"price": 0.0
+		"price": 0.99
 	},
 	{
 		"ingredient_id": "bérnaise",
+		"ingredient_category_id": "sauce",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "balsamic_glaze",
+		"ingredient_category_id": "sauce",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "steak_diane",
+		"ingredient_category_id": "sauce",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "peanut",
+		"ingredient_category_id": "sauce",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "chimichurri",
+		"ingredient_category_id": "sauce",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "raspberries",
+		"ingredient_category_id": "fruit",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "blueberries",
+		"ingredient_category_id": "fruit",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "banana_slices",
+		"ingredient_category_id": "fruit",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "strawberry_slices",
+		"ingredient_category_id": "fruit",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "apple_slices",
+		"ingredient_category_id": "fruit",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "toasted_coconut",
+		"ingredient_category_id": "sweetness",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "milk_chocolate",
+		"ingredient_category_id": "sweetness",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "cookies_&_cream",
+		"ingredient_category_id": "sweetness",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "white_chocolate",
+		"ingredient_category_id": "sweetness",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "nutella",
+		"ingredient_category_id": "sweetness",
 		"serving_size": "regular",
 		"price": 0.99
 	},
 	{
 		"ingredient_id": "caramel",
+		"ingredient_category_id": "sweetness",
 		"serving_size": "regular",
 		"price": 0.99
 	}

@@ -328,6 +328,8 @@ class Ingredient_Serving_Size_Price(db.Model):
     __tablename__ = 'ingredient_serving_size_price'
     ingredient_id = db.Column(db.String(80), db.ForeignKey('ingredient.id'), primary_key=True,
                               nullable=False)
+    ingredient_category_id = db.Column(db.String(80), db.ForeignKey('ingredient_category.id'),
+                                       nullable=False)
     serving_size = db.Column(db.String(80), db.ForeignKey(
         'ingredient_serving_size.id'), primary_key=True,  nullable=False)
     price = db.Column(db.Float(), nullable=False)
@@ -805,10 +807,11 @@ def create_ingredient_serving_size_price():
 
     for item in json_items:
         ingredient_id = item['ingredient_id']
+        ingredient_category_id = item['ingredient_category_id']
         serving_size = item['serving_size']
         price = item['price']
 
-        new_ingredient_serving_price = Ingredient_Serving_Size_Price(ingredient_id=ingredient_id,
+        new_ingredient_serving_price = Ingredient_Serving_Size_Price(ingredient_id=ingredient_id, ingredient_category_id = ingredient_category_id,
                                                                      serving_size=serving_size, price=price)
 
         # After I create the ingredient, I can then add it to my session.

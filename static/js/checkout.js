@@ -8,6 +8,7 @@ import { Order, Customer, Coffee } from './model.js';
 function buildPage () {
 	const key = 'order';
 	const orderDict = localStorage.getItem(key);
+	console.log('orderDict',orderDict)
 	const order = new Order();
 	if (orderDict) {
 		order.fromJSON(orderDict);
@@ -46,7 +47,7 @@ function buildPage () {
 									j + 1
 								}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${humanize(ingredient, 'servingSize').servingSize + ' ' + humanize(ingredient, 'id').id}</h5>
-									</div><div class="col-4"><h4 style=''>$${ingredient.price.toFixed(2)}</h4></div></li>`
+									</div><div class="col-4"><h4 style=''>$${ingredient.cost.toFixed(2)}</h4></div></li>`
 							).insertAfter(`#crepeRow${i}${j}`);
 						}
 					} else if (crepeOrder.origination === 'menu') {
@@ -268,6 +269,8 @@ function buildPage () {
 				</div> <div class="col-4" style="margin-left: 21px; "><h4 style="float:right; font-weight: bold; ">$${order.orderTotal.toFixed(
 					2
 				)}</h4></div>`);
+				console.log('order.orderTotal',order.orderTotal)
+
 				$('#timePicker').mdtimepicker({theme:'red'});
 				$('#timePicker').mdtimepicker().on('timechanged', function(e){
 					console.log(e.timeStamp);
@@ -358,12 +361,12 @@ function validateForm (order) {
 			order.customerData = newCustomer;
 		}
 		const forms = document.getElementsByClassName('needs-validation');
-		const stripe = Stripe(
-			'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
-		);
 		// const stripe = Stripe(
-		// 	'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		// 	'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
 		// );
+		const stripe = Stripe(
+			'pk_test_51HkZexHlxrw6CLurXRJ1Z8xcNjsYrhP36BnoJz6q2i0B6gUrR1ViPANQZN6pcDH02rqVoujFG8PEj0ct5mkNw5lW00mGuA7PJZ'
+		);
 		
 		document.querySelector('button').disabled = true;
 		fetch('/create-payment-intent', {

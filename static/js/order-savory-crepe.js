@@ -4,6 +4,7 @@ import { Order, OrderCrepe, humanize } from './model.js';
 var editCrepeIndex = null;
 var editOrder = null;
 var userOrderCrepe = new OrderCrepe();
+console.log('userOrderCrepe',userOrderCrepe)
 
 function displayErrorMsg(element) {
 	const selector = `#${element.closest('.card, .list-group-item').attr('id') + 'error'}`;
@@ -33,6 +34,7 @@ function stringify(crepeOrder) {
 			if (localStorage.getItem('order')) {
 				// there will only ever be one item in local storage because a customer can only have 1 order in their shopping cart.
 				order.fromJSON(localStorage.getItem('order'));
+				console.log('order',order)
 				// only one crepe order will be processed on this page at a time
 				const crepeOrderTotal = crepeOrder.orderTotal;
 				order.orderTotal += crepeOrderTotal;
@@ -40,7 +42,8 @@ function stringify(crepeOrder) {
 				const stringifiedCrepeOrder = JSON.stringify(order);
 				localStorage.setItem('order', stringifiedCrepeOrder);
 			} else {
-				order.orderTotal += crepeOrder.orderTotal;
+				order.orderTotal = crepeOrder.orderTotal;
+				console.log('crepeOrder',crepeOrder)
 				order.orderCrepe.push(crepeOrder);
 				const stringifiedCrepeOrder = JSON.stringify(order);
 				localStorage.setItem('order', stringifiedCrepeOrder);
@@ -63,9 +66,12 @@ function checkOut(order) {
 	order.flavor = 'savory';
 	order.origination = 'custom';
 	if (editCrepeIndex != null) {
-		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
+		// $.when(stringify(order)).then(location.assign('/order?userOrder=true'));
+		stringify(order)
 	} else {
-		$.when(stringify(order)).then(location.assign('/order/drink'));
+		// $.when(stringify(order)).then(location.assign('/order/drink'));
+		stringify(order)
+
 	}
 };
 

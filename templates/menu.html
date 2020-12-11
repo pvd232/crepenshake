@@ -14,7 +14,7 @@
 				<h3 class="head3"> Choose 1 {{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}</h3>
 				{% elif menu_items.savory_ingredient_prices_by_category[i].ingredient_category == 'cheese' %}
 				<h3 class="head3"> Add a {{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}</h3>
-				{% elif menu_items.savory_ingredient_prices_by_category[i].ingredient_category == 'veggie' %}
+				{% elif menu_items.savory_ingredient_prices_by_category[i].ingredient_category == 'vegetable' %}
 				<h3 class="head3"> Choose up to 4 {{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}s</h3>
 				{% elif menu_items.savory_ingredient_prices_by_category[i].ingredient_category == 'sauce' %}
 				<h3 class="head3"> Top it off with a {{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}</h3>
@@ -143,10 +143,10 @@
 			</div>
 			<div class="card-deck" id="syrup">
 				{% for i in range(menu_items.syrups|length) %}
-				<div class="card" id='{{menu_items.syrups[i].coffee_syrup_flavor}}'>
-					<img src='{{"../static/images/" + menu_items.syrups[i].coffee_syrup_flavor + "_" + "syrup" + ".png"}}' class="card-img-top" alt="..." />
+				<div class="card" id='{{menu_items.syrups[i].id}}'>
+					<img src='{{"../static/images/" + menu_items.syrups[i].id + "_" + "syrup" + ".png"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
-						<h5 class="card-title">{{menu_items.syrups[i].coffee_syrup_flavor}}</h5>
+						<h5 class="card-title">{{menu_items.syrups[i].id}}</h5>
 						<p class="card-text"></p>
 					</div>
 				</div>

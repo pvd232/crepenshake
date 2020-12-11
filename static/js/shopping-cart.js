@@ -56,6 +56,7 @@ function doShowAll () {
 
 		const orderDict = localStorage.getItem('order');
 		if (orderDict) {
+			console.log('orderDict',orderDict)
 			const order = new Order();
 			order.fromJSON(orderDict);
 			// to do finish the serialization and deserialization of all the classes, then build savory crepe, then menu crepe pg, then clover pmt in backend, then mobile buttons

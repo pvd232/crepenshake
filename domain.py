@@ -89,8 +89,10 @@ class Ingredient_Domain(object):
             self.serving_size = ingredient_json["servingSize"]
             self.price = ingredient_json["price"]
         elif ingredient_object:
-            print('ingredient_object',ingredient_object)
-            self.id = ingredient_object.id
+            if hasattr(ingredient_object, 'ingredient_id'):
+                self.id = ingredient_object.ingredient_id
+            else:
+                self.id = ingredient_object.id 
             self.ingredient_category_id = ingredient_object.ingredient_category_id
             self.serving_size = ingredient_object.serving_size
             self.price = ingredient_object.price
@@ -131,6 +133,7 @@ class Order_Crepe_Domain(object):
                     self.order_crepe.append(new_custom_crepe)
         elif order_crepe_object:
             for order_crepe in order_crepe_object:
+                print('order_crepe',order_crepe)
                 if order_crepe.origination == 'menu':
                     for menu_crepe in order_crepe.menuCrepes:
                         menu_crepe_bool = False
@@ -363,19 +366,19 @@ class Order_Domain(object):
             self.pickup_timestamp = datetime.fromtimestamp(order_json["pickupTimestamp"])
             if len(order_json['orderCrepe']) > 0:
                 self.order_crepe = Order_Crepe_Domain(order_id=self.id,
-                                                     order_crepe_object=order_json['orderCrepe'])
+                                                     order_crepe_json=order_json['orderCrepe'])
             else:
                 self.order_crepe = order_crepe
             if len(order_json['orderDrink']) > 0:
                 self.order_drink = Order_Drink_Domain(order_id=self.id,
                                                      order_drink_json=order_json['orderDrink'])
             else:
-                self.order_drink = order_drink
+                self.order_drink = None
             if len(order_json['orderSide']) > 0:
                 self.order_side = Order_Side_Domain(order_id=self.id,
                                                    order_side_json=order_json['orderSide'])
             else:
-                self.order_side = order_side
+                self.order_side = None
 
         elif order_object:
             self.id = order_object.id
@@ -388,17 +391,17 @@ class Order_Domain(object):
                 self.order_crepe = Order_Crepe_Domain(order_id=self.id,
                                                      order_crepe_object=order_object.orderCrepe)
             else:
-                self.order_crepe = order_crepe
+                self.order_crepe = None
             if len(order_object.orderDrink) > 0:
                 self.order_drink = Order_Drink_Domain(order_id=self.id,
                                                      order_drink_object=order_object.orderDrink)
             else:
-                self.order_drink = order_drink
+                self.order_drink = None
             if len(order_object.orderSide) > 0:
                 self.order_side = Order_Side_Domain(order_id=self.id,
                                                    order_side_object=order_object.orderSide)
             else:
-                self.order_side = order_side
+                self.order_side = None
 
 
     def serialize(self):
@@ -416,16 +419,16 @@ class Order_Domain(object):
 class Customer_Domain(object):
     def __init__(self, customer_object=None, customer_json=None):
         if customer_json:
-            self.id = customer_object["id"]
-            self.stripe_id = customer_object["stripeId"]
-            self.first_name = customer_object["firstName"]
-            self.last_name = customer_object["lastName"]
-            self.street = customer_object["street"]
-            self.city = customer_object["city"]
-            self.state = customer_object["state"]
-            self.zipcode = customer_object["zipcode"]
-            self.country = customer_object["country"]
-            self.phone_number = customer_object["phoneNumber"]
+            self.id = customer_json["id"]
+            self.stripe_id = customer_json["stripeId"]
+            self.first_name = customer_json["firstName"]
+            self.last_name = customer_json["lastName"]
+            self.street = customer_json["street"]
+            self.city = customer_json["city"]
+            self.state = customer_json["state"]
+            self.zipcode = customer_json["zipcode"]
+            self.country = customer_json["country"]
+            self.phone_number = customer_json["phoneNumber"]
         elif customer_object:
             self.id = customer_object.id
             self.stripe_id = customer_object.stripe_id
@@ -480,10 +483,10 @@ class Custom_Crepe_Domain(object):
         if custom_crepe_json:
             self.crepe_id = uuid.uuid4()
             self.ingredients = list()
-            self.flavor_profile_id = custom_crepe_object['flavor']
+            self.flavor_profile_id = custom_crepe_json['flavor']
             self.origination_id = 'custom'
-            self.quantity = custom_crepe_object['quantity']
-            for ingredient in custom_crepe_object["ingredients"]:
+            self.quantity = custom_crepe_json['quantity']
+            for ingredient in custom_crepe_json["ingredients"]:
                 new_ingredient = Ingredient_Domain(ingredient_json=ingredient)
                 self.ingredients.append(new_ingredient)
         elif custom_crepe_object:

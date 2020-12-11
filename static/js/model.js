@@ -64,12 +64,12 @@ export class Drink {
     servingSize = null,
     drinkCategory = null
   ) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-    this.quantity = quantity;
-    this.servingSize = servingSize;
-    this.drinkCategory = drinkCategory;
+    this._id = id;
+    this._name = name;
+    this._price = price;
+    this._quantity = quantity;
+    this._servingSize = servingSize;
+    this._drinkCategory = drinkCategory;
   }
   get id() {
     return this._id;
@@ -168,19 +168,19 @@ export class Coffee {
     drinkCategory = null,
     quantity = 1
   ) {
-    this.id = id;
-    this.name = name;
-    this.servingSize = servingSize;
+    this._id = id;
+    this._name = name;
+    this._servingSize = servingSize;
     this.temperature = temperature;
-    this.flavorSyrup = flavorSyrup;
-    this.flavorSyrupServingSize = flavorSyrupServingSize;
-    this.espressoServingSize = espressoServingSize;
-    this.espressoPrice = espressoPrice;
-    this.milkType = milkType;
-    this.milkPrice = milkPrice;
-    this.price = price;
-    this.drinkCategory = drinkCategory;
-    this.quantity = quantity;
+    this._flavorSyrup = flavorSyrup;
+    this._flavorSyrupServingSize = flavorSyrupServingSize;
+    this._espressoServingSize = espressoServingSize;
+    this._espressoPrice = espressoPrice;
+    this._milkType = milkType;
+    this._milkPrice = milkPrice;
+    this._price = price;
+    this._drinkCategory = drinkCategory;
+    this._quantity = quantity;
   }
   get id() {
     return this._id;
@@ -328,16 +328,16 @@ export class Order {
     orderSide = new Array(),
     orderTotal = 0,
     customerData = null,
-	pickupTime = null,
-	pickupTimestamp = null
+    pickupTime = null,
+    pickupTimestamp = null
   ) {
-    this.orderCrepe = orderCrepe;
-    this.orderDrink = orderDrink;
-    this.orderSide = orderSide;
-    this.orderTotal = orderTotal;
-    this.customerData = customerData;
-	this.pickupTime = pickupTime;
-	this.pickupTimestamp = pickupTimestamp;
+    this._orderCrepe = orderCrepe;
+    this._orderDrink = orderDrink;
+    this._orderSide = orderSide;
+    this._orderTotal = orderTotal;
+    this._customerData = customerData;
+    this._pickupTime = pickupTime;
+    this._pickupTimestamp = pickupTimestamp;
   }
 
   get orderCrepe() {
@@ -390,13 +390,14 @@ export class Order {
       orderSide: this._orderSide,
       orderTotal: this._orderTotal,
       customerData: this._customerData,
-	  pickupTime: this._pickupTime,
-	  pickupTimestamp: this._pickupTimestamp
+      pickupTime: this._pickupTime,
+      pickupTimestamp: this._pickupTimestamp,
     };
     return data;
   }
   fromJSON(json) {
     const data = JSON.parse(json);
+    console.trace("data", data);
     for (var i = 0; i < data.orderDrink.length; i++) {
       const newDrinkOrder = new OrderDrink();
       newDrinkOrder.fromJSON(data.orderDrink[i]);
@@ -414,20 +415,19 @@ export class Order {
     }
     this._orderTotal = data.orderTotal;
     this._customerData = data.customerData;
-	this._pickupTime = data.pickupTime;
-	this._pickupTimestamp = data.pickupTimestamp;
+    this._pickupTime = data.pickupTime;
+    this._pickupTimestamp = data.pickupTimestamp;
     this.priceOrder();
   }
   priceOrder() {
     this._orderTotal = 0;
-    for (var i in this._orderCrepe) {
+    for (var i = 0; i < this._orderCrepe.length; i++) {
       this._orderTotal += this._orderCrepe[i].orderTotal;
     }
     for (var i in this._orderDrink) {
       this._orderTotal += this._orderDrink[i].orderTotal;
     }
     for (var i in this._orderSide) {
-      this._orderSide[i];
       this._orderTotal += this._orderSide[i].orderTotal;
     }
   }
@@ -436,30 +436,29 @@ export class Order {
 export class Customer {
   constructor(customerObject, stripeId) {
     if (customerObject) {
-	  this.id = customerObject.email.toLowerCase();
-      this.stripeId = customerObject.stripeId;
-      this.firstName = customerObject.firstName;
-      this.lastName = customerObject.lastName;
-      this.street = customerObject.address;
-      this.city = customerObject.city;
-      this.state = customerObject.state;
-      this.zipcode = customerObject.zip;
-	  this.country = customerObject.country;
-	  this.phoneNumber = customerObject.phoneNumber;
+      this._id = customerObject.email.toLowerCase();
+      this._stripeId = customerObject.stripeId;
+      this._firstName = customerObject.firstName;
+      this._lastName = customerObject.lastName;
+      this._street = customerObject.address;
+      this._city = customerObject.city;
+      this._state = customerObject.state;
+      this._zipcode = customerObject.zip;
+      this._country = customerObject.country;
+      this._phoneNumber = customerObject.phoneNumber;
     } else if (stripeId) {
       this._stripeId = stripeId;
     } else {
-	  this.id = null;
-      this.stripeId = null;
-      this.firstName = null;
-      this.lastName = null;
-      this.street = null;
-      this.city = null;
-      this.state = null;
-      this.zipcode = null;
-	  this.country = null;
-	  this.phoneNumber = null;
-	  
+      this._id = null;
+      this._stripeId = null;
+      this._firstName = null;
+      this._lastName = null;
+      this._street = null;
+      this._city = null;
+      this._state = null;
+      this._zipcode = null;
+      this._country = null;
+      this._phoneNumber = null;
     }
   }
 
@@ -521,7 +520,7 @@ export class Customer {
     this._country = value;
   }
   set phoneNumber(value) {
-	  this._phoneNumber = value;
+    this._phoneNumber = value;
   }
   toJSON() {
     const data = {
@@ -534,7 +533,7 @@ export class Customer {
       state: this._state,
       zipcode: this._zipcode,
       country: this._country,
-      phoneNumber: this._phoneNumber
+      phoneNumber: this._phoneNumber,
     };
     return data;
   }
@@ -836,13 +835,13 @@ export class IceCreamBowl {
     sideName = null,
     toppings = new Array()
   ) {
-    this.id = id;
-    this.flavor = flavor;
-    this.price = price;
-    this.servingSize = servingSize;
-    this.quantity = quantity;
-    this.sideName = sideName;
-    this.toppings = toppings;
+    this._id = id;
+    this._flavor = flavor;
+    this._price = price;
+    this._servingSize = servingSize;
+    this._quantity = quantity;
+    this._sideName = sideName;
+    this._toppings = toppings;
   }
   get id() {
     return this._id;
@@ -949,8 +948,8 @@ export class IceCreamBowl {
 }
 export class OrderSide {
   constructor(orderSide = new Array(), orderTotal = 0) {
-    this.orderSide = orderSide;
-    this.orderTotal = orderTotal;
+    this._orderSide = orderSide;
+    this._orderTotal = orderTotal;
   }
   get orderSide() {
     return this._orderSide;
@@ -1154,13 +1153,15 @@ export class Ingredient {
     servingSize = "regular",
     price = 0,
     category = null,
-    quantity = 1
+    quantity = 1,
+    cost = 0
   ) {
-    this.id = id;
-    this.servingSize = servingSize;
-    this.price = price;
-    this.category = category;
-    this.quantity = quantity;
+    this._id = id;
+    this._servingSize = servingSize;
+    this._price = price;
+    this._category = category;
+    this._quantity = quantity;
+    this._cost = cost;
   }
   get id() {
     return this._id;
@@ -1177,11 +1178,20 @@ export class Ingredient {
   get quantity() {
     return this._quantity;
   }
+  get cost() {
+    return this._cost;
+  }
   set id(value) {
     this._id = value;
   }
   set servingSize(value) {
-    this._servingSize = value;
+	this._servingSize = value;
+	if (this._servingSize === 'extra'){
+		this._cost = 2 * this._price
+	}
+	else {
+		this._cost = 1*this._price
+	}
   }
   set price(value) {
     this._price = value;
@@ -1192,13 +1202,23 @@ export class Ingredient {
   set quantity(value) {
     this._quantity = value;
   }
+  set cost(value) {
+    this._cost = value;
+  }
   toJSON() {
+	console.log('this._servingSize',this._servingSize)
+    if (this._servingSize === "extra") {
+      this._cost = 2 * this._price;
+    } else {
+      this._cost = 1 * this._price;
+    }
     const data = {
       id: this._id,
       servingSize: this._servingSize,
       price: this._price,
       category: this._category,
       quantity: this._quantity,
+      cost: this._cost,
     };
     return data;
   }
@@ -1206,7 +1226,10 @@ export class Ingredient {
     const data = json;
     this._id = data.id;
     this._servingSize = data.servingSize;
-    this._price = data.price;
+	this._price = data.price;
+	if (data.cost){
+		this._cost = data.cost;
+	}
     if (data.category) {
       this._category = data.category;
     } else if (data.ingredient_category_id) {
@@ -1237,12 +1260,12 @@ export class MenuCrepe {
     origination = null,
     price = 0
   ) {
-    this.id = id;
-    this.name = name;
-    this.flavor = flavor;
-    this.quantity = quantity;
-    this.origination = origination;
-    this.price = price;
+    this._id = id;
+    this._name = name;
+    this._flavor = flavor;
+    this._quantity = quantity;
+    this._origination = origination;
+    this._price = price;
   }
   get id() {
     return this._id;
@@ -1339,14 +1362,14 @@ export class OrderCrepe {
     menuCrepes = new Array(),
     orderTotal = 0
   ) {
-    this.id = id;
-    this.name = name;
-    this.flavor = flavor;
-    this.quantity = quantity;
-    this.origination = origination;
-    this.ingredients = ingredients;
-    this.menuCrepes = menuCrepes;
-    this.orderTotal = orderTotal;
+    this._id = id;
+    this._name = name;
+    this._flavor = flavor;
+    this._quantity = quantity;
+    this._origination = origination;
+    this._ingredients = ingredients;
+    this._menuCrepes = menuCrepes;
+    this._orderTotal = orderTotal;
   }
   get id() {
     return this._id;
@@ -1461,7 +1484,8 @@ export class OrderCrepe {
   addIngredient(json, servingSize) {
     const newIngredient = new Ingredient();
     newIngredient.fromJSON(json);
-    newIngredient.servingSize = servingSize;
+	newIngredient.servingSize = servingSize;
+	console.log('newIngredient',newIngredient)
     this._ingredients.push(newIngredient);
     this.priceCrepe();
     return newIngredient;
@@ -1506,8 +1530,6 @@ export class OrderCrepe {
       } else {
         // if a protein has alread been selected then we want to add this protein as either a regular quantity if the other is extra, or a light quantity if the other is regular
         if (proteinStatus != true && proteinStatus != false) {
-          // check the serving size of the already selected protein
-          // TODO finish adding in logic for protein ingredients and test it
           const proteinIngredient = proteinStatus;
           const servingSizeOfSelectedProtein = proteinIngredient.servingSize;
           if (servingSizeOfSelectedProtein === "regular") {
@@ -1556,11 +1578,16 @@ export class OrderCrepe {
     return false;
   }
   priceCrepe() {
-    this._orderTotal = 0;
+	this._orderTotal = 0;
+	var cheeseBool = false
     if (this._ingredients.length) {
       for (var i = 0; i < this._ingredients.length; i++) {
-        const ingredientPrice =
-          this._ingredients[i].price * this._ingredients[i].quantity;
+		if (this._ingredients[i].category === 'cheese' && !cheeseBool){
+			cheeseBool = true
+			this._ingredients[i].quantity -= 1
+		}
+		const ingredientPrice = this._ingredients[i].cost;
+
         this._orderTotal += ingredientPrice;
       }
     }

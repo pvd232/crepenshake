@@ -66,18 +66,19 @@ class Menu_Service(object):
         response = {}
         fruit_ingredients = [
             x.serialize() for x in self.ingredient_service.get_fruit_ingredients()]
-        response.fruit_ingredients = fruit_ingredients
+        response["fruit_ingredients"] = fruit_ingredients
         sweetness_ingredients = [
             x.serialize() for x in self.ingredient_service.get_sweetness_ingredients()]
-        response.sweetness_ingredients = sweetness_ingredients
+        response["sweetness_ingredients"] = sweetness_ingredients
 
         savory_ingredient_prices_by_category = self.ingredient_service.get_savory_ingredient_prices_by_category()
         new_ingredient_prices_by_category = []
         for x in savory_ingredient_prices_by_category:
+            print('x',x)
             new_ingredient_category_dict = {}
-            new_ingredient_category_dict['ingredient_category'] = x.ingredient_category
+            new_ingredient_category_dict['ingredient_category'] = x["ingredient_category"]
             new_ingredient_category_dict['ingredients'] = []
-            for y in x.ingredients:
+            for y in x["ingredients"]:
                 new_ingredient_category_dict['ingredients'].append(
                     y.serialize())
             new_ingredient_prices_by_category.append(
@@ -286,7 +287,6 @@ class Drink_Service(object):
         response = []
         with session_scope() as session:
             for drink in self.drink_repository.get_drinks(session, requested_drink_category_id):
-                print('drink',drink.serialize)
                 drink_domain = Drink_Domain(drink_object=drink)
                 response.append(drink_domain)
             return response
@@ -295,7 +295,6 @@ class Drink_Service(object):
         response = []
         with session_scope() as session:
             for milk_drink in self.drink_repository.get_milk_drinks(session):
-                print('milk_drink',milk_drink)
                 drink_domain = Milk_Domain(
                     milk_object=milk_drink)
                 response.append(drink_domain)

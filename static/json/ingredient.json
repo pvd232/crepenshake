@@ -21,43 +21,43 @@
 	},
 	{
 		"id": "artichoke_hearts",
-		"ingredient_category_id": "veggie",
+		"ingredient_category_id": "vegetable",
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "cooked_spinach",
-		"ingredient_category_id": "veggie",
+		"ingredient_category_id": "vegetable",
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "cooked_broccoli",
-		"ingredient_category_id": "veggie",
+		"ingredient_category_id": "vegetable",
 		"ingredient_flavor_profile_id": "savory"
 	},
 
 	{
 		"id": "mushrooms",
-		"ingredient_category_id": "veggie",
+		"ingredient_category_id": "vegetable",
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "roasted_red_peppers",
-		"ingredient_category_id": "veggie",
+		"ingredient_category_id": "vegetable",
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "sauteed_minced_garlic",
-		"ingredient_category_id": "veggie",
+		"ingredient_category_id": "vegetable",
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "grilled_onions",
-		"ingredient_category_id": "veggie",
+		"ingredient_category_id": "vegetable",
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
 		"id": "raw_spinach",
-		"ingredient_category_id": "veggie",
+		"ingredient_category_id": "vegetable",
 		"ingredient_flavor_profile_id": "savory"
 	},
 	{
