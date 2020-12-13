@@ -1265,6 +1265,7 @@ def create_everything():
 
 
 def instantiate_db_connection():
+    db.drop_all()
     db.create_all()
     create_everything()
 
