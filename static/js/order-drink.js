@@ -494,7 +494,6 @@ function pageLogic () {
 					.unbind('click')
 					.bind('click', function () {
 						const json = JSON.parse($(this).closest('.card, li').attr('data-drinks'));
-
 						var servingSize;
 						if ($(this).attr('class') === 'btn3') {
 							servingSize = 'light';
@@ -517,6 +516,10 @@ function pageLogic () {
 									}
 								});
 						} else if (selectedItemCategory === 'coffee') {
+							var coffeeBool;
+							if (!userOrderDrink.checkIfCoffeeSelected()) {
+								coffeeBool = false
+							}
 							userOrderDrink.addCoffee(json, servingSize);
 							// if you selected coffee by getting extra espresso then we still need to blot out the other coffee cards
 							$('#coffee')
@@ -528,6 +531,7 @@ function pageLogic () {
 										$(this).css('opacity', '.3');
 									}
 								});
+								if (!coffeeBool){
 							$('#milk, #temperature, #syrup').each(function () {
 								$(this)
 									.find('.card, .list-group-item')
@@ -538,6 +542,7 @@ function pageLogic () {
 								$('#errorSyrup').hide();
 								$('#errorTemp').hide();
 							});
+						}
 						}
 						$(this).closest('.card, .list-group-item').find('.btn2').show();
 						$(this).hide();
