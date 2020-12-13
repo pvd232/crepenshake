@@ -233,7 +233,7 @@ class Order_Drink_Domain(object):
                         coffee_list.append(new_coffee)
                     elif drink['drinkCategory'] == 'milkshake':
                         drink_bool = False
-                        new_drink = Drink_Domain(drink_object=drink)
+                        new_drink = Drink_Domain(drink_json=drink)
                         for drink in milkshake_list:
                             if drink.id == new_drink.id:
                                 drink.quantity += 1
@@ -242,7 +242,7 @@ class Order_Drink_Domain(object):
                             milkshake_list.append(new_drink)
                     elif drink['drinkCategory'] == 'bottled':
                         drink_bool = False
-                        new_drink = Drink_Domain(drink_object=drink)
+                        new_drink = Drink_Domain(drink_json=drink)
                         for drink in bottled_list:
                             if drink.id == new_drink.id:
                                 drink.quantity += 1
@@ -251,7 +251,7 @@ class Order_Drink_Domain(object):
                             bottled_list.append(new_drink)
                     elif drink['drinkCategory'] == 'non-coffee':
                         drink_bool = False
-                        new_drink = Drink_Domain(drink_object=drink)
+                        new_drink = Drink_Domain(drink_json=drink)
                         for drink in non_coffee_list:
                             if drink.id == new_drink.id:
                                 drink.quantity += 1
@@ -368,7 +368,7 @@ class Order_Domain(object):
                 self.order_crepe = Order_Crepe_Domain(order_id=self.id,
                                                      order_crepe_json=order_json['orderCrepe'])
             else:
-                self.order_crepe = order_crepe
+                self.order_crepe = None
             if len(order_json['orderDrink']) > 0:
                 self.order_drink = Order_Drink_Domain(order_id=self.id,
                                                      order_drink_json=order_json['orderDrink'])
@@ -593,8 +593,8 @@ class Coffee_Syrup_Flavor_Domain(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 class Coffee_Domain(object):
-    def __init__(self, coffee_json, coffee_object):
-        if (coffee_json):
+    def __init__(self, coffee_json=None, coffee_object=None):
+        if coffee_json:
             self.id = uuid.uuid4()
             self.drink_id = coffee_json['id']
             self.name = coffee_json["name"]
@@ -619,7 +619,7 @@ class Coffee_Domain(object):
             self.coffee_syrup_flavor = coffee_json["flavorSyrup"]
             self.serving_size = coffee_json["servingSize"]
             self.temperature = coffee_json['temperature']
-            self.syrup_price = coffee_json["syrup_price"]
+            self.syrup_price = coffee_json["flavorSyrupPrice"]
             self.quantity = coffee_json["quantity"]
         elif coffee_object:
             self.id = coffee_object.id

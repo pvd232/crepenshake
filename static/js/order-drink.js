@@ -416,21 +416,27 @@ function pageLogic () {
 				.bind('click', function () {
 					const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
 					const json = JSON.parse($(this).closest('.card, .list-group-item').attr('data-drinks'));
+					console.log('json',json)
 
 					if ($(this).html() == 'Customize') {
-						if (selectedItemCategory === 'syrup') {
+						if (selectedItemCategory === 'syrup' && !userOrderDrink.checkIfSyrupSelected()) {
 							$(this).blur();
 							$(this).html('2 Pumps');
 							$(this).closest('.card, li').find('.btn3').show();
 							$(this).closest('.card, li').find('.btn4').show();
 						} else if (selectedItemCategory === 'coffee') {
 							$(this).blur();
-							$(this).html('3X Espresso');
+							$(this).html('3 Espresso Shots');
 							$(this).closest('.card, li').find('.btn3').show();
 							$(this).closest('.card, li').find('.btn4').show();
 						}
 					} else {
 						const servingSize = 'extra';
+						var coffeeBool;
+
+						if (!userOrderDrink.checkIfCoffeeSelected()) {
+							coffeeBool = false
+						}
 						if (selectedItemCategory === 'syrup') {
 							userOrderDrink.addSyrup(json, servingSize);
 							$(this).closest('.card, li').find('.btn2').html('2X');
@@ -440,6 +446,8 @@ function pageLogic () {
 								.find('.card, .list-group-item')
 								.each(function () {
 									const json = JSON.parse($(this).attr('data-drinks'));
+									console.log('userOrderDrink.checkIfThisSyrupSelected(json)',userOrderDrink.checkIfThisSyrupSelected(json))
+
 									if (!userOrderDrink.checkIfThisSyrupSelected(json)) {
 										$(this).css('opacity', '.3');
 									}
@@ -464,6 +472,7 @@ function pageLogic () {
 										$(this).css('opacity', '.3');
 									}
 								});
+								if (!coffeeBool){
 							$('#milk, #temperature, #syrup').each(function () {
 								$(this)
 									.find('.card, .list-group-item')
@@ -474,6 +483,7 @@ function pageLogic () {
 								$('#errorSyrup').hide();
 								$('#errorTemp').hide();
 							});
+								}
 						}
 						$(this).html('Customize');
 						$(this).blur();
@@ -499,7 +509,7 @@ function pageLogic () {
 						}
 
 						const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
-						if (selectedItemCategory === 'syrup') {
+						if (selectedItemCategory === 'syrup' && !userOrderDrink.checkIfSyrupSelected()) {
 							userOrderDrink.addSyrup(json, servingSize);
 							$('#syrup')
 								.find('.card, .list-group-item')
@@ -595,7 +605,7 @@ function pageLogic () {
 		});
 };
 function pageBuild () {
-	$('.card-img-top').wrap('<div class="container2"></div>');
+	$('.card-img-top').wrap('<div class="containerDrink"></div>');
 	$('#drinkcheckout')
 		.unbind('click')
 		.bind('click', function () {

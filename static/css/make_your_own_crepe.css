@@ -190,6 +190,134 @@
 	position: relative;
 	width: 100%;
 }
+.non-modal .containerDrink {
+	position: relative;
+	width: 100%;
+}
+.non-modal .containerDrink .btn {
+	color: white;
+	position: absolute;
+	top: 20%;
+	left: 50%;
+	right: 50%;
+	transform: translate(-50%, -50%);
+	display: none;
+	background-color: rgba(251, 35, 49, 1);
+	font-size: 16px;
+	font-weight: 600;
+	padding: 10px 10px;
+	border: none;
+	cursor: pointer;
+	width: 50%;
+	text-align: center;
+	border-radius: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.non-modal .containerDrink .btn2 {
+	color: white;
+	width: 60px;
+	height: 60px;
+	padding: 6px 0px;
+	border-radius: 30px;
+	position: absolute;
+	top: 85%;
+	left: 50%;
+	right: 50%;
+	transform: translate(-50%, -50%);
+	display: none;
+	background-color: rgb(0, 32, 120);
+	font-size: 30px;
+	align-content: center;
+	font-weight: 700;
+	border: none;
+	cursor: pointer;
+	content: '✓';
+	margin-left: auto;
+	margin-right: auto;
+}
+.non-modal .containerDrink .btn4 {
+	color: white;
+	position: absolute;
+	top: 55%;
+	left: 50%;
+	right: 50%;
+	transform: translate(-50%, -50%);
+	display: none;
+	background-color: rgba(251, 35, 49, 1);
+	font-size: 16px;
+	font-weight: 600;
+	padding: 10px 10px;
+	border: none;
+	cursor: pointer;
+	width: 50%;
+	border-radius: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.non-modal .containerDrink .btn3 {
+	color: white;
+	position: absolute;
+	top: 85%;
+	left: 50%;
+	right: 50%;
+	transform: translate(-50%, -50%);
+	display: none;
+	background-color: rgba(251, 35, 49, 1);
+	font-size: 16px;
+	font-weight: 600;
+	padding: 10px 10px;
+	border: none;
+	cursor: pointer;
+	width: 50%;
+	border-radius: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.non-modal .containerDrink .btn6 {
+	color: white;
+	outline: none;
+	display: none;
+	width: 45px;
+	height: 45px;
+	border-radius: 22.5px;
+	padding: 0 0 8px 0;
+	background-color: rgba(251, 35, 49, 1);
+	font-size: 40px;
+	font-weight: 700;
+	border: none;
+	cursor: pointer;
+	text-align: center;
+	vertical-align: middle;
+	position: absolute;
+	line-height: 30px;
+	top: 40%;
+	left: 23%;
+	right: 50%;
+}
+.non-modal .containerDrink .btn7 {
+	color: white;
+	outline: none;
+	display: none;
+	width: 45px;
+	height: 45px;
+	border-radius: 22.5px;
+	padding: 0 0 6px 0;
+	background-color: rgba(251, 35, 49, 1);
+	font-size: 35px;
+	font-weight: 700;
+	border: none;
+	cursor: pointer;
+	text-align: center;
+	vertical-align: middle;
+	position: absolute;
+	line-height: 30px;
+	top: 40%;
+	left: 55%;
+	right: 15%;
+}
 
 .non-modal .footer {
 	position: fixed;

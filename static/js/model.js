@@ -159,7 +159,8 @@ export class Coffee {
     servingSize = null,
     temperature = null,
     flavorSyrup = null,
-    flavorSyrupServingSize = null,
+	flavorSyrupServingSize = null,
+	flavorSyrupPrice = 0,
     espressoServingSize = null,
     espressoPrice = 0,
     milkType = null,
@@ -172,7 +173,8 @@ export class Coffee {
     this._name = name;
     this._servingSize = servingSize;
     this.temperature = temperature;
-    this._flavorSyrup = flavorSyrup;
+	this._flavorSyrup = flavorSyrup;
+	this._flavorSyrupPrice = flavorSyrupPrice;
     this._flavorSyrupServingSize = flavorSyrupServingSize;
     this._espressoServingSize = espressoServingSize;
     this._espressoPrice = espressoPrice;
@@ -199,6 +201,9 @@ export class Coffee {
   }
   get flavorSyrupServingSize() {
     return this._flavorSyrupServingSize;
+  }
+  get flavorSyrupPrice() {
+    return this._flavorSyrupPrice;
   }
   get espressoServingSize() {
     return this._espressoServingSize;
@@ -239,6 +244,9 @@ export class Coffee {
   set flavorSyrupServingSize(value) {
     this._flavorSyrupServingSize = value;
   }
+  set flavorSyrupPrice(value) {
+    this._flavorSyrupPrice = value;
+  }
   set espressoServingSize(value) {
     this._espressoServingSize = value;
   }
@@ -267,7 +275,8 @@ export class Coffee {
       name: this._name,
       servingSize: this._servingSize,
       temperature: this._temperature,
-      flavorSyrup: this._flavorSyrup,
+	  flavorSyrup: this._flavorSyrup,
+	  flavorSyrupPrice: this._flavorSyrupPrice,
       flavorSyrupServingSize: this._flavorSyrupServingSize,
       espressoServingSize: this._espressoServingSize,
       espressoPrice: this._espressoPrice,
@@ -296,7 +305,10 @@ export class Coffee {
     }
     if (data.flavorSyrupServingSize) {
       this._flavorSyrupServingSize = data.flavorSyrupServingSize;
-    }
+	}
+	if (data.flavorSyrupPrice) {
+		this._flavorSyrupPrice= data.flavorSyrupPrice
+	  }
     if (data.espressoServingSize) {
       this._espressoServingSize = data.espressoServingSize;
     }
@@ -397,7 +409,6 @@ export class Order {
   }
   fromJSON(json) {
     const data = JSON.parse(json);
-    console.trace("data", data);
     for (var i = 0; i < data.orderDrink.length; i++) {
       const newDrinkOrder = new OrderDrink();
       newDrinkOrder.fromJSON(data.orderDrink[i]);
@@ -653,10 +664,15 @@ export class OrderDrink {
     return false;
   }
   checkIfThisSyrupSelected(json) {
-    const syrup = json;
+	const syrup = json;
+	console.log('syrup',syrup)
     for (var i = 0; i < this._orderDrink.length; i++) {
+		console.log('this._orderDrink[i]',this._orderDrink[i])
+
       if (this._orderDrink[i].drinkCategory === "coffee") {
-        if (this._orderDrink[i].flavorSyrup === syrup.coffee_syrup_flavor) {
+        if (this._orderDrink[i].flavorSyrup === syrup.id) {
+			console.log('syrup.coffee_syrup_flavor',syrup.id)
+			console.log('this._orderDrink[i].flavorSyrup',this._orderDrink[i].flavorSyrup)
           return true;
         }
       }
@@ -777,7 +793,7 @@ export class OrderDrink {
     const syrup = json;
     for (var i = 0; i < this._orderDrink.length; i++) {
       if (this._orderDrink[i].drinkCategory === "coffee") {
-        this._orderDrink[i].flavorSyrup = syrup.coffee_syrup_flavor;
+        this._orderDrink[i].flavorSyrup = syrup.id;
         this._orderDrink[i].flavorSyrupServingSize = servingSize;
         this.priceDrinks();
         return true;
@@ -800,6 +816,8 @@ export class OrderDrink {
   priceDrinks() {
     this._orderTotal = 0;
     for (var i = 0; i < this._orderDrink.length; i++) {
+		console.log('this._orderDrink[i]',this._orderDrink[i])
+
       if (this._orderDrink[i].drinkCategory === "coffee") {
         this._orderTotal += this._orderDrink[i].milkPrice;
         var espressoPrice = 0;
@@ -809,9 +827,12 @@ export class OrderDrink {
           this._orderDrink[i].espressoPrice = espressoPrice;
         }
         if (this._orderDrink[i].flavorSyrupServingSize === "extra") {
-          syrupPrice = 1.98;
+		  syrupPrice = 1.98;
+		  this._orderDrink[i].flavorSyrupPrice = syrupPrice
+		  
         } else if (this._orderDrink[i].flavorSyrupServingSize) {
-          syrupPrice = 0.99;
+		  syrupPrice = 0.99;
+		  this._orderDrink[i].flavorSyrupPrice = syrupPrice
         }
         this._orderTotal += syrupPrice;
         this._orderTotal += espressoPrice;
@@ -833,7 +854,8 @@ export class IceCreamBowl {
     price = null,
     quantity = 1,
     sideName = null,
-    toppings = new Array()
+    toppings = new Array(),
+    cost = 3.5
   ) {
     this._id = id;
     this._flavor = flavor;
@@ -842,6 +864,7 @@ export class IceCreamBowl {
     this._quantity = quantity;
     this._sideName = sideName;
     this._toppings = toppings;
+    this._cost = cost;
   }
   get id() {
     return this._id;
@@ -864,6 +887,9 @@ export class IceCreamBowl {
   get toppings() {
     return this._toppings;
   }
+  get cost() {
+    return this._cost;
+  }
   set id(value) {
     this._id = value;
   }
@@ -885,7 +911,9 @@ export class IceCreamBowl {
   set toppings(value) {
     this._toppings = value;
   }
-
+  set cost(value) {
+    this._cost = value;
+  }
   toJSON() {
     this.updateServingSize();
     const data = {
@@ -896,11 +924,13 @@ export class IceCreamBowl {
       quantity: this._quantity,
       sideName: this._sideName,
       toppings: this._toppings,
+      cost: this._cost,
     };
     return data;
   }
   fromJSON(json) {
-    const data = json;
+	const data = json;
+	console.trace('data',data)
     this._id = data.id;
     this._flavor = data.flavor;
     this._price = data.price;
@@ -910,6 +940,11 @@ export class IceCreamBowl {
       this._sideName = data.side_name_id;
     } else if (data.sideName) {
       this._sideName = data.sideName;
+    }
+    if (data.cost) {
+      this._cost = data.cost;
+    } else {
+      this._cost = this._price * this._quantity
     }
     if (data.toppings) {
       for (var i = 0; i < data.toppings.length; i++) {
@@ -934,6 +969,13 @@ export class IceCreamBowl {
       } else {
         return;
       }
+    }
+    if (this._quantity === 1) {
+      this._cost = 3.5;
+    } else if (this._quantity === 2) {
+      this._cost = 4.5;
+    } else if (this._quantity === 3) {
+      this._cost = 5.5;
     }
   }
   updateServingSize() {
@@ -1069,8 +1111,7 @@ export class OrderSide {
   }
   addTopping(json, servingSize) {
     const selectedItem = new Ingredient();
-	selectedItem.fromJSON(json);
-	console.log('selectedItem',selectedItem)
+    selectedItem.fromJSON(json);
     if (!this.checkIfThisToppingSelected(json)) {
       selectedItem.servingSize = servingSize;
       for (var i = 0; i < this._orderSide.length; i++) {
@@ -1109,24 +1150,14 @@ export class OrderSide {
     if (this._orderSide.length) {
       for (var i = 0; i < this._orderSide.length; i++) {
         if (this._orderSide[i].sideName === "ice_cream_bowl") {
-          var toppingPrice = 0;
           if (this._orderSide[i].toppings.length) {
             for (var j = 0; j < this._orderSide[i].toppings.length; j++) {
-              if (this._orderSide[i].toppings[j].servingSize === "extra") {
-                toppingPrice = 2 * this._orderSide[i].toppings[j].price;
-              } else {
-                toppingPrice = this._orderSide[i].toppings[j].price;
-              }
+              this._orderTotal += this._orderSide[i].toppings[j].cost;
             }
           }
-          const iceCreamPrice =
-            this._orderSide[i].price * this._orderSide[i].quantity;
-          this._orderTotal += toppingPrice;
-          this._orderTotal += iceCreamPrice;
+          this._orderTotal += this._orderSide[i].cost;
         } else {
-          const sidePrice =
-            this._orderSide[i].price * this._orderSide[i].quantity;
-          this._orderTotal += sidePrice;
+          this._orderTotal += this._orderSide[i].cost;
         }
       }
     }
@@ -1186,14 +1217,11 @@ export class Ingredient {
     this._id = value;
   }
   set servingSize(value) {
-	this._servingSize = value;
-	if (this._category != 'fruit' && this._category != 'sweetness' && this._servingSize === 'extra'){
-		this._quantity = 2
-		this._cost = this._quantity * this._price
-	}
-	else{
-		this._cost = this._quantity * this._price
-	}
+    this._servingSize = value;
+    if (this._servingSize === "extra") {
+      this._quantity = 2;
+    }
+    this._cost = this._quantity * this._price;
   }
   set price(value) {
     this._price = value;
@@ -1222,10 +1250,10 @@ export class Ingredient {
     const data = json;
     this._id = data.id;
     this._servingSize = data.servingSize;
-	this._price = data.price;
-	if (data.cost){
-		this._cost = data.cost;
-	}
+    this._price = data.price;
+    if (data.cost) {
+      this._cost = data.cost;
+    }
     if (data.category) {
       this._category = data.category;
     } else if (data.ingredient_category_id) {
@@ -1238,20 +1266,20 @@ export class Ingredient {
   updateQuantity(value) {
     if (value === "decrease") {
       if (this._quantity === 0) {
-		if (this._category === 'fruit' || this._category === 'sweetness') {
-			this._cost = this._quantity*this._price
-		}
-        return;
+        if (this._category === "fruit" || this._category === "sweetness") {
+          this._cost = this._quantity * this._price;
+          return;
+        }
       } else {
         this._quantity -= 1;
       }
     } else if (value === "increase") {
       this._quantity += 1;
-	}
-	if (this._category === 'fruit' || this._category === 'sweetness') {
-		this._cost = this._quantity*this._price
-		return
-	}
+    }
+    if (this._category === "fruit" || this._category === "sweetness") {
+      this._cost = this._quantity * this._price;
+      return;
+    }
   }
 }
 export class MenuCrepe {
@@ -1459,8 +1487,7 @@ export class OrderCrepe {
     if (data.ingredients) {
       for (var i = 0; i < data.ingredients.length; i++) {
         const newIngredient = new Ingredient();
-		newIngredient.fromJSON(data.ingredients[i]);
-		console.log('newIngredient',newIngredient)
+        newIngredient.fromJSON(data.ingredients[i]);
         this._ingredients.push(newIngredient);
       }
     }
@@ -1488,8 +1515,7 @@ export class OrderCrepe {
   addIngredient(json, servingSize) {
     const newIngredient = new Ingredient();
     newIngredient.fromJSON(json);
-	newIngredient.servingSize = servingSize;
-	console.log('newIngredient',newIngredient)
+    newIngredient.servingSize = servingSize;
     this._ingredients.push(newIngredient);
     this.priceCrepe();
     return newIngredient;
@@ -1582,17 +1608,53 @@ export class OrderCrepe {
     return false;
   }
   priceCrepe() {
-	this._orderTotal = 0;
-	var cheeseBool = false
-    if (this._ingredients.length) {
-      for (var i = 0; i < this._ingredients.length; i++) {
-		if (this._ingredients[i].category === 'cheese' && !cheeseBool){
-			cheeseBool = true
-			this._ingredients[i].quantity -= 1
-		}
-		const ingredientPrice = this._ingredients[i].cost;
+    this._orderTotal = 0;
+    var allotedFruit = 2;
+    if (this._flavor === "savory") {
+      var cheeseBool = false;
+      if (this._ingredients.length) {
+        for (var i = 0; i < this._ingredients.length; i++) {
+          if (this._ingredients[i].category === "cheese" && !cheeseBool) {
+            cheeseBool = true;
+            const cheeseQuantMinusIncludedCheese =
+              this._ingredients[i].quantity - 1;
+            this._ingredients[i].cost =
+              cheeseQuantMinusIncludedCheese * this._ingredients[i].price;
+          }
+          const ingredientPrice = this._ingredients[i].cost;
+          this._orderTotal += ingredientPrice;
+        }
+      }
+    } else if (this._flavor === "sweet") {
+      this._orderTotal += 10.95;
+      var sweetnessBool = false;
+      var fruitQuantMinusIncludedfruit = 0;
+      if (this._ingredients.length) {
+        for (var i = 0; i < this._ingredients.length; i++) {
+          if (this._ingredients[i].category === "fruit" && allotedFruit > 0) {
+            if (this._ingredients[i].quantity > 1) {
+              fruitQuantMinusIncludedfruit = this._ingredients[i].quantity - 2;
+              allotedFruit -= 2;
+            } else {
+              fruitQuantMinusIncludedfruit = this._ingredients[i].quantity - 1;
+              allotedFruit -= 1;
+            }
 
-        this._orderTotal += ingredientPrice;
+            this._ingredients[i].cost =
+              fruitQuantMinusIncludedfruit * this._ingredients[i].price;
+          } else if (
+            this._ingredients[i].category === "sweetness" &&
+            !sweetnessBool
+          ) {
+            sweetnessBool = true;
+            const sweetnessQuantMinusIncludedsweetness =
+              this._ingredients[i].quantity - 1;
+            this._ingredients[i].cost =
+              sweetnessQuantMinusIncludedsweetness * this._ingredients[i].price;
+          }
+          const ingredientPrice = this._ingredients[i].cost;
+          this._orderTotal += ingredientPrice;
+        }
       }
     }
   }

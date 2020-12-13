@@ -43,7 +43,7 @@ function buildPage () {
 						if (crepeOrder.flavor === 'savory'){
 						for (var j = 0; j < crepeOrder.ingredients.length; j++) {
 							const ingredient = crepeOrder.ingredients[j];
-							console.log('ingredient',ingredient)
+
 							$(
 								`<li class="list-group-item d-flex justify-content-between" id="crepeRow${i}${
 									j + 1
@@ -105,7 +105,6 @@ function buildPage () {
 							const espressoPrice = drink.espressoPrice;
 							const espressoServingSize = drink.espressoServingSize;
 							var espressFormat;
-							var flavorSyrupPrice = '';
 							if (espressoServingSize === 'extra') {
 								espressFormat = '3x Espresso Shot';
 							} else if (espressoServingSize === 'regular') {
@@ -115,11 +114,6 @@ function buildPage () {
 							}
 
 							if (drink.flavorSyrup && drink.flavorSyrupServingSize) {
-								if (drink.flavorSyrupServingSize === 'extra') {
-									flavorSyrupPrice = 0.99;
-								} else {
-									flavorSyrupPrice = 0;
-								}
 								$(
 									`<li class="list-group-item d-flex justify-content-between" id="checkoutDrinkRow${i}0">
 									<div class="col-8" style="margin-right: 0px; ">
@@ -154,7 +148,7 @@ function buildPage () {
 										}</h5>
 									</div>
 									<div class="col-4">
-										<h4 style=''>$${flavorSyrupPrice}</h4>
+										<h4 style=''>$${drink.flavorSyrupPrice.toFixed(2)}</h4>
 									</div>
 								</li>`
 								).insertAfter(`#checkoutDrinkRow${i}${j}`);
@@ -240,6 +234,7 @@ function buildPage () {
 					);
 					for (var j = 0; j < sideOrder.length; j++) {
 						const side = sideOrder[j];
+						console.log('side',side)
 						if (side.sideName === 'ice_cream_bowl') {
 							const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 							$(
@@ -247,12 +242,13 @@ function buildPage () {
 									j + 1
 								}${k}"><div class="col-8" style="margin-right: 0px; "><h5 style=''>
 								${side.quantity + 'x Scoop ' + humanize(side, 'sideName').sideName}</h5>
-									</div><div class="col-4"><h4 style=''>$${side.price.toFixed(2)}</h4></div></li>`
+									</div><div class="col-4"><h4 style=''>$${side.cost.toFixed(2)}</h4></div></li>`
 							).insertAfter(`#${lastElementId}`);
 							if (side.toppings.length) {
 								for (var k = 0; k < side.toppings.length; k++) {
 									const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 									const topping = side.toppings[k];
+									console.log('topping',topping)
 									$(
 										`<li class="list-group-item d-flex justify-content-between" id="checkoutSideRow${i}${
 											j + 1

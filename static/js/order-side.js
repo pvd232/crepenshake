@@ -57,7 +57,8 @@ function checkOut (order) {
 	if (editSideIndex != null) {
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		$.when(stringify(order)).then(location.assign('/checkout'));
+		// $.when(stringify(order)).then(location.assign('/checkout'));
+		stringify(order);
 	}
 };
 
@@ -173,6 +174,9 @@ function pageLogic () {
 								if (updatedSide.quantity === 3 && updatedSide.sideName === 'ice_cream_bowl') {
 									displayErrorMsg($(this));
 								}
+								else if (updatedSide.sideName === 'ice_cream_bowl'){
+									$('#errorTopping').hide()
+								}
 								$(this).closest('.card, .list-group-item').find('.btn2').html(updatedSide.quantity);
 								$(this).closest('.card, .list-group-item').find('.btn2').show();
 								//after clicking the card show the + and - buttons
@@ -190,6 +194,7 @@ function pageLogic () {
 										.each(function () {
 											$(this).css('opacity', '.3');
 										});
+										$('#errorTopping').show()
 								}
 							}
 						}
@@ -297,6 +302,7 @@ function pageLogic () {
 									$(this).find('.btn2').hide();
 									$(this).find('.btn').hide();
 								});
+								$('#errorTopping').show()
 						}
 					} else {
 						$(this).closest('.card, .list-group-item').find('.btn2').html(updatedSide.quantity);
