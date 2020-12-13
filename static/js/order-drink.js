@@ -416,8 +416,6 @@ function pageLogic () {
 				.bind('click', function () {
 					const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
 					const json = JSON.parse($(this).closest('.card, .list-group-item').attr('data-drinks'));
-					console.log('json',json)
-
 					if ($(this).html() == 'Customize') {
 						if (selectedItemCategory === 'syrup' && !userOrderDrink.checkIfSyrupSelected()) {
 							$(this).blur();
@@ -446,8 +444,6 @@ function pageLogic () {
 								.find('.card, .list-group-item')
 								.each(function () {
 									const json = JSON.parse($(this).attr('data-drinks'));
-									console.log('userOrderDrink.checkIfThisSyrupSelected(json)',userOrderDrink.checkIfThisSyrupSelected(json))
-
 									if (!userOrderDrink.checkIfThisSyrupSelected(json)) {
 										$(this).css('opacity', '.3');
 									}

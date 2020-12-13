@@ -8,7 +8,6 @@ import { Order, Customer, Coffee } from './model.js';
 function buildPage () {
 	const key = 'order';
 	const orderDict = localStorage.getItem(key);
-	console.log('orderDict',orderDict)
 	const order = new Order();
 	if (orderDict) {
 		order.fromJSON(orderDict);
@@ -234,7 +233,6 @@ function buildPage () {
 					);
 					for (var j = 0; j < sideOrder.length; j++) {
 						const side = sideOrder[j];
-						console.log('side',side)
 						if (side.sideName === 'ice_cream_bowl') {
 							const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 							$(
@@ -248,7 +246,6 @@ function buildPage () {
 								for (var k = 0; k < side.toppings.length; k++) {
 									const lastElementId = $('#checkingCartBody0').find('li').last().attr('id');
 									const topping = side.toppings[k];
-									console.log('topping',topping)
 									$(
 										`<li class="list-group-item d-flex justify-content-between" id="checkoutSideRow${i}${
 											j + 1
@@ -280,12 +277,8 @@ function buildPage () {
 				</div> <div class="col-4" style="margin-left: 21px; "><h4 style="float:right; font-weight: bold; ">$${order.orderTotal.toFixed(
 					2
 				)}</h4></div>`);
-				console.log('order.orderTotal',order.orderTotal)
-
 				$('#timePicker').mdtimepicker({theme:'red'});
 				$('#timePicker').mdtimepicker().on('timechanged', function(e){
-					console.log(e.timeStamp);
-					console.log(e.time);
 					order.pickupTime = e.value;
 					// must divide by 1000 because python time stamp is in seconds while javascript is in miliseconds
 					order.pickupTimestamp = e.timeStamp/1000;
@@ -350,7 +343,7 @@ function handleFormSubmit (stripe, card, data, order) {
 					contentType: 'application/json',
 					success: function() {
 						localStorage.setItem('stripeId', newCustomer.stripeId);
-						// location.assign('/order/confirmation');
+						location.assign('/order/confirmation');
 					},
 					error: function (response) { console.log('console.log error', response)},
 				});
@@ -391,7 +384,6 @@ function validateForm (order) {
 				return result.json();
 			})
 			.then(function (data) {
-				console.log('data', data)
 				const elements = stripe.elements();
 				const card = elements.create('card');
 				// Stripe injects an iframe into the DOM
@@ -445,6 +437,5 @@ function validateForm (order) {
 
 $(window).ready(function () {
 	const order = buildPage();
-	console.log('order', order)
 	validateForm(order);
 });

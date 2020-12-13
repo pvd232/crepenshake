@@ -665,14 +665,9 @@ export class OrderDrink {
   }
   checkIfThisSyrupSelected(json) {
 	const syrup = json;
-	console.log('syrup',syrup)
     for (var i = 0; i < this._orderDrink.length; i++) {
-		console.log('this._orderDrink[i]',this._orderDrink[i])
-
       if (this._orderDrink[i].drinkCategory === "coffee") {
         if (this._orderDrink[i].flavorSyrup === syrup.id) {
-			console.log('syrup.coffee_syrup_flavor',syrup.id)
-			console.log('this._orderDrink[i].flavorSyrup',this._orderDrink[i].flavorSyrup)
           return true;
         }
       }
@@ -816,8 +811,6 @@ export class OrderDrink {
   priceDrinks() {
     this._orderTotal = 0;
     for (var i = 0; i < this._orderDrink.length; i++) {
-		console.log('this._orderDrink[i]',this._orderDrink[i])
-
       if (this._orderDrink[i].drinkCategory === "coffee") {
         this._orderTotal += this._orderDrink[i].milkPrice;
         var espressoPrice = 0;

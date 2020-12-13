@@ -56,7 +56,6 @@ function doShowAll () {
 
 		const orderDict = localStorage.getItem('order');
 		if (orderDict) {
-			console.log('orderDict',orderDict)
 			const order = new Order();
 			order.fromJSON(orderDict);
 			// to do finish the serialization and deserialization of all the classes, then build savory crepe, then menu crepe pg, then clover pmt in backend, then mobile buttons
@@ -98,8 +97,6 @@ function doShowAll () {
 									}"><h5 style='font-weight: 700;'>Crepe Order #${k + 1}</h5></div>`
 								);
 								for (var j = 0; j < orderCrepe.ingredients.length; j++) {
-									console.log('orderCrepe.ingredients.length',orderCrepe.ingredients[j])
-									console.log('orderCrepe.ingredients[j]',orderCrepe.ingredients[j])
 									$(`<div class="row" style= "margin-bottom: 20px;" id="row-${k}-${
 										j + 1
 									}"><div class="col-9" style="margin-right: 0px;"><h5>
@@ -315,7 +312,6 @@ function doShowAll () {
 						const sidesInOrder = order.orderSide[i].orderSide;
 						for (var j = 0; j < sidesInOrder.length; j++) {
 							const side = sidesInOrder[j];
-							console.log('side',side)
 							if (side.toppings) {
 								$(`<div class="row" style= "margin-bottom: 20px;" id="sideRow-${i}-${j + 1}">
 												<div class="col-9" style="margin-right: 0px; " id="sideCol-${i}-${j + 1}">
@@ -344,7 +340,6 @@ function doShowAll () {
 												<h4 >$${topping.cost.toFixed(2)}</h4>
 											</div>
 										</div>`).insertAfter(`#${lastElementId}`);
-										console.log('topping', topping)
 								}
 							} else {
 								const lastElementId = $('#modalBody1').find('.row').last().attr('id');
