@@ -12,8 +12,8 @@ stripe.api_key = "sk_live_51HkZexHlxrw6CLurVB6c3PKYqrAhHwG0G4sC4lAIeEWhTvHZNQzuQ
 @app.route("/")
 def home():
     #only necessary when deploying for the first time
-    test_service = Test_Service()
-    test_service.test_connection()
+    # test_service = Test_Service()
+    # test_service.test_connection()
     return render_template('index.html')
 
 

@@ -387,9 +387,9 @@ class Test_Service(object):
 
     def test_connection(self):
         inspector = inspect(self.test_engine)
-        # if len(inspector.get_table_names()) == 0:
         #use this if you want to trigger a reset of the database in GCP
-        if len(inspector.get_table_names()) > 0:
+        # if len(inspector.get_table_names()) > 0:
+        if len(inspector.get_table_names()) == 0:
             instantiate_db_connection()
             self.test_engine.dispose()
             return
