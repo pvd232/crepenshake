@@ -3,12 +3,11 @@ import json
 import stripe
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
-from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service, Test_Service
+from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service, Test_Service, Settings_Service
 from models import app
 
 # stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
 stripe.api_key = "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"
-#TODO: Add customer phone number attribute and order pickup time to the database 
 @app.route("/")
 def home():
     #only necessary when deploying for the first time
@@ -160,12 +159,16 @@ def create_payment():
 
 @app.route('/checkout', methods=['POST', 'GET'])
 def checkout():
+    settings_service = Settings_Service()
     if request.method == 'GET':
-        return render_template('checkout.html')
+        current_ordering_status = settings_service.get_settings()["ordering"]
+        if current_ordering_status == 'on':
+            return render_template('checkout.html')
+        else:
+            return render_template('error.html')
     elif request.method == 'POST':
         new_order = request.json
         new_order_value = new_order['order']
-        print('new_order_value', new_order_value)
         order_service = Order_Service()
         order_service.create_order(new_order_value)
         return jsonify(200)
@@ -182,6 +185,18 @@ def favicon():
     file_name = file_path + "/static/favico/favicon.ico"
     return send_file(file_name, mimetype='image/vnd.microsoft.icon')
 
+
+@app.route("/brandy0623", methods = ["GET"])
+def settings():
+    settings_service = Settings_Service()
+    new_ordering_status = request.args.get('ordering')
+    current_ordering_status = settings_service.get_settings()
+    if new_ordering_status:
+        new_settings = {"id" : 0 , "ordering" : new_ordering_status}
+        settings_service.update_settings(new_settings)
+        return render_template('settings.html', ordering=new_ordering_status)
+    else:
+        return render_template('settings.html', ordering=current_ordering_status['ordering'])
 
 if __name__ == "__main__":
     # app.run(ssl_context='adhoc', debug=True)

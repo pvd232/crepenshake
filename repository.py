@@ -189,9 +189,6 @@ class Side_Repository(object):
         side_names = session.query(Side_Name)
         return side_names
 
-    def get_side_serving_sizes(self, session):
-        side_serving_sizes = session.query()
-
     def get_ice_cream_bowls(self, session):
         ice_cream = session.query(Ice_Cream_Flavor_Serving_Size_Price)
         return ice_cream
@@ -207,3 +204,13 @@ class Menu_Crepe_Repository(object):
         menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id, Crepe.origination_id).join(Crepe).filter(
             Crepe.flavor_profile_id == 'savory')
         return menu_crepes
+
+class Settings_Repository(object):
+    def get_settings(self, session):
+        settings = session.query(Settings).first()
+        print('settings',settings)
+        return settings
+    def update_settings(self, session, setting):
+        current_setting = session.query(Settings).first()
+        current_setting.ordering = setting["ordering"]
+        return True

@@ -731,6 +731,21 @@ class Ice_Cream_Serving_Size(db.Model):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+class Settings(db.Model):
+    __tablename__ = 'settings'
+    id = db.Column(db.String(10), primary_key=True, unique=True,
+                   nullable=False)
+    ordering = db.Column(db.String(10),
+                   nullable=False)
+
+    @property
+    def serialize(self):
+        attribute_names = list(self.__dict__.keys())
+        attributes = list(self.__dict__.values())
+        serialized_attributes = {}
+        for i in range(len(attributes)):
+            serialized_attributes[attribute_names[i]] = attributes[i]
+        return serialized_attributes
 
 cwd = os.getcwd()
 
@@ -1236,6 +1251,11 @@ def create_espresso():
     db.session.commit()
     db.session.remove()
 
+def create_settings():
+    setting = {"id" : 0, "ordering": "on"}
+    new_setting = Settings(id = setting['id'], ordering = setting['ordering'])
+    db.session.add(new_setting)
+    db.session.commit()
 
 def create_everything():
     create_ingredient_category()
@@ -1261,6 +1281,7 @@ def create_everything():
     create_ice_cream_flavor()
     create_sides()
     create_menu_crepe()
+    create_settings()
     logging.info('database created')
 
 
@@ -1269,6 +1290,7 @@ def instantiate_db_connection():
     db.create_all()
     create_everything()
 
+instantiate_db_connection()
 
 # 2000-12-31
 # db.drop_all()

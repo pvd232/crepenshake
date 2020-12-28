@@ -4,7 +4,7 @@ from base64 import b64encode
 import requests
 from domain import *
 from models import instantiate_db_connection
-from repository import Ingredient_Repository,  Order_Repository, Drink_Repository, Side_Repository, Menu_Crepe_Repository, db
+from repository import Ingredient_Repository,  Order_Repository, Drink_Repository, Side_Repository, Menu_Crepe_Repository, Settings_Repository, db
 from datetime import date
 import uuid
 from sqlalchemy.orm import scoped_session
@@ -246,7 +246,7 @@ class Order_Service(object):
         message = MIMEMultipart()
         message['From'] = sender_address
         message['To'] = email
-        message_subject = ' ' + order.customer.first_name + ' ' + order.customer.last_name + ' ' + order.customer.phone_number + ' ' + order.pickup_time
+        message_subject = ' ' + order.customer.first_name + ' ' + order.customer.last_name + ' ' + 'Phone Number: ' + order.customer.phone_number + 'Email: ' + order.customer.id + ' ' + order.pickup_time
         message['Subject'] = 'Order From' + message_subject  # The subject line
         
         # The body and the attachments for the mail
@@ -343,10 +343,8 @@ class Side_Service(object):
     def get_ice_cream_bowls(self):
         response = []
         with session_scope() as session:
-            for ice_cream in self.side_repository.get_ice_cream_bowls(session):
-                print('ice_cream',ice_cream.serialize)
+            for ice_cream in self.side_repository.get_ice_cream_bowls(session):                
                 ice_cream_domain = Ice_Cream_Bowl_Domain(ice_cream_object=ice_cream)
-                print('ice_cream_domain',ice_cream_domain.serialize())
                 response.append(ice_cream_domain)
             return response
 
@@ -393,3 +391,19 @@ class Test_Service(object):
             instantiate_db_connection()
             self.test_engine.dispose()
             return
+
+
+class Settings_Service(object):
+    def __init__(self):
+        self.settings_repository = Settings_Repository()
+
+    def update_settings(self, settings):
+        with session_scope() as session:
+            self.settings_repository.update_settings(session, settings)
+            return
+    
+    def get_settings(self):
+        with session_scope() as session:
+            response = self.settings_repository.get_settings(session).serialize
+            return response
+

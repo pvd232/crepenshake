@@ -342,7 +342,7 @@ function handleFormSubmit (stripe, card, data, order) {
 					type: 'POST',
 					contentType: 'application/json',
 					success: function() {
-						localStorage.setItem('stripeId', newCustomer.stripeId);
+						// localStorage.setItem('stripeId', newCustomer.stripeId);
 						location.assign('/order/confirmation');
 					},
 					error: function (response) { console.log('console.log error', response)},
@@ -360,10 +360,10 @@ function showError (errorMsgText) {
 	}, 4000);
 };
 function validateForm (order) {
-		if (localStorage.getItem('stripeId')) {
-			const newCustomer = new Customer(null, localStorage.getItem('stripeId'));
-			order.customerData = newCustomer;
-		}
+		// if (localStorage.getItem('stripeId')) {
+		// 	const newCustomer = new Customer(null, localStorage.getItem('stripeId'));
+		// 	order.customerData = newCustomer;
+		// }
 		const forms = document.getElementsByClassName('needs-validation');
 		const stripe = Stripe(
 			'pk_live_51HkZexHlxrw6CLurJeot1lKQ6wnEhU7kmLH84WADrcKuCEWibpeT5r3OiWprFoYcHKhouPhVmjLbT7owgKcSs73n00znWaC2Xp'
