@@ -5,6 +5,7 @@ from datetime import date
 from sqlalchemy import or_
 from sqlalchemy.orm import load_only
 
+
 class Ingredient_Repository(object):
 
     def get_ingredients(self, session):
@@ -42,22 +43,16 @@ class Order_Repository(object):
         amount = int(order['orderTotal'] * 100)
         customerExistenceBool = False
         if customer:
-            confirmCustomerExistence = session.query(Stripe).filter(                
+            confirmCustomerExistence = session.query(Stripe).filter(
                 Stripe.id == customer['stripeId']).first()
             # Lookup the saved card (you can store multiple PaymentMethods on a Customer)
             if confirmCustomerExistence:
                 customerExistenceBool = True
-                payment_methods = stripe.PaymentMethod.list(                    
-                    customer=customer['stripeId'],
-                    type='card'
-                )
-
                 # Charge the customer and payment method immediately
-                payment_intent = stripe.PaymentIntent.create(                    
+                payment_intent = stripe.PaymentIntent.create(
                     amount=amount,
                     currency='usd',
                     customer=customer['stripeId'],
-                    payment_method=payment_methods.data[0].id
                 )
                 return {'clientSecret': payment_intent['client_secret'], 'customer': customer['stripeId']}
         if not customerExistenceBool:
@@ -65,10 +60,9 @@ class Order_Repository(object):
             new_stripe_id = Stripe(id=customer.id)
             session.add(new_stripe_id)
             amount = int(order['orderTotal'] * 100)
-            payment_intent = stripe.PaymentIntent.create(                
+            payment_intent = stripe.PaymentIntent.create(
                 amount=amount,
                 customer=customer.id,
-                setup_future_usage='off_session',
                 currency='usd'
             )
             return {'clientSecret': payment_intent['client_secret'], 'customer': customer.id}
@@ -79,21 +73,22 @@ class Order_Repository(object):
             Customer.id == customer.id, Customer.stripe_id == customer.stripe_id).first()
         if not user:
             # if the user already exists in the database but for some reason they have been assigned a different stripe id, for example if they deleted their browser cache then they would be assigned a new stripe id even if their email exists in the database already
-            user = session.query(Customer).filter(Customer.id == customer.id).first()
+            user = session.query(Customer).filter(
+                Customer.id == customer.id).first()
         # update stripe customer email because the customer is created with the payment intent when the email has not been harvested yet
         if user and not stripe.Customer.retrieve(user.stripe_id).email:
             stripe.Customer.modify(user.stripe_id, email=user.id)
-        # check to make sure the customer doesn't already exist in the database        
+        # check to make sure the customer doesn't already exist in the database
         if not user:
             customer = Customer(id=customer.id, stripe_id=customer.stripe_id, first_name=customer.first_name, last_name=customer.last_name,
-                                    street=customer.street, city=customer.city, state=customer.state, zipcode=customer.zipcode, country=customer.country)
+                                street=customer.street, city=customer.city, state=customer.state, zipcode=customer.zipcode, country=customer.country)
             session.add(customer)
             new_order = Order(id=order.id, customer_id=customer.id,
-                              cost=order.cost, date=order.date, pickup_timestamp = order.pickup_timestamp)
+                              cost=order.cost, date=order.date, pickup_timestamp=order.pickup_timestamp)
             session.add(new_order)
         else:
             new_order = Order(id=order.id, customer_id=user.id,
-                              cost=order.cost, date=order.date, pickup_timestamp = order.pickup_timestamp)
+                              cost=order.cost, date=order.date, pickup_timestamp=order.pickup_timestamp)
             session.add(new_order)
         if order.order_crepe:
             for i in range(len(order.order_crepe.order_crepe)):
@@ -117,15 +112,15 @@ class Order_Repository(object):
             for i in range(len(order.order_drink.order_drink)):
                 drink_to_add = order.order_drink.order_drink[i]
                 if drink_to_add.drink_category_id == 'coffee':
-                    new_order_coffee = Order_Coffee(id = drink_to_add.id, drink_id=drink_to_add.drink_id, coffee_name_id=drink_to_add.name, serving_size_id=drink_to_add.serving_size,
+                    new_order_coffee = Order_Coffee(id=drink_to_add.id, drink_id=drink_to_add.drink_id, coffee_name_id=drink_to_add.name, serving_size_id=drink_to_add.serving_size,
                                                     temperature_id=drink_to_add.temperature, flavor_syrup_id=drink_to_add.coffee_syrup_flavor,  flavor_syrup_serving_size_id=drink_to_add.coffee_syrup_flavor_serving_size, espresso_serving_size_id=drink_to_add.espresso_serving_size, milk_type_id=drink_to_add.milk_type_id)
                     session.add(new_order_coffee)
 
                     new_order_drink = Order_Drink(order_id=new_order.id, drink_id=drink_to_add.drink_id,
-                                              serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity)
+                                                  serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity)
                 else:
                     new_order_drink = Order_Drink(order_id=new_order.id, drink_id=drink_to_add.id,
-                                              serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity)
+                                                  serving_size=drink_to_add.serving_size, quantity=drink_to_add.quantity)
                     session.add(new_order_drink)
 
         if order.order_side:
@@ -205,11 +200,13 @@ class Menu_Crepe_Repository(object):
             Crepe.flavor_profile_id == 'savory')
         return menu_crepes
 
+
 class Settings_Repository(object):
     def get_settings(self, session):
         settings = session.query(Settings).first()
-        print('settings',settings)
+        print('settings', settings)
         return settings
+
     def update_settings(self, session, setting):
         current_setting = session.query(Settings).first()
         current_setting.ordering = setting["ordering"]
