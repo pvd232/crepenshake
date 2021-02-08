@@ -1,7 +1,7 @@
 var cWidth = $(window).width();
 
 //https://stackoverflow.com/questions/1974788/combine-onload-and-onresize-jquery
-$(document).on("load", function () {
+$(window).on("load", function () {
   $("body").css({ visibility: "visible" });
 
   const newWidth = $(window).width();
