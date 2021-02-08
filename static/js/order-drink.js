@@ -5,7 +5,7 @@ var editDrinkIndex = null;
 var editOrder = null;
 var userOrderDrink = new OrderDrink();
 
-function checkOut (order) {
+function checkOut (order, isCheckingOut = false) {
 	if (editDrinkIndex != null) {
 		// when checking out make sure that if no milk has been selected then we assign the default value of 2%
 		for (var i = 0; i < userOrderDrink.orderDrink.length; i++) {
@@ -16,7 +16,10 @@ function checkOut (order) {
 			}
 		}
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
-	} else {
+	} else if (isCheckingOut) {
+		$.when(stringify(order)).then(location.assign('/checkout'));
+	}
+	else {
 		$.when(stringify(order)).then(location.assign('/order/side'));
 	}
 };
@@ -615,6 +618,16 @@ function pageBuild () {
 				return false;
 			} else {
 				checkOut(userOrderDrink);
+			}
+		});
+		$('#drinkcheckout2')
+		.unbind('click')
+		.bind('click', function () {
+			if (userOrderDrink.checkIfCoffeeSelected() && !userOrderDrink.checkIfTempSelected()) {
+				$('#errorCoffeeCheckout').show();
+				return false;
+			} else {
+				checkOut(userOrderDrink, true);
 			}
 		});
 	$('.card-img-top').each(function (i) {

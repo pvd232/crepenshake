@@ -328,6 +328,21 @@
   color: white;
   text-align: center;
 }
+.non-modal .footer .btn5 {
+	color: white;
+	position: relative;
+	background-color: rgb(0, 0, 0);
+	color: white;
+	font-size: 16px;
+	font-weight: 600;
+	padding: 10px 10px;
+	border: none;
+	cursor: pointer;
+	width: fit-content;
+	border-radius: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
 /* formatting for keep shopping and checkout button on order pages */
 .non-modal .footer .btn51 {
   color: white;

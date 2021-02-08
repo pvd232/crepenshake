@@ -58,14 +58,16 @@ function stringify(crepeOrder) {
 	return true;
 };
 
-function checkOut(order) {
+function checkOut(order, isCheckingOut=false) {
 	order.flavor = 'savory';
 	order.origination = 'custom';
 	if (editCrepeIndex != null) {
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
-	} else {
+	} else if (isCheckingOut) {
+		$.when(stringify(order)).then(location.assign('/checkout'));
+	}
+	else {
 		$.when(stringify(order)).then(location.assign('/order/drink'));
-
 	}
 };
 
@@ -266,7 +268,7 @@ function pageBuild() {
 			$(this).html('$' + price.toFixed(2));
 		}
 	});
-	$('#savoryCrepeCheckOut')
+	$('#savoryCrepeCheckout')
 		.unbind('click')
 		.bind('click', function () {
 			var proteinBool = false
@@ -280,6 +282,22 @@ function pageBuild() {
 			}
 			else {
 				checkOut(userOrderCrepe);
+			}
+		});
+		$('#savoryCrepeCheckout2')
+		.unbind('click')
+		.bind('click', function () {
+			var proteinBool = false
+			for (var i in userOrderCrepe.ingredients){
+				if (userOrderCrepe.ingredients[i].category === "protein") {
+					proteinBool = true
+				}
+			}
+			if (!proteinBool){
+				$('#error2').show();
+			}
+			else {
+				checkOut(userOrderCrepe, true);
 			}
 		});
 		const height = $("#savoryFooter").height()

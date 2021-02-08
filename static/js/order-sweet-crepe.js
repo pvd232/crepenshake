@@ -38,12 +38,15 @@ function stringify (crepeOrder) {
 	return true;
 };
 
-function checkOut (order) {
+function checkOut (order, isCheckingOut = false) {
 	userOrderCrepe.flavor = 'sweet';
 	userOrderCrepe.origination = 'custom';
 	if (editCrepeIndex != null) {
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
-	} else {
+	} else if (isCheckingOut) {
+		$.when(stringify(order)).then(location.assign('/checkout'));
+	}
+	else {
 		$.when(stringify(order)).then(location.assign('/order/drink'));
 	}
 };
@@ -146,6 +149,11 @@ function pageBuild () {
 		.unbind('click')
 		.bind('click', function () {
 			checkOut(userOrderCrepe);
+		});
+		$('#buildSweetCrepecheckout2')
+		.unbind('click')
+		.bind('click', function () {
+			checkOut(userOrderCrepe, true);
 		});
 
 	$('.card-img-top').each(function () {

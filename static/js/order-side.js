@@ -56,7 +56,7 @@ function stringify (sideOrder) {
 function checkOut (order) {
 	if (editSideIndex != null) {
 		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
-	} else {
+	} else  {
 		$.when(stringify(order)).then(location.assign('/checkout'));
 	}
 };

@@ -35,12 +35,16 @@ function stringify (crepeOrder) {
 	return true;
 };
 
-function checkOut (orderCrepe) {
-	orderCrepe._origination = 'menu';
+function checkOut (orderCrepe, isCheckingOut = false) {
+	orderCrepe.origination = 'menu';
 	if (editCrepeIndex != null) {
 		$.when(stringify(orderCrepe)).then(location.assign('/order?userOrder=true'));
-	} else {
+	} else if (isCheckingOut) {
+		$.when(stringify(orderCrepe)).then(location.assign('/checkout'));
+	}
+	else {
 		$.when(stringify(orderCrepe)).then(location.assign('/order/drink'));
+
 	}
 };
 
@@ -181,6 +185,11 @@ function pageBuild () {
 		.unbind('click')
 		.bind('click', function () {
 			checkOut(userOrderMenuCrepe);
+		});
+		$('#menuCrepeCheckout2')
+		.unbind('click')
+		.bind('click', function () {
+			checkOut(userOrderMenuCrepe, true);
 		});
 };
 function mobileRendering () {
