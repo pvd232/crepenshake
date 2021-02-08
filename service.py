@@ -27,34 +27,41 @@ def change_case(str):
             res.append(c)
     return ''.join(res)
 
+
+username = "postgres"
+password = "Iqopaogh23!"
+connection_string_beginning = "postgres://"
+connection_string_end = "@localhost:5432/crepenshakedb"
+connection_string = connection_string_beginning + \
+    username + ":" + password + connection_string_end
+
+# an Engine, which the Session will use for connection
+# resources
+drink_engine = create_engine(
+    os.environ.get("DB_STRING", connection_string), pool_size=20, max_overflow=10)
+
+# create a configured "Session" class
+session_factory = sessionmaker(bind=drink_engine)
+
+# create a Session
+Session = scoped_session(session_factory)
 @contextmanager
 def session_scope():
-    username = "postgres"
-    password = "Iqopaogh23!"
-    connection_string_beginning = "postgres://"
-    connection_string_end = "@localhost:5432/crepenshakedb"
-    connection_string = connection_string_beginning + \
-        username + ":" + password + connection_string_end
-
-    # an Engine, which the Session will use for connection
-    # resources
-    drink_engine = create_engine(
-        os.environ.get("DB_STRING", connection_string), pool_size=0)
-
-    # create a configured "Session" class
-    session_factory = sessionmaker(bind=drink_engine)
-
-    # create a Session
-    session = scoped_session(session_factory)
+    session = Session()
     try:
         yield session
         session.commit()
+        print("session commited")
     except:
         session.rollback()
+        print("session rolled back")
         raise
     finally:
         session.close()
+        print("session closed")
+
     # now all calls to Session() will create a thread-local session
+
 
 class Menu_Service(object):
     def __init__(self):
@@ -62,6 +69,7 @@ class Menu_Service(object):
         self.drink_service = Drink_Service()
         self.side_service = Side_Service()
         self.menu_crepe_service = Menu_Crepe_Service()
+
     def get_menu_items(self):
         response = {}
         fruit_ingredients = [
@@ -74,7 +82,7 @@ class Menu_Service(object):
         savory_ingredient_prices_by_category = self.ingredient_service.get_savory_ingredient_prices_by_category()
         new_ingredient_prices_by_category = []
         for x in savory_ingredient_prices_by_category:
-            print('x',x)
+            print('x', x)
             new_ingredient_category_dict = {}
             new_ingredient_category_dict['ingredient_category'] = x["ingredient_category"]
             new_ingredient_category_dict['ingredients'] = []
@@ -87,7 +95,7 @@ class Menu_Service(object):
 
         ice_cream_bowls = [x.serialize()
                            for x in self.side_service.get_ice_cream_bowls()]
-            
+
         response['ice_cream_bowls'] = ice_cream_bowls
 
         toppings = [x.serialize()
@@ -134,13 +142,11 @@ class Menu_Service(object):
 
 class Ingredient_Service(object):
     # dope shit magic https://docs.sqlalchemy.org/en/13/orm/session_basics.html
-    def __init__(self):
-        self.ingredient_repository = Ingredient_Repository()
 
     def get_savory_ingredient_categories(self):
         response = []
         with session_scope() as session:
-            for ingredient_category in self.ingredient_repository.get_savory_ingredient_categories(session):
+            for ingredient_category in Ingredient_Repository().get_savory_ingredient_categories(session):
                 ingredient_category_model = Ingredient_Category_Domain(
                     id=ingredient_category.id)
                 response.append(ingredient_category_model)
@@ -149,7 +155,7 @@ class Ingredient_Service(object):
     def get_sweet_ingredient_categories(self):
         response = []
         with session_scope() as session:
-            for ingredient_category in self.ingredient_repository.get_sweet_ingredient_categories(session):
+            for ingredient_category in Ingredient_Repository().get_sweet_ingredient_categories(session):
                 ingredient_category_model = Ingredient_Category_Domain(
                     id=ingredient_category.id)
                 response.append(ingredient_category_model)
@@ -158,7 +164,7 @@ class Ingredient_Service(object):
     def get_ingredient_serving_sizes(self):
         response = []
         with session_scope() as session:
-            for ingredient_serving_size in self.ingredient_repository.get_ingredient_serving_sizes(session):
+            for ingredient_serving_size in Ingredient_Repository().get_ingredient_serving_sizes(session):
                 ingredient_serving_size_model = Ingredient_Serving_Size(
                     id=ingredient_serving_size.id)
                 response.append(ingredient_serving_size_model)
@@ -167,7 +173,7 @@ class Ingredient_Service(object):
     def get_ingredients(self):
         response = []
         with session_scope() as session:
-            for ingredient in self.ingredient_repository.get_ingredients(session):
+            for ingredient in Ingredient_Repository().get_ingredients(session):
                 ingredient_model = Ingredient_Domain(
                     ingredient_object=ingredient)
                 response.append(ingredient_model)
@@ -176,13 +182,13 @@ class Ingredient_Service(object):
     def get_ingredient_prices(self):
         response = []
         with session_scope() as session:
-            for ingredient in self.ingredient_repository.get_ingredient_prices(session):
+            for ingredient in Ingredient_Repository().get_ingredient_prices(session):
                 ingredient_model = Ingredient_Domain(
                     ingredient_object=ingredient)
                 response.append(ingredient_model)
             return response
 
-    # self.ingredient_repository.get_savory_ingredient_categories() only gets ingredient categories that are not sweet or fruit
+    # Ingredient_Repository().get_savory_ingredient_categories() only gets ingredient categories that are not sweet or fruit
     def get_savory_ingredient_prices_by_category(self):
         response = []
         savory_ingredient_categories = self.get_savory_ingredient_categories()
@@ -190,7 +196,7 @@ class Ingredient_Service(object):
             for ingredient_category in savory_ingredient_categories:
                 ingredient_category_dict = {}
                 ingredient_category_dict['ingredients'] = []
-                for ingredient in self.ingredient_repository.get_ingredient_prices(session):
+                for ingredient in Ingredient_Repository().get_ingredient_prices(session):
                     if ingredient_category.id == ingredient.ingredient_category_id:
                         ingredient_category_dict['ingredient_category'] = ingredient_category.id
                         ingredient_model = Ingredient_Domain(
@@ -203,7 +209,7 @@ class Ingredient_Service(object):
     def get_sweet_ingredient_prices(self):
         response = []
         with session_scope() as session:
-            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
+            for ingredient in Ingredient_Repository().get_sweet_ingredient_prices(session):
                 ingredient_model = Ingredient_Domain(
                     ingredient_object=ingredient)
                 response.append(ingredient_model)
@@ -212,7 +218,7 @@ class Ingredient_Service(object):
     def get_sweetness_ingredients(self):
         response = []
         with session_scope() as session:
-            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
+            for ingredient in Ingredient_Repository().get_sweet_ingredient_prices(session):
                 if ingredient.ingredient_category_id == 'sweetness':
                     ingredient_domain = Ingredient_Domain(
                         ingredient_object=ingredient)
@@ -222,7 +228,7 @@ class Ingredient_Service(object):
     def get_fruit_ingredients(self):
         response = []
         with session_scope() as session:
-            for ingredient in self.ingredient_repository.get_sweet_ingredient_prices(session):
+            for ingredient in Ingredient_Repository().get_sweet_ingredient_prices(session):
                 if ingredient.ingredient_category_id == 'fruit':
                     ingredient_domain = Ingredient_Domain(
                         ingredient_object=ingredient)
@@ -231,9 +237,6 @@ class Ingredient_Service(object):
 
 
 class Order_Service(object):
-    def __init__(self):
-        self.order_repository = Order_Repository()
-
     def send_confirmation_email(self, order):
         mail_content = '<html><body>'
         mail_content += str(order)
@@ -246,9 +249,11 @@ class Order_Service(object):
         message = MIMEMultipart()
         message['From'] = sender_address
         message['To'] = email
-        message_subject = ' ' + order.customer.first_name + ' ' + order.customer.last_name + ' ' + 'Phone Number: ' + order.customer.phone_number + 'Email: ' + order.customer.id + ' ' + order.pickup_time
+        message_subject = ' ' + order.customer.first_name + ' ' + order.customer.last_name + ' ' + \
+            'Phone Number: ' + order.customer.phone_number + \
+            'Email: ' + order.customer.id + ' ' + order.pickup_time
         message['Subject'] = 'Order From' + message_subject  # The subject line
-        
+
         # The body and the attachments for the mail
         message.attach(MIMEText(mail_content, 'html'))
         # Create SMTP session for sending the mail
@@ -263,30 +268,27 @@ class Order_Service(object):
         new_order = Order_Domain(order_json=order)
         self.send_confirmation_email(new_order)
         with session_scope() as session:
-            return self.order_repository.post_order(session, order=new_order)
-            
+            return Order_Repository().post_order(session, order=new_order)
 
     def stripe_pay(self, order):
         with session_scope() as session:
-            return self.order_repository.post_stripe_order(session, order=order)
+            return Order_Repository().post_stripe_order(session, order=order)
 
 
 class Drink_Service(object):
-    def __init__(self):
-        self.drink_repository = Drink_Repository()
-
     def get_drink_categories(self):
         response = []
         with session_scope() as session:
-            for drink_category in self.drink_repository.get_drink_categories(session):
-                drink_category_domain = Drink_Category_Domain(id=drink_category.id)
+            for drink_category in Drink_Repository().get_drink_categories(session):
+                drink_category_domain = Drink_Category_Domain(
+                    id=drink_category.id)
                 response.append(drink_category_domain)
             return response
 
     def get_drinks(self, requested_drink_category_id):
         response = []
         with session_scope() as session:
-            for drink in self.drink_repository.get_drinks(session, requested_drink_category_id):
+            for drink in Drink_Repository().get_drinks(session, requested_drink_category_id):
                 drink_domain = Drink_Domain(drink_object=drink)
                 response.append(drink_domain)
             return response
@@ -294,7 +296,7 @@ class Drink_Service(object):
     def get_milk_drinks(self):
         response = []
         with session_scope() as session:
-            for milk_drink in self.drink_repository.get_milk_drinks(session):
+            for milk_drink in Drink_Repository().get_milk_drinks(session):
                 drink_domain = Milk_Domain(
                     milk_object=milk_drink)
                 response.append(drink_domain)
@@ -303,7 +305,7 @@ class Drink_Service(object):
     def get_coffee_syrups(self):
         response = []
         with session_scope() as session:
-            for coffee_syrup_flavor in self.drink_repository.get_coffee_syrups(session):
+            for coffee_syrup_flavor in Drink_Repository().get_coffee_syrups(session):
                 coffee_syrup_flavor_domain = Coffee_Syrup_Flavor_Domain(
                     id=coffee_syrup_flavor.id)
                 response.append(coffee_syrup_flavor_domain)
@@ -312,7 +314,7 @@ class Drink_Service(object):
     def get_coffee_temperature(self):
         response = []
         with session_scope() as session:
-            for temp in self.drink_repository.get_temperature(session):
+            for temp in Drink_Repository().get_temperature(session):
                 temp_domain = Temperature_Domain(
                     id=temp.id)
                 response.append(temp_domain)
@@ -320,13 +322,14 @@ class Drink_Service(object):
 
 
 class Side_Service(object):
-    def __init__(self):
-        self.side_repository = Side_Repository()
+    # def __init__(self):
+    #     Side_Repository() = Side_Repository()
 
     def get_side_types(self):
         response = []
         with session_scope() as session:
-            for side_type in self.side_repository.get_side_types(session):
+            side_types = Side_Repository().get_side_types(session)
+            for side_type in side_types:
                 side_type_domain = Side_Type_Domain(id=side_type.id)
                 response.append(side_type_domain)
 
@@ -335,7 +338,8 @@ class Side_Service(object):
     def get_side_names(self):
         response = []
         with session_scope() as session:
-            for side_name in self.side_repository.get_side_names(session):
+            side_names = Side_Repository().get_side_names(session)
+            for side_name in side_names:
                 side_name_domain = Side_Type_Domain(id=side_name.id)
                 response.append(side_name_domain)
             return response
@@ -343,31 +347,30 @@ class Side_Service(object):
     def get_ice_cream_bowls(self):
         response = []
         with session_scope() as session:
-            for ice_cream in self.side_repository.get_ice_cream_bowls(session):                
-                ice_cream_domain = Ice_Cream_Bowl_Domain(ice_cream_object=ice_cream)
+            ice_creams = Side_Repository().get_ice_cream_bowls(session)
+            for ice_cream in ice_creams:
+                ice_cream_domain = Ice_Cream_Bowl_Domain(
+                    ice_cream_object=ice_cream)
                 response.append(ice_cream_domain)
             return response
 
 
 class Menu_Crepe_Service(object):
-    def __init__(self):
-        self.menu_crepe_repository = Menu_Crepe_Repository()
-
     def get_sweet_menu_crepes(self):
         response = []
         with session_scope() as session:
-            for menu_crepe in self.menu_crepe_repository.get_sweet_menu_crepes(session):
+            for menu_crepe in Menu_Crepe_Repository().get_sweet_menu_crepes(session):
                 menu_crepe_domain = Menu_Crepe_Domain(
-                    menu_crepe_object = menu_crepe)
+                    menu_crepe_object=menu_crepe)
                 response.append(menu_crepe_domain)
             return response
 
     def get_savory_menu_crepes(self):
         response = []
         with session_scope() as session:
-            for menu_crepe in self.menu_crepe_repository.get_savory_menu_crepes(session):
+            for menu_crepe in Menu_Crepe_Repository().get_savory_menu_crepes(session):
                 crepe_domain = Menu_Crepe_Domain(
-                    menu_crepe_object = menu_crepe)
+                    menu_crepe_object=menu_crepe)
                 response.append(crepe_domain)
             return response
 
@@ -385,7 +388,7 @@ class Test_Service(object):
 
     def test_connection(self):
         inspector = inspect(self.test_engine)
-        #use this if you want to trigger a reset of the database in GCP
+        # use this if you want to trigger a reset of the database in GCP
         # if len(inspector.get_table_names()) > 0:
         if len(inspector.get_table_names()) == 0:
             instantiate_db_connection()
@@ -394,16 +397,12 @@ class Test_Service(object):
 
 
 class Settings_Service(object):
-    def __init__(self):
-        self.settings_repository = Settings_Repository()
-
     def update_settings(self, settings):
         with session_scope() as session:
-            self.settings_repository.update_settings(session, settings)
+            Settings_Repository().update_settings(session, settings)
             return
-    
+
     def get_settings(self):
         with session_scope() as session:
-            response = self.settings_repository.get_settings(session).serialize
+            response = Settings_Repository().get_settings(session).serialize
             return response
-

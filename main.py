@@ -10,7 +10,7 @@ from models import app
 stripe.api_key = "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"
 @app.route("/")
 def home():
-    #only necessary when deploying for the first time
+    # only necessary when deploying for the first time
     # test_service = Test_Service()
     # test_service.test_connection()
     return render_template('index.html')
@@ -186,23 +186,22 @@ def favicon():
     return send_file(file_name, mimetype='image/vnd.microsoft.icon')
 
 
-@app.route("/brandy0623", methods = ["GET"])
+@app.route("/brandy0623", methods=["GET"])
 def settings():
     settings_service = Settings_Service()
     new_ordering_status = request.args.get('ordering')
     current_ordering_status = settings_service.get_settings()
     if new_ordering_status:
-        new_settings = {"id" : 0 , "ordering" : new_ordering_status}
+        new_settings = {"id": 0, "ordering": new_ordering_status}
         settings_service.update_settings(new_settings)
         return render_template('settings.html', ordering=new_ordering_status)
     else:
         return render_template('settings.html', ordering=current_ordering_status['ordering'])
 
+
 if __name__ == "__main__":
     # app.run(ssl_context='adhoc', debug=True)
-    app.run(debug=True)
+    app.run()
     # app.run(host='0.0.0.0')
     # app.run()
-
-
 

@@ -178,14 +178,19 @@ class Side_Repository(object):
 
     def get_side_types(self, session):
         side_types = session.query(Side_Type)
+        session.close()
         return side_types
 
     def get_side_names(self, session):
         side_names = session.query(Side_Name)
+        session.close()
+
         return side_names
 
     def get_ice_cream_bowls(self, session):
         ice_cream = session.query(Ice_Cream_Flavor_Serving_Size_Price)
+        session.close()
+
         return ice_cream
 
 
