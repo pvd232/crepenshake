@@ -209,7 +209,6 @@ class Menu_Crepe_Repository(object):
 class Settings_Repository(object):
     def get_settings(self, session):
         settings = session.query(Settings).first()
-        print('settings', settings)
         return settings
 
     def update_settings(self, session, setting):

@@ -2,7 +2,7 @@ from datetime import datetime
 import uuid
 
 
-def humanize(dict=None, attr=None, format=False, word = False):
+def humanize(dict=None, attr=None, format=False, word=False):
     if format == True:
         for x in dict['ingredients']:
             str = x.__getattribute__(attr)
@@ -41,14 +41,14 @@ def humanize(dict=None, attr=None, format=False, word = False):
             newFrags = []
             for i in range(len(frags)):
                 capitalFrag = frags[i].capitalize()
-                newFrags.append(capitalFrag)    
+                newFrags.append(capitalFrag)
             newFrags = ' '.join(newFrags)
             return newFrags
 
 
 class Crepe_Domain(object):
     # def __init__(self, id=None, orgination_id=None, flavor_profile_id=None)
-    def __init__(self, crepe_json = None, crepe_object = None):
+    def __init__(self, crepe_json=None, crepe_object=None):
         if crepe_json:
             self.id = crepe_json["id"]
             self.origination_id = crepe_json["crepe_json.orgination_id"]
@@ -57,8 +57,6 @@ class Crepe_Domain(object):
             self.id = crepe_json.id
             self.origination_id = crepe_json.orgination_id
             self.flavor_profile_id = crepe_json.flavor_profile_id
-
-
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
         attributes = list(self.__dict__.values())
@@ -68,10 +66,10 @@ class Crepe_Domain(object):
         return serialized_attributes
 
 
-
 class Ingredient_Serving_Size(object):
     def __init__(self, id=None):
         self.id = id
+
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
         attributes = list(self.__dict__.values())
@@ -92,7 +90,7 @@ class Ingredient_Domain(object):
             if hasattr(ingredient_object, 'ingredient_id'):
                 self.id = ingredient_object.ingredient_id
             else:
-                self.id = ingredient_object.id 
+                self.id = ingredient_object.id
             self.ingredient_category_id = ingredient_object.ingredient_category_id
             self.serving_size = ingredient_object.serving_size
             self.price = ingredient_object.price
@@ -119,7 +117,7 @@ class Order_Crepe_Domain(object):
                     for menu_crepe in order_crepe['menuCrepes']:
                         menu_crepe_bool = False
                         new_menu_crepe = Menu_Crepe_Domain(
-                            menu_crepe_object=menu_crepe)
+                            menu_crepe_json=menu_crepe)
                         for crepe in self.order_crepe:
                             if crepe.crepe_id == new_menu_crepe.crepe_id:
                                 crepe.quantity += 1
@@ -133,7 +131,6 @@ class Order_Crepe_Domain(object):
                     self.order_crepe.append(new_custom_crepe)
         elif order_crepe_object:
             for order_crepe in order_crepe_object:
-                print('order_crepe',order_crepe)
                 if order_crepe.origination == 'menu':
                     for menu_crepe in order_crepe.menuCrepes:
                         menu_crepe_bool = False
@@ -148,7 +145,7 @@ class Order_Crepe_Domain(object):
             for order_crepe in order_crepe_object:
                 if order_crepe.origination == 'custom':
                     new_custom_crepe = Custom_Crepe_Domain(
-                        custom_crepe_json=order_crepe)
+                        custom_crepe_object=order_crepe)
                     self.order_crepe.append(new_custom_crepe)
 
     def serialize(self):
@@ -196,7 +193,6 @@ class Order_Side_Domain(object):
                         new_ice_cream_bowl = Ice_Cream_Bowl_Domain(
                             ice_cream_object=side)
                         self.order_side.append(new_ice_cream_bowl)
-
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -266,7 +262,7 @@ class Order_Drink_Domain(object):
                 self.order_drink.append(drink)
             for drink in bottled_list:
                 self.order_drink.append(drink)
-            
+
         elif order_drink_object:
             self.order_id = order_id
             self.order_drink = list()
@@ -316,6 +312,7 @@ class Order_Drink_Domain(object):
                 self.order_drink.append(drink)
             for drink in bottled_list:
                 self.order_drink.append(drink)
+
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
         attributes = list(self.__dict__.values())
@@ -354,6 +351,7 @@ class Order_Drink_Domain(object):
         return_object += '<br>'
         return return_object
 
+
 class Order_Domain(object):
     def __init__(self, order_json=None, order_object=None):
         if order_json:
@@ -363,20 +361,21 @@ class Order_Domain(object):
             self.cost = float(order_json['orderTotal'])
             self.date = datetime.today()
             self.pickup_time = order_json["pickupTime"]
-            self.pickup_timestamp = datetime.fromtimestamp(order_json["pickupTimestamp"])
+            self.pickup_timestamp = datetime.fromtimestamp(
+                order_json["pickupTimestamp"])
             if len(order_json['orderCrepe']) > 0:
                 self.order_crepe = Order_Crepe_Domain(order_id=self.id,
-                                                     order_crepe_json=order_json['orderCrepe'])
+                                                      order_crepe_json=order_json['orderCrepe'])
             else:
                 self.order_crepe = None
             if len(order_json['orderDrink']) > 0:
                 self.order_drink = Order_Drink_Domain(order_id=self.id,
-                                                     order_drink_json=order_json['orderDrink'])
+                                                      order_drink_json=order_json['orderDrink'])
             else:
                 self.order_drink = None
             if len(order_json['orderSide']) > 0:
                 self.order_side = Order_Side_Domain(order_id=self.id,
-                                                   order_side_json=order_json['orderSide'])
+                                                    order_side_json=order_json['orderSide'])
             else:
                 self.order_side = None
 
@@ -389,20 +388,19 @@ class Order_Domain(object):
             self.pickup_timestamp = datetime.fromtimestamp.pickupTimestamp
             if len(order_object.orderCrepe) > 0:
                 self.order_crepe = Order_Crepe_Domain(order_id=self.id,
-                                                     order_crepe_object=order_object.orderCrepe)
+                                                      order_crepe_object=order_object.orderCrepe)
             else:
                 self.order_crepe = None
             if len(order_object.orderDrink) > 0:
                 self.order_drink = Order_Drink_Domain(order_id=self.id,
-                                                     order_drink_object=order_object.orderDrink)
+                                                      order_drink_object=order_object.orderDrink)
             else:
                 self.order_drink = None
             if len(order_object.orderSide) > 0:
                 self.order_side = Order_Side_Domain(order_id=self.id,
-                                                   order_side_object=order_object.orderSide)
+                                                    order_side_object=order_object.orderSide)
             else:
                 self.order_side = None
-
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -450,7 +448,7 @@ class Customer_Domain(object):
 
 
 class Menu_Crepe_Domain(object):
-    def __init__(self,menu_crepe_json=None , menu_crepe_object=None):
+    def __init__(self, menu_crepe_json=None, menu_crepe_object=None):
         if menu_crepe_json:
             self.crepe_id = menu_crepe_json["id"]
             self.name = menu_crepe_json["name"]
@@ -479,7 +477,7 @@ class Menu_Crepe_Domain(object):
 
 
 class Custom_Crepe_Domain(object):
-    def __init__(self, custom_crepe_json=None , custom_crepe_object=None):
+    def __init__(self, custom_crepe_json=None, custom_crepe_object=None):
         if custom_crepe_json:
             self.crepe_id = uuid.uuid4()
             self.ingredients = list()
@@ -496,7 +494,8 @@ class Custom_Crepe_Domain(object):
             self.origination_id = 'custom'
             self.quantity = custom_crepe_object.quantity
             for ingredient in custom_crepe_object.ingredients:
-                new_ingredient = Ingredient_Domain(ingredient_object=ingredient)
+                new_ingredient = Ingredient_Domain(
+                    ingredient_object=ingredient)
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -526,6 +525,7 @@ class Drink_Category_Domain(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+
 class Drink_Category_Domain(object):
     def __init__(self, id=None):
         self.id = id
@@ -537,6 +537,8 @@ class Drink_Category_Domain(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
+
 class Drink_Domain(object):
     def __init__(self, drink_json=None, drink_object=None):
         if (drink_json):
@@ -565,6 +567,7 @@ class Drink_Domain(object):
     def __str__(self):
         return '<p style="font-size: large"><span style="text-decoration: underline">Name:</span> {0}, Serving Size: {1}, Quantity: {2}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), self.quantity)
 
+
 class Milk_Domain(object):
     def __init__(self, milk_json=None, milk_object=None):
         if (milk_json):
@@ -582,9 +585,11 @@ class Milk_Domain(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+
 class Coffee_Syrup_Flavor_Domain(object):
     def __init__(self, id=None):
         self.id = id
+
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
         attributes = list(self.__dict__.values())
@@ -592,6 +597,8 @@ class Coffee_Syrup_Flavor_Domain(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
+
 class Coffee_Domain(object):
     def __init__(self, coffee_json=None, coffee_object=None):
         if coffee_json:
@@ -663,6 +670,7 @@ class Coffee_Domain(object):
         else:
             return '<p style="font-size: large;"><span style="text-decoration: underline;">Name:</span> {0}, Serving Size: {1}</p> <p style="font-size:large;">Milk: {2}</p> <p style="font-size:large;">Temperature: {3}</p> <p style="font-size:large;"> # of Espresso Shots: {4}</p>'.format(humanize(word=self.name), humanize(word=self.serving_size), humanize(word=self.milk_type_id), humanize(word=self.temperature), humanize(word=self.espresso_serving_size))
 
+
 class Ingredient_Category_Domain(object):
     def __init__(self, id=None):
         self.id = id
@@ -688,6 +696,7 @@ class Temperature_Domain(object):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+
 class Side_Type_Domain(object):
     def __init__(self, id=None):
         self.id = id
@@ -699,6 +708,7 @@ class Side_Type_Domain(object):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
 
 class Side_Domain(object):
     def __init__(self, side_json=None, side_object=None):
@@ -715,7 +725,6 @@ class Side_Domain(object):
             self.flavor = side_object.flavor
             self.price = side_object.price
             self.quantity = side_object.quantity
-            
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -736,21 +745,21 @@ class Ice_Cream_Bowl_Domain(object):
             self.quantity = ice_cream_json["quantity"]
             self.side_name_id = ice_cream_json["sideName"]
             self.toppings = list()
-            self.side_name_id='ice_cream_bowl'
+            self.side_name_id = 'ice_cream_bowl'
             for topping in ice_cream_json["toppings"]:
                 new_topping = Ingredient_Domain(ingredient_json=topping)
                 self.toppings.append(new_topping)
         elif ice_cream_object:
-            #no id attribute because ice_cream_object has its uuid created when it is ordered
+            # no id attribute because ice_cream_object has its uuid created when it is ordered
             self.id = None
             self.flavor = ice_cream_object.flavor_id
             self.price = ice_cream_object.price
             self.serving_size = ice_cream_object.serving_size_id
             self.quantity = 1
             self.toppings = list()
-            self.side_name_id='ice_cream_bowl'
+            self.side_name_id = 'ice_cream_bowl'
             if hasattr(ice_cream_object, 'toppings'):
-                 
+
                 for topping in ice_cream_object.toppings:
                     new_topping = Ingredient_Domain(ingredient_object=topping)
                     self.toppings.append(new_topping)

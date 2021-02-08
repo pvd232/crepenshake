@@ -51,14 +51,11 @@ def session_scope():
     try:
         yield session
         session.commit()
-        print("session commited")
     except:
         session.rollback()
-        print("session rolled back")
         raise
     finally:
         session.close()
-        print("session closed")
 
     # now all calls to Session() will create a thread-local session
 
@@ -82,7 +79,6 @@ class Menu_Service(object):
         savory_ingredient_prices_by_category = self.ingredient_service.get_savory_ingredient_prices_by_category()
         new_ingredient_prices_by_category = []
         for x in savory_ingredient_prices_by_category:
-            print('x', x)
             new_ingredient_category_dict = {}
             new_ingredient_category_dict['ingredient_category'] = x["ingredient_category"]
             new_ingredient_category_dict['ingredients'] = []
