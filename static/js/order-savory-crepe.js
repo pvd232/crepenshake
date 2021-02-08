@@ -62,11 +62,9 @@ function checkOut(order) {
 	order.flavor = 'savory';
 	order.origination = 'custom';
 	if (editCrepeIndex != null) {
-		// $.when(stringify(order)).then(location.assign('/order?userOrder=true'));
-		stringify(order)
+		$.when(stringify(order)).then(location.assign('/order?userOrder=true'));
 	} else {
-		// $.when(stringify(order)).then(location.assign('/order/drink'));
-		stringify(order)
+		$.when(stringify(order)).then(location.assign('/order/drink'));
 
 	}
 };
@@ -271,8 +269,21 @@ function pageBuild() {
 	$('#savoryCrepeCheckOut')
 		.unbind('click')
 		.bind('click', function () {
-			checkOut(userOrderCrepe);
+			var proteinBool = false
+			for (var i in userOrderCrepe.ingredients){
+				if (userOrderCrepe.ingredients[i].category === "protein") {
+					proteinBool = true
+				}
+			}
+			if (!proteinBool){
+				$('#error2').show();
+			}
+			else {
+				checkOut(userOrderCrepe);
+			}
 		});
+		const height = $("#savoryFooter").height()
+		$('#error2').css("margin-bottom", height)
 };
 function mobileRendering () {
 	const cardDeckElements = document.getElementsByClassName('card-deck');

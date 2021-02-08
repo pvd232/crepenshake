@@ -139,10 +139,7 @@
  {% endfor %}
 <div class="row" style="margin-bottom: 140px"></div>
 
-<!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
-<div class="footer d-flex align-items-center">
-	<button class="btn5" id="drinkcheckout">Add to Cart</button>
-		<div
+<div
 		class="alert-danger"
 		role="alert"
 		id="errorCoffeeCheckout"
@@ -160,6 +157,19 @@
 	>
 		Please select a temperature for your coffee.
 	</div>
+<div class="footer d-flex align-items-center" id = "drinkFooter">
+
+	 <button
+    type="button"
+    class="btn51"
+    id="drinkcheckout"
+    data-dismiss="modal"
+    
+  >
+    Keep Shopping
+  </button>
+  <button type="button" class="btn52" onclick="location.assign('/checkout')">Checkout</button>
+		
 </div>
 {% endblock %}
 

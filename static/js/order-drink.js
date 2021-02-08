@@ -666,6 +666,8 @@ function pageBuild () {
 				$(this).css('opacity', '.3');
 			});
 	});
+	const height = $("#drinkFooter").height()
+	$('#errorCoffeeCheckout').css("margin-bottom", height)
 };
 function mobileRendering () {
 	const cardDeckElements = document.getElementsByClassName('card-deck');
