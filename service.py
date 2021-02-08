@@ -38,7 +38,7 @@ connection_string = connection_string_beginning + \
 # an Engine, which the Session will use for connection
 # resources
 drink_engine = create_engine(
-    os.environ.get("DB_STRING", connection_string), pool_size=20, max_overflow=10)
+    os.environ.get("DB_STRING", connection_string), pool_size=100, max_overflow=10)
 
 # create a configured "Session" class
 session_factory = sessionmaker(bind=drink_engine)
