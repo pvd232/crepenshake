@@ -4,13 +4,38 @@
 	"short_name": "crepenshake",
 	"icons": [
 		{
-			"src": "/android-chrome-192x192.png",
+			"src": "/static/favico/android-chrome-192x192.png",
 			"sizes": "192x192",
 			"type": "image/png"
 		},
 		{
-			"src": "/android-chrome-384x384.png",
+			"src": "/static/favico/android-chrome-384x384.png",
 			"sizes": "384x384",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favico/apple-touch-icon.png",
+			"sizes": "180x180",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favico/android-chrome-384x384.png",
+			"sizes": "384x384",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favico/favicon-16x16.png",
+			"sizes": "16x16",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favico/favicon-32x32.png",
+			"sizes": "32x32",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favico/mstile-150x150.png",
+			"sizes": "150x150",
 			"type": "image/png"
 		}
 	],
