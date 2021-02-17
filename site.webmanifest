@@ -14,7 +14,7 @@
 			"type": "image/png"
 		},
 		{
-			"src": "/static/favico/apple-touch-icon.png",
+			"src": "apple-touch-icon.png",
 			"sizes": "180x180",
 			"type": "image/png"
 		},
@@ -35,6 +35,11 @@
 		},
 		{
 			"src": "/static/favico/mstile-150x150.png",
+			"sizes": "150x150",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favico/safari-pinned-tab.svg",
 			"sizes": "150x150",
 			"type": "image/png"
 		}
