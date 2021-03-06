@@ -5,6 +5,7 @@ import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
 from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service, Test_Service, Settings_Service
 from models import app
+from twilio.rest import Client
 
 # stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
 stripe.api_key = "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"
@@ -184,6 +185,23 @@ def favicon():
     file_path = cwd = os.getcwd()
     file_name = file_path + "/static/favico/favicon.ico"
     return send_file(file_name, mimetype='image/vnd.microsoft.icon')
+
+
+@app.route('/c')
+def c():
+    # Your Account Sid and Auth Token from twilio.com/console
+    # and set the environment variables. See http://twil.io/secure
+    account_sid = os.environ['TWILIO_ACCOUNT_SID']
+    auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    client = Client(account_sid, auth_token)
+    message = client.messages \
+        .create(
+            body="Order received.",
+            from_='++18638451750',
+            to='+15126456898'
+        )
+    print(message.body)
+    return Response(status=200)
 
 
 @app.route("/brandy0623", methods=["GET"])

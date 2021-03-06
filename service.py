@@ -15,6 +15,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
+import os
+from twilio.rest import Client
 
 
 def change_case(str):
@@ -260,6 +262,21 @@ class Order_Service(object):
         s.sendmail(message['From'], message['To'], message.as_string())
         s.quit()
 
+    def send_sms(self):
+
+        # Your Account Sid and Auth Token from twilio.com/console
+        # and set the environment variables. See http://twil.io/secure
+        account_sid = os.getenv['TWILIO_ACCOUNT_SID']
+        auth_token = os.getenv['TWILIO_AUTH_TOKEN']
+        client = Client(account_sid, auth_token)
+        message = client.messages \
+            .create(
+                body="Order received.",
+                from_='++18638451750',
+                to='+15126456898'
+            )
+        print(message.body)
+
     def create_order(self, order):
         new_order = Order_Domain(order_json=order)
         self.send_confirmation_email(new_order)
@@ -318,9 +335,6 @@ class Drink_Service(object):
 
 
 class Side_Service(object):
-    # def __init__(self):
-    #     Side_Repository() = Side_Repository()
-
     def get_side_types(self):
         response = []
         with session_scope() as session:
@@ -385,7 +399,6 @@ class Test_Service(object):
     def test_connection(self):
         inspector = inspect(self.test_engine)
         # use this if you want to trigger a reset of the database in GCP
-        # if len(inspector.get_table_names()) > 0:
         if len(inspector.get_table_names()) == 0:
             instantiate_db_connection()
             self.test_engine.dispose()
