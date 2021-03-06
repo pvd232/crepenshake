@@ -263,23 +263,28 @@ class Order_Service(object):
         s.quit()
 
     def send_sms(self):
-
         # Your Account Sid and Auth Token from twilio.com/console
         # and set the environment variables. See http://twil.io/secure
-        account_sid = os.getenv['TWILIO_ACCOUNT_SID']
-        auth_token = os.getenv['TWILIO_AUTH_TOKEN']
+        account_sid = os.environ['TWILIO_ACCOUNT_SID']
+        auth_token = os.environ['TWILIO_AUTH_TOKEN']
         client = Client(account_sid, auth_token)
         message = client.messages \
             .create(
                 body="Order received.",
                 from_='+18638451750',
-                to='+15126456898'
+                to='+15125731975'
             )
-        print(message.body)
+        message = client.messages \
+            .create(
+                body="Order received.",
+                from_='+18638451750',
+                to='+8564726229'
+            )
 
     def create_order(self, order):
         new_order = Order_Domain(order_json=order)
         self.send_confirmation_email(new_order)
+        self.send_sms()
         with session_scope() as session:
             return Order_Repository().post_order(session, order=new_order)
 

@@ -187,23 +187,6 @@ def favicon():
     return send_file(file_name, mimetype='image/vnd.microsoft.icon')
 
 
-@app.route('/c')
-def c():
-    # Your Account Sid and Auth Token from twilio.com/console
-    # and set the environment variables. See http://twil.io/secure
-    account_sid = os.environ['TWILIO_ACCOUNT_SID']
-    auth_token = os.environ['TWILIO_AUTH_TOKEN']
-    client = Client(account_sid, auth_token)
-    message = client.messages \
-        .create(
-            body="Order received.",
-            from_='+18638451750',
-            to='+15126456898'
-        )
-    print(message.body)
-    return Response(status=200)
-
-
 @app.route("/brandy0623", methods=["GET"])
 def settings():
     settings_service = Settings_Service()
