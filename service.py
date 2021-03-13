@@ -268,17 +268,17 @@ class Order_Service(object):
         account_sid = os.environ['TWILIO_ACCOUNT_SID']
         auth_token = os.environ['TWILIO_AUTH_TOKEN']
         client = Client(account_sid, auth_token)
-        message = client.messages \
+        moms_message = client.messages \
             .create(
                 body="Order received.",
                 from_='+18638451750',
                 to='+15125731975'
             )
-        message = client.messages \
+        dads_message = client.messages \
             .create(
                 body="Order received.",
                 from_='+18638451750',
-                to='+8564726229'
+                to='+18564726229'
             )
 
     def create_order(self, order):
