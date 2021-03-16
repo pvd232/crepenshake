@@ -10,20 +10,10 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import os
-
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy import inspect, create_engine
-# Imports the Cloud Logging client library
-import logging
-import google.cloud.logging  # Don't conflict with standard logging
-from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
-
-client = google.cloud.logging.Client()
-handler = CloudLoggingHandler(client)
-logging.getLogger().setLevel(logging.WARN)  # defaults to WARN
-setup_logging(handler)
-
+from flask_migrate import Migrate
 
 
 @compiles(DropTable, "postgresql")
@@ -36,7 +26,7 @@ app = Flask(__name__)
 
 username = "postgres"
 password = "Iqopaogh23!"
-connection_string_beginning = "postgres://"
+connection_string_beginning = "postgresql+psycopg2://"
 connection_string_end = "@localhost:5432/crepenshakedb"
 connection_string = connection_string_beginning + \
     username + ":" + password + connection_string_end
@@ -47,6 +37,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
 # to suppress a warning message
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 class Crepe_Origination(db.Model):
@@ -288,7 +279,7 @@ class Ingredient(db.Model):
                                        nullable=False)
     ingredient_flavor_profile_id = db.Column(
         db.String(80), db.ForeignKey('crepe_flavor_profile.id'), nullable=False)
-
+    is_active = db.Column(db.Boolean(), default=False, nullable=False)
     custom_crepe = relationship('Custom_Crepe')
     order_ice_cream = relationship('Order_Ice_Cream')
     ingredient_serving_size_price = relationship(
@@ -396,6 +387,7 @@ class Drink_Name_Serving_Size_Price(db.Model):
     serving_size = db.Column(db.String(80), db.ForeignKey(
         "drink_serving_size.id"), primary_key=True, nullable=False)
     price = db.Column(db.Float(), nullable=False)
+
     @property
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -539,6 +531,7 @@ class Milk(db.Model):
     price = db.Column(db.Float(), nullable=False)
     # for moon milk this will be a .25, .5, .75, or 1.0 , otherwise it will be 1.0
     order_coffee = relationship('Order_Coffee', lazy=True)
+
     @property
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -731,12 +724,13 @@ class Ice_Cream_Serving_Size(db.Model):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
 
+
 class Settings(db.Model):
     __tablename__ = 'settings'
     id = db.Column(db.String(10), primary_key=True, unique=True,
                    nullable=False)
     ordering = db.Column(db.String(10),
-                   nullable=False)
+                         nullable=False)
 
     @property
     def serialize(self):
@@ -746,6 +740,7 @@ class Settings(db.Model):
         for i in range(len(attributes)):
             serialized_attributes[attribute_names[i]] = attributes[i]
         return serialized_attributes
+
 
 cwd = os.getcwd()
 
@@ -826,7 +821,7 @@ def create_ingredient_serving_size_price():
         serving_size = item['serving_size']
         price = item['price']
 
-        new_ingredient_serving_price = Ingredient_Serving_Size_Price(ingredient_id=ingredient_id, ingredient_category_id = ingredient_category_id,
+        new_ingredient_serving_price = Ingredient_Serving_Size_Price(ingredient_id=ingredient_id, ingredient_category_id=ingredient_category_id,
                                                                      serving_size=serving_size, price=price)
 
         # After I create the ingredient, I can then add it to my session.
@@ -1251,11 +1246,13 @@ def create_espresso():
     db.session.commit()
     db.session.remove()
 
+
 def create_settings():
-    setting = {"id" : 0, "ordering": "on"}
-    new_setting = Settings(id = setting['id'], ordering = setting['ordering'])
+    setting = {"id": 0, "ordering": "on"}
+    new_setting = Settings(id=setting['id'], ordering=setting['ordering'])
     db.session.add(new_setting)
     db.session.commit()
+
 
 def create_everything():
     create_ingredient_category()
@@ -1282,7 +1279,6 @@ def create_everything():
     create_sides()
     create_menu_crepe()
     create_settings()
-    logging.info('database created')
 
 
 def instantiate_db_connection():
@@ -1290,7 +1286,382 @@ def instantiate_db_connection():
     db.create_all()
     create_everything()
 
-# 2000-12-31
-# db.drop_all()
-# db.create_all()
-# End of Models.py
+
+instantiate_db_connection()
+
+
+def update_ingredients():
+    ingredients_to_update = [
+        {"id": "steak", "serving_size": "light", "price": 11.50,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "steak", "serving_size": "extra", "price": 11.50,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "steak", "serving_size": "regular", "price": 11.50,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "fajita_chicken", "serving_size": "light", "price": 9.50,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "fajita_chicken", "serving_size": "extra", "price": 9.50,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "fajita_chicken", "serving_size": "regular", "price": 11.50,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "blackened_tofu", "serving_size": "light", "price": 8.95,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "blackened_tofu", "serving_size": "extra", "price": 8.95,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "blackened_tofu", "serving_size": "regular", "price": 10.45,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "virginia_ham", "serving_size": "light", "price": 8.95,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "virginia_ham", "serving_size": "extra", "price": 8.95,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "virginia_ham", "serving_size": "regular", "price": 10.45,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "smoked_turkey", "serving_size": "light", "price": 8.95,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "smoked_turkey", "serving_size": "extra", "price": 8.95,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "smoked_turkey", "serving_size": "regular", "price": 10.45,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "roast_beef", "serving_size": "light", "price": 8.95,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "roast_beef", "serving_size": "extra", "price": 8.95,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "roast_beef", "serving_size": "regular", "price": 10.45,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "buffalo_chicken", "serving_size": "light", "price": 8.95,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "buffalo_chicken", "serving_size": "extra", "price": 8.95,
+         "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "buffalo_chicken", "serving_size": "regular", "price": 10.45,
+            "ingredient_category_id": "protein", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "artichoke_hearts", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "artichoke_hearts", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "artichoke_hearts", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "cooked_spinach", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "cooked_spinach", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "cooked_spinach", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "sauteed onions", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "sauteed onions", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "sauteed onions", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "red_onion", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "red_onion", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "red_onion", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "cucumber", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "cucumber", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "cucumber", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "roasted_red_peppers", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "roasted_red_peppers", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "roasted_red_peppers", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "raw_spinach", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "raw_spinach", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "raw_spinach", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "mushrooms", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "mushrooms", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "mushrooms", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "sauteed_garlic", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "sauteed_garlic", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "sauteed_garlic", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "olives", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "olives", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "olives", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "banana_pepper", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "banana_pepper", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "banana_pepper", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "bernaise", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "bernaise", "serving_size": "extra", "price": 0.99,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "bernaise", "serving_size": "regular", "price": 1.98,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "chimichuri", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "chimichuri", "serving_size": "extra", "price": 0.99,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "chimichuri", "serving_size": "regular", "price": 1.98,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "balsamic_glaze", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "balsamic_glaze", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "balsamic_glaze", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "ranch", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "ranch", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "ranch", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "peanut_sauce", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "peanut_sauce", "serving_size": "extra", "price": 0.99,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "peanut_sauce", "serving_size": "regular", "price": 1.98,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "onion_vinegarette", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "onion_vinegarette", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "onion_vinegarette", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "steak_diane", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "steak_diane", "serving_size": "extra", "price": 0.99,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "steak_diane", "serving_size": "regular", "price": 1.98,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "blue_cheese", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "blue_cheese", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "blue_cheese", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "caesar", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "caesar", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "caesar", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "honey_mustard", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "honey_mustard", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "honey_mustard", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "oil_vinaigrette", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "oil_vinaigrette", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "oil_vinaigrette", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "hot_sauce", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "hot_sauce", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "hot_sauce", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "blue_cheese_crumble", "serving_size": "light", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "blue_cheese_crumble", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "blue_cheese_crumble", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "gourmet_herb_cheese", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "gourmet_herb_cheese", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "gourmet_herb_cheese", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "triple_creme_brie", "serving_size": "light", "price": 0.75,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "triple_creme_brie", "serving_size": "extra", "price": 0.75,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "triple_creme_brie", "serving_size": "regular", "price": 1.50,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "sharp_cheddar", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "sharp_cheddar", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "sharp_cheddar", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "swiss", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "swiss", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "swiss", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "smoked_gouda", "serving_size": "light", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "smoked_gouda", "serving_size": "extra", "price": 0.0,
+         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "smoked_gouda", "serving_size": "regular", "price": 0.0,
+            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+
+        {"id": "raspberries", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "raspberries", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "raspberries", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "blueberries", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "blueberries", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "blueberries", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "bananas", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "bananas", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "bananas", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "strawberry_slices", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "strawberry_slices", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "strawberry_slices", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "apple_slices", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "apple_slices", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "apple_slices", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "toasted_coconut", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "toasted_coconut", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "toasted_coconut", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "milk_chocolate", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "milk_chocolate", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "milk_chocolate", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "white_chocolate", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "white_chocolate", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "white_chocolate", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "dark_chocolate", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "dark_chocolate", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "dark_chocolate", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "oreo_crumble", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "oreo_crumble", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "oreo_crumble", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "homemade_whipped_cream", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "homemade_whipped_cream", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "homemade_whipped_cream", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "nutella", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "nutella", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "nutella", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "honey", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "honey", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "honey", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "cobbler_crumble", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "cobbler_crumble", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "cobbler_crumble", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "lemon_curd", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "lemon_curd", "serving_size": "regular", "price": 1.98,
+         "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+        {"id": "lemon_curd", "serving_size": "extra", "price": 0.99,
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True}
+    ]
+
+    for ingredient in ingredients_to_update:
+        same_serving_size = []
+        same_serving_size.append(ingredient)
+        for other_ingredient in ingredients_to_update:
+            if other_ingredient["id"] == ingredient["id"] and other_ingredient["serving_size"] != ingredient["serving_size"]:
+                same_serving_size.append(other_ingredient)
+
+        ingredient_existence = db.session.query(Ingredient).filter(
+            Ingredient.id == ingredient["id"]).first()
+        if not ingredient_existence:
+            new_ingredient = Ingredient(id=ingredient["id"], ingredient_category_id=ingredient["ingredient_category_id"],
+                                        ingredient_flavor_profile_id=ingredient["ingredient_flavor_profile_id"], is_active=True)
+            db.session.add(new_ingredient)
+            for ingredient in same_serving_size:
+                new_ingredient_serving_size_price = Ingredient_Serving_Size_Price(
+                    ingredient_id=ingredient["id"], ingredient_category_id=ingredient["ingredient_category_id"], serving_size=ingredient["serving_size"], price=ingredient["price"])
+                db.session.add(new_ingredient_serving_size_price)
+        else:
+            ingredient_existence.is_active = True
+            ingredient_serving_size_prices = db.session.query(Ingredient_Serving_Size_Price).filter(
+                Ingredient_Serving_Size_Price.ingredient_id == ingredient["id"]).all()
+            for ingredient_serving_size_price in ingredient_serving_size_prices:
+                for ingredient in same_serving_size:
+                    if ingredient_serving_size_price.ingredient_id == ingredient["id"] and ingredient_serving_size_price.serving_size == ingredient["serving_size"] and ingredient_serving_size_price.price != ingredient["price"]:
+                        ingredient_serving_size_price.price = ingredient["price"]
+        db.session.commit()
+
+
+update_ingredients()

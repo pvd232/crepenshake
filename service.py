@@ -32,7 +32,7 @@ def change_case(str):
 
 username = "postgres"
 password = "Iqopaogh23!"
-connection_string_beginning = "postgres://"
+connection_string_beginning = "postgresql+psycopg2://"
 connection_string_end = "@localhost:5432/crepenshakedb"
 connection_string = connection_string_beginning + \
     username + ":" + password + connection_string_end
