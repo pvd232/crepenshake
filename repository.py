@@ -15,7 +15,9 @@ class Ingredient_Repository(object):
     def get_ingredient_prices(self, session):
         ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price, p.serving_size FROM ingredient i JOIN ingredient_serving_size_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
                                             {"param": "regular"})
-        return ingredient_prices
+        new_ingredient_prices = session.query(Ingredient.id, Ingredient.ingredient_category_id, Ingredient_Serving_Size_Price.price, Ingredient_Serving_Size_Price.serving_size).select_from(
+            Ingredient).join(Ingredient_Serving_Size_Price, Ingredient.id == Ingredient_Serving_Size_Price.ingredient_id).filter(Ingredient.is_active == True, Ingredient_Serving_Size_Price.serving_size == "regular")
+        return new_ingredient_prices
 
     def get_savory_ingredient_categories(self, session):
         ingredient_categories = session.query(
@@ -150,7 +152,7 @@ class Order_Repository(object):
 class Drink_Repository(object):
 
     def get_drinks(self, session, requested_drink_category_id):
-        drinks = session.query(Drink_Name_Serving_Size_Price).filter(
+        drinks = session.query(Drink_Name_Serving_Size_Price.id,Drink_Name_Serving_Size_Price.name, Drink_Name_Serving_Size_Price.drink_category_id, Drink_Name_Serving_Size_Price.serving_size,Drink_Name_Serving_Size_Price.price, Drink.description).select_from(Drink_Name_Serving_Size_Price).join(Drink, Drink_Name_Serving_Size_Price.id == Drink.id).filter(
             Drink_Name_Serving_Size_Price.drink_category_id == requested_drink_category_id)
         return drinks
 
@@ -196,13 +198,13 @@ class Side_Repository(object):
 
 class Menu_Crepe_Repository(object):
     def get_sweet_menu_crepes(self, session):
-        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id, Crepe.origination_id).join(Crepe).filter(
-            Crepe.flavor_profile_id == 'sweet')
+        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Menu_Crepe.description, Crepe.flavor_profile_id, Crepe.origination_id).join(Crepe).filter(
+            Crepe.flavor_profile_id == 'sweet', Menu_Crepe.is_active == True)
         return menu_crepes
 
     def get_savory_menu_crepes(self, session):
-        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Crepe.flavor_profile_id, Crepe.origination_id).join(Crepe).filter(
-            Crepe.flavor_profile_id == 'savory')
+        menu_crepes = session.query(Menu_Crepe.crepe_id, Menu_Crepe.name, Menu_Crepe.price, Menu_Crepe.description, Crepe.flavor_profile_id, Crepe.origination_id).join(Crepe).filter(
+            Crepe.flavor_profile_id == 'savory', Menu_Crepe.is_active == True)
         return menu_crepes
 
 

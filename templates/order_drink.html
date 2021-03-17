@@ -93,11 +93,13 @@
 	<div class="card-deck" id='{{drink_categories[j].id}}'>
 		{% for i in range(milkshakes|length) %}
 		<div class="card" id='{{milkshakes[i].id}}' data-drinks='{{milkshakes[i]|tojson}}'>
-			<div  ></div>
 			<img src='{{"../static/images/" + milkshakes[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 			<div class="card-body">
 				<h5 class="card-title">{{milkshakes[i].name}}</h5>
 				<p class="card-text">{{milkshakes[i].price}}</p>
+				{% if milkshakes[i].description != None %}
+					<p class="description">{{milkshakes[i].description}}</p>
+				{% endif %}
 			</div>
 		</div>
 		{% endfor %}

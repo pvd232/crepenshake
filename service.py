@@ -47,6 +47,8 @@ session_factory = sessionmaker(bind=drink_engine)
 
 # create a Session
 Session = scoped_session(session_factory)
+
+
 @contextmanager
 def session_scope():
     session = Session()
@@ -307,7 +309,7 @@ class Drink_Service(object):
         response = []
         with session_scope() as session:
             for drink in Drink_Repository().get_drinks(session, requested_drink_category_id):
-                drink_domain = Drink_Domain(drink_object=drink)
+                drink_domain = Drink_Domain(drink_price_object=drink)
                 response.append(drink_domain)
             return response
 

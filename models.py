@@ -123,10 +123,10 @@ class Menu_Crepe(db.Model):
     __tablename__ = 'menu_crepe'
     crepe_id = db.Column(UUID(as_uuid=True), db.ForeignKey('crepe.id'), primary_key=True,
                          nullable=False)
-
+    description = name = db.Column(db.String(180), nullable=False, default="")
     name = db.Column(db.String(80), nullable=False)
-
     price = db.Column(db.Float(), nullable=False)
+    is_active = db.Column(db.Boolean(), default=False, nullable=False)
 
     @property
     def serialize(self):
@@ -362,6 +362,7 @@ class Drink(db.Model):
     name = db.Column(db.String(80), unique=True, nullable=False)
     drink_category_id = db.Column(db.String(80), db.ForeignKey(
         'drink_category.id'), nullable=False)
+    description =  db.Column(db.String(180), nullable=True, unique=True)
     order_coffee = relationship('Order_Coffee', lazy=True)
     order_drink = relationship('Order_Drink', lazy=True)
 
@@ -1097,6 +1098,7 @@ def create_drink_name_serving_size_price():
         for j in range(len(serialized_drinks)):
             item = milkshake_items[i]
             name = item['name']
+            
             if name == serialized_drinks[j]['name']:
                 id = serialized_drinks[j]['id']
                 drink_category_id = 'milkshake'
@@ -1287,9 +1289,6 @@ def instantiate_db_connection():
     create_everything()
 
 
-instantiate_db_connection()
-
-
 def update_ingredients():
     ingredients_to_update = [
         {"id": "steak", "serving_size": "light", "price": 11.50,
@@ -1418,131 +1417,131 @@ def update_ingredients():
         {"id": "banana_pepper", "serving_size": "regular", "price": 0.0,
             "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
-        {"id": "bernaise", "serving_size": "light", "price": 0.99,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "bernaise", "serving_size": "extra", "price": 0.99,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "bernaise", "serving_size": "regular", "price": 1.98,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "bérnaise", "serving_size": "light", "price": 0.99,
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "bérnaise", "serving_size": "extra", "price": 0.99,
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
+        {"id": "bérnaise", "serving_size": "regular", "price": 1.98,
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "chimichuri", "serving_size": "light", "price": 0.99,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "chimichuri", "serving_size": "extra", "price": 0.99,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "chimichuri", "serving_size": "regular", "price": 1.98,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "balsamic_glaze", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "balsamic_glaze", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "balsamic_glaze", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "ranch", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "ranch", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "ranch", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "peanut_sauce", "serving_size": "light", "price": 0.99,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "peanut_sauce", "serving_size": "extra", "price": 0.99,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "peanut_sauce", "serving_size": "regular", "price": 1.98,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "onion_vinegarette", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "onion_vinegarette", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "onion_vinegarette", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "steak_diane", "serving_size": "light", "price": 0.99,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "steak_diane", "serving_size": "extra", "price": 0.99,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "steak_diane", "serving_size": "regular", "price": 1.98,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "blue_cheese", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "blue_cheese", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "blue_cheese", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "caesar", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "caesar", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "caesar", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "honey_mustard", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "honey_mustard", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "honey_mustard", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "oil_vinaigrette", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "oil_vinaigrette", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "oil_vinaigrette", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "hot_sauce", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "hot_sauce", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "hot_sauce", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "blue_cheese_crumble", "serving_size": "light", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "blue_cheese_crumble", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "blue_cheese_crumble", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "gourmet_herb_cheese", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "gourmet_herb_cheese", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "gourmet_herb_cheese", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "triple_creme_brie", "serving_size": "light", "price": 0.75,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "triple_creme_brie", "serving_size": "extra", "price": 0.75,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "triple_creme_brie", "serving_size": "regular", "price": 1.50,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "sharp_cheddar", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "sharp_cheddar", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "sharp_cheddar", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "swiss", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "swiss", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "swiss", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "smoked_gouda", "serving_size": "light", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "smoked_gouda", "serving_size": "extra", "price": 0.0,
-         "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+         "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "smoked_gouda", "serving_size": "regular", "price": 0.0,
-            "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
+            "ingredient_category_id": "cheese", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "raspberries", "serving_size": "light", "price": 0.99,
             "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
@@ -1574,6 +1573,7 @@ def update_ingredients():
          "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
         {"id": "apple_slices", "serving_size": "extra", "price": 0.99,
             "ingredient_category_id": "fruit", "ingredient_flavor_profile_id": "sweet", "is_active": True},
+
         {"id": "toasted_coconut", "serving_size": "light", "price": 0.99,
             "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
         {"id": "toasted_coconut", "serving_size": "regular", "price": 1.98,
@@ -1633,9 +1633,8 @@ def update_ingredients():
         {"id": "lemon_curd", "serving_size": "regular", "price": 1.98,
          "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
         {"id": "lemon_curd", "serving_size": "extra", "price": 0.99,
-            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True}
+            "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
     ]
-
     for ingredient in ingredients_to_update:
         same_serving_size = []
         same_serving_size.append(ingredient)
@@ -1663,5 +1662,111 @@ def update_ingredients():
                         ingredient_serving_size_price.price = ingredient["price"]
         db.session.commit()
 
+def update_menu_crepes():
+    old_menu_crepes = db.session.query(Menu_Crepe).all()
 
+    new_savory_menu_crepes = [ 
+    {"name": "breakfast_special", "description":"Three Eggs, one Meat (Ham or Bacon), Cheese, three Vegetables",  "flavor_profile_id": "savory", "price": 8.95, "is_active": True, "was_added": False},
+    {"name": "big_blue", "description":"Steak Strips, Sautéed Onions, Mushrooms, Garlic, Blue Cheese Crumble, topped with Diane Sauce",  "flavor_profile_id": "savory", "price": 12.95, "is_active": True, "was_added": False},
+    {"name": "grannys_best", "description":"Granny Smith Apple Slices, Brie, Smoked Bacon, Cobbler Crumbles, Balsamic Glaze",  "flavor_profile_id": "savory", "price": 10.95, "is_active": True, "was_added": False},
+    {"name": "patars_revenge", "description":"Chicken Breast, Sauteed Mushrooms/Onions, Gourmet Cheese, Roasted Peppers topped with Peanut Sauce (Made in House)",  "flavor_profile_id": "savory", "price": 10.95, "is_active": True, "was_added": False},
+    {"name": "2021", "description":"Fajita Chicken, Onions, Red Peppers, Spinach, Mushrooms, Brie, Chimichurri Sauce",  "flavor_profile_id": "savory", "price": 10.95, "is_active": True, "was_added": False},
+    {"name": "roasted", "description":"Fire Roasted Red Peppers, Sautéed Mushrooms, Fresh Spinach, Brie Cheese",  "flavor_profile_id": "savory", "price": 9.95, "is_active": True, "was_added": False},
+    {"name": "the_greek_god", "description":"Chicken, Hummus, Feta, Olives, Cucumber, Tomatoes, Spinach, Olive Oil, Balsamic Vinegar",  "flavor_profile_id": "savory", "price": 9.95, "is_active": True, "was_added": False},
+    {"name": "the_green_goddess", "description":"Blackened Tofu, Hummus, Feta, Olives, Cucumber, Tomatoes, Spinach, Olive Oil, Balsamic V.",  "flavor_profile_id": "savory", "price": 9.95, "is_active": True, "was_added": False},
+    {"name": "figgy_piggy", "description":"Bacon, Fig Jam, Brie Cheese, Walnuts, Balsamic Glaze",  "flavor_profile_id": "savory", "price": 9.95, "is_active": True, "was_added": False},
+    {"name": "fly_eagle_fly", "description":"Chichen 2x, Roast Beef, Turkey, Cheese, Mushrooms, Peppers, Onions, Tomatoes, Cajun Remoulade",  "flavor_profile_id": "savory", "price": 10.95, "is_active": True, "was_added": False},
+    {"name": "caesar", "description":"Chicken 2x, Cheese, Red Onions, Romaine Lettuce, Tomatoes, Banana Peppers, Caesar Sauce, Oil/Vin.",  "flavor_profile_id": "savory", "price": 8.95, "is_active": True, "was_added": False},
+    {"name": "hotty_tomati", "description":"Buffalo Chicken 2x, Cheese, Tomatoes, Romaine Lettuce, Ranch, Hot Sauce",  "flavor_profile_id": "savory", "price": 8.95, "is_active": True, "was_added": False},
+    {"name": "crepenator", "description":"Turkey, Roast Beef, Bacon, Cheese, Mushrooms, Peppers, Onion, Spinach, Lettuce, Ranch, Cajun, Hot",  "flavor_profile_id": "savory", "price": 11.95, "is_active": True, "was_added": False}
+    ]   
+
+    new_sweet_menu_crepes = [ 
+    {"name": "r_k_special", "description":"Oreo Crumble, Strawberry, Banana smothered with Nutella",  "flavor_profile_id": "sweet", "price": 10.95, "is_active": True, "was_added": False},
+    {"name": "old_blue_eyes", "description":"New York Cheesecake rolled in Cinnamon Sugar, drizzled with Rich Caramel",  "flavor_profile_id": "sweet", "price": 9.95, "is_active": True, "was_added": False},
+    {"name": "morning_toast", "description":"Cinnamon, Sugar, Butter",  "flavor_profile_id": "sweet", "price": 7.50, "is_active": True, "was_added": False},
+    {"name": "bodacious_blue_berry", "description":"Rich Lemon Curd Custard with Fresh Blueberries and Whipped Cream. Blueberry lovers beware",  "flavor_profile_id": "sweet", "price": 10.95, "is_active": True, "was_added": False},
+    {"name": "caramel_apple", "description":"Apple slices, Caramel drizzle, and Whipped Cream",  "flavor_profile_id": "sweet", "price": 9.95, "is_active": True, "was_added": False},
+    ]
+
+
+    for old_menu_crepe in old_menu_crepes:
+        for new_menu_crepe in new_savory_menu_crepes:
+            if old_menu_crepe.name == new_menu_crepe["name"]:
+                old_menu_crepe.description = new_menu_crepe["description"]
+                old_menu_crepe.price = new_menu_crepe["price"]
+                old_menu_crepe.is_active = new_menu_crepe["is_active"]
+                new_menu_crepe["was_added"] = True
+        for new_menu_crepe in new_sweet_menu_crepes:
+            if old_menu_crepe.name == new_menu_crepe["name"]:
+                old_menu_crepe.description = new_menu_crepe["description"]
+                old_menu_crepe.price = new_menu_crepe["price"]
+                old_menu_crepe.is_active = new_menu_crepe["is_active"]
+                new_menu_crepe["was_added"] = True
+
+    
+    for new_menu_crepe in new_savory_menu_crepes:
+        if new_menu_crepe["was_added"] == False:
+            new_crepe_id = uuid.uuid4()
+            new_crepe = Crepe(id=new_crepe_id, origination_id="menu", flavor_profile_id = new_menu_crepe["flavor_profile_id"])
+            db.session.add(new_crepe)
+            new_menu_crepe_to_add = Menu_Crepe(crepe_id = new_crepe_id, description=new_menu_crepe["description"], name = new_menu_crepe["name"], price = new_menu_crepe["price"], is_active = True )
+            db.session.add(new_menu_crepe_to_add)
+
+    for new_menu_crepe in new_sweet_menu_crepes:
+        if new_menu_crepe["was_added"] == False:
+            new_crepe_id = uuid.uuid4()
+            new_crepe = Crepe(id=new_crepe_id, origination_id="menu", flavor_profile_id = new_menu_crepe["flavor_profile_id"])
+            db.session.add(new_crepe)
+            new_menu_crepe_to_add = Menu_Crepe(crepe_id = new_crepe_id, description=new_menu_crepe["description"], name = new_menu_crepe["name"], price = new_menu_crepe["price"], is_active = True )
+            db.session.add(new_menu_crepe_to_add)
+
+    db.session.commit()
+
+def update_milkshakes():
+    new_milkshakes = [
+        {"name": "cookie_monster", "drink_category_id": "milkshake", "is_active":True, "description": "Vanilla shake with cookie crumble frosted rim, topped with an ice cream sandwich, whipped cream, chocolate drizzle", "was_added": False, "price": 10.95},
+        {"name": "almond_joy", "drink_category_id": "milkshake", "is_active":True, "description": "Coconut shake with frosted rim, almond joy chunks + toasted coconut flakes, topped with whipped cream + chocolate drizzle", "was_added": False, "price": 14.95},
+        {"name": "mudslide", "drink_category_id": "milkshake", "is_active":True, "description": "French Vanilla shake with rich, creamy hot fudge drippings, blended with 0ABV Irish crème, topped with whipped cream + chocolate drizzle", "was_added": False, "price": 10.95},
+        {"name": "cake_shake", "drink_category_id": "milkshake", "is_active":True, "description": "Premium Vanilla shake topped with frosted rim topped with the cake of the week, rainbow sprinkles, and whipped cream", "was_added": False, "price": 13.95},
+        {"name": "ms._nutella", "drink_category_id": "milkshake", "is_active":True, "description": "Rich Nutella ice cream with raspberries, whipped cream, and raspberry drizzle", "was_added": False, "price": 10.95},
+        {"name": "chocolate_joy", "drink_category_id": "milkshake", "is_active":True, "description": "Rich chocolate shake topped with a fudge brownie, icing rim coated with chocolate sprinkles, whipped cream and chocolate drizzle", "was_added": False, "price": 10.95},
+        {"name": "the_milky_panda", "drink_category_id": "milkshake", "is_active":True, "description": "Thick, creamy Oreo shake, an oreo + icing rim, topped with an oreo ice cream sandwich, whipped cream, oreo crumble", "was_added": False, "price": 10.95},
+        {"name": "vanilla", "drink_category_id": "milkshake", "is_active":True,  "was_added": False, "price": 7.95},
+        {"name": "chocolate", "drink_category_id": "milkshake", "is_active":True,  "was_added": False, "price": 7.95},
+        {"name": "strawberry", "drink_category_id": "milkshake", "is_active":True, "was_added": False, "price": 7.95},
+        {"name": "cookies_&_cream", "drink_category_id": "milkshake", "is_active":True,  "was_added": False, "price": 7.95},
+        {"name": "cake_batter", "drink_category_id": "milkshake", "is_active":True,  "was_added": False, "price": 7.95}
+    ]
+    old_milkshakes = db.session.query(Drink).filter(Drink.drink_category_id == "milkshake")
+    old_milkshake_prices = db.session.query(Drink_Name_Serving_Size_Price).filter(Drink_Name_Serving_Size_Price.drink_category_id == 'milkshake').all()
+    for old_milkshake in old_milkshakes:
+        milk_shake_price = ''
+        for old_milkshake_price in old_milkshake_prices:
+            if old_milkshake_price.name == old_milkshake.name:
+                milk_shake_price = old_milkshake_price
+                break
+        for new_milkshake in new_milkshakes:
+            if old_milkshake.name == new_milkshake["name"]:
+                if 'description' in new_milkshake.keys():
+                    old_milkshake.description = new_milkshake["description"]
+                old_milkshake.is_active = new_milkshake["is_active"]
+                old_milkshake_price.price = new_milkshake["price"]
+                new_milkshake["was_added"] = True
+
+    for new_milkshake in new_milkshakes:
+        if new_milkshake["was_added"] == False:
+            new_drink_id = uuid.uuid4()
+            if 'description' in new_milkshake.keys():
+                new_drink = Drink(id=new_drink_id, name = new_milkshake["name"], drink_category_id = new_milkshake["drink_category_id"], description = new_milkshake["description"] )
+            else:
+                new_drink = Drink(id=new_drink_id, name = new_milkshake["name"], drink_category_id = new_milkshake["drink_category_id"])
+            new_drink_price = Drink_Name_Serving_Size_Price(id = new_drink_id, name = new_milkshake["name"], drink_category_id = new_milkshake["drink_category_id"], serving_size = '16oz', price = new_milkshake["price"])
+            db.session.add(new_drink)
+            db.session.add(new_drink_price)
+    db.session.commit()
+
+instantiate_db_connection()
 update_ingredients()
+update_menu_crepes()
+update_milkshakes()

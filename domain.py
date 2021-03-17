@@ -57,6 +57,7 @@ class Crepe_Domain(object):
             self.id = crepe_json.id
             self.origination_id = crepe_json.orgination_id
             self.flavor_profile_id = crepe_json.flavor_profile_id
+
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
         attributes = list(self.__dict__.values())
@@ -456,12 +457,14 @@ class Menu_Crepe_Domain(object):
             self.flavor_profile_id = menu_crepe_json["flavor"]
             self.origination_id = menu_crepe_json["origination"]
             self.quantity = menu_crepe_json["quantity"]
+            self.description = menu_crepe_json["description"]
         elif menu_crepe_object:
             self.crepe_id = menu_crepe_object.crepe_id
             self.name = menu_crepe_object.name
             self.price = menu_crepe_object.price
             self.flavor_profile_id = menu_crepe_object.flavor_profile_id
             self.origination_id = menu_crepe_object.origination_id
+            self.description = menu_crepe_object.description
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
@@ -540,7 +543,7 @@ class Drink_Category_Domain(object):
 
 
 class Drink_Domain(object):
-    def __init__(self, drink_json=None, drink_object=None):
+    def __init__(self, drink_json=None, drink_object=None, drink_price_object=None):
         if (drink_json):
             self.id = drink_json['id']
             self.name = drink_json["name"]
@@ -555,6 +558,16 @@ class Drink_Domain(object):
             self.price = drink_object.price
             self.serving_size = drink_object.serving_size
             self.quantity = 1
+        elif drink_price_object:
+            self.id = drink_price_object.id
+            self.name = drink_price_object.name
+            self.drink_category_id = drink_price_object.drink_category_id
+            self.price = drink_price_object.price
+            self.serving_size = drink_price_object.serving_size
+            self.quantity = 1
+            self.description = drink_price_object.description
+        if self.description != None:
+            self.gourmet_milkshake=True
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())

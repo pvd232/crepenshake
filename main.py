@@ -7,8 +7,10 @@ from service import Ingredient_Service, Order_Service, Drink_Service, Side_Servi
 from models import app
 from twilio.rest import Client
 
-# stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
-stripe.api_key = "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"
+stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
+# stripe.api_key = "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"
+
+
 @app.route("/")
 def home():
     # only necessary when deploying for the first time
@@ -93,6 +95,8 @@ def order_drink(editOrder=None):
     ingredient_service = Ingredient_Service()
 
     milkshakes = [x.serialize() for x in drink_service.get_drinks('milkshake')]
+    # for some reason almond joy is the list item, but because its a gourmet shake im putting it in the front and swapping its position with one of the regular milkshakes which is in position 6
+    milkshakes[-1], milkshakes[6] = milkshakes[6], milkshakes[-1]
     bottled_drinks = [x.serialize()
                       for x in drink_service.get_drinks('bottled')]
 

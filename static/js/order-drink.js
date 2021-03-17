@@ -687,6 +687,7 @@ function mobileRendering () {
 	const cardTitleElements = document.getElementsByClassName('card-title');
 	const cardTextElements = document.getElementsByClassName('card-text');
 	const cardImgTopElements = document.getElementsByClassName('card-img-top');
+	const drinkDescriptions = document.getElementsByClassName('description');
 	const cardData = document.getElementsByClassName('card');
 
 	$('#crepeImg').css('margin-left', '0px');
@@ -699,20 +700,20 @@ function mobileRendering () {
 	for (var i = 0; i < cardTitleElements.length; i++) {
 		cardTitleValues.push(cardTitleElements[i].innerHTML);
 	}
-
 	const constCardTitleValues = [...cardTitleValues];
+
 	const cardTextValues = new Array();
 	for (var i = 0; i < cardTextElements.length; i++) {
 		cardTextValues.push(cardTextElements[i].innerHTML);
 	}
-
 	const constCardTextValues = [...cardTextValues];
+
 	var cardImgSrcValues = new Array();
 	for (var i = 0; i < cardImgTopElements.length; i++) {
 		cardImgSrcValues.push(cardImgTopElements[i].src);
 	}
-
 	const constCardImgSrcValues = [...cardImgSrcValues];
+
 	const cardDeckElementsLength = cardDeckElements.length;
 
 	const constCardData = new Array();
@@ -720,6 +721,13 @@ function mobileRendering () {
 		const clone = cardData[i].cloneNode(true);
 		constCardData.push(clone);
 	}
+
+	const staticDrinkDescriptions = new Array();
+	for (var i = 0; i < drinkDescriptions.length; i++) {
+		const clone = drinkDescriptions[i].cloneNode(true);
+		staticDrinkDescriptions.push(clone);
+	}
+
 
 	const cardDeckChildrenLength = new Array();
 	const constCardDeckNodes = new Array();
@@ -741,7 +749,7 @@ function mobileRendering () {
 	}
 
 	var counter = 0;
-
+	var descriptionIndex = -1
 	for (var i = 0; i < cardDeckElementsLength; i++) {
 		const row = document.createElement('div');
 		row.setAttribute('class', 'row');
@@ -779,26 +787,64 @@ function mobileRendering () {
 				listValue.setAttribute('id', data.id);
 			}
 			listValue.setAttribute('data-drinks', jsonData);
+			if (data.description) {
+				descriptionIndex += 1
+				console.log("descriptionIndex", descriptionIndex)
+				
+				const drinkName = String(constCardTitleValues[k]);
+				const drinkDescriptionElement = staticDrinkDescriptions[descriptionIndex];
+				drinkDescriptionElement.setAttribute('style', 'font-size: .75rem')
+				// drinkDescriptionElement.setAttribute('style', 'display:none')
+				console.log("drinkDescriptionElement", drinkDescriptionElement)
+				
+				const drinkPrice = String(constCardTextValues[k])
+				const container = document.createElement('container');
+				container.setAttribute('style', 'width:min-content;');
 
-			const string1 = String(constCardTitleValues[k]);
-			const string2 = String(constCardTextValues[k]);
+				const listValueHeader = document.createElement('h6');
+				listValueHeader.setAttribute('style', 'margin-bottom: 20px; margin-top: auto')
+				const listValueBodyText = document.createElement('p');
 
-			const container = document.createElement('container');
-			container.setAttribute('style', 'width:30%');
+				listValueBodyText.innerHTML = drinkPrice;
+				listValueHeader.innerHTML = drinkName + '<br>';
+				
+				const descriptionContainer = document.createElement('container')
+				// descriptionContainer.setAttribute('class', 'container4')
 
-			const listValueHeader = document.createElement('h5');
-			const listValueBodyText = document.createElement('p');
-			if (constCardTextValues[k]) {
-				listValueBodyText.innerHTML = string2;
-				listValueHeader.innerHTML = string1 + '<br>';
+				// const descriptionGridContainer = document.createElement('div')
+				// descriptionGridContainer.setAttribute('class', 'grid-container')
+				descriptionContainer.setAttribute('style', 'padding-top: 20px; padding-bottom:20px; margin-left:10px; margin-right:5px;  align-items:center;  align-self: center; width:58% ')
+				// descriptionGridContainer.appendChild(drinkDescriptionElement)
+				descriptionContainer.appendChild(drinkDescriptionElement)
+
 				container.appendChild(listValueHeader);
 				container.appendChild(listValueBodyText);
 				listValue.appendChild(container);
-			} else {
-				listValueHeader.innerHTML = string1;
-				container.appendChild(listValueHeader);
-				listValue.appendChild(container);
+				listValue.appendChild(descriptionContainer)
 			}
+			else {
+				const drinkName = String(constCardTitleValues[k]);
+				const drinkPrice = String(constCardTextValues[k]);
+	
+				const container = document.createElement('container');
+				container.setAttribute('style', 'width:30%');
+	
+				const listValueHeader = document.createElement('h5');
+				const listValueBodyText = document.createElement('p');
+				if (constCardTextValues[k]) {
+					listValueBodyText.innerHTML = drinkPrice;
+					listValueHeader.innerHTML = drinkName + '<br>';
+					container.appendChild(listValueHeader);
+					container.appendChild(listValueBodyText);
+					listValue.appendChild(container);
+				} else {
+					listValueHeader.innerHTML = drinkName;
+					container.appendChild(listValueHeader);
+					listValue.appendChild(container);
+				}
+			}
+			
+	
 			const imageParent = document.createElement('div');
 			imageParent.setAttribute('class', 'image-parent');
 			const img = document.createElement('img');
@@ -838,6 +884,13 @@ function mobileRendering () {
 			selectedItemCategory === 'milkshake' ||
 			selectedItemCategory === 'non-coffee'
 		) {
+			const drinkData = JSON.parse($('.list-group-item').attr('data-drinks'))
+			if (drinkData.gourmet_milkshake === True){
+				console.log('hey')
+				// $(
+				// 	`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
+				// ).insertAfter($(this).find('container'));
+			}
 			$(
 				`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
 			).insertAfter($(this).find('container'));

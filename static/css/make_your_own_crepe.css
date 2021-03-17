@@ -21,7 +21,11 @@
   height: 220px !important;
   object-fit: cover;
 }
-
+.non-modal #milkshake .card-img-top {
+  width: 100% !important;
+  height: 380px !important;
+  object-fit: cover;
+}
 .non-modal .image-parent {
   max-width: 25%;
 }
@@ -108,6 +112,29 @@
   min-width: 200px !important;
   max-height: 400px !important;
   margin-bottom: 40px !important;
+}
+.non-modal #savory.card-deck .card {
+  max-width: 320px !important;
+  min-width: 300px !important;
+  max-height: 500px !important;
+  margin-bottom: 40px !important;
+}
+.non-modal #sweet.card-deck .card {
+  max-width: 320px !important;
+  min-width: 300px !important;
+  max-height: 500px !important;
+  margin-bottom: 40px !important;
+}
+.non-modal #milkshake.card-deck .card {
+  max-width: 340px !important;
+  min-width: 320px !important;
+  max-height: 600px !important;
+  margin-bottom: 40px !important;
+}
+.non-modal #milkshake .card-img-top {
+  width: 100% !important;
+  height: 380px !important;
+  object-fit: cover;
 }
 .non-modal .card-deck .card .description {
   margin-left: 11px;
