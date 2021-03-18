@@ -226,6 +226,7 @@ function pageLogic () {
 						senderElementClass === 'card-text' ||
 						senderElementClass === 'card-title' ||
 						senderElementClass === 'card-body' ||
+						senderElementClass === 'container4' ||
 						senderElementClass === 'card-img-top' ||
 						senderElementType === 'CONTAINER' ||
 						senderElementType === 'P' ||
@@ -234,6 +235,8 @@ function pageLogic () {
 					) {
 						const json = JSON.parse($(this).closest('.card, li').attr('data-drinks'));
 						const selectedItemCategory = $(this).closest('.card-deck, .list-group').attr('id');
+						
+
 						// check to see if the card is bottled or non-coffee or milkshake first because when you click on those cards, if they have already been selected you don't want to remove them
 						// these cards have counters so they will have fundamentally different logic from the rest of the cards which is why we want to evaluate them first and then apply other logical conditions after
 						// if you're clicking the card and it is a bottled drink or milkshake or non-coffee drink then by default you are adding the drink
@@ -242,7 +245,13 @@ function pageLogic () {
 							selectedItemCategory === 'non-coffee' ||
 							selectedItemCategory === 'milkshake'
 						) {
+							
+
 							const newDrink = userOrderDrink.changeDrinkQuantity(json, 'increase');
+							
+							
+							$(this).closest('.card, li').find('.description').hide();
+
 							$(this).closest('.card, li').find('.btn2').html(newDrink.quantity);
 							$(this).closest('.card, li').find('.btn2').show();
 							//after clicking the card show the + and - buttons
@@ -255,7 +264,6 @@ function pageLogic () {
 							userOrderDrink.removeDrink(json);
 							$(this).closest('.card, li').find('.btn2').hide();
 							$(this).closest('.card, li').find('.btn').toggle();
-
 							// if the card you removed was a coffee card
 							if (!userOrderDrink.checkIfCoffeeSelected()) {
 								// reactivate all the coffee cards
@@ -558,15 +566,17 @@ function pageLogic () {
 				.unbind('click')
 				.bind('click', function () {
 					const json = JSON.parse($(this).closest('.card, li').attr('data-drinks'));
-
 					userOrderDrink.changeDrinkQuantity(json, 'decrease');
 					const selectedDrink = userOrderDrink.findDrink(json);
 					if (selectedDrink.quantity <= 0) {
 						$(this).closest('.card, .list-group-item').find('.btn2').hide();
+						
 						$(this).closest('.card, .list-group-item').find('.btn2').html(selectedDrink.quantity);
 						userOrderDrink.removeDrink(json);
-						$(this).hide();
+						// idk why but relocating the .btn6 was the only way to hide it for the milshake minus button
+						$(this).closest('.card, .list-group-item').find('.btn6').hide();
 						$(this).closest('.card, .list-group-item').find('.btn7').hide();
+						$(this).closest('.card, li').find('.description').show();
 					} else {
 						$(this).closest('.card, .list-group-item').find('.btn2').html(selectedDrink.quantity);
 						$(this).closest('.card, .list-group-item').find('.btn2').show();
@@ -579,6 +589,8 @@ function pageLogic () {
 					const json = JSON.parse($(this).closest('.card, li').attr('data-drinks'));
 
 					userOrderDrink.changeDrinkQuantity(json, 'increase');
+					
+					
 					$(this)
 						.closest('.card, .list-group-item')
 						.find('.btn2')
@@ -778,6 +790,7 @@ function mobileRendering () {
 			listValue.setAttribute('style', 'width:100%');
 			const jsonData = constCardData[counter].getAttribute('data-drinks');
 			const data = JSON.parse(constCardData[counter].getAttribute('data-drinks'));
+			
 			if (data.coffee_syrup_flavor) {
 				listValue.setAttribute('id', data.coffee_syrup_flavor);
 			} else if (data.drink_category_id === 'coffee' || data.drink_category_id === 'non-coffee') {
@@ -789,13 +802,10 @@ function mobileRendering () {
 			listValue.setAttribute('data-drinks', jsonData);
 			if (data.description) {
 				descriptionIndex += 1
-				console.log("descriptionIndex", descriptionIndex)
 				
 				const drinkName = String(constCardTitleValues[k]);
 				const drinkDescriptionElement = staticDrinkDescriptions[descriptionIndex];
 				drinkDescriptionElement.setAttribute('style', 'font-size: .75rem')
-				// drinkDescriptionElement.setAttribute('style', 'display:none')
-				console.log("drinkDescriptionElement", drinkDescriptionElement)
 				
 				const drinkPrice = String(constCardTextValues[k])
 				const container = document.createElement('container');
@@ -809,12 +819,7 @@ function mobileRendering () {
 				listValueHeader.innerHTML = drinkName + '<br>';
 				
 				const descriptionContainer = document.createElement('container')
-				// descriptionContainer.setAttribute('class', 'container4')
-
-				// const descriptionGridContainer = document.createElement('div')
-				// descriptionGridContainer.setAttribute('class', 'grid-container')
 				descriptionContainer.setAttribute('style', 'padding-top: 20px; padding-bottom:20px; margin-left:10px; margin-right:5px;  align-items:center;  align-self: center; width:58% ')
-				// descriptionGridContainer.appendChild(drinkDescriptionElement)
 				descriptionContainer.appendChild(drinkDescriptionElement)
 
 				container.appendChild(listValueHeader);
@@ -829,7 +834,7 @@ function mobileRendering () {
 				const container = document.createElement('container');
 				container.setAttribute('style', 'width:30%');
 	
-				const listValueHeader = document.createElement('h5');
+				const listValueHeader = document.createElement('h6');
 				const listValueBodyText = document.createElement('p');
 				if (constCardTextValues[k]) {
 					listValueBodyText.innerHTML = drinkPrice;
@@ -872,6 +877,8 @@ function mobileRendering () {
 	}
 	$('.list-group-item').each(function () {
 		const selectedItemCategory = $(this).closest('.list-group').attr('id');
+		
+		
 		if (selectedItemCategory === 'syrup' || selectedItemCategory === 'coffee') {
 			$(`<div class='container3'>
 						<div class='grid-container' style='margin-top: 0px; margin-bottom:0px; align-items:center; grid-template-columns: auto auto auto; align-self: center;  grid-gap: 2px; display:grid;'>
@@ -884,13 +891,6 @@ function mobileRendering () {
 			selectedItemCategory === 'milkshake' ||
 			selectedItemCategory === 'non-coffee'
 		) {
-			const drinkData = JSON.parse($('.list-group-item').attr('data-drinks'))
-			if (drinkData.gourmet_milkshake === True){
-				console.log('hey')
-				// $(
-				// 	`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
-				// ).insertAfter($(this).find('container'));
-			}
 			$(
 				`<div class="container4"><div class="grid-container" style="margin-top: 0px; margin-bottom:0px;  align-items:center; grid-template-columns: auto auto auto; align-self: center; grid-gap: 2px; display:grid;"><button class="btn6">-</button><button class="btn2">1</button><button class="btn7">+</button></div></div>`
 			).insertAfter($(this).find('container'));

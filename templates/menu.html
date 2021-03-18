@@ -23,7 +23,7 @@
 			<div class="card-deck" style="border-bottom: 1px solid #dee1e3;" id='{{menu_items.savory_ingredient_prices_by_category[i].ingredient_category}}'>
 		{% for j in range(menu_items.savory_ingredient_prices_by_category[i].ingredients|length) %}
 			{% if menu_items.savory_ingredient_prices_by_category[i].ingredients[j].price > 0.0 and menu_items.savory_ingredient_prices_by_category[i].ingredient_category != "sauce"  %} 
-				<div class="card" id='{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}'>
+				<div class="card" id='{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}'  data-description='{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id|tojson}}'>
 					<img src='{{"../static/images/" + menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
@@ -32,7 +32,7 @@
 				</div>
 
 			{% else %}
-				<div class="card" id='{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}'>
+				<div class="card" id='{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}'  data-description='{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.savory_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
@@ -53,7 +53,7 @@
 			</div>
 			<div class="card-deck" id='{{menu_items.fruit_ingredients[0].ingredient_category_id}}'>
 				{% for i in range(menu_items.fruit_ingredients|length) %}
-					<div class="card" id='{{menu_items.fruit_ingredients[i].id}}'>
+					<div class="card" id='{{menu_items.fruit_ingredients[i].id}}'  data-description='{{menu_items.fruit_ingredients[i]|tojson}}' >
 						<img src='{{"../static/images/" + menu_items.fruit_ingredients[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 						<div class="card-body">
 							<h5 class="card-title">{{menu_items.fruit_ingredients[i].id}}</h5>
@@ -70,7 +70,7 @@
 			</div>
 			<div class="card-deck" id='{{menu_items.sweetness_ingredients[0].ingredient_category_id}}'>
 			{% for i in range(menu_items.sweetness_ingredients|length) %}
-					<div class="card" id='{{menu_items.sweetness_ingredients[i].id}}'>
+					<div class="card" id='{{menu_items.sweetness_ingredients[i].id}}'  data-description='{{menu_items.sweetness_ingredients[i]|tojson}}' >
 						<img src='{{"../static/images/" + menu_items.sweetness_ingredients[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 						<div class="card-body">
 							<h5 class="card-title">{{menu_items.sweetness_ingredients[i].id}}</h5>
@@ -87,7 +87,7 @@
 			</div>
 			<div class="card-deck" id='{{menu_items.coffee_drinks[0].drink_category_id}}'>
 			{% for i in range(menu_items.coffee_drinks|length) %}
-				<div class="card" id='{{menu_items.coffee_drinks[i].id}}'>
+				<div class="card" id='{{menu_items.coffee_drinks[i].id}}'  data-description='{{menu_items.coffee_drinks[i]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.coffee_drinks[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.coffee_drinks[i].serving_size + " " + menu_items.coffee_drinks[i].name}}</h5>
@@ -103,7 +103,7 @@
 			</div>
 			<div class="card-deck" id="milk">
 				{% for i in range(menu_items.milks|length) %}
-				<div class="card" id='{{menu_items.milks[i].id}}'>
+				<div class="card" id='{{menu_items.milks[i].id}}' data-description='{{menu_items.milks[i]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.milks[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.milks[i].id}}</h5>
@@ -124,7 +124,7 @@
 			</div>
 			<div class="card-deck" id="temperature">
 				{% for i in range(menu_items.temperatures|length) %}
-				<div class="card" id='{{menu_items.temperatures[i].id}}'>
+				<div class="card" id='{{menu_items.temperatures[i].id}}' data-description='{{menu_items.temperatures[i]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.temperatures[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.temperatures[i].id}}</h5>
@@ -143,7 +143,7 @@
 			</div>
 			<div class="card-deck" id="syrup">
 				{% for i in range(menu_items.syrups|length) %}
-				<div class="card" id='{{menu_items.syrups[i].id}}'>
+				<div class="card" id='{{menu_items.syrups[i].id}}' data-description='{{menu_items.syrups[i]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.syrups[i].id + "_" + "syrup" + ".png"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.syrups[i].id}}</h5>
@@ -162,11 +162,14 @@
 
 			<div class="card-deck" id='{{menu_items.milkshakes[0].drink_category_id}}'>
 				{% for i in range(menu_items.milkshakes|length) %}
-				<div class="card" id='{{menu_items.milkshakes[i].id}}' >
+				<div class="card" id='{{menu_items.milkshakes[i].id}}' data-description='{{menu_items.milkshakes[0]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.milkshakes[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.milkshakes[i].name}}</h5>
 						<p class="card-text">${{menu_items.milkshakes[i].price}}</p>
+						{% if menu_items.milkshakes[i].description != None %}
+							<p class="description">{{menu_items.milkshakes[i].description}}</p>
+						{% endif %}
 					</div>
 				</div>
 		{% endfor %}
@@ -179,7 +182,7 @@
 			</div>
 			<div class="card-deck" id='{{menu_items.ice_cream_bowls[0].side_name_id}}'>
 				{% for i in range(menu_items.ice_cream_bowls|length) %}
-				<div class="card" id='{{menu_items.ice_cream_bowls[i].serving_size}}' >
+				<div class="card" id='{{menu_items.ice_cream_bowls[i].serving_size}}' data-description='{{menu_items.ice_cream_bowls[i]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.ice_cream_bowls[0].flavor + "_" + menu_items.ice_cream_bowls[0].side_name_id + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.ice_cream_bowls[i].serving_size}}</h5>
@@ -196,7 +199,7 @@
 
 			<div class="card-deck" id='toppings'>
 				{% for i in range(menu_items.toppings|length) %}
-				<div class="card" id='{{menu_items.toppings[i].id}}' >
+				<div class="card" id='{{menu_items.toppings[i].id}}' data-description='{{menu_items.toppings[i]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.toppings[i].id + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.toppings[i].id}}</h5>
@@ -212,13 +215,14 @@
 			<div class="row" style="margin-right:10px">
 				<h3 class="head3" style="float: left">Savory Crepe Combos</h3>
 			</div>
-			<div class="card-deck" id='savory_menu_crepes'>
+			<div class="card-deck" id='savory'>
 				{% for i in range(menu_items.savory_menu_crepes|length) %}
-				<div class="card" id='{{menu_items.savory_menu_crepes[i].id}}' >
+				<div class="card" id='{{menu_items.savory_menu_crepes[i].id}}'  data-description='{{menu_items.savory_menu_crepes[i]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.savory_menu_crepes[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.savory_menu_crepes[i].name}}</h5>
 						<p class="card-text">{{menu_items.savory_menu_crepes[i].price}}</p>
+						<p class="description">{{menu_items.savory_menu_crepes[i].description}}</p>
 					</div>
 				</div>
 				{% endfor %}
@@ -228,13 +232,14 @@
 			<div class="row" style="margin-right:10px">
 				<h3 class="head3" style="float: left">Sweet Crepe Combos</h3>
 			</div>
-			<div class="card-deck" id='sweet_menu_crepes'>
+			<div class="card-deck" id='sweet'>
 				{% for i in range(menu_items.sweet_menu_crepes|length) %}
-				<div class="card" id='{{menu_items.sweet_menu_crepes[i].id}}' >
+				<div class="card" id='{{menu_items.sweet_menu_crepes[i].id}}' data-description='{{menu_items.sweet_menu_crepes[i]|tojson}}'>
 					<img src='{{"../static/images/" + menu_items.sweet_menu_crepes[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.sweet_menu_crepes[i].name}}</h5>
 						<p class="card-text">{{menu_items.sweet_menu_crepes[i].price}}</p>
+						<p class="description">{{menu_items.sweet_menu_crepes[i].description}}</p>
 					</div>
 				</div>
 				{% endfor %}

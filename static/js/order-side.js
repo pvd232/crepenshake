@@ -463,7 +463,7 @@ function mobileRendering () {
 			const container = document.createElement('container');
 			container.setAttribute('style', 'width:30%');
 
-			const listValueHeader = document.createElement('h5');
+			const listValueHeader = document.createElement('h6');
 			const listValueBodyText = document.createElement('p');
 			if (constCardTextValues[k]) {
 				listValueBodyText.innerHTML = string2;

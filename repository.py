@@ -13,20 +13,18 @@ class Ingredient_Repository(object):
         return ingredients
 
     def get_ingredient_prices(self, session):
-        ingredient_prices = session.execute("SELECT i.id, i.ingredient_category_id, p.price, p.serving_size FROM ingredient i JOIN ingredient_serving_size_price p on i.id = p.ingredient_id WHERE p.serving_size=:param",
-                                            {"param": "regular"})
         new_ingredient_prices = session.query(Ingredient.id, Ingredient.ingredient_category_id, Ingredient_Serving_Size_Price.price, Ingredient_Serving_Size_Price.serving_size).select_from(
             Ingredient).join(Ingredient_Serving_Size_Price, Ingredient.id == Ingredient_Serving_Size_Price.ingredient_id).filter(Ingredient.is_active == True, Ingredient_Serving_Size_Price.serving_size == "regular")
         return new_ingredient_prices
 
     def get_savory_ingredient_categories(self, session):
         ingredient_categories = session.query(
-            Ingredient_Category.id).filter(Ingredient_Category.id != 'fruit').filter(Ingredient_Category.id != 'sweetness')
+            Ingredient_Category.id).filter(Ingredient_Category.id != 'fruit', Ingredient_Category.id != 'sweetness')
         return ingredient_categories
 
     def get_sweet_ingredient_prices(self, session):
         sweet_ingredients = session.query(Ingredient_Serving_Size_Price.ingredient_id, Ingredient_Serving_Size_Price.serving_size, Ingredient_Serving_Size_Price.price, Ingredient.ingredient_category_id).join(Ingredient).filter(or_(
-            Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'), Ingredient_Serving_Size_Price.serving_size == 'regular')
+            Ingredient.ingredient_category_id == 'fruit', Ingredient.ingredient_category_id == 'sweetness'), Ingredient_Serving_Size_Price.serving_size == 'regular', Ingredient.is_active == True)
         return sweet_ingredients
 
     def get_sweet_ingredient_categories(self, session):

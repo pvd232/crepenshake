@@ -97,6 +97,7 @@ function pageLogic () {
 						senderElementType === 'H2'
 					) {
 						const json = JSON.parse($(this).closest('.card, li').attr('data-menucrepes'));
+						$(this).closest('.card, li').find('.description').hide();
 
 						const selectedCrepe = userOrderMenuCrepe.findCrepe(json);
 						// if you click the card and it hasn't been selected
@@ -120,8 +121,10 @@ function pageLogic () {
 					if (!userOrderMenuCrepe.findCrepe(json)) {
 						$(this).closest('.card, .list-group-item').find('.btn2').hide();
 						$(this).closest('.card, .list-group-item').find('.btn2').html(0);
-						$(this).hide();
+						$(this).closest('.card, .list-group-item').find('.btn6').hide();
 						$(this).closest('.card, .list-group-item').find('.btn7').hide();
+						$(this).closest('.card, li').find('.description').show();
+
 					} else {
 						$(this).closest('.card, .list-group-item').find('.btn2').html(`${selectedCrepe.quantity}`);
 						$(this).closest('.card, .list-group-item').find('.btn2').show();
@@ -199,6 +202,7 @@ function mobileRendering () {
 	const cardImgTopElements = document.getElementsByClassName('card-img-top');
 	const h3Elements = document.getElementsByClassName('h3');
 	const cardData = document.getElementsByClassName('card');
+	const menuCrepeDescriptions = document.getElementsByClassName('description');
 
 	$('#crepeImg').css('margin-left', '0px');
 	$('#cardText').css('margin-left', '0px');
@@ -230,6 +234,11 @@ function mobileRendering () {
 		cardDeckTitleValues.push(h3Elements[i].innerHTML);
 	}
 
+	const staticMenuCrepeDescriptions = new Array();
+	for (var i = 0; i < menuCrepeDescriptions.length; i++) {
+		const clone = menuCrepeDescriptions[i].cloneNode(true);
+		staticMenuCrepeDescriptions.push(clone);
+	}
 	const constCardData = new Array();
 
 	for (var i = 0; i < cardData.length; i++) {
@@ -256,7 +265,6 @@ function mobileRendering () {
 		removeAllChildNodes(cardDeckElements[i]);
 	}
 	var counter = 0;
-
 	for (var i = 0; i < cardDeckElementsLength; i++) {
 		const row = document.createElement('div');
 		row.setAttribute('class', 'row');
@@ -288,43 +296,56 @@ function mobileRendering () {
 			const data = JSON.parse(constCardData[counter].getAttribute('data-menucrepes'));
 			listValue.setAttribute('id', data.crepe_id);
 			listValue.setAttribute('data-menucrepes', jsonData);
-
-			if (constCardTextValues[k]) {
-				const string1 = String(constCardTitleValues[k]);
-				const string2 = String(constCardTextValues[k]);
+				
+				const menuCrepeName = String(constCardTitleValues[k]);
+				const menuCrepeDescriptionElement = staticMenuCrepeDescriptions[counter];
+				menuCrepeDescriptionElement.setAttribute('style', 'font-size: .75rem')
+				
+				const menuCrepePrice = String(constCardTextValues[k])
 				const container = document.createElement('container');
-				container.setAttribute('style', 'width:30%');
+				container.setAttribute('style', 'width:min-content;');
 
-				const listValueHeader = document.createElement('h5');
+				const listValueHeader = document.createElement('h6');
+				listValueHeader.setAttribute('style', 'margin-bottom: 20px; margin-top: auto')
 				const listValueBodyText = document.createElement('p');
-				listValueBodyText.innerHTML = string2;
-				listValueHeader.innerHTML = string1 + '<br>';
+
+				listValueBodyText.innerHTML = menuCrepePrice;
+				listValueHeader.innerHTML = menuCrepeName + '<br>';
+				
+				const descriptionContainer = document.createElement('container')
+				descriptionContainer.setAttribute('style', 'padding-top: 20px; padding-bottom:20px; margin-left:10px; margin-right:5px;  align-items:center;  align-self: center; width:58% ')
+				descriptionContainer.appendChild(menuCrepeDescriptionElement)
+
 				container.appendChild(listValueHeader);
 				container.appendChild(listValueBodyText);
 				listValue.appendChild(container);
-			} else {
-				const listValueText = String(constCardTitleValues[k]);
-				listValue.innerHTML = listValueText;
-			}
+				listValue.appendChild(descriptionContainer)
+
+			
 			const container4 = document.createElement('div');
 			container4.setAttribute('class', 'container4');
 			const button2 = document.createElement('button');
 			button2.setAttribute('class', 'btn2');
+			button2.setAttribute('style', 'margin-right:20px');
 			button2.innerHTML = '✓';
 
 			const gridContainer = document.createElement('div');
 			gridContainer.setAttribute('class', 'grid-container');
 			gridContainer.setAttribute(
 				'style',
-				'margin-top: 0px; margin-bottom:0px; align-content:space-evenly; align-items:center; grid-template-columns: auto auto auto; align-self: center; overflow:auto; grid-gap: 2px; display:grid;'
+				'margin-top: 0px; height: 70px; margin-bottom:0px; align-content:space-evenly; align-items:left;; align-self: left; overflow:auto; grid-gap: 2px; display:grid;'
 			);
 
 			const button6 = document.createElement('button');
 			button6.setAttribute('class', 'btn6');
+			button6.setAttribute('style', 'margin-right:20px');
+
 			button6.innerHTML = '-';
 
 			const button7 = document.createElement('button');
 			button7.setAttribute('class', 'btn7');
+			button7.setAttribute('style', 'margin-right:20px');
+
 			button7.innerHTML = '+';
 
 			gridContainer.appendChild(button6);

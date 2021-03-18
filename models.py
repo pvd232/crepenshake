@@ -1354,11 +1354,11 @@ def update_ingredients():
         {"id": "cooked_spinach", "serving_size": "regular", "price": 0.0,
             "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
-        {"id": "sauteed onions", "serving_size": "light", "price": 0.0,
+        {"id": "sauteed_onions", "serving_size": "light", "price": 0.0,
             "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
         {"id": "sauteed onions", "serving_size": "extra", "price": 0.0,
          "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "sauteed onions", "serving_size": "regular", "price": 0.0,
+        {"id": "sauteed_onions", "serving_size": "regular", "price": 0.0,
             "ingredient_category_id": "vegetable", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "red_onion", "serving_size": "light", "price": 0.0,
@@ -1424,11 +1424,11 @@ def update_ingredients():
         {"id": "bérnaise", "serving_size": "regular", "price": 1.98,
             "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
-        {"id": "chimichuri", "serving_size": "light", "price": 0.99,
+        {"id": "chimichurri", "serving_size": "light", "price": 0.99,
             "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "chimichuri", "serving_size": "extra", "price": 0.99,
+        {"id": "chimichurri", "serving_size": "extra", "price": 0.99,
          "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "chimichuri", "serving_size": "regular", "price": 1.98,
+        {"id": "chimichurri", "serving_size": "regular", "price": 1.98,
             "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "balsamic_glaze", "serving_size": "light", "price": 0.0,
@@ -1445,18 +1445,18 @@ def update_ingredients():
         {"id": "ranch", "serving_size": "regular", "price": 0.0,
             "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
-        {"id": "peanut_sauce", "serving_size": "light", "price": 0.99,
+        {"id": "peanut", "serving_size": "light", "price": 0.99,
             "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "peanut_sauce", "serving_size": "extra", "price": 0.99,
+        {"id": "peanut", "serving_size": "extra", "price": 0.99,
          "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "peanut_sauce", "serving_size": "regular", "price": 1.98,
+        {"id": "peanut", "serving_size": "regular", "price": 1.98,
             "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
-        {"id": "onion_vinegarette", "serving_size": "light", "price": 0.0,
+        {"id": "onion_vinaigrette", "serving_size": "light", "price": 0.0,
             "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "onion_vinegarette", "serving_size": "extra", "price": 0.0,
+        {"id": "onion_vinaigrette", "serving_size": "extra", "price": 0.0,
          "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
-        {"id": "onion_vinegarette", "serving_size": "regular", "price": 0.0,
+        {"id": "onion_vinaigrette", "serving_size": "regular", "price": 0.0,
             "ingredient_category_id": "sauce", "ingredient_flavor_profile_id": "savory", "is_active": True},
 
         {"id": "steak_diane", "serving_size": "light", "price": 0.99,
@@ -1685,7 +1685,7 @@ def update_menu_crepes():
     {"name": "r_k_special", "description":"Oreo Crumble, Strawberry, Banana smothered with Nutella",  "flavor_profile_id": "sweet", "price": 10.95, "is_active": True, "was_added": False},
     {"name": "old_blue_eyes", "description":"New York Cheesecake rolled in Cinnamon Sugar, drizzled with Rich Caramel",  "flavor_profile_id": "sweet", "price": 9.95, "is_active": True, "was_added": False},
     {"name": "morning_toast", "description":"Cinnamon, Sugar, Butter",  "flavor_profile_id": "sweet", "price": 7.50, "is_active": True, "was_added": False},
-    {"name": "bodacious_blue_berry", "description":"Rich Lemon Curd Custard with Fresh Blueberries and Whipped Cream. Blueberry lovers beware",  "flavor_profile_id": "sweet", "price": 10.95, "is_active": True, "was_added": False},
+    {"name": "bodacious_blueberry", "description":"Rich Lemon Curd Custard with Fresh Blueberries and Whipped Cream. Blueberry lovers beware",  "flavor_profile_id": "sweet", "price": 10.95, "is_active": True, "was_added": False},
     {"name": "caramel_apple", "description":"Apple slices, Caramel drizzle, and Whipped Cream",  "flavor_profile_id": "sweet", "price": 9.95, "is_active": True, "was_added": False},
     ]
 

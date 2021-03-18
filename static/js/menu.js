@@ -13,16 +13,6 @@ $(window).on('load', function () {
 	$('.head3').each(function () {
 		$(this).html($(this).html().toLowerCase());
 	});
-	const description = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
-	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
-	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
-	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
-	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
-	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
-	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
-	// const description1 = 'Steak, grilled onions, mushrooms, garlic, blue cheese, diane sauce';
-
-	$('#savory_menu_crepes').find('.card-body').first().append(`<p class="description" >${description}</p>`);
 	const newWidth = $(window).width();
 
 	if (cWidth < newWidth) {
@@ -33,7 +23,8 @@ $(window).on('load', function () {
 		const cardDeckElements = document.getElementsByClassName('card-deck');
 		const cardTitleElements = document.getElementsByClassName('card-title');
 		const cardTextElements = document.getElementsByClassName('card-text');
-		// const descriptionElements = document.getElementsByClassName('description');
+		const descriptionElements = document.getElementsByClassName('description');
+		const cardData = document.getElementsByClassName('card');
 
 		const cardImgTopElements = document.getElementsByClassName('card-img-top');
 
@@ -63,6 +54,18 @@ $(window).on('load', function () {
 		const constCardImgSrcValues = [...cardImgSrcValues];
 		const cardDeckElementsLength = cardDeckElements.length;
 
+		const constCardData = new Array();
+		for (var i = 0; i < cardData.length; i++) {
+			const clone = cardData[i].cloneNode(true);
+			constCardData.push(clone);
+		}
+
+		const staticDrinkDescriptions = new Array();
+		for (var i = 0; i < descriptionElements.length; i++) {
+			const clone = descriptionElements[i].cloneNode(true);
+			staticDrinkDescriptions.push(clone);
+		}
+
 		const cardDeckChildrenLength = new Array();
 		const constCardDeckNodes = new Array();
 		for (var i = 0; i < cardDeckElementsLength; i++) {
@@ -77,16 +80,18 @@ $(window).on('load', function () {
 			}
 			cardDeckChildrenLength.push(counter);
 		}
-		// const constDescriptionElements = new Array()
-		// for (var i = 0; i < descriptionElements.length; i++) {
-		// 	const clone = descriptionElements[i].cloneNode(true);
-		// 	constDescriptionElements.push(clone)
-		// }
+		const constDescriptionElements = new Array()
+		for (var i = 0; i < descriptionElements.length; i++) {
+			const clone = descriptionElements[i].cloneNode(true);
+			constDescriptionElements.push(clone)
+		}
 		for (var i = 0; i < cardDeckElementsLength; i++) {
 			removeAllChildNodes(cardDeckElements[i]);
 		}
 		// set this to one because the first card on the page is a decorative card without a value
 		var counter = 0;
+		var descriptionIndex = -1
+
 		for (var i = 0; i < cardDeckElementsLength; i++) {
 			const row = document.createElement('div');
 			row.setAttribute('class', 'row');
@@ -108,13 +113,17 @@ $(window).on('load', function () {
 
 				k = priorChildLength;
 			}
-
 			const stoppingPoint = k + cardDeckChildrenLength[i];
 			for (k; k < stoppingPoint; k++) {
 				const listValue = document.createElement('li');
 				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
 				listValue.setAttribute('style', 'width:100%');
 
+				const data = JSON.parse(constCardData[counter].getAttribute('data-description'));
+				console.log("data", data)
+				
+				
+				
 				const string1 = String(constCardTitleValues[k]);
 				const string2 = String(constCardTextValues[k]);
 
@@ -127,7 +136,35 @@ $(window).on('load', function () {
 
 				const listValueBodyText = document.createElement('p');
 				listValueBodyText.setAttribute('style', 'font-size: 110%');
-
+				if (data.description) {
+					console.log("data.description", data.description)
+					
+					descriptionIndex += 1
+					const drinkName = String(constCardTitleValues[k]);
+					const drinkDescriptionElement = staticDrinkDescriptions[descriptionIndex];
+					drinkDescriptionElement.setAttribute('style', 'font-size: .75rem')
+					
+					const drinkPrice = String(constCardTextValues[k])
+					const container = document.createElement('container');
+					container.setAttribute('style', 'width:min-content;');
+	
+					const listValueHeader = document.createElement('h6');
+					listValueHeader.setAttribute('style', 'margin-bottom: 20px; margin-top: auto')
+					const listValueBodyText = document.createElement('p');
+	
+					listValueBodyText.innerHTML = drinkPrice;
+					listValueHeader.innerHTML = drinkName + '<br>';
+					
+					const descriptionContainer = document.createElement('container')
+					descriptionContainer.setAttribute('style', 'padding-top: 20px; padding-bottom:20px; margin-left:10px; margin-right:5px;  align-items:center;  align-self: center; width:58% ')
+					descriptionContainer.appendChild(drinkDescriptionElement)
+	
+					container.appendChild(listValueHeader);
+					container.appendChild(listValueBodyText);
+					listValue.appendChild(container);
+					listValue.appendChild(descriptionContainer)
+				}
+				else{
 				if (constCardTextValues[k]) {
 					listValueBodyText.innerHTML = string2;
 					listValueHeader.innerHTML = string1 + '<br>';
@@ -139,6 +176,7 @@ $(window).on('load', function () {
 					container.appendChild(listValueHeader);
 					listValue.appendChild(container);
 				}
+			}
 				const container3 = document.createElement('div');
 				container3.setAttribute('class', 'container3');
 				listValue.appendChild(container3);

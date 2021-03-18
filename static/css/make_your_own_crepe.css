@@ -21,11 +21,7 @@
   height: 220px !important;
   object-fit: cover;
 }
-.non-modal #milkshake .card-img-top {
-  width: 100% !important;
-  height: 380px !important;
-  object-fit: cover;
-}
+
 .non-modal .image-parent {
   max-width: 25%;
 }
@@ -107,35 +103,50 @@
 }
 
 /*https://stackoverflow.com/questions/36430816/bootstrap-4-card-deck-with-number-of-columns-based-on-viewport*/
+.non-modal .card-deck .card-body {
+  height: fit-content !important;
+}
 .non-modal .card-deck .card {
   max-width: 220px !important;
   min-width: 200px !important;
   max-height: 400px !important;
   margin-bottom: 40px !important;
 }
+/*savory crepe cards to accomodate descriptions*/
 .non-modal #savory.card-deck .card {
-  max-width: 320px !important;
-  min-width: 300px !important;
-  max-height: 500px !important;
+  max-width: 220px !important;
+  min-width: 200px !important;
+  max-height: 600px !important;
   margin-bottom: 40px !important;
 }
+.non-modal #milkshake.card-deck .card {
+  max-width: 220px !important;
+  min-width: 200px !important;
+  max-height: 600px !important;
+  margin-bottom: 40px !important;
+}
+/* sweet crepe cards to accomodate descriptions
 .non-modal #sweet.card-deck .card {
   max-width: 320px !important;
   min-width: 300px !important;
   max-height: 500px !important;
   margin-bottom: 40px !important;
-}
-.non-modal #milkshake.card-deck .card {
-  max-width: 340px !important;
-  min-width: 320px !important;
+} */
+/*milkshake cards to accomodate descriptions*/
+/* .non-modal #milkshake.card-deck .card {
+  max-width: 300px !important;
+  min-width: 280px !important;
   max-height: 600px !important;
   margin-bottom: 40px !important;
-}
+} */
+/*the milshake photos looked like shit*/
 .non-modal #milkshake .card-img-top {
   width: 100% !important;
-  height: 380px !important;
+  height: 300px !important;
   object-fit: cover;
 }
+
+/*mobile rendering of descriptions*/
 .non-modal .card-deck .card .description {
   margin-left: 11px;
   font-size: 95%;
@@ -403,7 +414,8 @@
 }
 .non-modal .container4 {
   position: absolute;
-  width: 100%;
+  width: 90%;
+  margin-left: auto;
 }
 .non-modal .container4 .btn2 {
   color: white;
