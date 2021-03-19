@@ -119,7 +119,7 @@ $(window).on('load', function () {
 				listValue.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
 				listValue.setAttribute('style', 'width:100%');
 
-				const data = JSON.parse(constCardData[counter].getAttribute('data-description'));
+				const data = JSON.parse(constCardData[k].getAttribute('data-description'));
 				console.log("data", data)
 				
 				
@@ -137,8 +137,6 @@ $(window).on('load', function () {
 				const listValueBodyText = document.createElement('p');
 				listValueBodyText.setAttribute('style', 'font-size: 110%');
 				if (data.description) {
-					console.log("data.description", data.description)
-					
 					descriptionIndex += 1
 					const drinkName = String(constCardTitleValues[k]);
 					const drinkDescriptionElement = staticDrinkDescriptions[descriptionIndex];

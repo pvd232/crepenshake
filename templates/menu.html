@@ -162,11 +162,12 @@
 
 			<div class="card-deck" id='{{menu_items.milkshakes[0].drink_category_id}}'>
 				{% for i in range(menu_items.milkshakes|length) %}
-				<div class="card" id='{{menu_items.milkshakes[i].id}}' data-description='{{menu_items.milkshakes[0]|tojson}}' >
+				<div class="card" id='{{menu_items.milkshakes[i].id}}' data-description='{{menu_items.milkshakes[i]|tojson}}' >
 					<img src='{{"../static/images/" + menu_items.milkshakes[i].name + ".jpg"}}' class="card-img-top" alt="..." />
 					<div class="card-body">
 						<h5 class="card-title">{{menu_items.milkshakes[i].name}}</h5>
 						<p class="card-text">${{menu_items.milkshakes[i].price}}</p>
+
 						{% if menu_items.milkshakes[i].description != None %}
 							<p class="description">{{menu_items.milkshakes[i].description}}</p>
 						{% endif %}
