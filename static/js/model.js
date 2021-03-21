@@ -1241,9 +1241,9 @@ export class Ingredient {
   }
   fromJSON(json) {
     const data = json;
-    this._id = data.id;
-    this._servingSize = data.servingSize;
-    this._price = data.price;
+    this.id = data.id;
+    this.servingSize = data.servingSize;
+    this.price = data.price;
     if (data.cost) {
       this._cost = data.cost;
     }
@@ -1624,6 +1624,8 @@ export class OrderCrepe {
       var fruitQuantMinusIncludedfruit = 0;
       if (this._ingredients.length) {
         for (var i = 0; i < this._ingredients.length; i++) {
+          console.log("this._ingredients[i]", this._ingredients[i])
+          
           if (this._ingredients[i].category === "fruit" && allotedFruit > 0) {
             if (this._ingredients[i].quantity > 1) {
               fruitQuantMinusIncludedfruit = this._ingredients[i].quantity - 2;
@@ -1637,13 +1639,19 @@ export class OrderCrepe {
               fruitQuantMinusIncludedfruit * this._ingredients[i].price;
           } else if (
             this._ingredients[i].category === "sweetness" &&
-            !sweetnessBool
+            !sweetnessBool && this._ingredients[i].id !== "homemade_whipped_cream"
           ) {
             sweetnessBool = true;
             const sweetnessQuantMinusIncludedsweetness =
               this._ingredients[i].quantity - 1;
             this._ingredients[i].cost =
               sweetnessQuantMinusIncludedsweetness * this._ingredients[i].price;
+          }
+          else if (this._ingredients[i].category === "sweetness" &&
+          !sweetnessBool && this._ingredients[i].id === "homemade_whipped_cream") {
+            this._ingredients[i].cost = this._ingredients[i].quantity * this._ingredients[i].price
+            const ingredientCost = this._ingredients[i].cost
+            this._cost += ingredientCost
           }
           const ingredientPrice = this._ingredients[i].cost;
           this._orderTotal += ingredientPrice;

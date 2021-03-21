@@ -82,6 +82,8 @@ class Ingredient_Serving_Size(object):
 
 class Ingredient_Domain(object):
     def __init__(self, ingredient_json=None, ingredient_object=None):
+        print("ingredient_object", ingredient_object)
+        
         if ingredient_json:
             self.id = ingredient_json["id"]
             self.ingredient_category_id = ingredient_json["category"]

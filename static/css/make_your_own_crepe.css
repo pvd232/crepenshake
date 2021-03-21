@@ -119,6 +119,12 @@
   max-height: 600px !important;
   margin-bottom: 40px !important;
 }
+.non-modal #sweet.card-deck .card {
+  max-width: 220px !important;
+  min-width: 200px !important;
+  max-height: 600px !important;
+  margin-bottom: 40px !important;
+}
 .non-modal #milkshake.card-deck .card {
   max-width: 220px !important;
   min-width: 200px !important;

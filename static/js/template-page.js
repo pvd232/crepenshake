@@ -24,7 +24,6 @@ $(window).on("load", function () {
         numOrderItems += 1;
       }
     }
-    console.log("numOrderItems", numOrderItems);
     $("#ex4").attr("data-count", numOrderItems);
     $("#ex4").find("span").first().attr("data-count", numOrderItems);
     $("#ex4")

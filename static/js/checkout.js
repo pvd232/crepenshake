@@ -41,7 +41,7 @@ function buildPage() {
             );
             if (crepeOrder.flavor === "savory") {
               for (var j = 0; j < crepeOrder.ingredients.length; j++) {
-                const ingredient = crepeOrder.ingredients[j];
+                const ingredient = crepeOrder.ingredients[j];                
 
                 $(
                   `<li class="list-group-item d-flex justify-content-between" id="crepeRow${i}${
@@ -60,6 +60,8 @@ function buildPage() {
             } else if (crepeOrder.flavor === "sweet") {
               for (var j = 0; j < crepeOrder.ingredients.length; j++) {
                 const ingredient = crepeOrder.ingredients[j];
+                console.log("ingredient", ingredient)
+                
                 $(
                   `<li class="list-group-item d-flex justify-content-between" id="crepeRow${i}${
                     j + 1
