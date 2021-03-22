@@ -4,11 +4,16 @@ import stripe
 import time
 from flask import request, Response, Flask, render_template, jsonify, send_file, redirect, url_for
 from service import Ingredient_Service, Order_Service, Drink_Service, Side_Service, Menu_Crepe_Service, Menu_Service, Test_Service, Settings_Service
-from models import app
+from models import app, update_app
 from twilio.rest import Client
 
 # stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
 stripe.api_key = "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"
+
+@app.route('/update')
+def update():
+    update_app()
+    return Response(status=200)
 
 @app.route("/")
 def home():

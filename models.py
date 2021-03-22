@@ -1770,5 +1770,4 @@ def update_app():
         upgrade(directory=migrate.directory)
         update_everything()
         return True
-update_app()
 # instantiate_db_connection()
