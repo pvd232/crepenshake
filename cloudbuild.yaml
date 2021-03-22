@@ -8,7 +8,7 @@ steps:
       args: ['flask', 'db' , 'init']
       env: ['PROJECT_ROOT=crepenshake']
     - name: 'bash'
-      args: ['flask', 'db', 'migrate' '-m', '"Initial migration."']
+      args: ['flask', 'db', 'migrate', '-m', '"Initial migration."']
       env: ['PROJECT_ROOT=crepenshake']
     - name: 'bash'
       args: ['flask', 'db', 'upgrade']
