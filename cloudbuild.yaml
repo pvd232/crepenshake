@@ -1,20 +1,20 @@
 #use these settings if re-dploying react app
 # you must include the package.json in the git push or the build will fail
-steps:
-  - name: 'bash'
-    args: ['flask', 'db' , 'init']
-    env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
-  - name: 'bash'
-    args: ['flask', 'db', 'migrate', '-m', '"Initial migration."']
-    env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
-  - name: 'bash'
-    args: ['flask', 'db', 'upgrade']
-    env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy']
-    env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
-#use these steps if only backend was changed
 # steps:
-#     - name: 'gcr.io/cloud-builders/gcloud'
-#       args: ['app', 'deploy']
-#       env: ['PROJECT_ROOT=crepenshake']
+#   - name: 'bash'
+#     args: ['flask', 'db' , 'init']
+#     env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
+#   - name: 'bash'
+#     args: ['flask', 'db', 'migrate', '-m', '"Initial migration."']
+#     env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
+#   - name: 'bash'
+#     args: ['flask', 'db', 'upgrade']
+#     env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
+#   - name: 'gcr.io/cloud-builders/gcloud'
+#     args: ['app', 'deploy']
+#     env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
+#use these steps if only backend was changed
+steps:
+    - name: 'gcr.io/cloud-builders/gcloud'
+      args: ['app', 'deploy']
+      env: ['PROJECT_ROOT=crepenshake']
