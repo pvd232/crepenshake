@@ -10,6 +10,13 @@ from twilio.rest import Client
 stripe.api_key = "sk_test_51HkZexHlxrw6CLurpBUYLk2wI22ALXfuL48F36xoblWPaI6fo6VXV0nZWOqnueBmSiforeOhWUux302KYSGcFfGm00uO8DHx7N"
 # stripe.api_key = "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"
 
+@app.route('/admin/dbupgrade')
+def dbupgrade():
+    from flask_migrate import upgrade, Migrate
+    from models import db
+    migrate = Migrate(app, db)
+    upgrade(directory=migrate.directory)
+    return 'migrated'
 
 @app.route("/")
 def home():
