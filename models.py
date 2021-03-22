@@ -117,10 +117,10 @@ class Menu_Crepe(db.Model):
     __tablename__ = 'menu_crepe'
     crepe_id = db.Column(UUID(as_uuid=True), db.ForeignKey('crepe.id'), primary_key=True,
                          nullable=False)
-    description = name = db.Column(db.String(180), nullable=False, default="")
+    description =  db.Column(db.String(180), nullable=True, unique=True)
     name = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Float(), nullable=False)
-    is_active = db.Column(db.Boolean(), default=False, nullable=False)
+    is_active = db.Column(db.Boolean(), default=False)
 
     @property
     def serialize(self):
@@ -273,7 +273,7 @@ class Ingredient(db.Model):
                                        nullable=False)
     ingredient_flavor_profile_id = db.Column(
         db.String(80), db.ForeignKey('crepe_flavor_profile.id'), nullable=False)
-    is_active = db.Column(db.Boolean(), default=False, nullable=False)
+    is_active = db.Column(db.Boolean(), default=False)
     custom_crepe = relationship('Custom_Crepe')
     order_ice_cream = relationship('Order_Ice_Cream')
     ingredient_serving_size_price = relationship(
@@ -357,6 +357,7 @@ class Drink(db.Model):
     drink_category_id = db.Column(db.String(80), db.ForeignKey(
         'drink_category.id'), nullable=False)
     description =  db.Column(db.String(180), nullable=True, unique=True)
+    is_active = db.Column(db.Boolean(), default=False)
     order_coffee = relationship('Order_Coffee', lazy=True)
     order_drink = relationship('Order_Drink', lazy=True)
 
@@ -1629,6 +1630,11 @@ def update_ingredients():
         {"id": "lemon_curd", "serving_size": "extra", "price": 1.98,
             "ingredient_category_id": "sweetness", "ingredient_flavor_profile_id": "sweet", "is_active": True},
     ]
+    old_ingredients = db.session.query(Ingredient).all()
+    for ingredient in old_ingredients:
+        ingredient.is_active = False
+    db.session.commit()
+
     for ingredient in ingredients_to_update:
         same_serving_size = []
         same_serving_size.append(ingredient)
@@ -1658,7 +1664,9 @@ def update_ingredients():
 
 def update_menu_crepes():
     old_menu_crepes = db.session.query(Menu_Crepe).all()
-
+    for crepe in old_menu_crepes:
+        crepe.is_active = False
+    db.session.commit()
     new_savory_menu_crepes = [ 
     {"name": "breakfast_special", "description":"Three Eggs, one Meat (Ham or Bacon), Cheese, three Vegetables",  "flavor_profile_id": "savory", "price": 8.95, "is_active": True, "was_added": False},
     {"name": "big_blue", "description":"Steak Strips, Sautéed Onions, Mushrooms, Garlic, Blue Cheese Crumble, topped with Diane Sauce",  "flavor_profile_id": "savory", "price": 12.95, "is_active": True, "was_added": False},
@@ -1718,6 +1726,7 @@ def update_menu_crepes():
     db.session.commit()
 
 def update_milkshakes():
+    
     new_milkshakes = [
         {"name": "cookie_monster", "drink_category_id": "milkshake", "is_active":True, "description": "Vanilla shake with cookie crumble frosted rim, topped with an ice cream sandwich, whipped cream, chocolate drizzle", "was_added": False, "price": 10.95},
         {"name": "almond_joy", "drink_category_id": "milkshake", "is_active":True, "description": "Coconut shake with frosted rim, almond joy chunks + toasted coconut flakes, topped with whipped cream + chocolate drizzle", "was_added": False, "price": 14.95},
@@ -1732,7 +1741,15 @@ def update_milkshakes():
         {"name": "cookies_&_cream", "drink_category_id": "milkshake", "is_active":True,  "was_added": False, "price": 7.95},
         {"name": "cake_batter", "drink_category_id": "milkshake", "is_active":True,  "was_added": False, "price": 7.95}
     ]
+    old_drinks = db.session.query(Drink).filter(Drink.drink_category_id != "milkshake")
+    for drink in old_drinks:
+        drink.is_active = True    
+
     old_milkshakes = db.session.query(Drink).filter(Drink.drink_category_id == "milkshake")
+    for milkshake in old_milkshakes:
+        milkshake.is_active = False
+    db.session.commit()
+
     old_milkshake_prices = db.session.query(Drink_Name_Serving_Size_Price).filter(Drink_Name_Serving_Size_Price.drink_category_id == 'milkshake').all()
     for old_milkshake in old_milkshakes:
         milk_shake_price = ''

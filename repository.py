@@ -151,7 +151,7 @@ class Drink_Repository(object):
 
     def get_drinks(self, session, requested_drink_category_id):
         drinks = session.query(Drink_Name_Serving_Size_Price.id,Drink_Name_Serving_Size_Price.name, Drink_Name_Serving_Size_Price.drink_category_id, Drink_Name_Serving_Size_Price.serving_size,Drink_Name_Serving_Size_Price.price, Drink.description).select_from(Drink_Name_Serving_Size_Price).join(Drink, Drink_Name_Serving_Size_Price.id == Drink.id).filter(
-            Drink_Name_Serving_Size_Price.drink_category_id == requested_drink_category_id)
+            Drink_Name_Serving_Size_Price.drink_category_id == requested_drink_category_id, Drink.is_active == True)
         return drinks
 
     def get_milk_drinks(self, session):
@@ -178,19 +178,14 @@ class Side_Repository(object):
 
     def get_side_types(self, session):
         side_types = session.query(Side_Type)
-        session.close()
         return side_types
 
     def get_side_names(self, session):
         side_names = session.query(Side_Name)
-        session.close()
-
         return side_names
 
     def get_ice_cream_bowls(self, session):
         ice_cream = session.query(Ice_Cream_Flavor_Serving_Size_Price)
-        session.close()
-
         return ice_cream
 
 
