@@ -24,6 +24,7 @@ env_variables:
         postgresql+psycopg2://postgres:Iqopaogh23!@/postgres?host=/cloudsql/crepenshake:us-east4:crepenshakedatabase
     TWILIO_ACCOUNT_SID: ACbac9823e741ea09bdca5d36667e54e92
     TWILIO_AUTH_TOKEN: 5553d625714adedf297798bebe53fbf2
+    FLASK_APP: main.py
 
 #[END env]
 
