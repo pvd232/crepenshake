@@ -1767,6 +1767,3 @@ def update_milkshakes():
     db.session.commit()
 
 # instantiate_db_connection()
-update_ingredients()
-update_menu_crepes()
-update_milkshakes()
