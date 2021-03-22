@@ -2,16 +2,16 @@
 # you must include the package.json in the git push or the build will fail
 steps:
     - name: 'bash'
-      args: ['export FLASK_APP=main.py']
+      args: ['export',  'FLASK_APP=main']
       env: ['PROJECT_ROOT=crepenshake']
     - name: 'bash'
-      args: ['flask db init']
+      args: ['flask', 'db' , 'init']
       env: ['PROJECT_ROOT=crepenshake']
     - name: 'bash'
-      args: ['flask db migrate -m "Initial migration."']
+      args: ['flask', 'db', 'migrate' '-m', '"Initial migration."']
       env: ['PROJECT_ROOT=crepenshake']
     - name: 'bash'
-      args: ['flask db upgrade']
+      args: ['flask', 'db', 'upgrade']
       env: ['PROJECT_ROOT=crepenshake']
     - name: 'gcr.io/cloud-builders/gcloud'
       args: ['app', 'deploy']
