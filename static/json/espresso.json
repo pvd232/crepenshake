@@ -1,0 +1,42 @@
+[
+	{
+		"serving_size": "1_shot",
+		"price": 0.99
+	},
+	{
+		"serving_size": "2_shots",
+		"price": 1.98
+	},
+	{
+		"serving_size": "3_shots",
+		"price": 2.97
+	},
+	{
+		"serving_size": "4_shots",
+		"price": 3.96
+	},
+	{
+		"serving_size": "5_shots",
+		"price": 4.95
+	},
+	{
+		"serving_size": "6_shots",
+		"price": 5.94
+	},
+	{
+		"serving_size": "7_shots",
+		"price": 6.93
+	},
+	{
+		"serving_size": "8_shots",
+		"price": 7.92
+	},
+	{
+		"serving_size": "9_shots",
+		"price": 8.91
+	},
+	{
+		"serving_size": "10_shots",
+		"price": 9.9
+	}
+]

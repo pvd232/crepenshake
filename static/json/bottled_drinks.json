@@ -1,0 +1,50 @@
+[
+	{
+		"id": "",
+		"name": "bottled_water",
+		"serving_size": "12oz",
+		"price": 1.50
+	},
+	{
+		"id": "",
+		"name": "raspberry_lime_spindrift",
+		"serving_size": "12oz",
+		"price": 2.75
+	},
+	{
+		"id": "",
+		"name": "lemon_lime_spindrift",
+		"serving_size": "12oz",
+		"price": 2.75
+	},
+	{
+		"id": "",
+		"name": "grapefruit_spindrift",
+		"serving_size": "12oz",
+		"price": 2.75
+	},
+	{
+		"id": "",
+		"name": "coke",
+		"serving_size": "12oz",
+		"price": 2.00
+	},
+	{
+		"id": "",
+		"name": "milk",
+		"serving_size": "12oz",
+		"price": 2.00
+	},
+	{
+		"id": "",
+		"name": "sprite",
+		"serving_size": "12oz",
+		"price": 2.00
+	},
+	{
+		"id": "",
+		"name": "moon_milk",
+		"serving_size": "16oz",
+		"price": 6.50
+	}
+]

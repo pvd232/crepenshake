@@ -1,0 +1,20 @@
+[
+	{
+		"id": "protein"
+	},
+	{
+		"id": "vegetable"
+	},
+	{
+		"id": "cheese"
+	},
+	{
+		"id": "sauce"
+	},
+	{
+		"id": "fruit"
+	},
+	{
+		"id": "sweetness"
+	}
+]

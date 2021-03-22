@@ -1,0 +1,62 @@
+[
+	{
+		"id": "",
+		"name": "hot_chocolate",
+		"serving_size": "12oz",
+		"price": 4.0
+	},
+	{
+		"id": "",
+		"name": "white_hot_chocolate",
+		"serving_size": "12oz",
+		"price": 4.0
+	},
+	{
+		"id": "",
+		"name": "hot_vanilla_bean_tea",
+		"serving_size": "12oz",
+		"price": 3.0
+	},
+	{
+		"id": "",
+		"name": "hot_passion_tea",
+		"serving_size": "12oz",
+		"price": 3.0
+	},
+	{
+		"id": "",
+		"name": "hot_peach_tea",
+		"serving_size": "12oz",
+		"price": 3.0
+	},
+	{
+		"id": "",
+		"name": "hot_chocolate",
+		"serving_size": "16oz",
+		"price": 4.5
+	},
+	{
+		"id": "",
+		"name": "white_hot_chocolate",
+		"serving_size": "16oz",
+		"price": 4.5
+	},
+	{
+		"id": "",
+		"name": "hot_vanilla_bean_tea",
+		"serving_size": "16oz",
+		"price": 3.5
+	},
+	{
+		"id": "",
+		"name": "hot_passion_tea",
+		"serving_size": "16oz",
+		"price": 3.5
+	},
+	{
+		"id": "",
+		"name": "hot_peach_tea",
+		"serving_size": "16oz",
+		"price": 3.5
+	}
+]

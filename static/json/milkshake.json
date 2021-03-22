@@ -1,0 +1,74 @@
+[
+	{
+		"id": "",
+		"name": "cookie_monster",
+		"serving_size": "16oz",
+		"price": 10.95
+	},
+	{
+		"id": "",
+		"name": "cake_shake",
+		"serving_size": "16oz",
+		"price": 13.95
+	},
+	{
+		"id": "",
+		"name": "almond_joy",
+		"serving_size": "16oz",
+		"price": 9.95
+	},
+	{
+		"id": "",
+		"name": "ms._nutella",
+		"serving_size": "16oz",
+		"price": 10.95
+	},
+	{
+		"id": "",
+		"name": "chocolate_joy",
+		"serving_size": "16oz",
+		"price": 10.95
+	},
+	{
+		"id": "",
+		"name": "mudslide",
+		"serving_size": "16oz",
+		"price": 10.95
+	},
+	{
+		"id": "",
+		"name": "the_milky_panda",
+		"serving_size": "16oz",
+		"price": 10.95
+	},
+	{
+		"id": "",
+		"name": "vanilla",
+		"serving_size": "16oz",
+		"price": 7.95
+	},
+	{
+		"id": "",
+		"name": "chocolate",
+		"serving_size": "16oz",
+		"price": 7.95
+	},
+	{
+		"id": "",
+		"name": "strawberry",
+		"serving_size": "16oz",
+		"price": 7.95
+	},
+	{
+		"id": "",
+		"name": "cookies_&_cream",
+		"serving_size": "16oz",
+		"price": 7.95
+	},
+	{
+		"id": "",
+		"name": "cake_batter",
+		"serving_size": "16oz",
+		"price": 7.95
+	}
+]

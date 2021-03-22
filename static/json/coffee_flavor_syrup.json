@@ -1,0 +1,32 @@
+[
+	{
+		"id": "vanilla"
+	},
+	{
+		"id": "sugar-free_vanilla"
+	},
+	{
+		"id": "hazelnut"
+	},
+	{
+		"id": "peppermint"
+	},
+	{
+		"id": "irish_cream"
+	},
+	{
+		"id": "pumpkin_spice"
+	},
+	{
+		"id": "white_mocha"
+	},
+	{
+		"id": "mocha"
+	},
+	{
+		"id": "caramel_apple_butter"
+	},
+	{
+		"id": "coconut"
+	}
+]
