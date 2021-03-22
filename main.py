@@ -19,7 +19,7 @@ def dbupgrade():
     update_ingredients()
     update_menu_crepes()
     update_milkshakes()
-    return 'migrated'
+    return render_template('contact.html')
 
 @app.route("/")
 def home():
