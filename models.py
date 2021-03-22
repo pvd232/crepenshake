@@ -13,7 +13,7 @@ import os
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy import inspect, create_engine
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 
 
 @compiles(DropTable, "postgresql")
@@ -1765,5 +1765,10 @@ def update_milkshakes():
             db.session.add(new_drink)
             db.session.add(new_drink_price)
     db.session.commit()
-
+def update_everything():
+    upgrade(directory=migrate.directory)
+    update_ingredients()
+    update_menu_crepes()
+    update_milkshakes()
+update_everything()
 # instantiate_db_connection()
