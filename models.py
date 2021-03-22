@@ -1677,7 +1677,7 @@ def update_menu_crepes():
     {"name": "figgy_piggy", "description":"Bacon, Fig Jam, Brie Cheese, Walnuts, Balsamic Glaze",  "flavor_profile_id": "savory", "price": 9.95, "is_active": True, "was_added": False},
     {"name": "fly_eagle_fly", "description":"Chichen 2x, Roast Beef, Turkey, Cheese, Mushrooms, Peppers, Onions, Tomatoes, Cajun Remoulade",  "flavor_profile_id": "savory", "price": 10.95, "is_active": True, "was_added": False},
     {"name": "caesar", "description":"Chicken 2x, Cheese, Red Onions, Romaine Lettuce, Tomatoes, Banana Peppers, Caesar Sauce, Oil/Vin.",  "flavor_profile_id": "savory", "price": 8.95, "is_active": True, "was_added": False},
-    {"name": "hotty_tomati", "description":"Buffalo Chicken 2x, Cheese, Tomatoes, Romaine Lettuce, Ranch, Hot Sauce",  "flavor_profile_id": "savory", "price": 8.95, "is_active": True, "was_added": False},
+    {"name": "hotty_tomatie", "description":"Buffalo Chicken 2x, Cheese, Tomatoes, Romaine Lettuce, Ranch, Hot Sauce",  "flavor_profile_id": "savory", "price": 8.95, "is_active": True, "was_added": False},
     {"name": "crepenator", "description":"Turkey, Roast Beef, Bacon, Cheese, Mushrooms, Peppers, Onion, Spinach, Lettuce, Ranch, Cajun, Hot",  "flavor_profile_id": "savory", "price": 11.95, "is_active": True, "was_added": False}
     ]   
 
@@ -1767,6 +1767,6 @@ def update_milkshakes():
     db.session.commit()
 
 # instantiate_db_connection()
-# update_ingredients()
-# update_menu_crepes()
-# update_milkshakes()
+update_ingredients()
+update_menu_crepes()
+update_milkshakes()
