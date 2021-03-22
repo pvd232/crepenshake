@@ -21,24 +21,32 @@ def _compile_drop_table(element, compiler, **kwargs):
     return compiler.visit_drop_table(element) + " CASCADE"
 
 
-app = Flask(__name__)
+def update_everything():
+    update_ingredients()
+    update_menu_crepes()
+    update_milkshakes()
 
 
-username = "postgres"
-password = "Iqopaogh23!"
-connection_string_beginning = "postgresql+psycopg2://"
-connection_string_end = "@localhost:5432/crepenshakedb"
-connection_string = connection_string_beginning + \
-    username + ":" + password + connection_string_end
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    "DB_STRING", connection_string)
+def create_app():
+    app = Flask(__name__)
+    username = "postgres"
+    password = "Iqopaogh23!"
+    connection_string_beginning = "postgresql+psycopg2://"
+    connection_string_end = "@localhost:5432/crepenshakedb"
+    connection_string = connection_string_beginning + \
+        username + ":" + password + connection_string_end
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        "DB_STRING", connection_string)
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    db = SQLAlchemy(app)
+    with app.app_context():
+        # to suppress a warning message
+        migrate = Migrate(app, db)
+        upgrade(directory=migrate.directory)
+        update_everything()
+        return app, db
 
-
-# to suppress a warning message
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
+app, db = create_app()
 
 class Crepe_Origination(db.Model):
     __tablename__ = 'crepe_origination'
@@ -1765,10 +1773,5 @@ def update_milkshakes():
             db.session.add(new_drink)
             db.session.add(new_drink_price)
     db.session.commit()
-def update_everything():
-    upgrade(directory=migrate.directory)
-    update_ingredients()
-    update_menu_crepes()
-    update_milkshakes()
-update_everything()
+
 # instantiate_db_connection()
