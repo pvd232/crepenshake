@@ -2,7 +2,7 @@
 # you must include the package.json in the git push or the build will fail
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['functions', 'deploy', '--set-env-vars' FLASK_APP=main]
+    args: ['functions', 'deploy', '--set-env-vars', 'FLASK_APP=main']
     env: ['PROJECT_ROOT=crepenshake']
   - name: 'bash'
     args: ['flask', 'db' , 'init']
