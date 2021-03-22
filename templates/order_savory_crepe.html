@@ -57,7 +57,11 @@
 	<div class="card-deck" id="{{savory_ingredient_prices_by_category[i].ingredient_category}}">
 			{% for j in range(savory_ingredient_prices_by_category[i].ingredients|length) %}
 					<div class="card" id='{{savory_ingredient_prices_by_category[i].ingredients[j].id}}' data-ingredients='{{savory_ingredient_prices_by_category[i].ingredients[j]|tojson}}'>
+						{% if savory_ingredient_prices_by_category[i].ingredients[j].ingredient_category_id == 'sauce'  %} 
+						<img src='{{"../static/images/" + savory_ingredient_prices_by_category[i].ingredients[j].id + "_sauce" + ".jpg"}}' class="card-img-top" alt="..." />
+						{% else %}
 						<img src='{{"../static/images/" + savory_ingredient_prices_by_category[i].ingredients[j].id + ".jpg"}}' class="card-img-top" alt="..." />
+						{% endif %}
 						<div class="card-body">
 							<h5 class="card-title">{{savory_ingredient_prices_by_category[i].ingredients[j].id}}</h5>
 							{% if savory_ingredient_prices_by_category[i].ingredients[j].price > 0.0 and savory_ingredient_prices_by_category[i].ingredients[j].ingredient_category_id != 'cheese'  %} 
