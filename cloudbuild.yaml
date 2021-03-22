@@ -13,7 +13,7 @@
 #   - name: 'gcr.io/cloud-builders/gcloud'
 #     args: ['app', 'deploy']
 #     env: ['PROJECT_ROOT=crepenshake', 'FLASK_APP=main']
-#use these steps if only backend was changed weee
+#use these steps if only backend was changed weeeee
 steps:
     - name: 'gcr.io/cloud-builders/gcloud'
       args: ['app', 'deploy']
