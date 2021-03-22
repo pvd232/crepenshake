@@ -1,0 +1,63 @@
+{% extends "template_page.html" %} 
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="../static/css/make_your_own_crepe.css" />
+{% endblock %}
+
+{% block content %} 
+
+{% if editOrder %}
+<div id='{{editOrder}}' class="edit"></div>
+{% endif %}
+{% for j in range(side_names|length) %} 
+
+{% if side_names[j].id == 'ice_cream_bowl' %}
+<div class="container0sweetCrepe" style="margin-top: 40px; justify-items:center">
+	<div class="row">
+		<h3 class="head3">{{side_names[j].id }}</h3>
+	</div>
+	<div class="card-deck" id = '{{side_names[j].id}}'>
+		<div class="card" id='{{ice_cream_bowls[0].flavor}}' data-sides='{{ice_cream_bowls[0]|tojson}}'>
+			<img src='{{"../static/images/" + ice_cream_bowls[0].flavor + "_" + side_names[j].id  + ".jpg"}}' class="card-img-top" alt="..." />
+			<div class="card-body">
+				<h5 class="card-title">{{ice_cream_bowls[0].flavor + " " + "Ice Cream Bowl"}}</h5>
+				<p class="card-text">{{ice_cream_bowls[0].price}}</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container0sweetCrepe" style="margin-top: 40px; justify-items:center">
+	<div class="row">
+		<h3 class="head3" style="float: left">ice cream toppings</h3>
+		<h5 id="errorTopping" style="color: #f20000; margin-left: 20px">*Please select an ice cream first</h5>
+	</div>
+	<div class="card-deck" id="toppings" id = '{{side_names[j].id}}'>
+		{% for i in range(toppings|length) %}
+		<div class="card" id='{{toppings[i].id}}' data-sides='{{toppings[i]|tojson}}'>
+			<img src='{{"../static/images/" + toppings[i].id + ".jpg"}}' class="card-img-top" alt="..." />
+			<div class="card-body">
+				<h5 class="card-title">{{toppings[i].id}}</h5>
+				<p class="card-text">{{toppings[i].price}}</p>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+
+{% endif %} {% endfor %}
+
+<!-- https://stackoverflow.com/questions/52502675/flask-url-for-with-arguments -->
+<footer class="footer d-flex align-items-center">
+ <button
+    type="button"
+    class="btn5"
+    id="sideCheckout"
+    data-dismiss="modal"
+  >
+    Checkout
+  </button>
+</footer>
+{% endblock %}
+{% block script %}
+<script type="module" src="../static/js/order-side.js"></script>
+{% endblock %}

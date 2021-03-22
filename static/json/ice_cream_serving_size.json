@@ -1,0 +1,15 @@
+[
+	{
+		"id": "1_scoop",
+		"price": 3.5
+	},
+
+	{
+		"id": "2_scoops",
+		"price": 4.5
+	},
+	{
+		"id": "3_scoops",
+		"price": 5.5
+	}
+]
