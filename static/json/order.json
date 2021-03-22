@@ -1,0 +1,245 @@
+({
+	"order0": {
+		"customerData": {
+			"firstName": "Peter",
+			"lastName": "Driscoll",
+			"email": "patardriscoll@gmail.com",
+			"address": "525 hopkins lane",
+			"city": "Haddonfield",
+			"state": "California",
+			"zip": "08033",
+			"country": "United States",
+			"paymentMethod": "credit",
+			"cc-name": "peter",
+			"cc-number": "435234",
+			"cc-expiration": "06/23",
+			"cc-cvv": "988"
+		},
+		"orderTotal": 15.48,
+		"orderCrepe": [
+			{
+				"order0": {
+					"ingredients": {
+						"protein": [{ "Steak": "extra" }, { "price": 13 }],
+						"veggie": [{ "artichokeHeart": "extra" }, { "price": 0 }],
+						"cheese": [
+							{ "blueCheeseCrumbles": "regular" },
+							{ "lemonRicotta": "regular" },
+							{ "price": 0.99 }
+						],
+						"sauce": [{ "Bérnaise": "regular" }, { "price": 0.99 }],
+						"herb": [{ "Basil": "regular" }, { "price": 0.5 }]
+					},
+					"crepeTotal": 15.48,
+					"flavorProfile": "savory"
+				}
+			}
+		]
+	}
+},
+{
+	"order": {
+		"orderCrepe": [
+			{
+				"ingredients": {
+					"protein": [{ "Steak": "regular" }, { "price": 13 }],
+					"veggie": [{ "artichokeHeart": "regular" }, { "price": 0 }],
+					"cheese": [{ "blueCheeseCrumbles": "regular" }, { "price": 0 }],
+					"sauce": [],
+					"herb": []
+				},
+				"crepeTotal": 13,
+				"flavorProfile": "savory",
+				"customCrepe": true
+			}
+		],
+		"orderDrink": [
+			{
+				"drinks": {
+					"coffee": [],
+					"milk": [],
+					"coffee_syrup": [],
+					"milkshake": [{ "cookieMonster": "3" }],
+					"non-coffee": [],
+					"bottled": []
+				},
+				"price": 0
+			}
+		]
+	}
+})
+{
+	"order": {
+		"orderCrepe": [
+			{
+				"crepes": [
+					{
+						"ingredients": {
+							"protein": [
+								{ "name": "Steak", "servingSize": "half" },
+								{ "name": "chickenBreast", "servingSize": "half" },
+								{ "price": 9.5 }
+							],
+							"veggie": [],
+							"cheese": [],
+							"sauce": [],
+							"herb": []
+						},
+						"crepeTotal": 9.5,
+						"flavorProfile": "savory",
+						"customCrepe": true
+					}
+				]
+			},
+			{
+				"crepes": [
+					{
+						"ingredients": {
+							"protein": [
+								{ "name": "Steak", "servingSize": "half" },
+								{ "name": "chickenBreast", "servingSize": "half" },
+								{ "price": 9.5 }
+							],
+							"veggie": [],
+							"cheese": [],
+							"sauce": [],
+							"herb": []
+						},
+						"crepeTotal": 9.5,
+						"flavorProfile": "savory",
+						"customCrepe": true
+					}
+				]
+			},
+			{
+				"crepes": [
+					{
+						"ingredients": {
+							"protein": [
+								{ "name": "Steak", "servingSize": "half" },
+								{ "name": "chickenBreast", "servingSize": "half" },
+								{ "price": 9.5 }
+							],
+							"veggie": [],
+							"cheese": [],
+							"sauce": [],
+							"herb": []
+						},
+						"crepeTotal": 9.5,
+						"flavorProfile": "savory",
+						"customCrepe": true
+					}
+				]
+			},
+			{
+				"crepes": [
+					{
+						"ingredients": {
+							"protein": [
+								{ "name": "Steak", "servingSize": "half" },
+								{ "name": "chickenBreast", "servingSize": "half" },
+								{ "price": 9.5 }
+							],
+							"veggie": [],
+							"cheese": [],
+							"sauce": [],
+							"herb": []
+						},
+						"crepeTotal": 9.5,
+						"flavorProfile": "savory",
+						"customCrepe": true
+					}
+				]
+			}
+		],
+		"orderDrink": [
+			{
+				"drinks": {
+					"coffee": [
+						{
+							"servingSize": "regular",
+							"name": "12ozLatte",
+							"price": 4.5,
+							"quantity": "1",
+							"espresso": { "quantity": 2, "price": 2, "name": "espresso" },
+							"milk": { "name": "2%Milk", "servingSize": "regular", "price": 0 }
+						}
+					],
+					"milk": [],
+					"coffee_syrup": [],
+					"milkshake": [],
+					"non-coffee": [],
+					"bottled": []
+				}
+			}
+		],
+		"orderSide": [
+			{
+				"sides": {
+					"croissant": [
+						{
+							"servingSize": "regular",
+							"name": "plainCroissant",
+							"price": 2.5,
+							"quantity": "1",
+							"flavor": "plain"
+						}
+					],
+					"ice_cream_bowl": [],
+					"toppings": []
+				}
+			},
+			{
+				"sides": {
+					"croissant": [
+						{
+							"servingSize": "regular",
+							"name": "plainCroissant",
+							"price": 2.5,
+							"quantity": "1",
+							"flavor": "plain"
+						},
+						{
+							"servingSize": "regular",
+							"name": "chocolateCroissant",
+							"price": 3,
+							"quantity": "1",
+							"flavor": "chocolate"
+						}
+					],
+					"ice_cream_bowl": [
+						{
+							"servingSize": "regular",
+							"name": "vanillaIceCreamBowl",
+							"price": 3.5,
+							"quantity": "1",
+							"flavor": "vanilla",
+							"toppings": [
+								{ "servingSize": "regular", "name": "rasberries", "price": 0.99, "quantity": "0" },
+								{ "servingSize": "regular", "name": "blueberries", "price": 0.99, "quantity": "0" },
+								{ "servingSize": "regular", "name": "bananas", "price": 0.99, "quantity": "0" },
+								{ "servingSize": "regular", "name": "strawberrySlices", "price": 0.99, "quantity": "0" }
+							]
+						}
+					]
+				}
+			}
+		],
+		"orderTotal": 48.46,
+		"customerData": {
+			"firstName": "Peter",
+			"lastName": "Driscoll",
+			"email": "patardriscoll@gmail.com",
+			"address": "525 hopkins lane",
+			"city": "Haddonfield",
+			"state": "California",
+			"zip": "08033",
+			"country": "United States",
+			"paymentMethod": "credit",
+			"cc-name": "peter ",
+			"cc-number": "345345234512",
+			"cc-expiration": "06/23",
+			"cc-cvv": "345"
+		}
+	}
+}

@@ -1,0 +1,68 @@
+[
+	{
+		"crepe_id": "",
+		"name": "big_blue",
+		"flavor_profile_id": "savory",
+		"price": 12.95
+	},
+	{
+		"crepe_id": "",
+		"name": "grannys_best",
+		"flavor_profile_id": "savory",
+		"price": 10.95
+	},
+	{
+		"crepe_id": "",
+		"name": "patars_revenge",
+		"flavor_profile_id": "savory",
+		"price": 10.95
+	},
+	{
+		"crepe_id": "",
+		"name": "veggie_spanked",
+		"flavor_profile_id": "savory",
+		"price": 9.95
+	},
+	{
+		"crepe_id": "",
+		"name": "roasted",
+		"flavor_profile_id": "savory",
+		"price": 9.95
+	},
+	{
+		"crepe_id": "",
+		"name": "kathy_come_back",
+		"flavor_profile_id": "savory",
+		"price": 10.95
+	},
+	{
+		"crepe_id": "",
+		"name": "figgy_piggy",
+		"flavor_profile_id": "savory",
+		"price": 10.95
+	},
+	{
+		"crepe_id": "",
+		"name": "breakfast",
+		"flavor_profile_id": "savory",
+		"price": 7.95
+	},
+	{
+		"crepe_id": "",
+		"name": "r_k_special",
+		"flavor_profile_id": "sweet",
+		"price": 9.95
+	},
+	{
+		"crepe_id": "",
+		"name": "old_blue_eyes",
+		"flavor_profile_id": "sweet",
+		"price": 10.95
+	},
+	{
+		"crepe_id": "",
+		"name": "the_great_pumpkin",
+		"flavor_profile_id": "sweet",
+		"price": 9.95
+	}
+]
