@@ -457,7 +457,6 @@ class Menu_Crepe_Domain(object):
             self.flavor_profile_id = menu_crepe_json["flavor"]
             self.origination_id = menu_crepe_json["origination"]
             self.quantity = menu_crepe_json["quantity"]
-            self.description = menu_crepe_json["description"]
         elif menu_crepe_object:
             self.crepe_id = menu_crepe_object.crepe_id
             self.name = menu_crepe_object.name
@@ -567,7 +566,7 @@ class Drink_Domain(object):
             self.quantity = 1
             self.description = drink_price_object.description
         if self.description != None:
-            self.gourmet_milkshake=True
+            self.gourmet_milkshake = True
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
