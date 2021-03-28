@@ -565,8 +565,6 @@ class Drink_Domain(object):
             self.serving_size = drink_price_object.serving_size
             self.quantity = 1
             self.description = drink_price_object.description
-        if self.description != None:
-            self.gourmet_milkshake = True
 
     def serialize(self):
         attribute_names = list(self.__dict__.keys())
